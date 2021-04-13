@@ -24,7 +24,7 @@ var S = {
     if (i !== -1) {
       S.UI.simulate(decodeURI(action).substring(i + 3));
     } else {
-      S.UI.simulate('|#countdown 3||擢|英|中|学|九|年|十|三|班|中|考|加|油|#rectangle|擢英必胜！|From linli|XMU');
+      S.UI.simulate('|#countdown 3||祝|福|柏|小|娜|身|体|健|康|万|事|如|意|#rectangle|哈哈哈哈！|From linli|XMU');
     }
 
     S.Drawing.loop(function () {
