@@ -1,10 +1,10 @@
 # Site settings
 encoding: utf-8
-title: Cody
-description: Cody1991的个人博客
-baseurl: "https://cody1991.github.io" 
+title: Linli5000
+description: Linli5000的个人博客
+baseurl: "https://Linli5000.github.io" 
 # baseurl: ''
-github_username:  cody1991
+github_username:  Linli5000
 paginate: 8
 paginate_path: "/page:num"
 footer_twitter: "Twitter"
