@@ -1,4 +1,3 @@
 _site
-.DS_Store
-.jekyll-cache
-.sass-cache
+node_modules
+_config.yml
