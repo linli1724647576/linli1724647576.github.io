@@ -834,4 +834,94 @@
     <content><![CDATA[<p>硕士在读，计算机技术专业，分享一些论文和一些技术，强迫自己以更加系统和严谨的态度梳理问题，也希望对他人有所帮助。</p>
 ]]></content>
   </entry>
+  <entry>
+    <title>PLUMBER</title>
+    <url>/2023/03/04/PLUMBER/</url>
+    <content><![CDATA[<h1 id="PLUMBER-Boosting-the-Propagation-of-Vulnerability-Fixes-in-the-npm-Ecosystem"><a href="#PLUMBER-Boosting-the-Propagation-of-Vulnerability-Fixes-in-the-npm-Ecosystem" class="headerlink" title="PLUMBER: Boosting the Propagation of Vulnerability Fixes in the npm Ecosystem"></a>PLUMBER: Boosting the Propagation of Vulnerability Fixes in the <em>npm</em> Ecosystem</h1><h2 id="1-背景"><a href="#1-背景" class="headerlink" title="1.背景"></a>1.背景</h2><ul>
+<li>npm是JavaScript编程语言中最大的生态系统，截至2022年1月，它拥有超过180万个第三方软件包。</li>
+<li>2017年11月2日的npm快照进行的调查显示，在610,097个包中，其中21.9%直接依赖于易受攻击的包。如果考虑到传递性依赖关系，这种脆弱性对npm生态系统的脆弱性影响可能会显著增加。</li>
+<li>我们对npm包的3948个漏洞报告的初步研究发现，在发现漏洞后，60.6%涉及的包及时发布了修复版本。</li>
+<li>漏洞修复工具例如 <em>npm</em> audit [6] and Dependabot [7] 来提醒那些直接地或过渡性地依赖于脆弱的软件包版本的项目。</li>
+<li>我们对传播漏洞修复的滞后的原因进行了两个观察：大多数包只修复了其最高主要版本中的漏洞，而没有将修复移植到早期的流行版本中。由于缺乏生态系统级依赖图的完整概图，包开发人员几乎没有意识到它们是阻止修复程序传播到其许多下游包的关键因素。</li>
+</ul>
+<h2 id="2-Motivation-Example"><a href="#2-Motivation-Example" class="headerlink" title="2.Motivation Example"></a>2.Motivation Example</h2><p><img src="/2023/03/04/PLUMBER/image-20230226104613081.png" alt="image-20230226104613081"></p>
+<ul>
+<li>我们将阻止修复在依赖路径上传播的包称为阻塞包。上图中browser-sync和graphql为阻塞包。</li>
+<li>从阻塞包到脆弱包的依赖路径被称为阻塞链。 上图中 browser-sync-&gt;socket.io -&gt;engine.io为一条阻塞链</li>
+</ul>
+<h2 id="3-Introduction"><a href="#3-Introduction" class="headerlink" title="3.Introduction"></a>3.Introduction</h2><h3 id="3-1-相关工作"><a href="#3-1-相关工作" class="headerlink" title="3.1 相关工作"></a>3.1 相关工作</h3><p>(1)脆弱性对生态系统的影响[2、10、10-16]；</p>
+<p>(2)减少报告易受攻击的依赖项[17–22]的误报；</p>
+<p>(3)易受攻击的程序包更新中的滞后[1,23-28]</p>
+<p>[1] 他们进行了一项实证调查，以确定在脆弱的包发布和固定发布之间可能出现的滞后。为了确保快速采用和传播包含修复程序的版本，他们为开发人员和研究人员提供了可操作的建议：开发者要有更好的意识，以便更快地规划依赖项更新。</p>
+<p>然而，现有的工作都没有探索生态系统中阻塞包和阻塞链的特征。如何设计一种技术来加速漏洞的修复仍然是一项主要问题。</p>
+<h3 id="3-2-目标和挑战"><a href="#3-2-目标和挑战" class="headerlink" title="3.2 目标和挑战"></a>3.2 目标和挑战</h3><p>为关键软件包提供可行的补救策略，促进脆弱性修复的传播。</p>
+<ul>
+<li>获取最新的漏洞元数据和npm依赖元数据。</li>
+<li>了解阻塞链的演化特征及其对脆弱性修复传播的影响。</li>
+</ul>
+<h3 id="3-3-方法和结果"><a href="#3-3-方法和结果" class="headerlink" title="3.3 方法和结果"></a>3.3 方法和结果</h3><p><strong>Empirical Study:</strong></p>
+<p>（RQ1）含有漏洞的包的规模及其对其他项目的影响；</p>
+<p>（RQ2）在连续npm快照上的阻塞链的演化特征；</p>
+<p>（RQ3）对传播漏洞修复有更好效果的补救策略。</p>
+<p><strong>Technique:</strong></p>
+<p>(1)对漏洞和npm依赖元数据进行建模，并逐步更新其演化过程；</p>
+<p>(2)识别阻碍漏洞修复通过依赖路径传播的关键阻塞链；</p>
+<p>(3)分析阻塞链上的软件包的特性，定制修复方案。</p>
+<p><strong>Evaluation:</strong></p>
+<p>我们应用PLUMBER为最具影响力的阻塞链生成了268份修复报告。47.4%的补救报告得到了积极的反馈。PLUMBER生成的报告通过92,469个依赖路径将漏洞修复程序传播到16,403个活跃的npm项目中。</p>
+<p><strong>Contributions:</strong></p>
+<ul>
+<li>我们进行了第一个实证研究，以描述软件包在生态系统中阻碍脆弱性修复的传播的情况。</li>
+<li>我们开发了PLUMBER工具，通过纠正关键的阻塞链，来促进npm生态系统中脆弱性修复的传播。</li>
+<li>一个大规模的漏洞修复传播实验。我们的报告通过92,469个依赖路径将漏洞修复程序传播到16,403个根包中。</li>
+</ul>
+<h2 id="4-Empirical-Study"><a href="#4-Empirical-Study" class="headerlink" title="4.Empirical Study"></a>4.Empirical Study</h2><h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p><img src="/2023/03/04/PLUMBER/image-20230227101417121.png" alt="image-20230227101417121"></p>
+<p>搜集漏洞元数据：<em>GitHub Advisory DB</em>, <em>Snyk Vul</em> <em>nerability DB</em> and <em>NPM Security Advisories</em>. </p>
+<p>收集npm依赖项元数据：（V，E，C） V版本集合， E依赖边 （最新版本）<em>E</em> &#x3D; <em>{<strong>p</strong>i*@<em>va</em> <em>→</em> <em>pj</em>@<em>v*<em>b</em></em>|<strong>p</strong>i*@<em>v*<em>a</em></em>, pj</em>@<em>vb</em> <em>∈</em></p>
+<p><em>V</em> <em>}</em>.   C  依赖关系 <em>c</em>(<em>pi</em>@<em>v*<em>a</em></em>, pj* ) <em>∈</em> <em>C</em></p>
+<p>识别易受攻击的路径：通过将漏洞元数据映射到npm依赖元数据G &#x3D;（V，E，C），在集合V中，我们定位了所有带有详细漏洞信息的脆弱包版本。通过可达性分析来识别所有的脆弱路径。</p>
+<p>VP模型统计： Table 2</p>
+<p><img src="/2023/03/04/PLUMBER/image-20230227102441166.png" alt="image-20230227102441166"></p>
+<h3 id="RQ1（阻塞包的规模）："><a href="#RQ1（阻塞包的规模）：" class="headerlink" title="RQ1（阻塞包的规模）："></a>RQ1（阻塞包的规模）：</h3><p>在npm生态系统中阻止漏洞修复传播的包的规模是多少？它们在多大程度上影响了其他项目？</p>
+<p>在npm生态系统的356283个活跃根系项目中，有20.0%)中有320个仍然通过1065723个脆弱路径直接或过渡地依赖于这些脆弱包。平均而言，每个根项目都会受到4.4个±7.5漏洞的影响。</p>
+<p><img src="/2023/03/04/PLUMBER/image-20230228090108772.png" alt="image-20230228090108772"></p>
+<p>在npm生态系统的快照中，有45,148个阻塞包和358,422个阻塞链导致983,336个依赖路径的漏洞修复传播滞后。在有影响力的阻塞软件包和阻塞链上都有明显的中心地位。20%的阻塞软件包和阻塞链影响了绝大多数脆弱的路径。</p>
+<h3 id="RQ2（阻塞链的进化）："><a href="#RQ2（阻塞链的进化）：" class="headerlink" title="RQ2（阻塞链的进化）："></a>RQ2（阻塞链的进化）：</h3><p>阻断链在npm生态系统中是如何进化的？它们在npm的生态系统中存在了多久了？</p>
+<p>方法：每隔两个月爬取一次npm快照，(a)通过比较快照si（1 &lt; i≤7）与s1的统计数据，我们研究了s1中阻塞链、脆弱路径和受影响的根项目的规模，这些项目在一年的进化过程中进行了修复。(b)通过比较两个连续快照si−1和si的统计数据，我们统计了每两个月间隔内修复的阻塞链、脆弱路径和受影响的根项目的数量。此外，我们还关注了与si−1相比，si是否引入了新的案例。</p>
+<p><img src="/2023/03/04/PLUMBER/image-20230228091129135.png" alt="image-20230228091129135"></p>
+<p>在2020年8月1日的npm快照中，经过一年的进化，77.0%的阻断链仍然存在。在此期间，受这些阻塞链影响的脆弱路径和根项目的数量分别下降了37.1%和17.3%。9,904个活动根项目通过17,612条脆弱路径仍然引用了9,808个与更高级漏洞捆绑的阻塞链。</p>
+<h3 id="RQ3（补救模式）："><a href="#RQ3（补救模式）：" class="headerlink" title="RQ3（补救模式）："></a>RQ3（补救模式）：</h3><p>阻塞链如何从脆弱路径中去除？是否可以提炼出常见的补救模式，以促进漏洞修复的传播？</p>
+<p>我们实证研究了在快照s1-s7（在RQ2中收集）和提炼的常见修复模式中，包更新是如何通过包更新进行修复的。我们关注两种类型的阻塞链，它们通过包更新进行了修复，具有传播漏洞修复的显著效果：</p>
+<p><strong>Type A</strong>。阻断链存在于快照s1-si−1（1&lt;i≤7）中，而在快照si中被修复。</p>
+<p><strong>Type B</strong>。快照s1-s7中存在的阻塞链，而在进化过程中受其影响的脆弱路径的数量显著减少。</p>
+<p><strong>Remediation pattern A.</strong>  阻塞包在其最高主要版本中发布了一个新版本，其中升级了直接依赖以过渡引入漏洞修复。通过最终将直接依赖项升级到安全版本，它们最终修复了其最高可用版本中的漏洞。</p>
+<p><img src="/2023/03/04/PLUMBER/image-20230228093517214.png" alt="image-20230228093517214"></p>
+<p><strong>Remediation pattern B</strong> 中间包在其较低的主要版本中发布一个新版本，其中升级直接依赖，使非活动的阻塞包过渡地引入漏洞修复（100%的Type A阻塞链实例）。</p>
+<p><img src="/2023/03/04/PLUMBER/image-20230228093534796.png" alt="image-20230228093534796"></p>
+<p><strong>Remediation pattern C</strong> </p>
+<p><img src="/2023/03/04/PLUMBER/image-20230228093801859.png" alt="image-20230228093801859"></p>
+<p>这三种模式的<strong>补救成本</strong>标记如下：模式A&lt;模式B&lt;模式C</p>
+<p>我们提炼了三种常见的修复模式及其传播漏洞修复的先决条件。对于由主动阻塞包引起的阻塞链，这种阻塞包可以纠正其最高可用版本（模式A）中的漏洞。对于由非活动阻塞包引起的阻塞链，中间包可以纠正其较低主要版本序列中的漏洞，使非活动阻塞包能够过渡地引入漏洞修复（模式B）。此外，受阻塞链影响的包也可以不弃用不活动的阻塞包，并迁移到其他维护良好的包，以修复漏洞（模式C）。</p>
+<h2 id="5、Approach"><a href="#5、Approach" class="headerlink" title="5、Approach"></a>5、Approach</h2><p><img src="/2023/03/04/PLUMBER/image-20230301174303414.png" alt="image-20230301174303414"></p>
+<p>和DTResolver有区别的点：</p>
+<p>识别阻塞链：对于每个脆弱路径，PLUMBER从脆弱包pu开始，迭代计算每个包的安全版本µt，直到阻塞包的安全版本为空。最后，PLUMBER根据通过它们的脆弱路径的数量对识别出的阻塞链进行排序。排名最高的阻塞链被认为是关键的阻塞链，应该进行修复，以使漏洞修复能够传播到大量的包中。</p>
+<p>我们的实证研究结果表明，三种策略的补救成本通常遵循：策略A&lt;策略B&lt;策略 C. 因此，对于由积极维护的软件包引起的阻塞链，水管工高度建议了补救策略 A. 对于由非活动阻塞包引起的阻塞链，在中间包（即阻塞包和脆弱包之间的包）被开放版本约束指定的情况下，水管工建议补救策略B，如果它们可以返回到较低版本的序列。否则，水管工将采用补救策略C来迁移非活性的阻塞链。</p>
+<h2 id="6、Evaluation"><a href="#6、Evaluation" class="headerlink" title="6、Evaluation"></a>6、Evaluation</h2><h3 id="RQ4（PLUMBER的有效性）："><a href="#RQ4（PLUMBER的有效性）：" class="headerlink" title="RQ4（PLUMBER的有效性）："></a>RQ4（PLUMBER的有效性）：</h3><p>水管工制定的补救策略与开发人员是否一致？</p>
+<p>方法：选择开发人员已经修复的一些包作为基准，将我们的修复方案和开发人员的修复方案进行比较。</p>
+<p>结果：由水管工提出的362种补救策略中，有289种（79.8%）与我们的基准策略一致。对于73种不一致的补救策略，我们的工具通过平衡漏洞修复的补救成本和传播效果来生成建议。</p>
+<h3 id="RQ5（补救挑战）："><a href="#RQ5（补救挑战）：" class="headerlink" title="RQ5（补救挑战）："></a>RQ5（补救挑战）：</h3><p>补救npm生态系统中的阻塞链有多具有挑战性？</p>
+<p>方法：为了回答RQ5，对于在最近2021年8月1日的npm快照上确定的358,422条阻塞链，我们将它们分为不同的修复难度级别。此外，我们还观察了它们的分布情况，并讨论了补救方面的挑战。</p>
+<p>结果：对于影响npm生态系统中大多数脆弱路径的前20%的关键阻断链，其中46.1%的关键阻断链难以修复。它们要么需要迁移非活动的阻塞包，要么需要升级其依赖项的主要版本，以引入漏洞修复，这需要更多的代码更改和测试工作。37.0%的顶级关键阻塞链可以通过所涉及的中间包的反向移植实践进行修复。只有16.9%的顶级关键阻塞链可以通过将主动阻塞包的依赖关系升级到安全的版本来轻松修复。</p>
+<h3 id="RQ6（LUMBER的有用性）："><a href="#RQ6（LUMBER的有用性）：" class="headerlink" title="RQ6（LUMBER的有用性）："></a>RQ6（LUMBER的有用性）：</h3><p>水管工能否促进npm生态系统中脆弱性修复程序的传播，并为开发人员提供有用的补救策略？</p>
+<p>方法：向开发人员提出Bug  report，挑选了前300个关键的阻塞软件包，并人工验证受影响的下游项目是否可以引入相关的漏洞修复程序</p>
+<p>结果：47.4%的补救报告收到了来自许多著名的npm项目的积极反馈。</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion:"></a>Conclusion:</h2><p>出发点不同，DTResolver是根据root package构造依赖树，并检测依赖树中的漏洞和一些修复策略。 PLUMBER更注重npm生态系统的平衡，检测npm生态系统的Block Chain，并对包开发人员提出修复建议。</p>
+<p>和DTResolver一样，都对npm漏洞的影响进行了研究，DTResolver注重于npm3正确依赖树的构造，Plumber更注重实证研究和漏洞的修复。</p>
+<p>DTResolver的DTReme的修复有点突兀，没有前因后果，Plumber的修复是基于他的实证研究的结果，根据开发人员的建议制定的策略。</p>
+<p>论文的组织模式和Watchman, Nufix很像，都是先实证研究，将问题进行分类，探索开发人员的修复策略； 再根据我们的工具进行分类检测，并提出修复策略，最后让开发人员确认。</p>
+]]></content>
+      <tags>
+        <tag>论文阅读</tag>
+      </tags>
+  </entry>
 </search>
