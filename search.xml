@@ -4706,4 +4706,194 @@
         <tag>CPython源码阅读</tag>
       </tags>
   </entry>
+  <entry>
+    <title>What the Fork Finding Hidden Code Clones in npm</title>
+    <url>/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/</url>
+    <content><![CDATA[<h2 id="What-the-Fork-Finding-Hidden-Code-Clones-in-npm"><a href="#What-the-Fork-Finding-Hidden-Code-Clones-in-npm" class="headerlink" title="What the Fork? Finding Hidden Code Clones in npm"></a>What the Fork? Finding Hidden Code Clones in npm</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: What the Fork? Finding Hidden Code Clones in npm<ul>
+<li>翻译：发现npm中的隐藏代码克隆</li>
+</ul>
+</li>
+<li>Authors: Elizabeth Wyss, Lorenzo De Carli, and Drew Davidson</li>
+<li>Affiliation: Elizabeth Wyss - University of Kansas (美国堪萨斯大学); Lorenzo De Carli - Worcester Polytechnic Institute (美国伍斯特理工学院); Drew Davidson - University of Kansas (美国堪萨斯大学)</li>
+<li>Keywords: npm, package ecosystem, shrinkwrapped clones, clone detection, vulnerability, code reuse</li>
+<li>URLs: Paper: <a href="https://dl.acm.org/doi/10.1145/3510003.3510168">https://dl.acm.org/doi/10.1145/3510003.3510168</a> , GitHub: <a href="https://osf.io/jfk3n/?view_only=6f930d1de8704a26903540f75982bffb">https://osf.io/jfk3n/?view_only=6f930d1de8704a26903540f75982bffb</a></li>
+</ul>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction:"></a>Introduction:</h3><p>文章提出了一种未被充分发现的问题称之为 shrinkwrapped clones</p>
+<blockquote>
+<p>“npm shrinkwrapped clones” 在论文中指的是那些上传到包仓库的、包含与现有（合法）包相同或几乎相同的代码的包。这里的 “shrinkwrapped” 可能是指这些包保留了原始包的依赖关系，并且通过 npm-shrinkwrap.json 文件锁定了精确的依赖包版本。而 “clones” 则暗示了它们与原始包非常相似，甚至可能是副本。在这种情况下，这些 “npm shrinkwrapped clones” 可能是为了误导用户，让他们错误地安装了这些与原始包非常相似的包。这可能会导致安全隐患，比如植入恶意代码、窃取用户数据等。为了避免这类问题，开发者需要谨慎选择依赖包，并确保所使用的包来自可信赖的来源。</p>
+</blockquote>
+<p>并描述了两种类型的克隆（clones）：</p>
+<ol>
+<li>完全相同的克隆（identical clones）：这类克隆包含与现有包完全相同的源代码。也就是说，这些克隆并没有对原始包的代码做任何修改，它们的目的可能是为了利用原始包的知名度来吸引更多的用户。</li>
+<li>接近的克隆（close clones）：这类克隆在源代码中进行了潜在的重要的语法&#x2F;语义更改，但这些更改通常仅限于少数文件。尽管这些克隆与原始包非常相似，但它们的代码已经发生了一定程度的改变，这可能是为了引入恶意功能、规避检测或其他目的。</li>
+</ol>
+<p>并提出了出现这种问题的原因，npm缺乏官方的分叉（forking) 机制</p>
+<blockquote>
+<p>提到了 npm 生态系统中缺乏官方的分叉（forking）机制。官方的分叉机制指的是一种明确将派生的代码库与其来源代码库关联起来的方法。在其他一些平台（例如 GitHub）上，这种关联关系是非常常见的。</p>
+<p>当在 GitHub 上 fork 一个仓库时，新的仓库会明确指出其来源于原始仓库。这种关联关系使得开发者可以更轻松地追踪到源仓库，并确保所用的代码库是经过验证且可信的。此外，fork 机制还方便开发者为原始仓库贡献代码，如提交改进和修复。</p>
+<p>然而，在 npm 生态系统中，缺乏这样的官方分叉机制。这意味着当一个 npm 包被复制并上传到包仓库时，它无法明确地与原始包建立关联。这种情况可能导致开发者在选择依赖包时容易误用恶意克隆包，从而产生潜在的安全风险。</p>
+<p>总之，“官方的分叉机制”是一种将派生的代码库与其来源代码库关联起来的方法。然而，npm 生态系统中缺乏这种机制，导致了一些潜在的安全隐患。</p>
+</blockquote>
+<p> “shrinkwrapped clones” 现象对包仓库卫生（hygiene）的挑战，特别是在 npm 包的混淆性（confusability）问题上。挑战在于：</p>
+<ol>
+<li>大量的包：npm 包含超过 170 万个包，这使得开发者在选择合适的包时面临巨大的挑战。</li>
+<li>缺乏选择辅助：尽管 npm 生态系统提供了一个功能强大的搜索接口，但在选择最合适的包以提供所需功能方面，并未提供任何辅助。这可能导致开发者在选择包时感到困惑，无法准确判断哪个包是他们真正需要的。</li>
+<li>包混淆：由于 “shrinkwrapped clones” 现象，npm 包可能存在很多相似的包，这些包可能具有相同或相似的名称、功能和代码。这使得开发者更容易误用恶意克隆包，从而产生潜在的安全风险。</li>
+<li>类似拼写错误的攻击：之前的研究表明，开发者很容易在安装包时不小心安装了一个与他们预期不同的包。这类攻击，也称为 typosquatting 攻击，是指恶意开发者利用拼写类似的包名来误导开发者，使他们下载并使用恶意包。</li>
+</ol>
+<p>这篇工作主要研究 “shrinkwrapped clones” 的范围和影响。作者提到了在检测 “shrinkwrapped clones” 时面临的几个挑战，然后提出了一种解决方案。以下是这篇工作的主要内容：</p>
+<ol>
+<li>确定代码克隆的标准：没有一个公认的标准来确定何种程度的代码重用构成了代码克隆。</li>
+<li>面临的挑战：接近的克隆（close clones）在原始包上进行了局部但复杂的语法修改，使它们与许多现有的克隆检测器不兼容。此外，为了确定一个包是否克隆了其他包，必须将该包与整个 npm 进行比较，这对代码分析来说是非常具有挑战性的。</li>
+<li>解决方案：提出了一个可参数化的启发式方法，用于成对的包比较。该启发式方法通过一个可调的文件粒度语法距离阈值来定义 “shrinkwrapped clones”。根据这种方法，任何两个距离低于阈值的包被认为是接近的克隆（close clones），或者如果距离等于 1 则被认为是完全相同的克隆（identical clones）。</li>
+<li>计算效率：启发式方法仅考虑整个文件的哈希值，避免了标记化和任何形式的词法分析，使其具有较高的计算效率。因此，在几秒钟内，就可以将一个包与整个 npm 进行比较以匹配克隆。</li>
+<li>基于启发式方法，作者提出了 “unwrapper”：一种检测一个包是否是另一个更受欢迎包的克隆的机制。</li>
+</ol>
+<p>总之，这篇工作主要关注 “shrinkwrapped clones” 的范围和影响，提出了一个可参数化的启发式方法来检测克隆包，并实现了一个称为 “unwrapper” 的机制来检测一个包是否是另一个更受欢迎包的克隆。</p>
+<p>本文的贡献主要包括以下几点：</p>
+<ol>
+<li>识别并描述了 npm 包仓库中 “shrinkwrapped clones” 问题的特征。</li>
+<li>提出了 “unwrapper” 技术，用于检查一个包是否是其他任何包的 “shrinkwrapped clone”。</li>
+<li>对 “unwrapper” 进行了评估，发现它在实际应用中能有效地识别 “shrinkwrapped clones”，且时间和空间开销合理（使用现成的硬件，大多数包可以在 72.85 秒内与现有的 2000 万个包进行比较以找出克隆包）。</li>
+<li>根据对 npm 子集的分析报告了研究结果。分析发现，最多有 6,292 个克隆包。其中，最多有 2,159 个依赖于存在漏洞的过时依赖。此外，最多有 207 个克隆包直接集成了无法通过 npm 审计过程发现的漏洞。</li>
+</ol>
+<p>总之，本文通过识别和描述 “shrinkwrapped clones” 问题，提出了一种有效的检测技术，并对其进行了实际评估。同时，基于对 npm 子集的分析，报告了克隆包数量及其相关安全风险。这些贡献有助于提高开发者对 “shrinkwrapped clones” 问题的认识，并促进 npm 生态系统的安全性。</p>
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h3><ul>
+<li>a. Research background of this article:<ul>
+<li>本文探讨了npm软件包生态系统中存在的“收缩克隆”问题。</li>
+</ul>
+</li>
+<li>b. Past methods, their problems, and motivation:<ul>
+<li>过去的方法无法有效检测到收缩克隆所引起的风险，导致了软件包的卫生问题。</li>
+</ul>
+</li>
+<li>c. Research methodology proposed in this paper:<ul>
+<li>本研究提出了一种名为“unwrapper”的解决方案来自动检测和匹配收缩克隆。它包括三个模块：软件包爬虫，快速剔除无关的软件包的预过滤器，以及将潜在克隆对的目录树进行比较的克隆探测器。</li>
+</ul>
+</li>
+<li>d. Task and performance achieved by the methods in this paper:<ul>
+<li>该方法可以将单个软件包与整个npm生态系统中的其他软件包进行比较，并在72.85秒内发现许多包括“收缩克隆”在内的潜在克隆，包括那些通过标准的npm审计流程无法发现的存在潜在漏洞的软件包。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Background"><a href="#Background" class="headerlink" title="Background:"></a>Background:</h3><ul>
+<li>a. Subject and characteristics:<ul>
+<li>文章中的主题是软件包管理器和依赖项的相关安全问题，着重讨论了克隆检测工具、源代码作者归属、安全漏洞跟踪、对可执行二进制文件中的程序员的匿名化、攻击软件包管理器等问题。</li>
+</ul>
+</li>
+<li>b. Historical development:<ul>
+<li>过去的方法缺乏有效性，不能满足当下的软件包卫生问题。研究中需要探讨更多克隆检测、克隆相似度测量、克隆和拥有的重用分析等方面的问题。</li>
+</ul>
+</li>
+<li>c. Past methods:<ul>
+<li>过去的方法无法有效检测到软件包中克隆的存在。</li>
+</ul>
+</li>
+<li>d. Past research shortcomings:<ul>
+<li>过去的研究缺乏有效的解决方案，未能探讨软件包管理器和依赖项的相关安全问题。</li>
+</ul>
+</li>
+<li>e. Current issues to address:<ul>
+<li>当前，需要解决的问题是软件包卫生问题，提高软件包的合规性和安全性。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods:"></a>Methods:</h3><ul>
+<li>a. Theoretical basis of the study:<ul>
+<li>本研究的主要理论基础是克隆检测和计算机科学。</li>
+</ul>
+</li>
+<li>b. Technical route of the article (step by step):<ul>
+<li>本研究提出了一种名为“unwrapper”的解决方案来自动检测和匹配收缩克隆。该方案包括三个模块：软件包爬虫、预过滤器和克隆探测器。软件包爬虫检索npm生态系统中的所有软件包。预过滤器根据早期的结果快速筛选掉不太可能会是原始克隆的软件包。克隆探测器使用树状结构比较软件包之间的差异，通过检测潜在克隆对之间的重合度，定量衡量其相似性。</li>
+</ul>
+</li>
+<li>c. Empirical process of the study:<ul>
+<li>通过这个方法，可以在72.85秒内自动检测和匹配收缩克隆，并识别出其中许多存在潜在漏洞的软件包，这些漏洞无法通过标准的npm审计流程发现。</li>
+</ul>
+</li>
+<li>d. Data collection and analysis:<ul>
+<li>作者通过构建软件包爬虫，并使用npm依赖图构建了一个包的索引，以发现收缩克隆。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-1-unwrapper-Assumptions-and-Goals"><a href="#3-1-unwrapper-Assumptions-and-Goals" class="headerlink" title="3.1  unwrapper Assumptions and Goals"></a><strong>3.1  unwrapper Assumptions and Goals</strong></h4><p>这段内容概括了 “unwrapper” 的高层目标和挑战。以下是主要观点的总结：</p>
+<ol>
+<li>识别相似包：在高层次上，研究者们希望建立一种方法来识别与已知包相似的包，并提出实用技术在生态系统范围内识别这些对象。</li>
+<li>无代码级别混淆假设：研究者们假设开发者不会试图在代码级别混淆相似性。这一假设基于缺乏这样做的动机，因为大多数 npm 包代码都是在允许重用的许可证下提供的，代码重复没有直接的负面后果。</li>
+<li>恢复包代码的来源：”unwrapper” 可用于检测已存在于 npm 中的 shrinkwrapped clones，从而恢复包代码的来源。这样，npm 用户可以检测他们依赖的包是否为 shrinkwrapped clones，并建议可能更适合的原始包。</li>
+<li>主动检测新包：”unwrapper” 还可以在发布新包时主动检测它是否为克隆包。</li>
+<li>分析挑战：npm 的流行使得分析变得具有挑战性，因为已存在于仓库中的包数量相当大。此外，shrinkwrapped clones 的一个关键问题是它们克隆的是其他包的非当前版本。因此，”unwrapper” 需要将感兴趣的包与整个 npm 生态系统中的所有包（包括所有包的所有版本）进行匹配。</li>
+<li>实时处理新包：大约每天有 850 个新包上传到 npm。”unwrapper” 必须能够在不拖慢部署速度的情况下处理所有新包。</li>
+</ol>
+<h4 id="3-2-Design-Overview"><a href="#3-2-Design-Overview" class="headerlink" title="3.2 Design Overview"></a><strong>3.2 Design Overview</strong></h4><p>基于上述讨论，这段内容概述了 “unwrapper” 的设计，其目标是随着仓库的增长进行扩展，分析相对快速且轻量级，并能在与仓库本身分离的环境中运行。以下是主要观点的总结：</p>
+<ol>
+<li>设计目标：unwrapper 的设计目标是能够随仓库的增长而扩展，分析相对快速且轻量级，并能在与仓库本身分离的环境中运行。</li>
+<li>整体流程：unwrapper 的整体流程如图 1 所示。首先通过 npm 爬虫和监听器获取包（图 1 中的模块 1）。确定一个包是否是另一个包的克隆主要由 Clone Detector 组件（模块 3）完成。</li>
+<li>检测方法：shrinkwrapped clone 检测方法利用了识别候选原始-克隆对之间目录树的差异，其中每个文件节点由其名称和校验和标记，不考虑关于文件的其他信息。这种方法不需要进行任何代码分析，除了计算校验和，并符合非对抗性设置的假设。</li>
+<li>预过滤步骤：研究者们发现，虽然这种方法效率高，但对新包上传的实时分析时间过长。因此，他们在包数据集和克隆检测器之间增加了预过滤步骤（模块 2）。这个预过滤器可以快速筛选出不太可能是 shrinkwrapped clones 的包。</li>
+</ol>
+<h4 id="3-3-npm-Interface"><a href="#3-3-npm-Interface" class="headerlink" title="3.3 npm Interface"></a><strong>3.3 npm Interface</strong></h4><p>描述了 unwrapper 的 npm 接口。unwrapper 的前端与 npm 交互，以收集所有可用包的每个版本的信息，并及时分析新包。以下是关键点的总结：</p>
+<ol>
+<li>收集包：通过实现 npm 爬虫来完成包的收集，下载并将每个包的版本本地存储。这种方法允许快速访问包，而不会给仓库带来分析请求的负担。</li>
+<li>数据库更新：包的更改需要作为新版本进行，包数据库对于所有现有包版本保持准确，只需要在新版本添加到仓库时进行更新。</li>
+<li>支持更新：实现了一个 npm 监听器，当新包或现有包的新版本添加到仓库时触发。新条目会自动添加到本地包数据库，并排队等待检测是否为 shrinkwrapped clones。</li>
+<li>实时更新：监听器使用 npm webhook 系统，自动通知更新，无需轮询。通过这个系统，新包和版本实时添加到分析队列中。</li>
+</ol>
+<h4 id="3-4-Clone-Detector"><a href="#3-4-Clone-Detector" class="headerlink" title="3.4 Clone Detector"></a><strong>3.4 Clone Detector</strong></h4><p>这段话描述了克隆检测器的设计。克隆检测器接收一对候选的 shrinkwrapped clone 包，并通过计算一个特定领域的成对差异度量（称为 𝑑-score）来评估它们的相似性。关键点如下：</p>
+<ul>
+<li>​                                                                 𝑑<strong>𝑃,𝑄* &#x3D; <em>𝐼</em> + 2(*𝑈</strong>𝑃* + <em>𝑈**𝑄</em> )</li>
+</ul>
+<ol>
+<li>𝑑-score：定义了两个包 𝑃 和 𝑄 之间的差异度量。它由相同文件名但具有不同校验和的文件数量 𝐼 和仅在一个包中具有唯一文件名的文件数量 𝑈𝑃，𝑈𝑄 组成。较低的差异分数表示包之间更相似，差异分数为 1 的包在语义上相同，仅在保证每个包具有唯一的 package.json 元数据文件方面有所不同。</li>
+<li>差异阈值：通过手动构建克隆包的初始数据集来确定合适的差异阈值。分析了 10,000 个最受欢迎的 npm 包中仓库 URL 的重复情况。在对 38 个包进行手动审查之后，选取了𝑑-score 为 11 作为判断两个包是否为 shrinkwrapped clones 的阈值。</li>
+<li>调整阈值：在包文件数量较少的情况下，进一步调整 𝑑-score 阈值，以防止小包被错误地报告为其他小包的 shrinkwrapped clones。根据文件树大小，通过经验测量选择了 𝑑-score 阈值。</li>
+</ol>
+<p>通过这个克隆检测器，可以评估和确定候选包是否是另一个包的 shrinkwrapped clone。</p>
+<h4 id="3-5-Clone-Prefilter"><a href="#3-5-Clone-Prefilter" class="headerlink" title="3.5 Clone Prefilter"></a><strong>3.5 Clone Prefilter</strong></h4><p>这段文字描述了克隆预过滤器的设计和实现。预过滤器的目的是加速实时检测 shrinkwrapped clones 的过程，同时考虑到 npm 生态系统的规模和快速增长。关键点如下：</p>
+<ol>
+<li>预过滤器的设计目标：加速与现有包数据集的匹配，排除在完整克隆检测过程中不太可能被标记为克隆的包。</li>
+<li>预计算信息：为了加速预过滤器中的匹配，尽可能预计算有关仓库中已知包的信息，同时确保预计算信息的内存占用与现成硬件兼容。</li>
+<li>指纹：预过滤器使用文件夹结构相似性来识别潜在的克隆，但仅基于文件名。通过计算每个包的指纹（𝐹𝑃 &#x3D; {ℎ(𝑝1), …, ℎ(𝑝𝑛)}），然后根据指纹计算包之间的相似度。</li>
+<li>阈值：设置阈值 𝑇𝑆 和 𝑇𝑂，用于排除或保留候选克隆。根据 ROC 曲线分析，𝑇𝑆 &#x3D; 2 和 𝑇𝑂 &#x3D; 0.8 可以实现最小化假阴性和假阳性的良好平衡。</li>
+</ol>
+<p>克隆预过滤器通过这种方式加速了克隆检测过程，同时在保持较高检测效率的同时忽略了文件内容。</p>
+<h3 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation:"></a>Evaluation:</h3><p>为了评估 shrinkwrapped 克隆检测流水线的实用性和有效性，文章关注回答以下三个研究问题：</p>
+<p>• RQ1：pipline在为整个 npm 包仓库生成预过滤器指纹方面的性能是否令人满意？ </p>
+<p>• RQ2：pipline是否具有实时性能，能够跟上 npm 的增长速度？</p>
+<p>• RQ3：pipline是否能有效区分 shrinkwrapped 克隆和新包？</p>
+<p><strong>4.1 Performance</strong></p>
+<p>本节讨论了shrinkwrapped克隆检测流水线的在线和离线性能。通过在具有2.1 GHz英特尔至强金牌处理器的CentOS Linux 8服务器上进行的1000次独立试验，作者测量了shrinkwrapped克隆检测器和预过滤器执行操作所需的最小、最大和平均时间，并在表3中呈现了测量到的性能指标。</p>
+<p>预过滤器指纹生成：shrinkwrapped克隆检测依赖于npm中每个版本的每个包的文件结构信息。为使流水线正常工作，需要将所有2019万个独特版本的包添加到预过滤器的指纹数据库中。预过滤器将单个包版本添加到其指纹数据库的平均时间为5.24毫秒，因此，生成包含npm中所有独特包版本的指纹数据库需要29.39小时的CPU时间。通过将此过程在多个CPU核心上并行化，可以将所需时间缩短到29.39小时的一小部分。考虑到并行化，作者认为整个npm包仓库的预过滤器指纹生成性能是合理的，因为预过滤器的指纹数据库只需要生成一次。</p>
+<p>实时克隆检测：由于npm每天新增包的数量在快速增长，实时shrinkwrapped克隆检测需要具备可随npm增长速度扩展的性能。撰写本文时，npm的增长速度为每天超过850个新包。为了跟上npm上的新包，流水线需要将新包添加到预过滤器并对其进行测试，然后将预过滤器报告的任何阳性结果与克隆检测器进行验证。表3.2详细说明了克隆检测器判断一个包是否是另一个包的克隆所需的时间。典型情况下，候选克隆将与预过滤器中的多个潜在匹配进行比较，我们报告了第一次测试和后续测试的分析时间。后续测试通常更快，因为候选克隆的文件哈希只需计算一次。</p>
+<p>根据表3中的性能结果，只要预过滤器报告的平均阳性结果少于122个，shrinkwrapped克隆检测流水线就可以在1&#x2F;850天内仅使用单个CPU核心执行其所需操作。实际上，发现大多数包可以在72.85秒内完成整个shrinkwrapped克隆检测流水线的测试。值得注意的是，shrinkwrapped克隆检测过程具有很高的可并行性，如果npm的增长速度或预过滤器报告</p>
+<p><strong>4.2 Effectiveness of Clone Detection</strong></p>
+<p>现在我们分析RQ3中描述的检测shrinkwrapped克隆的工具的有效性。</p>
+<p>克隆检测器：由于缺乏关于一个包是否是另一个包的克隆的确凿证据，我们依赖随机抽样和人工审核来验证shrinkwrapped克隆检测器的有效性。我们的真阳性验证过程如下：首先收集克隆检测器积极识别为另一个包的（非相同）克隆的包的随机样本。然后，人工检查识别出的原始克隆关系中的两个包的文件树结构和文件内容。最后，如果无法从包文件中明确识别出克隆关系，我们将识别出的克隆包标记为假阳性。在我们的检测器报告的100个克隆包的随机样本中，我们发现了94个真阳性和6个假阳性。</p>
+<p>我们发现克隆检测器报告的假阳性具有一组共同特性，这些特性增加了克隆检测的难度。它们都是功能有限的小包，包含很少的文件，并且具有简短且不具描述性的名称，如copy、merge和capitalize。因此，这些包与提供类似功能的独立实现的其他小包类似，而我们的克隆检测器可能会误报它们为克隆。尽管存在这些少量假阳性，但我们认为克隆检测器94%的精确度在准确检测shrinkwrapped克隆方面是令人满意的。</p>
+<p>预过滤器：我们使用克隆检测器识别出的克隆包作为评估预过滤器有效性的基础。我们随机抽样1000个已识别的克隆包，用预过滤器对它们进行测试，然后记录预过滤器报告的阳性结果的总数和类型。通过这个实验，我们发现预过滤器的召回率（即正确识别已知克隆关系的百分比）为95.3%。我们在图5中展示了预过滤器识别出的观察到的假阳性的累积分布函数。从这个分布中，我们发现预过滤器报告的假阳性中位数为8，尽管存在少量输入包生成数千个假阳性结果。这与预过滤器的设计目标一致，即以牺牲精确度为代价最大化召回率。</p>
+<p><strong>4.3 Analysis of Clone Packages</strong></p>
+<p>本段话研究了npm包中存在的克隆包的数量、类型、受欢迎程度、依赖关系、维护情况和潜在漏洞等问题。作者随机选择了6000个npm包作为样本，通过检测发现有626个包是克隆包，占比约为10.4%。作者进一步分析了其中175个克隆包的名称与被克隆包的名称有重叠，认为这些克隆包对npm生态系统的健康更具威胁性。作者还区分了完全相同的克隆包和近似的克隆包，并发现其中有348个完全相同的克隆包和5944个近似的克隆包。作者分析了克隆包的受欢迎程度，发现其中21个完全相同的克隆包和399个近似的克隆包每周下载量超过350次，有可能对真实用户造成影响。作者还分析了克隆包的依赖关系，发现有397个npm包依赖于完全相同的克隆包，而6496个npm包依赖于近似的克隆包。作者还分析了克隆包的维护情况，发现其中209个完全相同的克隆包和2744个近似的克隆包从未接受过更新，这对npm生态系统的健康构成了严重威胁。最后，作者分析了克隆包可能存在的潜在漏洞，发现62个完全相同的克隆包和2304个近似的克隆包存在未在最新版本中修复的漏洞。其中有一些漏洞可能被npm  audit检测出来，但有一些漏洞则难以检测，因此对真实用户造成了风险。作者还研究了克隆包的代码库URL，发现一些克隆包会复制被克隆包的代码库URL，但不是所有克隆包都会这么做，因此URL并不能作为检测克隆包的充分依据。</p>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion:"></a>Conclusion:</h3><ul>
+<li>a. Significance of the work:<ul>
+<li>本研究提出了一种可行的解决方案，自动检测和匹配“收缩克隆”，提高软件包的合规性和安全性。</li>
+</ul>
+</li>
+<li>b. Innovation, performance, and workload:<ul>
+<li>该研究的创新在于提出了一种名为“unwrapper”的解决方案来解决“收缩克隆”问题，并通过树状比较等有效的算法，提高了性能。其工作量较大。</li>
+</ul>
+</li>
+<li>c. Research conclusions (list points):<ul>
+<li>本文提出了一种可行的解决方案，对于检测和匹配“收缩克隆”问题具有一定的效果。</li>
+<li>“unwrapper”工具包括三个模块：软件包爬虫、预过滤器和克隆探测器。</li>
+<li>更为有效的树状比较算法以及计算相似度的阈值有利于准确识别软件包的相似性。</li>
+<li>“unwrapper”可运用于大规模的软件包卫生检测和监控，并且可以有效提高软件包的合规性和安全性。</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>论文阅读</tag>
+      </tags>
+  </entry>
 </search>
