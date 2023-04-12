@@ -1090,7 +1090,7 @@
 <p><img src="/2023/03/29/01-%E7%BC%96%E8%AF%91Cpython/image-20230329102126435.png" alt="image-20230329102126435"></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -1281,7 +1281,7 @@
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><img src="/2023/03/29/02-%E4%B8%80%E5%88%87%E5%AF%B9%E8%B1%A1%E7%9A%86PyObject/image-20230312171839520.png" alt="image-20230312171839520"></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -1429,7 +1429,7 @@
 <p>​        <strong>最后我们修改了PyFloatObject的部分源码，其实就是加上了两个printf语句，对float实例对象的缓存池机制进行了实践，并用之前的结论对结果进行了合理的解释。</strong>    </p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -1558,7 +1558,7 @@
 </ul>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -1795,7 +1795,7 @@
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>这一次我们说了Python中创建对象的两种方式，可以通过Python&#x2F;C  API创建，也可以通过类型对象创建。以及分析了对象的多态性，Python底层是如何通过C来实现多态，答案是通过ob_type。还说了对象的行为，对象进行某个操作的时候在底层发生了什么。最后说了引用计数，Python是通过引用计数来决定一个对象是否被回收的，但是有人知道它无法解决循环引用的问题。是的，所以Python中的gc就是为了解决这一点的，不过这也要等到介绍垃圾回收的时候再细说了。</p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -1983,7 +1983,7 @@
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p><strong>这一节我们介绍了整数的底层实现，并分析了Python中的整数为什么不会溢出，以及Python如何计算一个整数所占的字节。当然我们还说了小整数对象池，以及通过分析源码中的long_add和long_sub来了解底层是如何对整数进行运算的。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -2169,7 +2169,7 @@
 <p><strong>关于反编译的内容，我们会在剖析函数的时候，深入介绍。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -2328,7 +2328,7 @@
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><strong>这次我们就简单分析了一下字节码指令，介绍了一些常见的指令。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -2618,7 +2618,7 @@
 <p><strong>另外我们提到运行时环境，这个运行时环境非常复杂，因为Python启动是要创建一个主进程、在进程内创建一个主线程的。所以还涉及到了进程和线程的初始化，在后面的系列中我们会详细说，包括GIL的问题。这里我们就先假设运行时环境已经初始化好了，我们直接关注虚拟机执行字节码的流程即可。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -2816,7 +2816,7 @@
 <p><strong>可以看到用时，元组只是列表的五分之一。这便是元组的另一个优势，可以将资源缓存起来。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -3148,7 +3148,7 @@
 <h4 id="集合小结"><a href="#集合小结" class="headerlink" title="集合小结"></a>集合小结</h4><p><strong>可以看到，剖析集合的时候话很少。主要是有了剖析字典的经验，因此再剖析集合的时候就很简单了。并且在Python中还有一个frozenset，就是不可变的集合。但是不像列表和元组，元组还是有很多特殊的，并不单单只是不可变的列表，从具有自己独自的结构体就能看出来。而frozenset对象和set对象都是一个结构体，只有一个PySetObject，没有PyFrozenSetObject。我们在看PySetObject的时候，发现里面有一个hash成员，如果是frozenset的话，那么hash值是不为-1的，因为它不可以添加、删除元素，是不可变对象。由于比较相似，因此frozenset就不再说了，可以自己源码中研究，位置还是<code>Object/setobject.c</code>。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -3282,7 +3282,7 @@
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><strong>这一次我们简单的分析了一下函数在底层对应的数据结构，以及如何创建一个函数，并且还在Python的层面上做了一些小trick。最后我们也分析了如何通过PyCodeObject对象来检索Python中的参数，以及相关种类，当然标准库中的inspect模块也是这么做的。当然说白了，其实是我们模仿人家的思路做的。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -3557,7 +3557,7 @@
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><strong>到目前为止，我们关于函数的内容就算分析完了，可以好好体会一下函数的底层实现。我们下一篇将来分析Python中类的实现，又是一块难啃的骨头。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -3721,7 +3721,7 @@
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><strong>这一次我们分析了函数调用时候的场景，以及如何处理不同形式的参数，重点还是有一个整体性的认识。下一篇，我们将来分析闭包。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -3959,7 +3959,7 @@
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><strong>这一次我们就分析了Python的控制语句，if、for、while都比较简单。但Python中的异常捕获算是比较复杂的，主要是牵扯的东西比较多，有时候分析某一个地方需要跳好几个源文件，进行查找。因此有兴趣的话，可以杀进源码中自由翱翔，但是注意Python的版本，我们说3.8版本和3.8之前的版本之间区别还是蛮大的。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -4164,7 +4164,7 @@
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><strong>字符串的内容还是比较多的，在源码中有一万六千多行，显然我们没办法一步一步地全部分析完，有兴趣的可以自己深入研究一下。其实我们能把字符串的存储搞明白，其实已经是前进了一大步了。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -4324,7 +4324,7 @@
 <p><strong>关于类，要说的内容还是非常非常多的，我们分几个部分来说吧，下一篇介绍类的继承和属性查找。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -4553,7 +4553,7 @@
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><strong>我们看到类的属性查找虽然看起来简单，但是底层实现起来还是很复杂的。当然关于自定义的类是如何构建的，我们将在下一篇博客中进行剖析。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
@@ -4703,7 +4703,7 @@
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><strong>这一次我们介绍了自定义的类在底层是如何实现的，但是关于类的知识点还有很多，比如：魔法方法、描述符等等，我们可能还需要两到三篇来进行介绍。</strong></p>
 ]]></content>
       <tags>
-        <tag>CPython源码阅读</tag>
+        <tag>CPython</tag>
       </tags>
   </entry>
   <entry>
