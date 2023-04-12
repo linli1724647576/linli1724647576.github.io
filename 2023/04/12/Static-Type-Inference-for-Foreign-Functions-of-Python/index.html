@@ -1,0 +1,268 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Static Type Inference for Foreign Functions of Python | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Static Type Inference for Foreign Functions of Python在这篇论文中，作者针对Python中的外部函数提出了一种静态类型推断方法。外部函数是指那些由其他编程语言实现的函数，它们在Python中被调用。由于这些函数在运行时可能会引发类型错误，因此静态类型推断在提高代码可靠性和安全性方面具有重要意义。 作者提出了一种基于概率的类型推断方法，通过对外部函">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Static Type Inference for Foreign Functions of Python">
+<meta property="og:url" content="http://example.com/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Static Type Inference for Foreign Functions of Python在这篇论文中，作者针对Python中的外部函数提出了一种静态类型推断方法。外部函数是指那些由其他编程语言实现的函数，它们在Python中被调用。由于这些函数在运行时可能会引发类型错误，因此静态类型推断在提高代码可靠性和安全性方面具有重要意义。 作者提出了一种基于概率的类型推断方法，通过对外部函">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-04-12T15:07:09.000Z">
+<meta property="article:modified_time" content="2023-04-12T15:07:52.756Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Static Type Inference for Foreign Functions of Python',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-12 23:07:52'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Static Type Inference for Foreign Functions of Python</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-04-12T15:07:09.000Z" title="发表于 2023-04-12 23:07:09">2023-04-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-12T15:07:52.756Z" title="更新于 2023-04-12 23:07:52">2023-04-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Static Type Inference for Foreign Functions of Python"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Static-Type-Inference-for-Foreign-Functions-of-Python"><a href="#Static-Type-Inference-for-Foreign-Functions-of-Python" class="headerlink" title="Static Type Inference for Foreign Functions of Python"></a>Static Type Inference for Foreign Functions of Python</h2><p>在这篇论文中，作者针对Python中的外部函数提出了一种静态类型推断方法。外部函数是指那些由其他编程语言实现的函数，它们在Python中被调用。由于这些函数在运行时可能会引发类型错误，因此静态类型推断在提高代码可靠性和安全性方面具有重要意义。</p>
+<p>作者提出了一种基于概率的类型推断方法，通过对外部函数接口的分析，自动生成类型注解。这种方法可以自动识别和处理类型信息，有效提高了类型推断的准确性。同时，作者还提出了一种类型错误检测方法，用于识别潜在的类型错误并给出相应的警告。</p>
+<p>在论文中，作者通过实验验证了所提方法的有效性。实验数据显示，所提出的类型推断方法在大多数情况下能够准确地推断出外部函数的类型信息，从而有助于提高Python程序的可靠性和安全性。总的来说，这篇论文为Python中外部函数的静态类型推断问题提供了一种有效的解决方案。</p>
+<h3 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h3><ul>
+<li>提出了外部函数接口（FFI）产生的类型误用的问题</li>
+<li>总结了Python静态类型推断方法和工具，如基于类型注解的Mypy、Pyright和Pyre。然而，这些方法要求修改源代码，违反了Python的敏捷编码实践。还有一些基于机器学习的方法，产生的结果具有非确定性。其他现有工具（如Pytype和PySonar）不支持外部函数的静态类型推断，它们要么忽略这些函数（导致严重的精度损失），要么使用预设类型桩（需要大量的手工操作）。</li>
+<li>FFI是一种机制，允许用一种编程语言编写的程序调用另一种语言编写的函数。对于静态类型语言（如Java和OCaml），外部函数需要声明显式类型。对于动态类型语言（如Python），作者提出可以通过分析调用接口描述中的隐含信息来静态地推断外部函数的约束条件，例如参数的数量和类型。</li>
+<li>作者提出了PYCTYPE，一个用于推断Python外部函数类型的静态类型推断系统。PYCTYPE基于一组规则来推断外部函数的类型签名，这些规则可以分为三类：(1) 外部函数声明，说明如何将C实现与Python调用结合；(2) 参数类型转换，说明如何将从Python端传递的参数转换为C类型的对象；(3)  返回类型转换，说明如何为从Python调用的外部函数构建返回值。作者通过在CPython、NumPy和Pillow这三个具有代表性且大量使用Python&#x2F;C多语言的项目上评估PYCTYPE，证明了该系统的有效性。</li>
+<li>据我们所知，这是第一项（i）提出一种不基于机器学习和类型注解的Python外部函数静态类型推断系统；（ii）调查不符合调用约定声明的外部函数实现与类型要求不匹配的缺陷的研究。</li>
+<li>综上所述，我们做出了以下贡献：</li>
+</ul>
+<ol>
+<li>为Python的外部函数定义了一个静态类型推断系统，该系统由一系列规则构成。该系统包含了Python和C之间接口代码的几种静态分析。基于外部函数接口的方法可以扩展到除Python之外的动态类型宿主语言。</li>
+<li>通过原型方法PYCTYPE进行实现。在三个具有代表性的项目上的评估表明，PYCTYPE可以为大多数外部函数推断类型签名。推断结果在设计上是可靠的，通过将更多Python&#x2F;C API纳入系统，完整性可以得到提高。通过将PYCTYPE的结果作为Pytype的补充，证明了它在分析具有外部函数的Python程序中的有效性。</li>
+<li>作为类型系统的一部分，用于检查外部函数声明和实现一致性的规则被表示为门控语义谓词和它们的合取范式。该系统在三个常用项目中发现了48个不匹配的错误。这些错误使得将任何类型的参数传递给无参数的外部函数成为合法操作，其中8个错误已经得到了社区的确认和修复。</li>
+</ol>
+<p><font color="red"><strong>Example</strong></font></p>
+<p>当使用FFI时，类型误用问题可能会导致程序崩溃或产生不可预期的行为。这里有一个简单的例子，说明如何在Python中调用C函数时可能发生类型误用问题。</p>
+<p>假设我们有一个C语言库，名为<code>example2.c</code>，其中包含一个将两个浮点数相加的函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// example2.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">float</span> <span class="title function_">add_floats</span><span class="params">(<span class="type">float</span> a, <span class="type">float</span> b)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们需要编译这个C文件并创建一个共享库。在Linux和macOS上，可以使用以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -shared -o example2.so example2.c</span><br></pre></td></tr></table></figure>
+
+<p>在Windows上，可以使用以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -shared -o example2.dll example2.c</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们已经有了一个名为<code>example2.so</code>（在Linux和macOS上）或<code>example2.dll</code>（在Windows上）的共享库。接下来，我们需要使用Python的ctypes库来调用这个C语言函数。但是，我们在声明函数参数和返回值类型时犯了一个错误，将<code>c_float</code>误写为<code>c_int</code>。创建一个名为<code>ffi_example2.py</code>的Python文件，内容如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> CDLL, c_float, c_int</span><br><span class="line"></span><br><span class="line"><span class="comment"># Load the shared library</span></span><br><span class="line">lib_example2 = CDLL(<span class="string">&#x27;./example2.so&#x27;</span>)  <span class="comment"># On Linux and macOS</span></span><br><span class="line"><span class="comment"># lib_example2 = CDLL(&#x27;./example2.dll&#x27;)  # On Windows</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Incorrectly define the argument types and the return type of the &#x27;add_floats&#x27; function</span></span><br><span class="line">lib_example2.add_floats.argtypes = [c_int, c_int]</span><br><span class="line">lib_example2.add_floats.restype = c_int</span><br><span class="line"></span><br><span class="line"><span class="comment"># Call the &#x27;add_floats&#x27; function from the C library with incorrect types</span></span><br><span class="line">result = lib_example2.add_floats(<span class="number">3.5</span>, <span class="number">4.2</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;The sum of 3.5 and 4.2 is:&quot;</span>, result)</span><br></pre></td></tr></table></figure>
+
+<p>运行<code>ffi_example2.py</code>文件时，我们可能会得到错误的输出或程序崩溃，因为我们错误地将浮点数类型（<code>c_float</code>）与整数类型（<code>c_int</code>）混淆。这个例子展示了在使用FFI时，类型误用可能会导致问题。为了避免这种问题，我们需要仔细检查我们在Python代码中声明的C函数的参数类型和返回类型，确保它们与C库中的实际类型相匹配。</p>
+<h3 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h3><p><font color="red">Python&#x2F;C多语言体系结构</font></p>
+<p>这个例子展示了一个简化的C扩展模块与Python结合的情况。在这个例子中，我们有三个代码文件：host.py、interface.c和foreign.c。</p>
+<p><strong>host.py (Python主程序)：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> extm</span><br><span class="line">...</span><br><span class="line">size = extm.foo(width, height)</span><br></pre></td></tr></table></figure>
+
+<p>ost.py是Python主程序，它导入了一个名为extm的C扩展模块，并调用了其中的<code>foo</code>函数。<code>width</code>和<code>height</code>是传递给<code>foo</code>函数的参数。</p>
+<p><strong>interface.c (接口代码)：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> PyMethodDef extMethods[] = &#123;</span><br><span class="line">	&#123;<span class="string">&quot;foo&quot;</span>, (PyCFunction) foo, METH_VARARGS, <span class="string">&quot;docstring&quot;</span>&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">PyModuleDef</span> <span class="title">extModule</span> =</span> &#123;</span><br><span class="line">	PyModuleDef_HEAD_INIT, <span class="string">&quot;extm&quot;</span>, <span class="string">&quot;docstring&quot;</span>, <span class="number">-1</span>,</span><br><span class="line">		extMethods</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>interface.c是连接Python和C代码的接口。它定义了一个名为<code>extMethods</code>的方法表，其中包含了外部函数<code>foo</code>的信息。<code>foo</code>的C实现指向名为<code>foo</code>的C函数（在foreign.c中定义），并通过<code>METH_VARARGS</code>指定了调用约定。接着，我们定义了一个名为<code>extModule</code>的模块定义结构，将<code>extMethods</code>与模块关联起来。</p>
+<p><strong>foreign.c (外部C函数)：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> PyObject* <span class="title function_">foo</span><span class="params">(PyObject* self, PyObject* args)</span> &#123;</span><br><span class="line">	<span class="type">int</span> x, y;</span><br><span class="line">	<span class="keyword">if</span> (!PyArg_ParseTuple(args, <span class="string">&quot;ii&quot;</span>, &amp;x, &amp;y))</span><br><span class="line">	     <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	<span class="keyword">return</span> PyLong_FromLong(x * y));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>foreign.c是C扩展模块的实现部分。它包含了一个名为<code>foo</code>的C函数，该函数接收两个<code>PyObject*</code>类型的参数。<code>self</code>是模块对象（如果在<code>PyModuleDef</code>中定义）或者是类对象（如果在<code>PyTypeObject</code>中定义），而<code>args</code>是包含从Python传递过来的所有参数的元组对象。在这个例子中，<code>foo</code>函数通过<code>PyArg_ParseTuple</code>函数解析<code>args</code>中的参数，并将其存储在整数变量<code>x</code>和<code>y</code>中。然后，<code>foo</code>函数计算<code>x</code>和<code>y</code>的乘积并将其作为一个Python长整数对象返回。</p>
+<p>通过这个例子，我们可以看到Python主程序如何调用C扩展模块中的外部函数，以及如何在接口代码中定义外部函数及其调用约定。这个例子展示了Python和C语言通过接口代码进行交互的过程。</p>
+<p><font color="red">针对单一语言的静态类型推理</font></p>
+<p>这段话主要讨论了现有的确定性Python静态类型推断工具在处理动态类型语言（如Python）中的外部函数时面临的挑战。这些工具通常基于单一语言视图进行分析，无法在编译时检查外部函数的参数和返回值类型。就上面那个例子，现有的工具不能推断出host.py中的Width和height的类型。</p>
+<p>原因是动态类型语言不能在编译时访问类型信息。</p>
+<p>这篇论文通过引用Java <code>native</code>关键字的例子来说明，在静态类型语言中（如Java），外部函数声明（foreign function declaration）通常包含明确的类型信息。这有助于编译时进行类型检查，从而降低类型误用的风险。例如，在Java中，关键字本机声明了一个名为bcopy的外部函数，它的外部函数接受一个字节[]类型的参数并返回void。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">bcopy</span><span class="params">(<span class="type">byte</span>[] arr)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>作为一种解决方案，谷歌的Pytype工具采用了来自Python社区的Typeshed作为外部类型注释。Typeshed和Mypy中的类似模块stubgen通过手动编码、文档提取和运行时内省生成类型存根。然而，这些方法难以大规模应用，因此Typeshed仅支持少数第三方库。此外，在现实世界场景中，C扩展模块通常是仅供内部使用的私有库。</p>
+<h3 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h3><p><font color="red">问题概述</font></p>
+<p><img src="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/image-20230412171657717.png" alt="image-20230412171657717"></p>
+<p>本节提供了一种分析Python与C之间接口代码中隐含类型转换信息的方法。作者通过单语言和多语言类型系统视角对外部函数调用进行比较。</p>
+<p>在单语言视角下（蓝色虚线），无法静态地推断外部函数的参数类型和返回类型，因为与Python中实现的本地函数不同，外部函数是使用Python&#x2F;C API在C中实现的。在多语言视角下（红色实线），动态类型语言的接口代码通过Python&#x2F;C API和程序属性提供的隐含信息，描述如何声明外部函数（D）以及如何进行类型转换（P和R）。</p>
+<p><font color="red">抽象语法</font></p>
+<p>本篇论文的工具PYCTYPE支持CPython 3.3+和C99</p>
+<p><img src="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/image-20230412211045235.png" alt="image-20230412211045235"></p>
+<p><font color="red">类型</font></p>
+<p><img src="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/image-20230412211508790.png" alt="image-20230412211508790"></p>
+<p><img src="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/image-20230412212446620.png" alt="image-20230412212446620"></p>
+<p><img src="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/image-20230412212500008.png" alt="image-20230412212500008"></p>
+<p>本节介绍了Python和C的类型集合，分别表示为Tp和Tc。图4定义了每个Python类型的抽象语法形式，即τ,η∈Tp，而图6表示C类型的形式，即α,β∈Tc。</p>
+<p>作为一种动态类型语言，Python侧的类型包含程序执行时可以绑定到Python变量的类型值，如str（CPython 3.x中的unicode），int，object，dict等。除了这些内置类型外，product type（pProduct）可用于表示列表、元组和字典等类型，function type（pFunc）可用于表示Python函数（本地或外部）。pUnion用类型集实例化，它也是CPython运行时之外的一种类型。外部函数的参数可以是联合类型，这在C语言中是一种常见的特性。模块和迭代器等类型在此省略，因为它们不能用C的特性表示，且在通过外部函数接口传递时将被视为对象。</p>
+<p>同时，调用接口描述实际上不仅可以指示类型转换，还可以指示比内置类型更严格的值约束。例如，格式单位（详见第IV-D2节）“b, B, H, I, k, K”要求传递给外部函数调用的参数必须是非负整数。因此，我们引入pInt nonnegative作为pInt的子类型。给定一个子类型关系&lt;:，如果任何类型为τ的项可以用在期望类型为τ的上下文中，则τ是τ的子类型（τ&lt;:τ）。图5列出了Python侧类型的子类型规则。</p>
+<p>C侧的类型包括常见的C类型，如int，用于描述CPython中内置类型的C结构，如Py_UNICODE，以及为支持类型系统中的语言特性而引入的类型，如cProduct。由于Python侧的类型都带有“p”前缀，我们可以像往常一样使用常见的C类型表示法，而不会引起歧义。</p>
+<p><font color="cornflowerblue">为什么需要Subtyping rules of types on the Python side呢</font></p>
+<p>例如，在将Python对象传递给外部函数（如C函数）时，我们需要确保传递的对象满足特定类型约束。子类型规则可以帮助我们识别哪些类型是兼容的，从而减少类型错误和运行时错误的风险。我觉得要将Python的Int c拆成（unsign int, small int, big int）等等，分别对应C语言的(unsign , int, long)</p>
+<p><font color="red">推理规则</font></p>
+<p>A、假设判断</p>
+<p>本文提出了一种类型系统，用于描述在主机端和外部端之间的变量类型约束和转换规则。该系统主要包括以下几个假设性判断：</p>
+<ol>
+<li>类型赋值（Type assignment）：表示在给定类型上下文Γ下，构造函数e具有类型τ。类型上下文Γ包括变量x的假设，分为主机端和外部端。</li>
+<li>本地函数与外部函数：本地函数是在主机端定义和应用的函数，而外部函数是在主机端调用但在外部端定义的函数。</li>
+<li>外部函数声明（Foreign function declaration）：将在主机端调用的外部函数名映射到在外部端实现的函数定义。</li>
+<li>参数类型转换（Parameter type conversion）和返回类型转换（Return type conversion）：通过引入表示类型转换协议的属性P，可以推导在两种语言之间的类型约束和转换规则。</li>
+<li>在满足某些程序属性P的前提下，判断类型转换是否可行。</li>
+</ol>
+<p>通过这个类型系统，可以在AST（抽象语法树）和CFG（控制流图）等中间表示中推理不同接口代码单元的静态分析，进而有效地处理Python与C之间的交互。</p>
+<p>B、类型推理</p>
+<p><img src="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/image-20230412221855051.png" alt="image-20230412221855051"></p>
+<p>C. 外部函数声明</p>
+<p>这段文字描述了C外部函数声明和Python实现之间的关系，特别是调用约定和标志，用于指定如何将Python参数传递到C实现中。该段文字还提到，系统中包括了基于Python&#x2F;C API参考手册和CPython实现的其他调用约定标志。</p>
+<p>D. 参数类型转换</p>
+<p>1)调用约定分析：</p>
+<p>2)参数解析分析：</p>
+<p><img src="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/image-20230412224943740.png" alt="image-20230412224943740"></p>
+<p>E. 返回类型转换</p>
+<p><em>1) Value Building Analysis:</em></p>
+<p><em>2) Explicit Conversion Analysis:</em></p>
+<p><em>3) Type Cast Analysis:</em> </p>
+<p><em>4) Reaching Defifinition Analysis:</em></p>
+<p><img src="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/image-20230412225256825.png" alt="image-20230412225256825"></p>
+<h3 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h3><p>我们在三个具有代表性和广泛使用的Python&#x2F;C项目上进行了实验，即CPython、NumPy和Pillow。</p>
+<p><strong>完整性实验</strong></p>
+<p><img src="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/image-20230412225336529.png" alt="image-20230412225336529"></p>
+<p><strong>有效性实验</strong></p>
+<p>手动检查</p>
+<p>结合Pytype证明有效性</p>
+<p><img src="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/image-20230412230248554.png" alt="image-20230412230248554"></p>
+<p><strong>不匹配的错误</strong></p>
+<p>该系统在三个常用项目中发现了48个不匹配的错误。这些错误使得将任何类型的参数传递给无参数的外部函数成为合法操作，其中8个错误已经得到了社区的确认和修复。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/">http://example.com/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">What the Fork Finding Hidden Code Clones in npm</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Static-Type-Inference-for-Foreign-Functions-of-Python"><span class="toc-number">1.</span> <span class="toc-text">Static Type Inference for Foreign Functions of Python</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Intro"><span class="toc-number">1.1.</span> <span class="toc-text">Intro</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Background"><span class="toc-number">1.2.</span> <span class="toc-text">Background</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Method"><span class="toc-number">1.3.</span> <span class="toc-text">Method</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Evaluation"><span class="toc-number">1.4.</span> <span class="toc-text">Evaluation</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python">Static Type Inference for Foreign Functions of Python</a><time datetime="2023-04-12T15:07:09.000Z" title="发表于 2023-04-12 23:07:09">2023-04-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm">What the Fork Finding Hidden Code Clones in npm</a><time datetime="2023-04-11T02:21:24.000Z" title="发表于 2023-04-11 10:21:24">2023-04-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/10/19-Python%E7%B1%BB%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E7%9A%84%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E4%BB%A5%E5%8F%8AMetaclass/" title="19-Python类机制深度解析：自定义类的底层实现以及Metaclass">19-Python类机制深度解析：自定义类的底层实现以及Metaclass</a><time datetime="2023-04-10T01:37:16.000Z" title="发表于 2023-04-10 09:37:16">2023-04-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/10/18-Python%E7%B1%BB%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90-%E7%B1%BB%E7%9A%84%E5%A4%9A%E7%BB%A7%E6%89%BF%E4%B8%8E%E5%B1%9E%E6%80%A7%E6%9F%A5%E6%89%BE/" title="18-Python类机制深度解析-类的多继承与属性查找">18-Python类机制深度解析-类的多继承与属性查找</a><time datetime="2023-04-10T01:30:42.000Z" title="发表于 2023-04-10 09:30:42">2023-04-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/10/17-Python%E7%B1%BB%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90-%E5%9B%9E%E9%A1%BEPython%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B/" title="17-Python类机制深度解析-回顾Python中的对象模型">17-Python类机制深度解析-回顾Python中的对象模型</a><time datetime="2023-04-10T01:28:29.000Z" title="发表于 2023-04-10 09:28:29">2023-04-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
