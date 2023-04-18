@@ -5586,4 +5586,131 @@
         <tag>论文阅读</tag>
       </tags>
   </entry>
+  <entry>
+    <title>TYPET5 SEQ2SEQ TYPE INFERENCEUSING STATIC ANALYSIS</title>
+    <url>/2023/04/18/TYPET5-SEQ2SEQ-TYPE-INFERENCEUSING-STATIC-ANALYSIS/</url>
+    <content><![CDATA[<h2 id="TYPET5-SEQ2SEQ-TYPE-INFERENCE-USING-STATIC-ANALYSIS"><a href="#TYPET5-SEQ2SEQ-TYPE-INFERENCE-USING-STATIC-ANALYSIS" class="headerlink" title="TYPET5: SEQ2SEQ TYPE INFERENCE USING STATIC ANALYSIS"></a>TYPET5: SEQ2SEQ TYPE INFERENCE USING STATIC ANALYSIS</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: TypeT5: Seq2Seq Type Inference Using Static Analysis(利用静态分析的Seq2Seq类型推断)</li>
+<li>Authors: Jiayi Wei, Greg Durrett, Isil Dillig</li>
+<li>Affiliation: Department of Computer Science, University of Texas at Austin(得克萨斯大学奥斯汀分校计算机科学系)</li>
+<li>Keywords: type inference, static analysis, seq2seq, CodeT5</li>
+<li>URLs: arXiv:2303.09564v1 [cs.SE], GitHub: None</li>
+</ul>
+<h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要:"></a>摘要:</h3><ul>
+<li>a. 本文的研究背景：<ul>
+<li>本文提出了TypeT5模型，用于在Python代码中推断类型注释。TypeT5是基于CodeT5模型的改进版本，使用静态分析构建使用图进行语境增强。</li>
+</ul>
+</li>
+<li>b. 过去的方法，它们的问题和动机：<ul>
+<li>目前已有的方法在预测常见类型方面表现良好，但对于罕见或复杂类型的预测往往存在困难。</li>
+</ul>
+</li>
+<li>c. 本文提出的研究方法：<ul>
+<li>作者将类型预测作为代码填充任务，使用CodeT5进行训练，使用静态分析构建动态上下文，应用迭代解码方案从相关代码元素中收集信息进行类型预测。</li>
+</ul>
+</li>
+<li>d. 方法在任务和性能方面所实现的：<ul>
+<li>TypeT5模型比基线方法（包括不使用静态分析的CodeT5模型）具有更高的准确性，产生更多的连贯结果，类型错误更少。TypeT5方法还可以方便地进行用户干预，使其成为注释完全无类型项目的有用工具。</li>
+</ul>
+</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景:"></a>背景:</h3><ul>
+<li>a. 主题和特点：<ul>
+<li>本文研究类型推断问题，针对Python编程语言中的不稳定类型，提高代码的分析和维护过程。</li>
+</ul>
+</li>
+<li>b. 历史发展：<ul>
+<li>目前Python等语言中的类型推断通常基于程序执行的动态特性。传统方法的准确性受到功能需求的限制，难以在复杂情况下确定类型注释。</li>
+</ul>
+</li>
+<li>c. 过去的方法：<ul>
+<li>学者们在对于不稳定类型的Python代码类型推断任务上，采用了基于语义的技术来解决编程过程中的困难。这些方法的准确性在复杂情况下受到一定的限制，因此需要进行改进。</li>
+</ul>
+</li>
+<li>d. 过去研究的不足之处:<ul>
+<li>针对罕见或复杂类型的预测往往存在困难，因此需要提出更有针对性的预测方法。</li>
+</ul>
+</li>
+<li>e. 当前需要解决的问题:<ul>
+<li>如何提高类型预测的准确性和效率，并通过静态分析对动态上下文情境增强以实现更好的类型预测。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Intro"><a href="#Intro" class="headerlink" title="Intro:"></a>Intro:</h3><p>首先指明了类型注释的重要性，随着大规模预训练和Transformer架构的爆炸式发展，序列到序列（seq2seq）模型已被证明对编程任务非常有效，例如生成代码注释、补全和合成。然而，与代码补全任务相比，有效的类型推断通常需要非局部信息，这些信息可能属于完全不同的文件。</p>
+<p>随着大规模预训练和Transformer架构的兴起，Seq2Seq模型在编程任务（如代码注释生成、代码补全和代码合成）方面已经被证明非常有效。然而，与可以仅依赖周围代码环境的代码补全任务不同，有效的类型推断通常需要非局部信息，这些信息可能属于完全不同的文件。为解决这一挑战，TypeT5方法通过使用静态分析来确定对每个预测有用的代码部分。具体而言，构建了一个所谓的使用图（usage  graph），其中节点对应于代码元素（即我们想要预测类型的函数或变量），边表示它们之间的潜在用户-使用者关系。给定这样一个图，我们将给定代码元素的用户和使用者以类似于正常代码的形式进行编码，并将它们作为额外的上下文输入到Transformer模型中。为充分利用Seq2Seq范式，我们还提出了一种迭代解码方案，该方案利用上下文传递先前的类型预测，允许信息在整个代码库的远程代码元素之间传播。TypeT5基于流行的CodeT5模型实现，并用于为无类型Python代码合成类型注解。评估将TypeT5与三种最先进的类型推断工具（Allamanis等人，2020; Mir等人，2022; Peng等人，2022）和不利用静态分析的CodeT5 Baseline进行比较。</p>
+<p>综上所述，本文的贡献如下：</p>
+<ul>
+<li>我们应用CodeT5来推断Python类型的注释，并显示出比以前的方法有显著的改进。据我们所知，这是第一个能够同时预测参数化类型和用户定义类型的基于ml的技术。</li>
+<li>我们通过应用静态分析技术来改进普通的CodeT5模型，以帮助模型推理除局部上下文之外的信息，从而进一步提高其性能。</li>
+<li>我们提出了一个迭代解码方案，特别有助于处理一致性，通过类型检查器报告的类型错误的数量来衡量。此外，我们还提出了一种结合了seq2seq解码方案和用户干预的新设置。</li>
+</ul>
+<h3 id="OVERVIEW"><a href="#OVERVIEW" class="headerlink" title="OVERVIEW"></a>OVERVIEW</h3><p><img src="/2023/04/18/TYPET5-SEQ2SEQ-TYPE-INFERENCEUSING-STATIC-ANALYSIS/image-20230418144904538.png" alt="image-20230418144904538"></p>
+<p><strong>Type inference as code infifilling</strong>  在这项工作中，作者提倡将类型推断视为代码填充（code infilling）的一种新方法。因为类型注解可以被视为缺失的代码片段，所以作者使用了一种先进的代码填充模型（即CodeT5）作为起点进行微调。由于CodeT5使用字节对编码（Byte Pair Encoding）生成子词（subword）令牌序列，因此它原则上可以预测任意代码片段来填充被屏蔽的空白，包括具有复杂参数类型和用户定义类的类型注解。</p>
+<p>**Incorporating context through static analysis ** 通过静态分析整合上下文：通过使用周围的代码作为预测上下文，微调后的CodeT5可以相对容易地预测某些变量的正确类型注解。例如，根据n_seqs（model.py，第7行）或window_size（eval.py，第4行）的名称和默认值，CodeT5可以判断出这些参数的正确类型。然而，对于eval.py第2行的model等其他参数，周围的上下文没有足够的信息来做出合理的预测。造成这种情况的原因是，ModelWrapper是在另一个文件中定义的新类，因此（1）在训练期间从未见过它，（2）它的定义不作为上下文的一部分提供。同样，预测eval_on_dataset的返回类型也非常困难，因为它直接返回model.predict的结果，而model.predict的定义对模型来说也是不可用的。解决这个问题的关键是如何构造上下文。</p>
+<p><img src="/2023/04/18/TYPET5-SEQ2SEQ-TYPE-INFERENCEUSING-STATIC-ANALYSIS/image-20230418145818609.png" alt="image-20230418145818609"></p>
+<p><strong>TypeT5 architecture</strong></p>
+<p>为什么不把所有的信息都传递给CodeT5进行代码填充呢，因为模型可接受的上下文有限。为了解决这个问题，TypeT5采用了一种迭代解码方案，允许根据先前的类型预测进行条件化。具体来说，我们的解码方案首先对用户-使用者图进行拓扑排序，然后进行两个顺序的预测传递，首先从使用者到用户，然后反向进行，如图3所示。要理解为什么这两个方向都有用，请注意eval_on_dataset的返回类型取决于predict，而predict又取决于predict_on_batch。因此，将信息从被调用者传播到调用者显然是有用的。相反，考虑预测predict的第一个参数data的类型。由于chunk_srcs的返回值作为predict的第一个参数传递，因此反向传播信息也可能是有帮助的。</p>
+<p><img src="/2023/04/18/TYPET5-SEQ2SEQ-TYPE-INFERENCEUSING-STATIC-ANALYSIS/image-20230418151229179.png" alt="image-20230418151229179"></p>
+<p>user-usee图（简单来说就是调用关系，和callgraph没区别吧）</p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 研究的理论基础：<ul>
+<li>序列到序列的模型用于在Python代码中进行类型预测，作者在此基础上提出了TypeT5模型，并使用代码中的上下文信息进行语境增强，以弥补现有研究方法的不足。</li>
+</ul>
+</li>
+<li>b. 文章的技术路线：<ul>
+<li>TypeT5模型将类型推断视为代码填充任务。模型采用Transformers模型将分布放置在原始代码序列及其周围上下文中给定的类型序列上。TypeT5通过使用使用图来构造模型输入，并通过迭代解码方案利用推断时间中上下文中包含的类型信息，最大化预测的地面真相的对数似然性。文章还对TypeT5和其他三个最先进的用于Python的类型推断系统进行了评估，并展示了消融研究以评估提高模型性能的不同因素。</li>
+</ul>
+</li>
+<li>c. 方法的细节：<ul>
+<li>该方法将Python代码类型推断作为序列到序列的任务，将TypeT5分为四个部分：前面部分、Usees部分、主体代码部分和Users部分，并通过充分利用使用关系等其他信息，提高了推断精度。</li>
+</ul>
+</li>
+</ul>
+<p><strong>使用CodeT5进行类型预测</strong></p>
+<p>我们将类型预测形式化为一个序列到序列（seq2seq）任务。设u &#x3D; (u1, …, un)表示代码令牌的序列，其中每个令牌都是一个未类型化的代码元素e（函数或变量）。我们在需要预测类型的每个位置插入带索引的标记令牌（<extra id i>），并让模型预测t &#x3D; (t1, …, tm)，即表示u中标记位置类型的令牌序列。注意，t只包含类型，不包含其他代码令牌，格式为&lt;extra id 1&gt; [type 1 tokens] &lt;extra id 2&gt; [type 2 tokens]等。我们使用与CodeT5相同的分词器，它允许将任何Python表达式编码为（通常较短的）子词令牌序列。</extra></p>
+<p>我们的基线CodeT5模型是一个Transformer seq2seq模型P(t | u, ¯u)，在原始代码序列u及其周围代码¯u的条件下，对类型序列t建立分布。这个过程如图2所示，为了清晰起见，省略了¯u。</p>
+<p>我们的改进模型TypeT5用静态分析构建的上下文s替换周围的代码¯u。因此，我们可以将模型表示为P(t | u, s)。注意，在这两个模型中，我们在预处理步骤中删除所有注释和Python文档字符串，如之前的工作所做的那样。现在我们将展示如何从静态分析中构建s。</p>
+<p><strong>构建使用图</strong></p>
+<p>为了克服仅使用周围代码作为上下文的局限性，我们的方法依赖于静态分析来提取代码库相关的全局信息。特别是，我们的分析构建了一个使用图，其节点对应于代码元素，边表示直接使用。例如，如果x和y都是函数，从x到y的边表示x调用y。类似地，对于变量，从x到y的边表示x的值取决于y。</p>
+<p>我们之前示例的使用图如图4所示。我们展示了两种使用类型：确切的使用（用实线箭头表示）和潜在的使用（用虚线箭头表示）。确切的使用是可以在不知道涉及变量的类型的情况下静态确定的使用。例如，全局函数chunk srcs直接被eval on dataset使用，我们还知道predict on batch是由predict调用的（第12行的self方法调用）。对于其他情况，如非self属性访问或方法调用，目标取决于接收者的类型，因此我们首先收集当前项目中具有匹配名称的所有属性和方法，然后为每个属性和方法生成一个潜在的使用。我们在附录A.1中详细介绍了使用图的构建。</p>
+<p><strong>构建模型输入</strong></p>
+<p>定义代码元素e为以下四个部分：</p>
+<p>Preamble：spre的主要目的是帮助模型将每个局部名称映射到它所引用的定义，因此前导包括所有导入语句。此外，为了帮助模型了解当前作用域中可用的类型，前导还包括当前文件中的所有类定义的头部以及所有类型变量声明。<font color="red">简单说就是import语句和变量的定义。</font></p>
+<p>Main Code：我们使用其定义构造u。如果e是一个函数，u就是其源代码；如果e是一个变量，u包括所有顶级赋值语句，其中e作为左侧。另外，如果e是类C的方法或属性，我们还缩进u并用C的头部将其前置。</p>
+<p>Users：根据使用图G，我们通过包括来自users(G,  e)的所有元素的源令牌来构造suser。由于这些元素可能来自不同的源文件，我们还在每个元素前添加一个特殊注释，表示它来自的Python模块。注意，这些元素可以选择包含我们TypeT5模型预测的类型，如后续3.4小节所述。</p>
+<p>Usee：susee不仅包含e的直接用户，还包含用户上下文中使用的任何东西。由于这通常比suser包含更多的元素，所以我们只使用元素的（类型或非类型）签名来构造susee。</p>
+<p>我们将总输入大小限制在最多4096个子词令牌内，并从左右两侧截断超出的令牌，以主代码为中心。涉及确定用法的上下文元素被安排在离中心更近的位置，以便它们始终优先于潜在用法。</p>
+<p><strong>迭代解码推理</strong></p>
+<p>CodeT5解码：给定训练好的模型P(t | u,  ¯u)，我们可以使用束搜索为u（带有周围上下文¯u）推断出最可能的一组类型t。我们的实现对单个代码块u的输出类型进行联合预测，因为块中较后的类型取决于先前类型的预测。然而，请注意，u和¯u始终是完全无类型的代码：尽管我们在预测时考虑先前的类型，但这些类型不会插入到下一个元素的预测上下文中。</p>
+<p>TypeT5迭代解码：将上下文s包括在内的部分动机是在推理时利用其类型信息。关键的是，这需要s是有类型的。然而，从原始代码库中获取的上下文是无类型的，因此TypeT5使用自己的预测迭代地向这些上下文添加类型签名。</p>
+<h3 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h3><p><strong>数据集</strong></p>
+<p><img src="/2023/04/18/TYPET5-SEQ2SEQ-TYPE-INFERENCEUSING-STATIC-ANALYSIS/image-20230418154821134.png" alt="image-20230418154821134"></p>
+<p>主要数据集BetterTypes4Py是通过从ManyTypes4Py数据集（Mir等人，2021年）中选择高质量子集构建的，该数据集用于训练Type4Py。附录A.2中描述了选择标准。由于我们的模型是从CodeT5模型（可能已经在上述数据集中的一些测试仓库上进行了预训练）进行微调的，我们另外构建了InferTypes4Py，这是一个测试集，派生自Typilus、Type4Py和我们自己的工具的源代码，它们都没有被用作CodeT5的（预）训练数据。我们在附录中进一步讨论了潜在的代码重复问题（附录A.3）和标签质量问题（附录A.4）。</p>
+<p><strong>评估指标</strong></p>
+<p>准确度</p>
+<p>Type error count</p>
+<p><strong>评估结果</strong></p>
+<p>准确度</p>
+<p><img src="/2023/04/18/TYPET5-SEQ2SEQ-TYPE-INFERENCEUSING-STATIC-ANALYSIS/image-20230418154804401.png" alt="image-20230418154804401"></p>
+<p>不同的组件如何影响模型的性能？(Preamble,MainCode等等）（1）所有组件都提高了总体准确性，其中preamble的影响最大；（2）虽然迭代解码方案只略微提高了总体准确性，但它显着提高了模型的连贯性，导致类型错误减少了12%。</p>
+<p>不同的解码策略如何比较？除了第3.4小节介绍的两遍迭代解码策略外，我们还测试了另外四种解码策略：（1）Independent，它独立地为每个元素预测类型签名，不受模型自身预测的影响（与Nonincremental模型相同，只是没有重新训练）；（2）Random，按照随机顺序依次访问每个元素；（3）UserToUsee，先访问用户再访问被使用者；（4）UseeToUser，先访问被使用者再访问用户。结果显示在表5中（在表8中显示了其他准确性指标）。我们可以看到，我们提出的两遍解码策略相对于Independent有最大的准确性和类型错误改进；而UserToUsee表现比Independent还差，这表明不良的解码顺序可能对模型的性能产生不利影响。</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论:"></a>结论:</h3><ul>
+<li>a. 研究的重要性:<ul>
+<li>该文提出了一种新的、高效的类型推断方法TypeT5，在Python代码中应用静态分析构建代码的动态上下文，准确地预测复杂类型，并提供用户干预功能，适用于注释完全无类型项目。</li>
+</ul>
+</li>
+<li>b. 创新，性能和工作负载：<ul>
+<li>TypeT5模型相对于目前基线方法和其他类型推断模型具有优异的性能和精度。Article还提出了一种更加有效的序列到序列类型推断方法，充分利用上下文信息进行语境增强，以提高其推断的准确性。</li>
+</ul>
+</li>
+<li>c. 研究结论（列清单）：<ul>
+<li>TypeT5在Python等编程语言中具有更高的准确性，能够准确地预测复杂类型，具有更强的连贯性和更少的类型错误，在Python代码的类型推断任务中具有更高的应用前景。</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>论文阅读</tag>
+      </tags>
+  </entry>
 </search>
