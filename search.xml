@@ -8388,4 +8388,19 @@ Python使用多进程是可以利用多核的CPU资源的。
         <tag>CPython</tag>
       </tags>
   </entry>
+  <entry>
+    <title>如何用ChatGpt搞学术？事半功倍</title>
+    <url>/2023/04/29/%E5%A6%82%E4%BD%95%E7%94%A8ChatGpt%E6%90%9E%E5%AD%A6%E6%9C%AF%EF%BC%9F%E4%BA%8B%E5%8D%8A%E5%8A%9F%E5%80%8D/</url>
+    <content><![CDATA[<h2 id="如何用ChatGpt搞学术？事半功倍"><a href="#如何用ChatGpt搞学术？事半功倍" class="headerlink" title="如何用ChatGpt搞学术？事半功倍"></a>如何用ChatGpt搞学术？事半功倍</h2><h3 id="ChatGpt润色文章的指令"><a href="#ChatGpt润色文章的指令" class="headerlink" title="ChatGpt润色文章的指令"></a>ChatGpt润色文章的指令</h3><ul>
+<li>Please proofread and polish the text from an academic angle and highlight the modification:</li>
+<li>Polish the text with a high-quality, peer-reviewed journal standard:</li>
+<li>Polish the text for me, l am aiming for a high-impact-factor, top research journal:</li>
+<li>lmprove the following academic writing:</li>
+<li>Rewrite:</li>
+</ul>
+<h3 id="ChatGpt读文献"><a href="#ChatGpt读文献" class="headerlink" title="ChatGpt读文献"></a>ChatGpt读文献</h3><p><a href="https://www.chatpdf.com/">https://www.chatpdf.com</a>  ChatPDF可以针对论文进行提问，缺点是总结的不够好。</p>
+<p><a href="https://chatpaper.org/">https://chatpaper.org/</a>   Chatpaper可以对论文进行总结，缺点是不能提问。</p>
+<p>可以用这两个工具互补一下。</p>
+]]></content>
+  </entry>
 </search>
