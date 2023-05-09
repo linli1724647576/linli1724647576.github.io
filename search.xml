@@ -8403,4 +8403,132 @@ Python使用多进程是可以利用多核的CPU资源的。
 <p>可以用这两个工具互补一下。</p>
 ]]></content>
   </entry>
+  <entry>
+    <title>Static Type Recommendation for Python</title>
+    <url>/2023/05/09/Static-Type-Recommendation-for-Python/</url>
+    <content><![CDATA[<h2 id="Static-Type-Recommendation-for-Python"><a href="#Static-Type-Recommendation-for-Python" class="headerlink" title="Static Type Recommendation for Python"></a><strong>Static Type Recommendation for Python</strong></h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: Static Type Recommendation for Python (Python 的静态类型推荐)</li>
+<li>Authors: Ke Sun, Yifan Zhao, Dan Hao, Lu Zhang</li>
+<li>Affiliation: Key Laboratory of High Confidence Software Technologies (Peking University), MoE Institute of Software, School of Computer Science, Peking University, Beijing, China</li>
+<li>Keywords: type recommendation, type inference, python, static analysis</li>
+<li>URLs: <a href="https://doi.org/10.1145/3551349.3561150">https://doi.org/10.1145/3551349.3561150</a>, GitHub: None</li>
+</ul>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>现有的类型推荐系统 (TRS) 可分为两类：基于自然语言模型的类型推荐系统 (NL-TRS) 和基于静态类型分析的类型推荐系统。</p>
+<p><font color="red">基于自然语言模型的类型推荐系统 (NL-TRS)： </font></p>
+<p>NL-TRS 主要利用自然语言处理 (NLP) 技术来为 Python  函数的参数和返回值推荐类型。这种方法主要关注从参数名称、函数名称和其他文本信息（如注释）中学习参数和返回值可能的类型。通过训练自然语言模型（如  GPT-4），NL-TRS  能够理解代码库中的语义信息并为函数的参数和返回值提供类型建议。然而，这种方法的一个主要缺点是它不能确保推荐的类型是正确的，因为它关注的是自然语言映射，可能不遵循函数中的逻辑约束。</p>
+<p><font color="red">基于静态类型分析的类型推荐系统：</font> </p>
+<p>静态类型分析的类型推荐系统通过分析代码库中的函数调用关系和类型信息来为函数的参数和返回值推荐类型。这种方法包括两个步骤：过程间分析和过程内分析。过程间分析找到对特定函数的调用，从而收集参数的类型种子。过程内分析则通过对参数类型种子的笛卡尔积进行类型检查&#x2F;推断  (TC&#x2F;I)，筛选出无效的参数类型组合，保留通过类型检查的有效类型组合，并为它们推断返回类型。然后，有效的参数类型组合和推断的返回类型组成了正确的函数签名。然而，这种方法存在两个主要问题：类型种子不足（因为在开发过程中，类型种子可能不足够）和类型检查&#x2F;推断组合爆炸（随着每个参数的类型数量的增长，整体 TC&#x2F;I 过程的数量呈指数级增长，使得这种方法在类型推荐任务中不可行）。</p>
+<p><font color="red">优缺点：</font></p>
+<p>NL-TRS 的优点是能够根据参数名称和其他文本信息（如注释）为函数的参数和返回值推荐类型。然而，NL-TRS 存在一个重要问题，即正确性问题。虽然 NL-TRS 能为函数的参数和返回值推荐类型，但不能确保推荐的签名是正确的，因为它学习的是自然语言映射，这可能<strong>不遵循函数中的逻辑约束</strong>。因此，正确性问题降低了 NL-TRS 的有效性。</p>
+<p>另一方面，静态类型分析能够<strong>推荐正确的签名</strong>，但存在两个问题：第一个问题是类型种子的缺乏。静态类型分析从函数调用中收集类型种子，但在实际开发过程中，类型种子可能不足。第二个问题是类型检查&#x2F;推断 (TC&#x2F;I) 的组合爆炸。静态类型分析对于每个参数类型组合执行一次新的类型检查&#x2F;推断过程，这导致了随着每个参数的类型数量的增长，整体 TC&#x2F;I 过程的数量呈指数级增长，使得这种方法在类型推荐任务中不可行。</p>
+<p><font color="red">本文的解决方法：</font></p>
+<p>Stray（一种静态类型推荐方法，专为 Python 设计）通过两个主要组件来解决上述缺点：暂时性类型种子（tentative type seeds）和两阶段类型检查&#x2F;推断（two-stage type checking&#x2F;inference）。</p>
+<ol>
+<li>暂时性类型种子： 暂时性类型种子旨在解决类型种子不足的问题。它们是函数参数的可能类型。Stray 用暂时性类型种子替换类型种子。收集暂时性类型种子是通过对目标项目进行轻量级分析来实现的，该分析收集用户定义的类型、第三方类型和内置类型。</li>
+<li>两阶段类型检查&#x2F;推断： 两阶段类型检查&#x2F;推断旨在解决 TC&#x2F;I 的组合爆炸问题。它可以看作是类型种子组合和类型检查&#x2F;推断的集成。核心思想是使用局部类型检查&#x2F;推断阶段在局部检查和推断类型（即仅考虑类型推导树的相邻节点）。沿着局部类型检查&#x2F;推断暴露出的约束被用来指导全局类型检查&#x2F;推断，从而为函数构建正确的签名。</li>
+</ol>
+<p>除了这两个主要组件，Stray 还配备了一些其他技术来帮助推荐类型，包括过程间分析（interprocedural analysis）、第三方包分析（third-party-package analysis）和内置分析（built-in analysis）。这些技术帮助 Stray 分析项目中的函数&#x2F;类、第三方包和内置包。</p>
+<p>总之，Stray 通过引入暂时性类型种子和两阶段类型检查&#x2F;推断来解决类型种子不足和类型检查&#x2F;推断组合爆炸的问题，从而提供更准确和高效的类型推荐。</p>
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h3><ul>
+<li>a. Research background of this article:<ul>
+<li>本文介绍了一种名为Stray的静态类型建议方法，用于解决基于机器学习的类型建议系统中的正确性问题。</li>
+</ul>
+</li>
+<li>b. Past methods, their problems, and motivation:<ul>
+<li>过去的方法常常会涉及基于机器学习的技术，然而这些方法存在正确性问题，容易给用户带来错误建议，因此需要一种更好的方法来改善这个问题。</li>
+</ul>
+</li>
+<li>c. Research methodology proposed in this paper:<ul>
+<li>本文提出了一个包括临时类型种子和双阶段类型检查&#x2F;推断的建议方法Stray，且这种方法采用了中间代码作为数据结构来描述Python源程序，并将每个表达式映射到一组状态，构成程序状态空间。</li>
+</ul>
+</li>
+<li>d. Task and performance achieved by the methods in this paper:<ul>
+<li>作者在基准数据集和多个开源项目上评估了Stray的性能，Stray在精度和召回率方面均优于两种流行的静态类型分析工具和两种基于机器学习的类型建议系统。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Background"><a href="#Background" class="headerlink" title="Background:"></a>Background:</h3><ul>
+<li>a. Subject and characteristics:<ul>
+<li>本文研究的主题是静态类型建议方法。</li>
+</ul>
+</li>
+<li>b. Historical development:<ul>
+<li>过去的方法通常会采用基于机器学习的技术，但是这些方法存在正确性问题，需要一种更好的方法来改善这个问题。</li>
+</ul>
+</li>
+<li>c. Past methods:<ul>
+<li>过去的方法主要是基于机器学习的类型建议方法。</li>
+</ul>
+</li>
+<li>d. Past research shortcomings:<ul>
+<li>过去的方法存在正确性问题，易给用户带来错误建议。</li>
+</ul>
+</li>
+<li>e. Current issues to address:<ul>
+<li>希望找到一种更好的静态类型建议方法来改善正确性问题。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods:"></a>Methods:</h3><ul>
+<li>a. Theoretical basis of the study:<ul>
+<li>本文采用的方法是基于中间代码作为数据结构来描述Python源程序，并将每个表达式映射到一组状态，构成程序状态空间。</li>
+</ul>
+</li>
+<li>b. Technical route of the article (step by step):<ul>
+<li>Stray采用临时类型种子提供函数参数的可能类型，并运行双阶段类型检查&#x2F;推断以检查类型种子的有效性并推断有效参数类型组合的返回类型。</li>
+<li>Stray配备了处理项目中不同类型的函数&#x2F;类的代码分析（包括函数&#x2F;类层面和包层面的分析），包括程序状态空间的比较（即直接类型推断和类型推理的不同）以及全局约束的解决方法以及其他模块。</li>
+<li>具体来说，Stray执行本地和全局类型检查&#x2F;推断，逐个检查函数表达式的类型并同时考虑所有本地约束，从而记录本地约束并检索参数类型组合和类型检查&#x2F;推断结果之间的映射。并且，Stray还包括利用抽象解释的方法来基于每个语句和表达式的抽象语义来转换程序状态。</li>
+</ul>
+</li>
+<li>c. Innovation, performance, and workload:<ul>
+<li>Stray的创新处在于采用了中间代码作为数据结构来描述Python源程序，并将每个表达式映射到一组状态，从而使得所有本地约束都可以被整体地考虑。</li>
+<li>作者在基准数据集和多个开源项目上评估了Stray的性能，Stray在精度和召回率方面均优于两种流行的静态类型分析工具和两种基于机器学习的类型建议系统。</li>
+<li>Stray目前的工作量还有一定的提升空间。</li>
+</ul>
+</li>
+<li>c. Research conclusions (list points):<ul>
+<li>本文提出了一种针对Python的静态类型建议方法Stray，用于解决机器学习系统存在的正确性问题。</li>
+<li>Stray采用了中间代码作为数据结构来描述Python源程序，并将每个表达式映射到一组状态，构成程序状态空间。</li>
+<li>作者在基准数据集和多个开源项目上评估了Stray的性能，Stray在精度和召回率方面均优于两种流行的静态类型分析工具和两种基于机器学习的类型建议系统。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Approach"><a href="#Approach" class="headerlink" title="Approach:"></a>Approach:</h3><p>以这个例子说明Stray的推导过程：</p>
+<p><img src="/2023/05/09/Static-Type-Recommendation-for-Python/image-20230509171212841-16836313477527.png" alt="image-20230509171212841"></p>
+<p><font color="red">搜集暂定的类型种子</font></p>
+<p>首先搜集暂定的类型种子作为该函数参数的可能类型，如何搜集见Section 2.4，这个例子我们暂定a,b,c的类型种子为 {int,str,bool,list}，基于这四种类型的种子，有4 的3 次方个&#x3D; 64个参数类型组合，其有效性有待进一步检验。</p>
+<p><font color="red">本地类型检查&#x2F;推理</font></p>
+<p>根据子表达式的类型来检查&#x2F;推断表达式的类型。Stray依次扫描Python函数的每个表达式。首先会扫到第2行中，Stray首先根据a和b的类型推断表达式a + b的类型。在Python中，a+b通常被转换为以a.add (b)形式存在的函数调用，因此Stray通过过程间分析推断出a+b的类型。此外，由于a的暂定类型种子（即bool、int、str和list）都是内置类型，因此Stray执行内置分析来解析这些类型的类型存根并返回函数的类型（a.add）。bool类型不存在add方法，其他类型指定add方法，使用相同类型的参数并返回相同的类型。根据这个假设，Stray推断出一个a+b和p的类型为{int，str，list}。类似地，Stray推断第3行中排序（p，c）表达式的类型。排序是一个内置的函数，它需要一个序列来排序和一个bool值来确定这个序列是否应该是正序还是逆序。根据内置函数排序、p和c的类型，Stray推断出排序的类型（p，c）。当p为int时，Stray会引发一个类型错误，从而推断出已排序的（p，c）和s的类型仅为str或list。 p,s的类型是str,list，c为bool。</p>
+<p>这种局部类型检查&#x2F;推理过程避免了TC&#x2F;I组合爆炸的问题，但它失去了参数类型组合与类型检查&#x2F;推理结果[2]之间的精确映射。具体来说，这导致了两个问题。(1)Stray不知道无效的参数类型组合。Stray只被告知类型错误。例如，在第3行中，Stray只被告知p： int会导致类型错误，但它不知道导致该错误的无效参数类型组合。(2) Stray不知道参数类型组合和函数中的变量类型之间的关系。例如，Stray只知道s的类型可以是str，但它不知道是哪个参数类型组合可以推断出s： str。因此，它不能将参数类型组合与返回类型进行匹配。为了恢复参数类型组合与类型检查&#x2F;推理结果之间的关系，Stray在局部类型检查&#x2F;推理过程中记录局部约束，并根据约束恢复类型参数组合与类型检查&#x2F;推理结果之间的映射。例如，在第2行中，Stray记录了p： int是一个a+b： int的结果，这进一步是a： int和b： int的结果。Stray还记录了p的类型必须是int、str或list。</p>
+<p><font color="red">全局类型检查&#x2F;推理</font></p>
+<p>全局类型检查&#x2F;推理是通过同时考虑所有的局部约束来检查参数类型组合是否有效。具体来说，Stray配备了一种约束求解算法，该算法可以有效地检查局部约束，并构造出满足所有局部约束的有效参数类型组合。在该示例中，有效的参数类型组合是{a：str、b：str、c：bool}和{a：list、b：list、c：bool}。Stray还配备了一个返回类型推理算法，可以推断每个有效参数类型组合的返回类型，即，{a：str，b：str，c：bool}-&gt;str和{a：list，b：list，c：bool}-&gt;list。从64个参数类型组合中，Stray过滤出62个无效组合，并推断出2个有效组合的返回类型。</p>
+<h3 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation:"></a>Evaluation:</h3><p>作者对 Stray 进行了评估，主要针对三个研究问题：</p>
+<ol>
+<li>RQ1：Stray 能否有效地推荐参数类型？</li>
+<li>RQ2：Stray 能否有效地推荐返回类型？</li>
+<li>RQ3：Stray 的效率如何？</li>
+</ol>
+<p>为了回答 RQ1 和 RQ2，作者将 Stray 推荐正确类型的有效性与多个最先进的基线方法进行比较。为了回答 RQ3，作者通过记录 Stray 的推荐时间并将其与基线方法进行比较，以评估 Stray 的效率。</p>
+<p><strong>Baselines和Benchmark</strong></p>
+<p>评估主要基于最近发布的相关工作[25]的基准测试。此基准测试包括四个开源 Python 项目（adventure [54]，icemu [14]，imp [8]，scion [59]）和一个由 60 个手动编写或从网络收集的小程序组成的测试套件[25]。为了测试 Stray 的可扩展性，作者在基准测试中增加了五个流行的开源 Python 项目，即 seagull [42]，tinychain [44]，relex [17]，htmlark [51] 和 pendulum [15]。这五个项目已经在早期的研究中使用过[5, 52]。</p>
+<p>作者将 Stray 与四个最先进的类型推荐系统 (TRS) 进行比较：TypeWriter [52]，Typilus [5]，Pytype [36] 和 Pyre [30]。</p>
+<ol>
+<li>TypeWriter：这是一个以其丰富的代码表示和验证过程而闻名的 NL-TRS。</li>
+<li>Typilus：这也是一个 NL-TRS，它使用图形和元学习来优化类型的表示。</li>
+<li>Pytype：这是一个最准确的静态类型分析工具之一[43]。由于类型种子不足，它在大多数情况下无法推荐参数类型。然而，Pytype 即使在没有参数类型的情况下也能推断函数返回类型，因此作者仅在推荐返回类型方面与 Pytype 进行比较。</li>
+<li>Pyre：这是一个注重效率的静态类型分析工具。由于类型种子不足，它很少推荐参数类型，因此作者仅在返回类型方面与之进行比较。</li>
+</ol>
+<p>TypeWriter、Typilus、Pytype、Pyre 和 Stray 分别缩写为 TW、TP、PT、PR 和 ST。这两个 NL-TRS 在跨项目场景下使用从其复制包中获得的数据集和默认超参数进行实现和评估。对于 Typilus，作者使用 Graph2Class 版本，因为它在跨项目场景中表现最佳。</p>
+<p><strong>评价指标 Metrics</strong></p>
+<p>评估 Stray 的有效性主要通过将推荐的签名与从项目中获得的基准真实值进行比较。具体来说，每个项目可能具有类型注释或在其注释中编写的类型。在应用五个类型推荐系统进行比较时，作者移除了这些信息，但使用它们来获得度量的基准真实值。遵循之前的工作，作者从签名中提取参数和返回类型，并分别进行比较（即 RQ1 和 RQ2）。</p>
+<p>与其他类型不同，基准真实值的 Union 类型是由多个类型组成的，每个组合类型都可以作为有效类型。例如，Union(str,bytes) 表示 str 和 bytes 都是正确的。因此，作者使用 {str, bytes} 作为基准真实值。</p>
+<p>作者通过 precision@k、recall@k、f1@k 和 MRR@k 评估比较 TRS 的有效性。作者根据传统推荐系统指标[28]定义这些指标。对于任何类型槽（即签名的参数或返回值），作者使用 k 表示推荐的类型数量。precision@k（简写为 Pk）表示与基准真实值匹配的推荐类型的比例，recall@k（简写为 Rk）表示基准真实值类型在推荐类型中的比例，f1@k（简写为 F 1k）是 precision@k 和 recall@k 的调和平均值，MRR@k（简写为 MRRk）是推荐类型中与基准真实值匹配的第一个类型的索引的倒数。</p>
+<p><img src="/2023/05/09/Static-Type-Recommendation-for-Python/image-20230509191243812-16836313477528.png" alt="image-20230509191243812"></p>
+<p><img src="/2023/05/09/Static-Type-Recommendation-for-Python/image-20230509191256659.png" alt="image-20230509191256659"></p>
+<p><img src="/2023/05/09/Static-Type-Recommendation-for-Python/image-20230509192313491.png" alt="image-20230509192313491"></p>
+]]></content>
+      <tags>
+        <tag>论文阅读</tag>
+      </tags>
+  </entry>
 </search>
