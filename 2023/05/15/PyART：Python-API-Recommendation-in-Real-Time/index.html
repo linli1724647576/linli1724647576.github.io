@@ -1,0 +1,322 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>PyART：Python API Recommendation in Real-Time | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="PyART：Python API Recommendation in Real-TimeBasic Information: Title: PyART: Python API Recommendation in Real-Time &#x2F; PyART：实时Python API推荐 Authors: Xincheng He, Lei Xu, Xiangyu Zhang, Rui Hao, Ya">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PyART：Python API Recommendation in Real-Time">
+<meta property="og:url" content="http://example.com/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="PyART：Python API Recommendation in Real-TimeBasic Information: Title: PyART: Python API Recommendation in Real-Time &#x2F; PyART：实时Python API推荐 Authors: Xincheng He, Lei Xu, Xiangyu Zhang, Rui Hao, Ya">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-05-15T11:51:51.000Z">
+<meta property="article:modified_time" content="2023-05-15T11:52:39.352Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'PyART：Python API Recommendation in Real-Time',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-15 19:52:39'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">48</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">PyART：Python API Recommendation in Real-Time</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-15T11:51:51.000Z" title="发表于 2023-05-15 19:51:51">2023-05-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-15T11:52:39.352Z" title="更新于 2023-05-15 19:52:39">2023-05-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="PyART：Python API Recommendation in Real-Time"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="PyART：Python-API-Recommendation-in-Real-Time"><a href="#PyART：Python-API-Recommendation-in-Real-Time" class="headerlink" title="PyART：Python API Recommendation in Real-Time"></a>PyART：Python API Recommendation in Real-Time</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: PyART: Python API Recommendation in Real-Time &#x2F; PyART：实时Python API推荐</li>
+<li>Authors: Xincheng He, Lei Xu, Xiangyu Zhang, Rui Hao, Yang Feng, Baowen Xu</li>
+<li>Affiliation: State Key Laboratory for Novel Software Technology, Nanjing University, China &#x2F; 中国南京大学新软件技术国家重点实验室</li>
+<li>Keywords: API recommendation, context analysis, data-flow analysis, real-time recommendation, Python</li>
+<li>URLs: arXiv:2102.04706v1 [cs.SE] , GitHub: <a target="_blank" rel="noopener" href="https://github.com/nju-websoft/PyART.git">https://github.com/nju-websoft/PyART.git</a></li>
+</ul>
+<h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要:"></a>摘要:</h3><ul>
+<li>a. 本文的研究背景:<ul>
+<li>本文提出了一种新方法PyART，旨在为Python程序提供实时API建议。许多现有的API建议技术对于静态语言非常有效，但对于Python等动态语言的支持很少。采用PyART轻量级分析来推导乐观数据流，虽然不是完整的、正确的，但模拟了人类能推导出的局部数据流信息。PyART从请求建议的程序点的上下文中提取三种特征，即数据流、标记相似性和标记共现，并使用Random Forest算法在这些特征上对模型进行训练。在不同应用中，例如跨项目建议，当历史评论不可用时，PyART表现出更好的整体性能。PyART的平均top-1准确率和平均top-10准确率分别超过50%和70%，相对于APIREC和Intellicode，top-1准确率分别提高了28.48%-39.05%，top-10准确率提高了24.41%-30.49%。建议时间平均少于一秒钟，满足实时需求。</li>
+</ul>
+</li>
+</ul>
+<h3 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h3><p><font color="red">几类相关工作：</font></p>
+<ol>
+<li><strong>静态类型语言的API推荐方法</strong>：这些工作主要关注Java等静态类型语言，它们已经开发出了一些成功的API推荐方法。</li>
+<li><strong>Python的API推荐工具</strong>：包括像Pycharm和Visual Studio IntelliCode这样的集成开发环境（IDE），这些工具为Python提供了一些API推荐功能，但由于Python的动态特性，这些工具仍然存在一些限制。</li>
+<li><strong>基于机器学习的API推荐方法</strong>：例如<em>Visual Studio IntelliCode</em>，这种方法利用机器学习从大量的Python项目中学习编程模式。</li>
+<li><strong>基于代码变更的API推荐方法</strong>：例如<em>APIREC</em>，这种方法依赖于抽象语法树（AST）节点上的微小代码更改，但在Python中效果并不理想。（见附录）</li>
+</ol>
+<p>这些类别的工作都与本篇文章的主题有关，即Python的实时API推荐。但请注意，这些类别是根据你给出的摘录推测出来的，可能并不完全准确。你如果能提供更多的论文内容，我可能能提供更精确的分类。</p>
+<p><font color="red">面临的挑战：</font></p>
+<p>这篇工作面临的挑战主要包括以下几点：</p>
+<ol>
+<li><strong>动态类型特性的处理</strong>：Python是一种动态类型的语言，这意味着变量的类型在运行时才确定，而非在编译时。这使得传统的类型推断技术在Python中可能不会有效，从而降低了静态分析的准确性并增加了API推荐的不确定性。</li>
+<li><strong>静态分析的难题</strong>：传统的静态分析方法，例如数据流分析和别名分析，对Python来说也很困难。这是因为Python的动态特性使得这些分析工具难以产生准确的结果。</li>
+<li><strong>实时推荐的问题</strong>：在开发过程中，开发人员期望IDE能立即提供API推荐，这就需要推荐系统能够在不完整的语法和语义环境下进行操作，这对于API推荐系统来说是一个巨大的挑战。</li>
+<li><strong>学习和处理自定义API</strong>：一些现有的工具，例如IntelliCode，主要学习和处理标准库和流行的第三方库的API，但对于在同一项目中定义的API处理不足，这是另一个需要解决的问题。</li>
+<li><strong>代码变化的处理</strong>：像APIREC这样的现有工作依赖于抽象语法树（AST）节点上的微小代码更改，但是这种方法的效果在Python中并不理想，因为推荐结果的准确性大大依赖于AST差异化工具的准确性和代码更改历史的质量。</li>
+</ol>
+<p>这些挑战提出了一个需要解决的问题：如何为Python开发一个既准确又实时的API推荐系统，能够处理Python的动态特性，并在不完整的语法和语义环境中进行操作，同时还能够学习和处理在同一项目中定义的API。</p>
+<p><font color="red">PyART</font></p>
+<p>本文提出了一个名为PyART（Python API实时推荐）的新方法来解决Python API推荐的挑战。PyART的解决方案具有以下特点：</p>
+<ol>
+<li><strong>推荐库API和项目内定义的API</strong>：与现有的解决方案相比，PyART可以推荐库中的API和在同一项目中定义的API。</li>
+<li><strong>无需依赖第三方工具</strong>：PyART不依赖任何第三方工具，这使其更加轻便和高效。</li>
+<li><strong>实时推荐</strong>：PyART能够在没有明显延迟的情况下提供推荐，符合开发者的实时需求。</li>
+<li><strong>准确的推荐</strong>：PyART能够提供准确的API推荐。</li>
+</ol>
+<p>为了解决动态类型语言的挑战，PyART使用了一种被称为”乐观数据流”的技术来提取API推荐的上下文信息。这种数据流的提取方式与人类推理数据流的方式相似，主要依赖于局部变量、函数标识符和语法结构，并忽略全局效应，如别名所引起的效应。</p>
+<p>具体来说，PyART首先收集一个全面的候选API列表，这个过程并不依赖于类型推理工具。然后，它在推荐点的上下文中提取并编码三种特征：乐观数据流、数据流中的令牌相似性（衡量到达推荐点的数据流路径是否涉及到与候选API类似的令牌），以及令牌共现（模型化候选API与其邻域中的令牌的联合分布）。</p>
+<p>在训练阶段，PyART使用这些特征来构建一个基于随机森林的预测模型。在部署阶段，这些特征被提供给训练过的模型，以生成一个排名的推荐列表。这就是PyART如何解决Python API推荐的挑战的方法。</p>
+<p><font color="red">贡献</font></p>
+<p>本文的主要贡献可以总结为以下几点：</p>
+<ol>
+<li><strong>提出了乐观数据流的概念</strong>：本文提出了一个既不完全也不完备，但对API推荐足够且收集成本有效的乐观数据流的概念。</li>
+<li><strong>提出了三种特征以及编码方法</strong>：本文提出了使用数据流、令牌相似性和令牌共现这三种特征，并开发了一种将它们编码为特征向量的方法。</li>
+<li><strong>开发了PyART原型并进行了评估</strong>：基于提出的想法，本文开发了PyART原型，并在8个真实世界的项目上进行了评估。评估结果表明，PyART可以提供有效的API推荐。当可以利用历史提交时（这是现有最先进的工具APIREC的目标场景），我们的平均Top-1准确率超过50%，平均Top-10准确率超过70%，比APIREC和Intellicode的Top-1准确率提高了28.48%-39.05%，Top-10准确率提高了24.41%-30.49%。在其他应用中，如当历史注释不可用和跨项目推荐时，PyART也表现出更好的整体性能。</li>
+<li><strong>提供了数据集和源代码</strong>：本文的数据集和源代码已经在Github上公开。</li>
+</ol>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景:"></a>背景:</h3><ul>
+<li>a. 主题和特征:<ul>
+<li>本文介绍了关于API建议系统的最近研究，旨在帮助开发人员更轻松地在软件项目中找到和使用相关API。</li>
+</ul>
+</li>
+<li>b. 历史发展:<ul>
+<li>这些研究的方法涵盖了一系列技术，包括基于图形的方法、统计学习、语义嵌入和自然语言处理。此外，一些研究专注于特定类型的API，例如Android开发或Web of Things应用程序的API。在这些不同的方法中，一个共同的目标是提供准确的、上下文感知的建议，以帮助开发人员节省时间和精力在导航大型API库中。然而，在可扩展性、精度和处理API随时间变化的问题方面仍然存在挑战。未来的研究可以探索如何更好地将这些系统整合到现有的开发工作流程中，并解决数据隐私和知识产权等问题。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Motivation-Example"><a href="#Motivation-Example" class="headerlink" title="Motivation Example"></a>Motivation Example</h3><p><img src="/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/image-20230515193234800.png" alt="image-20230515193234800"></p>
+<ul>
+<li>推荐API的能力在很大程度上依赖于API调用对象的类型推断结果。</li>
+<li>即使可以成功地推断出对象类型，推荐列表也可能包含太多的候选项，它们的顺序没有比字母顺序好。</li>
+<li>即使智能编码成功键入对象并确定一些候选标记为“*”尽管如此，为了表明自己有很高的信心，这些建议也可能是错误的。</li>
+</ul>
+<p><strong>乐观数据流（Optimistic  Data-flow）</strong>是指看起来正确的数据流。它的推导不是通过保守的标准数据流分析，而是以一种类似于人类推导数据流的方式进行的。具体来说，为各种语法结构（如函数调用和循环）定义了一套数据流推导规则。我们称这些规则为乐观的，因为它们没有考虑可能由别名引起的数据流的可能破坏&#x2F;注入。相反，它们推导出看起来正确的数据流（从变量标识和控制流结构）。</p>
+<p>例如，在图1（b）中，PyART在推荐点推导出的乐观数据流为 self→targetAPI→status|newtasks|result。这里，箭头表示数据流的方向，targetAPI表示我们想要预测的API。请注意，它只包括在API调用前可以推导出的数据流，以模拟实时API推荐场景，其中只有推荐点之前的上下文是可用的。</p>
+<p>简而言之，乐观数据流是一种假设所有的数据流路径都是正确的，而不考虑可能导致数据流变化的全局效果，如别名（aliasing）。这种方法在API推荐中可能是有用的，因为它可以提供一种快速、大致准确的数据流模型，尽管它可能没有传统的数据流分析那么精确或完全。</p>
+<p><strong>数据流中的标记相似性（Token Similarity Along Data-flow）</strong>：PyART 假设一个 API 应该与沿着提取的乐观数据流路径上的某个变量&#x2F;函数具有标记相似性。因此，对于每个候选 API，它测量候选 API 和数据流路径中的标记之间的相似性得分。例如，在图1（c）中，目标 API “iter entry points” 和数据流中的相邻标记 “entry point” 之间的相似性得分高于其他候选 API，这为推荐提供了强烈的线索。</p>
+<p><strong>标记共现性（Token Co-occurrence）</strong>：在第三种线索中，PyART 利用标记的共现性。也就是说，它根据推荐点之前的标记（在同一源文件中）来预测一个 API。这包括封闭函数，前面的变量，前面的函数调用等。请注意，这些标记可能与目标 API 没有数据流关联。例如，对于一个带有 open(…) as f: f. 的推荐点，候选的 read() 和 write() 由于与标记 open 的共现频率高，更有可能被调用。在图1（a）中，PyART 计算了候选 API 与包 {def, crawl, self, url, None, track, kwargs, if} 中的每个标记的共现性。而在图1（b）中，PyART 计算了候选 API 和包 {def, test 10 not status, status, newtasks, result, self} 中的每个标记的共现性。这里，包是指推荐点之前的一组标记。</p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 研究的理论基础:<ul>
+<li>本文采用了乐观数据流分析、标记相似性和标记共现来改进API建议的性能。</li>
+</ul>
+</li>
+<li>b. 文章的技术路线（分步骤）:<ul>
+<li>本文提出的新API建议技术名称为PyART，它由五个主要组件组成，包括API建议点定位器、数据提取器、数据编码器、模型构造器和API建议器。</li>
+<li>这些组件一起收集和编码数据流和基于标记的提示，使用随机森林来训练预测模型，并根据输入代码环境向开发人员提供API建议。</li>
+<li>PyART从请求建议的程序点的上下文中提取三种特征，包括数据流、标记相似性和标记共现，并在这些特征上使用Random Forest算法训练模型。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/image-20230515194442513.png" alt="image-20230515194442513"></p>
+<p>PyART 的工作流程如下：</p>
+<ol>
+<li><strong>API 推荐点定位器（API Recommendation Point Locator）</strong>：PyART 首先接收输入的 Python 代码上下文，此上下文包括推荐点之前的所有语句（在同一文件中）。API 推荐点定位器首先识别形如 [Expression].targetAPI() 的推荐点。</li>
+<li><strong>数据提取器（Data Extractor）</strong>：数据提取器中的候选生成器首先使用一个现有的轻量级类型推理工具（如 pytype）对目标 API 的对象（即 [Expression]）进行静态类型推理。如果类型推断成功，候选生成器将推断类型的所有可调用方法视为 API 候选项。否则，它从以下三个来源收集 API 候选项：标准库，导入的第三方库，以及当前范围内声明的所有可调用方法。因此，即使类型推理失败，PyART 也不会产生空列表。对于每个推荐点，数据提取器中的特征收集器分析推荐点之前的源代码，收集三种线索：乐观数据流，数据流中的标记相似性和标记共现性。</li>
+<li><strong>数据编码器（Data Encoder）</strong>：然后，所有的线索&#x2F;特征被数据编码器编码为特征向量。每个特征向量是一个 4 元组：~ t &#x3D; (t1, t2, t3, t4)，其中 t1 表示乐观数据流线索，t2 表示数据流中的标记相似性线索，t3 和 t4 表示标记共现性线索，具体来说，t3 表示 API 与对象（调用 API 的对象）的共现性，t4 表示 API 与其他标记的共现性。</li>
+<li><strong>模型构造器（Model Constructor）</strong>：在模型训练阶段，特征向量从训练语料库中的项目中提取出来，并用于构造正样本和负样本。正样本由 API 和它们的特征向量构成，负样本由候选生成器识别出的非真实正样本的特征向量构成。然后，使用随机森林算法训练一个实时推荐模型。这个模型本质上学习了线索和 API 的联合分布。</li>
+<li><strong>API 推荐器（API Recommender）</strong>：在 API 推荐过程中，API 推荐器使用预训练的模型计算每个候选 API 的概率 pi，并根据 pi 对所有这些候选项进行排序。</li>
+</ol>
+<h3 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h3><p><font color="red">questions:</font></p>
+<p>PyART的评估设计了五个研究问题：</p>
+<ol>
+<li><strong>RQ1</strong>：与最先进的方法Pysonar2相比，PyART在数据流分析方面的有效性如何？</li>
+<li><strong>RQ2</strong>：与最先进的方法Visual Studio IntelliCode和Py-APIREC相比，PyART在项目内推荐API的有效性如何？</li>
+<li><strong>RQ3</strong>：与最先进的方法Visual Studio IntelliCode和Py-APIREC相比，PyART在跨项目推荐API调用的有效性如何？</li>
+<li><strong>RQ4</strong>：PyART在实时推荐API方面的效率如何？</li>
+<li><strong>RQ5</strong>：每种特征的影响是什么？</li>
+</ol>
+<p><font color="red">Baselines</font> : Pysonar2、Visual Studio IntelliCode、Py-APIREC</p>
+<p><font color="red">Benchmarks:</font></p>
+<p>为了公平地与Py-APIREC和IntelliCode进行比较，作者设定了三种关于评估中使用的语料库的场景。</p>
+<ol>
+<li><strong>项目版本（PE）</strong>：作者随机从Github收集了8个具有长期开发历史的Python项目，总共有12,194次提交和1,195,994个文件，作为一个被称为项目版本的语料库。其中，使用最早的90%的项目提交进行训练，使用最近的10%的提交进行推荐。特别地，作者在每个项目的前90%的提交上训练Py-APIREC和PyART，并在剩余的10%的提交上测试Py-APIREC、IntelliCode和PyART。这个结果用来回答RQ2（项目内有效性）。此外，作者记录了PyART的每次推荐的时间以回答RQ4。</li>
+<li><strong>项目内版本（IPE）</strong>：为了评估在没有历史提交时PyART的项目内有效性，作者准备了另一组数据，称为项目内版本（IPE）。具体来说，作者收集了PE中每个项目的最后一次提交，形成了IPE语料库，包括474个Python文件和86,853行代码。然后，对每个项目的源文件进行10倍划分。在10个划分中的9个上训练PyART，在1个上进行测试。每个项目进行五次10倍评估。平均结果显示在表V中，作为回答RQ2的一部分。</li>
+<li><strong>社区版本（CE）</strong>：APIREC收集了一个大型语料库，称为社区版本。它在这个语料库上训练其预测模型，然后在不同（且更小）的语料库上测试，以评估跨项目推荐的有效性。作者进行了类似的实验。他们从Github上收集了前30个被fork的Python项目，这些项目具有长期的开发历史（即，86,078次提交和7,634,717个文件），作为CE语料库。他们在30个项目的所有提交上训练Py-APIREC，并只在30个项目的最后一次提交上训练PyART，以节省成本。然后，使用Py-APIREC、IntelliCode和PyART为PE中的8个项目的所有提交中的代码更改做出推荐，以回答RQ3。此外，作者用CE中的不同子集的特征向量训练PyART，并在PE的项目上评估训练后的模型，以研究特征如何影响准确性（RQ5）。</li>
+</ol>
+<p><font color="red">Metrics:</font></p>
+<p>在这篇文章中，作者使用了两种主要的评估指标：</p>
+<ol>
+<li><p><strong>数据流分析评估</strong>：作者使用精度（Precision）、召回率（Recall）和F1得分来评估PyART的数据流分析的有效性，并与Pysonar2进行比较。为了构建一个好的基准线，即“真实值”，有超过三年Python编程经验的两位作者检查了IPE（项目内版本）中的一部分源文件（每个项目随机选择10个文件，每个文件的代码行数在27-1725之间），并手动识别这些文件中的数据流。这里查看的是成对的数据流关系（即，定义和使用）。由于目前没有可以报告声音和完整数据流信息的现有工具，所以使用手动检查作为真实值。值得注意的是，作者并没有声称他们的数据流分析是准确和完整的。相反，乐观的数据流分析是模拟人类如何推理数据流，因此，他们认为人类研究可以作为一个合理的基准。</p>
+</li>
+<li><p><strong>API推荐评估</strong>：作者使用Top-k准确率（%）来评估PyART、Py-APIREC和IntelliCode。对于一个可能推荐的API的列表，列表长度为l，我们在列表的前k个元素中寻找正确的答案。k的值分别设为1、2、3、4、5和10。为了更直观、客观地评估PyART和其他基准，作者还使用MRR作为评估指标。MRR（平均倒数排名）评估产生一个由可能API的正确性概率排序的列表的过程，并使用公式（6）计算结果的倒数排名的平均值：</p>
+<p>MRR &#x3D; 1 &#x2F; |Q| * Σ (1 &#x2F; rank_i)，i&#x3D;1到|Q|</p>
+<p>其中，Q是查询样本，rank_i是第i个查询的第一个相关API的排名。直观地说，MRR值越大，推荐的准确性就越高。</p>
+</li>
+</ol>
+<p><font color="red">Results：</font></p>
+<p>RQ1:</p>
+<p><img src="/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/image-20230515192220594.png" alt="image-20230515192220594"></p>
+<p>RQ2:</p>
+<p><img src="/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/image-20230515192345912.png" alt="image-20230515192345912"></p>
+<p><img src="/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/image-20230515192515783.png" alt="image-20230515192515783"></p>
+<p>RQ3:</p>
+<p><img src="/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/image-20230515192405082.png" alt="image-20230515192405082"></p>
+<p>RQ4:</p>
+<p><img src="/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/image-20230515192624958.png" alt="image-20230515192624958"></p>
+<p>RQ5:</p>
+<p><img src="/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/image-20230515192638708.png" alt="image-20230515192638708"></p>
+<h3 id="结论："><a href="#结论：" class="headerlink" title="结论："></a>结论：</h3><ul>
+<li>a. 本研究的意义:<ul>
+<li>PyART提出了一种新的API建议技术，通过提出乐观数据流、标记相似性和标记共现等特征，以随机森林模型的方式进行模型优化，提高了Python开发中API建议的准确性和效率。实验证明，PyART的建议效率快，准确性高。</li>
+</ul>
+</li>
+<li>b. 创新、性能和工作量:<ul>
+<li>PyART通过乐观数据流分析以及标记相似性和标记共现等特征技术的创新，克服模型不足的困难，提高准确率和整体性能。相对于现有的API建议技术，PyART具有更高的top-1和top-10准确率。</li>
+</ul>
+</li>
+<li>c. 研究结论（列出要点）:<ul>
+<li>PyART采用Random Forest算法和乐观数据流分析、标记相似性和标记共现等特征优化API建议性能，具有高效、高准确性、整体性能好和应用广泛等优点。</li>
+</ul>
+</li>
+</ul>
+<h3 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h3><p><font color="red">APIREC API推荐系统</font></p>
+<p>APIREC是一个先进的API推荐系统，主要针对Java语言。其基本原理如下：</p>
+<p>当开发者需要API推荐时，APIREC首先从当前编辑位置前提取一组细粒度的原子代码更改和一组代码令牌。然后，它通过查找大型语料库中代码更改和令牌的共现频率来计算每个候选API的可能性得分。</p>
+<p>更具体来说，APIREC使用了一种称为“bag of words”的模型来表示代码更改和令牌。在这种模型中，文本（或代码）被表示为一组词（或代码更改和令牌），而不考虑它们在文本中的顺序。这种模型使得APIREC能够在大规模代码库中快速、高效地查找并比较代码片段。</p>
+<p>然后，APIREC利用了一种叫做“co-occurrence”的概念来计算候选API的可能性得分。如果一个代码更改或令牌经常和一个特定的API一起出现，那么这个API就会得到一个高的可能性得分。</p>
+<p>最后，APIREC会返回得分最高的API作为推荐。</p>
+<p>然而，这种方法在Python中可能并不那么有效，因为它严重依赖于抽象语法树（AST）节点上的微小代码更改，以及AST差分工具和代码更改历史的准确性和质量。由于Python的动态特性，这些条件很难满足，这就是为什么在Python中需要开发新的API推荐方法。</p>
+<p><font color="cornflowerblue">假设你正在编写一个Java程序，需要从一个文件中读取数据，但你忘记了用于打开文件的API。你开始键入 FileInputStream file &#x3D; new FileInputStream(，然后停下来，因为你不确定接下来应该怎么做。</font></p>
+<p><font color="cornflowerblue">这时，你可以使用APIREC来获取API推荐。APIREC首先会查看你已经键入的代码（也就是上下文），然后会在其大型代码库中查找类似的代码片段。在这个例子中，APIREC可能会找到这样的代码片段：FileInputStream file &#x3D; new FileInputStream(“example.txt”);。</font></p>
+<p><font color="cornflowerblue">APIREC看到这个代码片段和你的代码有很高的相似度，所以它会推荐你使用类似的API，也就是推荐你传入一个文件路径的字符串到 FileInputStream 的构造函数中。</font></p>
+<p><font color="cornflowerblue">然后，APIREC会计算所有候选API的可能性得分。得分是基于候选API在类似上下文中出现的频率计算的。在这个例子中，APIREC可能会发现在类似的上下文中，大部分的代码都是传入一个字符串到 FileInputStream 的构造函数中，所以这个API会得到一个高得分。</font></p>
+<p><font color="cornflowerblue">最后，APIREC会返回得分最高的API作为推荐。在这个例子中，它可能会推荐你使用 FileInputStream(String name) 这个API，并且给出类似这样的建议：FileInputStream file &#x3D; new FileInputStream(“your_file_path”);。</font></p>
+<p><font color="cornflowerblue">这就是APIREC的基本工作原理和推荐过程。</font></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/">http://example.com/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/05/09/Static-Type-Recommendation-for-Python/" title="Static Type Recommendation for Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Static Type Recommendation for Python</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">48</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#PyART%EF%BC%9APython-API-Recommendation-in-Real-Time"><span class="toc-number">1.</span> <span class="toc-text">PyART：Python API Recommendation in Real-Time</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">摘要:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.3.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.4.</span> <span class="toc-text">背景:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Motivation-Example"><span class="toc-number">1.5.</span> <span class="toc-text">Motivation Example</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.6.</span> <span class="toc-text">方法:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%84%E4%BC%B0"><span class="toc-number">1.7.</span> <span class="toc-text">评估</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA%EF%BC%9A"><span class="toc-number">1.8.</span> <span class="toc-text">结论：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-number">1.9.</span> <span class="toc-text">附录</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/" title="PyART：Python API Recommendation in Real-Time">PyART：Python API Recommendation in Real-Time</a><time datetime="2023-05-15T11:51:51.000Z" title="发表于 2023-05-15 19:51:51">2023-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/09/Static-Type-Recommendation-for-Python/" title="Static Type Recommendation for Python">Static Type Recommendation for Python</a><time datetime="2023-05-09T11:20:55.000Z" title="发表于 2023-05-09 19:20:55">2023-05-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/29/%E5%A6%82%E4%BD%95%E7%94%A8ChatGpt%E6%90%9E%E5%AD%A6%E6%9C%AF%EF%BC%9F%E4%BA%8B%E5%8D%8A%E5%8A%9F%E5%80%8D/" title="如何用ChatGpt搞学术？事半功倍">如何用ChatGpt搞学术？事半功倍</a><time datetime="2023-04-29T11:06:10.000Z" title="发表于 2023-04-29 19:06:10">2023-04-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/26/35-Numba%E6%98%AF%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3Python%E7%9A%84%E4%B8%89%E5%A4%A7%E6%80%A7%E8%83%BD%E7%93%B6%E9%A2%88%E7%9A%84/" title="35-Numba是如何解决Python的三大性能瓶颈的">35-Numba是如何解决Python的三大性能瓶颈的</a><time datetime="2023-04-26T13:27:46.000Z" title="发表于 2023-04-26 21:27:46">2023-04-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/26/34-%E4%BE%B5%E5%85%A5-Python-%E8%99%9A%E6%8B%9F%E6%9C%BA%EF%BC%8C%E5%8A%A8%E6%80%81%E4%BF%AE%E6%94%B9%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E8%BF%90%E8%A1%8C%E6%97%B6/" title="34-侵入 Python 虚拟机，动态修改底层数据结构和运行时">34-侵入 Python 虚拟机，动态修改底层数据结构和运行时</a><time datetime="2023-04-26T13:27:13.000Z" title="发表于 2023-04-26 21:27:13">2023-04-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
