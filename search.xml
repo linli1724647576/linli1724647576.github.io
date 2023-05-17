@@ -8697,4 +8697,172 @@ Python使用多进程是可以利用多核的CPU资源的。
         <tag>论文阅读</tag>
       </tags>
   </entry>
+  <entry>
+    <title>TypeWriter Neural Type Prediction with Search-based Validation</title>
+    <url>/2023/05/17/TypeWriter-Neural-Type-Prediction-with-Search-based-Validation/</url>
+    <content><![CDATA[<h2 id="TypeWriter-Neural-Type-Prediction-with-Search-based-Validation"><a href="#TypeWriter-Neural-Type-Prediction-with-Search-based-Validation" class="headerlink" title="TypeWriter: Neural Type Prediction with Search-based Validation"></a>TypeWriter: Neural Type Prediction with Search-based Validation</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: TypeWriter: Neural Type Prediction with Search-based Validation</li>
+<li>(论文标题：TypeWriter：基于搜索驱动验证的神经类型预测)</li>
+<li>Authors: Michael Pradel, Georgios Gousios, Jason Liu, Satish Chandra</li>
+<li>Affiliation: University of Stuttgart (Michael Pradel)</li>
+<li>(第一作者机构：斯图加特大学)</li>
+<li>Keywords: dynamic languages, type prediction, neural network, search-based validation</li>
+<li>URLs: arXiv:1912.03768v2 [cs.SE], <a href="https://github.com/DeepTyper/typewriter">https://github.com/DeepTyper/typewriter</a></li>
+</ul>
+<h3 id="概要"><a href="#概要" class="headerlink" title="概要:"></a>概要:</h3><ul>
+<li>a. 本文的研究背景:<ul>
+<li>本文介绍了一种新的方法, TypeWriter。该方法结合了概率类型预测和基于搜索的验证方法，以解决在动态类型语言中维护大型代码库的挑战。</li>
+</ul>
+</li>
+<li>b. 过去的方法、问题和动机:<ul>
+<li>过去的静态类型推断方法没有充分利用上下文信息来预测类型，也没有提供通用型解决方案。人为添加类型的代价太高，容易出错。</li>
+</ul>
+</li>
+<li>c. 本文提出的研究方法:<ul>
+<li>TypeWriter利用轻量化的静态分析从代码中提取上下文信息，包括程序结构和自然语言信息，然后用神经网络类型预测器学习如何预测缺失类型。反馈导向的搜索用于查找与静态、渐进式类型检查器一致和类型正确的类型分配。</li>
+</ul>
+</li>
+<li>d. 方法在本文中的任务和性能:<ul>
+<li>TypeWriter在Facebook的一个多百万行的代码库和一组流行的开源项目上进行了评估。实证结果表明，TypeWriter优于相关方法，比传统的静态类型推论更增加了非平凡的类型。</li>
+</ul>
+</li>
+</ul>
+<h3 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h3><p><font color="red">相关工作分类</font></p>
+<p>一些已有的工作包括：</p>
+<ol>
+<li><strong>静态分析类型推断</strong>：这种方法试图通过分析代码来推断类型，但是由于动态语言的特性（例如，异构数组，多态变量，动态代码评估，猴子补丁），这种方法在处理如Python或JavaScript这样的流行动态语言时遇到了困难。</li>
+<li><strong>概率技术预测类型</strong>：一些概率技术尝试预测类型，它们利用已经注释的代码作为训练数据，然后训练机器学习模型预测尚未注释的代码中的类型。Several approaches predict the type of a code entity, e.g., a variable or a function, from the code contexts in which this entity occurs [15, 28].   </li>
+<li><strong>基于反馈的、基于搜索的预测类型验证。</strong>这些方法可能根据代码实体出现的上下文，或者利用源代码中嵌入的自然语言信息（例如，变量名或注释）来预测代码实体（例如，变量或函数）的类型。Other approaches exploit natural language information embedded in source code, e.g., variable names or comments, as a valuable source of informal type hints [21, 37].</li>
+</ol>
+<p>[15] Vincent J. Hellendoorn, Christian Bird, Earl T. Barr, and Miltiadis Allamanis. 2018.Deep Learning Type Inference. In <em>Proceedings of the 2018 26th ACM Joint Meeting**on European Software Engineering Conference and Symposium on the Foundations</em> of Software Engineering (ESEC&#x2F;FSE 2018)*. ACM, New York, NY, USA, 152–162. <a href="https://doi.org/10.1145/3236024.3236051">https://doi.org/10.1145/3236024.3236051</a></p>
+<p>[21] Rabee Sohail Malik, Jibesh Patra, and Michael Pradel. 2019. NL2Type: InferringJavaScript Function Types from Natural Language Information. In <em>Proceedings of**the 41st International Conference on Software Engineering (ICSE ’19)</em>. IEEE Press,Piscataway, NJ, USA, 304–315. <a href="https://doi.org/10.1109/ICSE.2019.00045">https://doi.org/10.1109/ICSE.2019.00045</a></p>
+<p>[37] Zhaogui Xu, Xiangyu Zhang, Lin Chen, Kexin Pei, and Baowen Xu. 2016. PythonProbabilistic Type Inference with Natural Language Support. In <em>Proceedings of**the 2016 24th ACM SIGSOFT International Symposium on Foundations of Software</em> <em>Engineering (FSE 2016)</em>. ACM, New York, NY, USA, 607–618. <a href="https://doi.org/10.1145/2950290.2950343">https://doi.org/10.1145/2950290.2950343</a></p>
+<p><font color="red">局限性</font></p>
+<p>这些方法的局限性主要有：</p>
+<ol>
+<li><strong>不精确和组合爆炸</strong>：概率类型预测器不能保证预测的正确性，它们只能为每个缺失的注释建议一个或多个可能的类型。开发人员需要决定哪些建议是正确的。此外，因为概率预测器提供了一个可能类型的排序列表，所以在多个程序元素中选择类型正确的类型注释组合会导致组合爆炸。简单地让开发人员或工具从所有预测类型的组合中选择是不可行的，因为在大型代码示例中，需要考虑的类型组合数量是尚未注释的代码实体数量的指数级。</li>
+<li><strong>静态类型推断的局限性</strong>：对于动态语言，静态类型推断工具通常只在确定或非常可能（在一些假设下）的情况下推断类型，这大大限制了可以推断的类型数量。</li>
+</ol>
+<p>为了解决这些问题，这篇论文介绍了TypeWriter，它结合了基于学习的概率类型预测和基于反馈的、基于搜索的预测类型验证。这种方法通过利用渐进式类型检查器来定位矛盾的类型注释，从而从预测类型的集合中选择合适的类型。为了使寻找一致的类型集合的问题可处理，它将问题形式化为组合搜索，并提出了一种有效地找到类型正确的类型注释的搜索策略。</p>
+<p><font color="red">创新点</font></p>
+<p><strong>基于学习的概率类型预测</strong>：这是一种机器学习技术，通过学习已经注释的代码来预测尚未注释的代码中的类型。</p>
+<p><strong>基于反馈的、基于搜索的预测类型验证</strong>：这是一种使用搜索算法来验证预测类型的技术。这个过程是基于反馈的，意味着它会使用类型检查器来验证预测的类型，如果发现类型错误，它会修改预测的类型，并再次进行验证。这个过程类似于搜索算法，目标是找到一组类型注释，使得代码通过类型检查。</p>
+<p>这两种方法的结合可以有效地处理动态类型编程语言的类型推断问题。基于学习的概率类型预测可以大规模地预测类型，而基于反馈的、基于搜索的预测类型验证可以确保预测的类型是正确的。这种结合可以提高类型推断的准确性和效率。</p>
+<p><font color="red">贡献</font></p>
+<ol>
+<li><strong>结合概率类型预测和基于搜索的预测类型验证</strong>：这是一种新颖的方法，可以使用任何概率类型预测器和任何渐进式类型检查器。基于反馈的搜索策略可以有效地找到类型正确的类型注释。</li>
+<li><strong>创新的神经类型预测模型</strong>：这个模型可以同时利用代码上下文和自然语言信息进行类型预测。这是一种全新的方法，可以提高类型预测的准确性。</li>
+<li><strong>实证证据证明这种方法的有效性</strong>：通过对大规模代码库进行类型注释，且只需要最小的人力，论文提供了这种方法的有效性的实证证据。作者在Facebook的一个工具代码库上使用TypeWriter的初步体验是积极的，这个工具被数十亿人使用。</li>
+</ol>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景:"></a>背景:</h3><ul>
+<li>a. 主题和特点:<ul>
+<li>本文主要研究解决动态类型语言中类型注释问题的方法。</li>
+</ul>
+</li>
+<li>b. 历史发展:<ul>
+<li>传统的静态类型推断方法没有充分利用上下文信息来预测类型，也没有提供通用型解决方案。人为添加类型的代价太高，容易出错。</li>
+</ul>
+</li>
+<li>c. 过去的方法:<ul>
+<li>过去的方法包括静态类型推断和人为添加类型。</li>
+</ul>
+</li>
+<li>d. 过去的研究不足之处:<ul>
+<li>过去的方法没有充分利用上下文信息来预测类型，也没有提供通用型解决方案。人为添加类型的代价太高，容易出错。</li>
+</ul>
+</li>
+<li>e. 当前需要解决的问题:<ul>
+<li>动态类型语言中类型注释的问题。</li>
+</ul>
+</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 研究的理论基础:<ul>
+<li>TypeWriter利用轻量化的静态分析从代码中提取上下文信息，包括程序结构和自然语言信息，然后用神经网络类型预测器学习如何预测缺失类型。反馈导向的搜索用于查找与静态、渐进式类型检查器一致和类型正确的类型分配。</li>
+</ul>
+</li>
+<li>b. 文章的技术路线（逐步）:<ul>
+<li>TypeWriter首先通过静态分析从代码中提取上下文信息。</li>
+<li>然后，TypeWriter使用神经网络类型预测器学习如何预测缺失的类型。</li>
+<li>最后，本文介绍了反馈导向的搜索算法用于找到与静态、渐进式类型检查器一致和类型正确的类型分配，从而自动添加类型注释。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2023/05/17/TypeWriter-Neural-Type-Prediction-with-Search-based-Validation/image-20230517194322850.png" alt="image-20230517194322850"></p>
+<p><font color="red"><strong>2.1 Static Extraction of Types and Context Information</strong></font></p>
+<p>TypeWriter的第一部分是基于AST（抽象语法树）的静态分析，它从代码中提取有助于预测类型的类型和上下文信息。这个分析主要关注函数级别的类型，即参数类型和返回类型。对于每一个类型，静态分析收集四种上下文信息：</p>
+<ol>
+<li><strong>与待类型化程序元素相关的标识符名称</strong>：过去的研究表明，源代码中的自然语言信息可以提供关于程序属性的有价值的线索。比如，参数名称可能暗示了参数的类型。因此，静态分析提取了每个函数和每个函数参数的标识符名称。</li>
+<li><strong>待类型化程序元素的代码出现</strong>：除了自然语言信息，TypeWriter还利用编程语言类型提示。一个提示是待类型化元素的使用方式：作为参数类型的提示，分析考虑了函数体内的所有参数用法。另一种信息是定义待类型化元素的代码：作为返回类型的提示，分析考虑了函数中的所有return语句。对于每一个这些代码位置，分析提取了相应的代码标记序列。这种方法为了保持足够强烈的信号，可以很好地扩展到大型代码库，并且可以很容易地移植到其他编程语言。</li>
+<li><strong>函数级别的注释</strong>：类似于标识符名称，注释是关于类型的另一个非正式的提示源。静态分析提取了所有函数级别的注释，即Python中的docstrings。对于给定的函数，这种方法使用这个注释来预测参数类型和函数的返回类型。</li>
+<li><strong>可用的类型</strong>：为了注释Python之外的类型，需要导入或本地定义类型。因为在注释中使用的类型很可能已经导入或本地定义，分析提取了文件中所有可用的类型。为此，分析解析了文件中的所有import语句和所有class定义。</li>
+</ol>
+<p>基于这四种类型提示，分析分别为参数类型和返回类型提取以下信息：</p>
+<p><strong>参数类型信息</strong>：对于函数参数a，静态提取的信息是一个元组，包含函数名，参数名，其他参数的名称序列，与函数关联的注释，一组使用序列（每个使用序列都是标记的序列），以及参数的类型。</p>
+<p><strong>返回类型信息</strong>：对于函数f的返回类型，静态提取的信息是一个元组，包含函数名，参数名称序列，与函数关联的注释，一组return语句（每个return语句都是标记的序列），以及f的返回类型。</p>
+<p>如果以上任何信息缺失，元组的相应元素将用占位符填充。静态分析还会提取未注释类型的上述信息，以便TypeWriter能够基于上下文预测类型。</p>
+<p><font color="red"><strong>2.1 Static Extraction of Types and Context Information</strong></font></p>
+<p>在 TypeWriter 的第二部分，即神经类型预测模型中，输入是前一部分（静态类型和上下文信息提取）中提取的类型和上下文信息，输出是对应类型的预测。这个模型将类型预测问题形式化为一个分类问题，模型预测一个固定集合的类型上的概率分布。</p>
+<p>具体来说，模型的输入包括以下四类信息：</p>
+<ol>
+<li>标识符名称：函数和函数参数的标识符名称。</li>
+<li>令牌序列：与类型相关的源代码信息。</li>
+<li>注释：与函数相关的注释。</li>
+<li>可用类型：当前源代码文件中的可用类型集合。</li>
+</ol>
+<p>这些信息都被转化为适合机器学习的实值向量表示（也称为嵌入）。对于代码令牌和标识符名称，使用 Word2Vec 模型训练代码嵌入；对于注释中的词汇，训练单词嵌入。</p>
+<p>然后，模型通过几个子模型学习和汇总这些信息：</p>
+<ol>
+<li>学习标识符：从函数和函数参数的标识符名称中学习，使用双向递归神经网络 (RNN) 汇总所有与类型相关的标识符。</li>
+<li>学习令牌序列：从与类型相关的源代码信息中学习，同样使用 RNN 将所有相关令牌汇总为单一向量。</li>
+<li>学习注释：从与函数相关的注释中学习类型提示，同样通过 RNN 将单词序列汇总为固定长度向量。</li>
+<li>学习可用类型：从当前源代码文件中的可用类型集合中学习，使用二进制向量（类型掩码）表示哪些类型是可用的。</li>
+</ol>
+<p>最终，模型将这四个向量（标识符向量、代码向量、注释向量和可用类型向量）连接成一个单一的向量，并通过一个全连接层预测最可能的类型。输出向量的大小等于类型集合的大小，并代表了类型集合上的概率分布。</p>
+<p>模型的训练依赖于已经类型注释的代码。给定这样的代码，该方法为每个参数类型和每个返回类型创建一对上下文信息和类型。这些对作为训练数据，用于调整不同神经子模型的参数。训练过程使用随机梯度下降，Adam 优化器和交叉熵作为损失函数。整个神经模型是联合学习的，使模型能够将每种类型提示汇总成最适合的形式，并决定考虑哪些类型提示进行给定的查询。</p>
+<p><font color="red"> <strong>Feedback-guided Search for Consistent Types</strong></font></p>
+<p>在2.3节中，TypeWriter系统设计了一个反馈导向的搜索算法，以在给定多种可能的类型预测时，为缺失的类型插槽找到一致的类型注释。</p>
+<p>首先，给定类型插槽集合T和每个插槽的k个预测类型，找到一致的类型分配被形式化为组合搜索问题。搜索空间由所有可能的类型分配P组成，对于|T|个类型插槽和每个插槽的k个可能类型，有(k + 1)^|T|个类型分配（+1是为了不分配任何预测的类型）。(每个变量推断出不同的类型，所以同一个API就有不同的组合)</p>
+<p>为了有效地引导搜索，TypeWriter使用一个反馈函数，基于以下两个最小化的值：nmissing（缺失的类型数量）和nerrors（类型错误数量）。TypeWriter将这两个值组合成一个加权总和分数 score &#x3D; v·nmissing + w·nerrors，其中v默认设置为1，w设置为初始缺失类型的数量加一。这是因为添加一个错误的类型通常会导致额外的错误，所以给类型错误分配足够高的权重，可以确保搜索永远不会返回给代码添加类型错误的类型分配。（类型错误判断可以使用Mypy或者Pyre，本节重点介绍的是搜索空间的优化）</p>
+<p>然后，TypeWriter通过乐观搜索策略来探索类型分配的空间。它假设大多数预测是正确的，然后通过优化反馈函数来细化类型注释。它通过反馈函数查询下一个待评估的状态，然后更新已探索状态的集合。TypeWriter还实现了两种搜索策略：贪婪和非贪婪。贪婪策略积极地探索降低反馈分数的类型分配的子节点，并剪枝那些增加分数的状态的子节点。非贪婪策略不进行剪枝，即它可以在花费更多时间的情况下探索更大部分的搜索空间。</p>
+<p>该算法的一个优化是，TypeWriter会调用两次assign_types函数。第一次调用只考虑返回类型的类型插槽，第二次调用考虑所有参数类型的类型插槽。这种两阶段方法的原因是许多渐进式类型检查器（包括我们评估中使用的pyre）只有在函数的返回类型被注释时才进行类型检查。如果TypeWriter在添加返回类型注释之前添加参数类型注释，反馈函数可能不包括所有由错误添加的参数注释引发的类型错误。</p>
+<p>如果TypeWriter找到的类型分配没有引入新的类型错误，且在搜索过程中得到的分数最低，那么这个类型分配就被认为是正确的。</p>
+<h3 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h3><p>作者设计了四个评估问题：</p>
+<ul>
+<li>RQ 1: TypeWriter的模型在预测参数和返回类型上的有效性如何，它与现有的工作相比如何？</li>
+<li>RQ 2: 不同类型的上下文信息对模型预测能力的贡献有多大？ </li>
+<li>RQ 3: TypeWriter的搜索效果如何？ </li>
+<li>RQ 4: TypeWriter与传统的静态类型推断比较如何？</li>
+</ul>
+<p>基线（Baselines）包括三个模型：一个朴素基线模型，它考虑数据集中最常见的十种类型并从这十种类型的分布中抽取预测；DeepTyper基线，是DeepTyper模型的Python重新实现；NL2Type基线，是NL2Type模型的Python重新实现。</p>
+<p>基准（Benchmark）是两个数据集：一个是Facebook的内部代码库，另一个是开源软件（OSS）语料库，这个语料库通过搜索标记为python3的所有GitHub项目以及所有包含mypy依赖项的Python项目来创建。</p>
+<p>评价指标（metrics) 包括精确度（precision），召回率（recall）和F1分数，这些指标都根据数据集中的类型出现次数进行加权。</p>
+<p>问题的答案如下：</p>
+<ul>
+<li>RQ 1: TypeWriter的神经模型在预测类型方面表现出较高的精确度和良好的召回率，比基线模型表现得更好。该模型对内部数据集和OSS数据集都进行了预测，结果显示其表现优于朴素基线模型、DeepTyper和NL2Type。</li>
+<li>RQ 2: 根据消融研究，TypeWriter模型中的代码上下文信息和本地类型掩码对预测性能的提升具有显著影响。令牌序列（token sequences）组件是主要贡献者，而当从TypeWriter中移除参数和函数命名信息时，其性能会显著下降。</li>
+<li>RQ 3: 无论是在注释级别还是在文件级别，两种搜索策略（贪婪和非贪婪）都能成功地注释出大部分类型。贪婪搜索在top-3和top-5预测中发现更多的类型正确注释，而非贪婪搜索实际上找到的注释较少。</li>
+<li>RQ 4: 与静态类型推断工具pyre infer比较，TypeWriter能为更多的文件提供类型正确的预测。同时，TypeWriter能发现更多的类型，添加的类型总数也比pyre infer多。</li>
+</ul>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论:"></a>结论:</h3><ul>
+<li>a. 工作的意义:<ul>
+<li>TypeWriter为大规模代码库注释类型提供了一种有效、高效的方法，并降低了人力成本。</li>
+</ul>
+</li>
+<li>b. 创新、性能和工作量:<ul>
+<li>创新点：TypeWriter使用静态分析从源代码中提取上下文信息，然后使用神经网络预测类型。相较于其他方法，这种方法的精度更高。</li>
+<li>性能：TypeWriter在两个大型代码库上的实验证明其优于其他方法。</li>
+<li>工作量：TypeWriter通过全自动化的方法为大型代码库添加了类型注释，减少了人力成本。</li>
+</ul>
+</li>
+<li>c. 研究结论 (列举几点):<ul>
+<li>TypeWriter是一种有效的方法，它可以帮助程序员快速添加代码注释，减少错误，从而提高代码的可读性和可维护性。在Facebook的一个多百万代码库中，TypeWriter的预测精度明显优于其他方法，特别是相比传统的静态类型推论方法，TypeWriter更增加了非平凡的类型。</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>论文阅读</tag>
+      </tags>
+  </entry>
 </search>
