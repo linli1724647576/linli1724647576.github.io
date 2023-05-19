@@ -1,0 +1,330 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Typilus: Neural Type Hints | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Typilus: Neural Type HintsBasic Information: Title: Typilus: Neural Type Hints (Typilus：神经类型提示) Authors: Miltiadis Allamanis, Earl T. Barr, Soline Ducousso, Zheng Gao Affiliation: Microsoft Research,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Typilus: Neural Type Hints">
+<meta property="og:url" content="http://example.com/2023/05/19/Typilus-Neural-Type-Hints/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Typilus: Neural Type HintsBasic Information: Title: Typilus: Neural Type Hints (Typilus：神经类型提示) Authors: Miltiadis Allamanis, Earl T. Barr, Soline Ducousso, Zheng Gao Affiliation: Microsoft Research,">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-05-19T14:53:02.000Z">
+<meta property="article:modified_time" content="2023-05-19T14:53:53.261Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/05/19/Typilus-Neural-Type-Hints/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Typilus: Neural Type Hints',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-19 22:53:53'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Typilus: Neural Type Hints</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-19T14:53:02.000Z" title="发表于 2023-05-19 22:53:02">2023-05-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-19T14:53:53.261Z" title="更新于 2023-05-19 22:53:53">2023-05-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Typilus: Neural Type Hints"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Typilus-Neural-Type-Hints"><a href="#Typilus-Neural-Type-Hints" class="headerlink" title="Typilus: Neural Type Hints"></a><strong>Typilus: Neural Type Hints</strong></h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: Typilus: Neural Type Hints (Typilus：神经类型提示)</li>
+<li>Authors: Miltiadis Allamanis, Earl T. Barr, Soline Ducousso, Zheng Gao</li>
+<li>Affiliation: Microsoft Research, University College London, École Nationale Supérieure de Techniques Avancées (Soline Ducousso), Cambridge, United Kingdom; Paris, France</li>
+<li>Keywords: type inference, structured learning, deep learning, graph neural networks, meta-learning</li>
+<li>URLs: <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3385412.3385997">https://dl.acm.org/doi/10.1145/3385412.3385997</a>, <a target="_blank" rel="noopener" href="https://github.com/typilus/typilus">https://github.com/typilus/typilus</a></li>
+</ul>
+<p>Note: The paper does not have a Chinese translation available, so the Chinese translation of the title is a direct translation provided by the author of this response.</p>
+<h3 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION:"></a>INTRODUCTION:</h3><p><font color="red">背景</font></p>
+<p>在程序开发过程中，静态类型检查和类型注解可以帮助提前发现错误，提高代码性能，并提供准确的代码补全和导航。但是，在大型代码库中手动添加类型注解是一个巨大的工作量。类型推断可以在一定程度上自动地推断出程序表达式的最广泛类型，但对于动态语言来说，它不能完全准确地推断出所有表达式的类型。</p>
+<p><font color="red">方法、创新点</font></p>
+<p>Typilus是一种基于机器学习的方法，它可以利用源代码中的模式（包括<strong>自然语言元素</strong>和<strong>程序控制流</strong>和数据流中的结构习语）来概率性地推测类型注解。这是一个有效的方法，可以帮助开发人员将未注解的代码库迁移到至少部分注解的代码库。</p>
+<p>这篇论文的创新之处在于它提出了一种基于度量的元学习问题的概率类型推断方法，而不是分类问题。Typilus学习将符号（如变量名、参数名、函数名等）嵌入到一个保留其类型属性的实数D维隐空间中，我们称这些嵌入为类型嵌入。然后，Typilus试图在类型嵌入之间保留类型等价关系，并通过训练在TypeSpace中建立一个保持相同类型的符号的类型嵌入接近，不同类型的符号的类型嵌入远离的关系。</p>
+<p>Typilus的另一个优点是它可以高效地预测在训练过程中未见过的类型。（我觉得无法预测自定义类型）它通过维护一个从代表性嵌入到其类型的映射来实现这一点。这种类型映射在TypeSpace中隐式地定义了“类型化”的区域。为了让Typilus能够预测新的类型，我们需要更新这个类型映射。一旦我们有了一个训练过的模型，我们就可以用它来计算新类型的符号的类型嵌入。</p>
+<p><font color="red">相关工作以及局限性</font></p>
+<p>一些相关的工作可能包括了使用传统的静态分析或类型推断来处理部分上下文，以及将类型预测任务视为分类问题的机器学习方法(Deeptyper) [31, 51].。然而，这些方法可能面临的限制包括在处理动态语言时的准确性问题，以及无法处理在训练数据中罕见或未出现过的类型。</p>
+<p>Typilus通过将类型预测问题重新构造为度量基准的元学习问题，以及使用基于图的神经网络模型，成功地克服了这些限制。特别地，Typilus可以处理在训练数据中罕见或未出现过的类型，这对于处理动态语言来说是非常重要的。</p>
+<p>此外，Typilus还能够发现人类编写的可选类型注释中的错误，这是一个额外的优点。例如，在PyTorch&#x2F;fairseq和allenai&#x2F;allennlp等库中，Typilus成功地预测出了存在的类型注释中的错误，并为此提交了pull请求。</p>
+<p><font color="red">贡献</font></p>
+<p>这篇论文的贡献主要有三个方面：</p>
+<ol>
+<li>他们将基于图的深度神经网络应用到类型预测问题上，考虑了源代码的语法和语义。</li>
+<li>他们使用了一种基于深度相似性学习的新型训练损失，训练了一个可以将符号的类型属性嵌入到TypeSpace中的模型</li>
+<li>并且该模型具有适应性：在不需要重新训练的情况下，可以准确预测在训练期间罕见或未见过的类型。 3. 他们在Python中实现了Typilus，并通过广泛的评估证明了它在预测类型方面的有效性。</li>
+</ol>
+<h3 id="Summary"><a href="#Summary" class="headerlink" title="Summary:"></a>Summary:</h3><ul>
+<li>a. Research background of this article: <ul>
+<li>本文探讨了利用机器学习来预测动态类型语言的类型的应用。</li>
+</ul>
+</li>
+<li>b. Past methods, their problems, and motivation:<ul>
+<li>以前的方法无法预测开放词汇并且无法准确地推断变量的类型，而Typilus使用一种连续映射来将程序元素的类型上下文映射到多维空间中。</li>
+</ul>
+</li>
+<li>c. Research methodology proposed in this paper:<ul>
+<li>本文提出了名为Typilus的机器学习方法，它使用图神经网络来预测类型，并使用一种新颖的训练损失将符号的类型特性嵌入TypeSpace中。</li>
+</ul>
+</li>
+<li>d. Task and performance achieved by the methods in this paper:<ul>
+<li>论文中提出的Typilus方法可以有效地预测多种类型，并且在评估中将极少数类型的正确性从4.1%提高到了22.4%。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Background"><a href="#Background" class="headerlink" title="Background:"></a>Background:</h3><ul>
+<li>a. Subject and characteristics:<ul>
+<li>本文研究的主题是利用机器学习来预测动态类型语言的类型。</li>
+</ul>
+</li>
+<li>b. Historical development:<ul>
+<li>以前的方法无法预测变量的类型，并且无法预测开放词汇。</li>
+</ul>
+</li>
+<li>c. Past methods:<ul>
+<li>以前的方法无法预测开放词汇并且无法准确地推断变量的类型。</li>
+</ul>
+</li>
+<li>d. Past research shortcomings:<ul>
+<li>传统方法无法准确地预测动态类型语言的类型。</li>
+</ul>
+</li>
+<li>e. Current issues to address:<ul>
+<li>为动态类型语言的程序员提供一种准确、快速的类型推断方法。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Methods"><a href="#Methods" class="headerlink" title="Methods:"></a>Methods:</h3><ul>
+<li>a. Theoretical basis of the study:<ul>
+<li>本文的理论基础是机器学习和图神经网络，通过对程序中元素的类型上下文进行连续映射来提高预测准确性。</li>
+</ul>
+</li>
+<li>b. Technical route of the article (step by step):<ul>
+<li>Typilus使用图神经网络模型来预测类型，使用一次学习来预测可以包括罕见类型和用户定义类型在内的开放词汇，并且可以帮助发现不正确的类型注释。Typilus使用一种新颖的训练损失将符号的类型特性嵌入TypeSpace中。</li>
+</ul>
+</li>
+<li>c. Performance evaluation and analysis:<ul>
+<li>本文在Python语言上使用了mypy和pytype两个流行的类型检查器对Typilus进行了评估，并发现它保持了高的精度和召回率。在质性评估中，作者发现Typilus可以检测到注释错误，并提出了一些限制和未来的研究方向。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h4><p><img src="/2023/05/19/Typilus-Neural-Type-Hints/image-20230519204654333.png" alt="image-20230519204654333"></p>
+<p>Typilus的总体框架分为两个主要部分：学习一个类型空间(TypeSpace)以及预测类型。</p>
+<ul>
+<li>学习类型空间 (如图1，左侧，蓝色)：Typilus的核心部分是它的TypeSpace，这是一个把代码元素的类型上下文和属性连续投影到多维实数空间的映射。这个空间并非明确设计，而是通过数据学习得到。为了实现这一点，作者们训练了一个神经网络<em>e</em>(·)，它接收一个代码片段S，并学习把S的变量、参数和函数映射到TypeSpace。Typilus使用深度相似度学习，需要一组正样本和负样本进行训练。为了定义这些集合，作者们利用了Python程序中现有的类型注释。为了捕捉代码的语义和词汇属性，Typilus使用了图神经网络(GNN)。GNN从多个来源学习和整合信息，包括标识符、句法约束、句法模式以及控制流和数据流等语义属性。</li>
+</ul>
+<p><img src="/2023/05/19/Typilus-Neural-Type-Hints/image-20230519210922758.png" alt="image-20230519210922758"></p>
+<p><font color="green">在机器学习中，正样本和负样本是训练分类模型的关键。</font></p>
+<p><font color="green">正样本（Positive Examples）: 这些是模型需要识别或预测的样本。在这个上下文中，正样本是那些正确的、应该被模型预测的类型。例如，如果一个变量被注解为”int”类型，那么这个注解就是一个正样本，表示这个变量的类型应该被预测为”int”。</font></p>
+<p><font color="green">负样本（Negative Examples）: 这些是模型需要避免预测的样本。在这个上下文中，负样本是那些错误的或者不应该被模型预测的类型。例如，如果一个变量被注解为”int”类型，那么任何非”int”的类型，如”float”或”string”，都是关于这个变量的负样本，因为它们不是这个变量的正确类型。</font></p>
+<p><font color="green">在训练过程中，模型通过学习这些正样本和负样本，来更好地理解和预测程序符号的类型。</font></p>
+<p><font color="orange">Typilus 的 TypeSpace 是一个从代码符号到多维实数空间的映射，这个映射的目标是保留代码符号的类型上下文和属性。</font></p>
+<p><font color="orange">首先，我们有一些代码符号（例如变量、参数、函数等）以及它们的类型注解。在训练过程中，Typilus 通过学习这些符号的类型以及它们在代码中的上下文（例如，它们如何被使用，它们在哪里被定义，等等），来训练一个神经网络模型。这个模型的目标是将每个符号映射到一个多维实数向量，这个向量就是该符号在 TypeSpace 中的表示（或称为”embedding”）。在这个多维空间中，每个维度都可以被理解为代表了符号的一种类型特性。</font></p>
+<p><font color="orange">举个简单的例子，假设我们有一个变量<code>length</code>，它被注解为<code>int</code>类型，并且在代码中用于表示列表的长度。在训练过程中，Typilus 可能会学习到<code>length</code>常常与列表相关的操作一起出现，因此它可能会在一个特定的维度上给<code>length</code>一个较高的值，以反映它与列表长度相关的上下文。这就是将<code>length</code>映射到 TypeSpace 的过程。同样，其他的符号也会根据它们的类型和上下文被映射到 TypeSpace 中的不同位置。</font></p>
+<p><font color="orange">需要注意的是，这个映射并不是明确设计出来的，而是通过神经网络从数据中学习出来的。在实际的应用中，这个映射的维度数可能会非常大（比如几百或几千），并且每个维度的具体含义可能并不容易解释。尽管如此，这个映射能够有效地将复杂的类型信息和上下文信息编码到一个可以用于预测和分析的实数向量中。</font></p>
+<ul>
+<li>预测类型 (如图1，右侧，红色)：Typilus的e不能直接预测类型，因为它将符号映射到它们在R^D中的类型嵌入。相反，它的输出，也就是TypeSpace，作为程序符号和它们具体类型之间的中间表示。为了预测类型，Typilus构建了τmap，将一个符号的类型嵌入映射到它的类型。这隐含地将每一种类型映射到一组类型嵌入。首先，给定一个代码语料库（不一定是训练语料库），我们将所有已知的类型注释τi映射到TypeSpace中的点。在图1中，int就是一个示例τi。给定τmap和一个查询符号sq（图1中的黑色方块），其类型属性e嵌入在rsq（即e(S)[sq] &#x3D; rsq），Typilus返回一个在TypeSpace中rsq周围的候选类型预测的概率分布。Typilus使用k近邻来定义这个邻域。最后，类型检查器检查最高概率的类型预测，如果没有发现类型错误，Typilus就将它们建议给开发者。</li>
+</ul>
+<p><font color="red">在 Typilus 中，<code>e</code> 是一个神经网络，它的作用是将源代码中的符号（例如变量、参数和函数）映射到 TypeSpace 中的向量，这些向量称为类型嵌入（type embeddings）。然而，<code>e</code> 本身并不能直接预测类型，因为它的输出是连续的实数向量，而不是离散的类型标签。</font></p>
+<p><font color="red">为了从这些类型嵌入中预测类型，Typilus 需要一个额外的映射，这个映射将类型嵌入映射到具体的类型标签。这个映射被称为 τmap。</font></p>
+<p><font color="red">假设我们要预测一个没有类型注解的符号 s。Typilus 首先使用 <code>e</code> 来计算 s 的类型嵌入，记为 r_s。然后，Typilus 在 TypeSpace 中找到距离 r_s 最近的 k 个已知类型嵌入（这些嵌入是从已经有类型注解的符号中学习得到的），并用 τmap 将这些嵌入映射回它们对应的类型。最后，Typilus 选择这些类型中出现概率最高的一个作为 s 的预测类型。</font></p>
+<p><font color="red">举个简单的例子，假设我们有一个没有类型注解的变量 <code>num</code>，我们想要预测它的类型。Typilus 首先使用 <code>e</code> 来计算 <code>num</code> 的类型嵌入，得到一个实数向量 r_num。然后，Typilus 在 TypeSpace 中找到距离 r_num 最近的 k 个已知类型嵌入，假设这些嵌入对应的类型是 <code>&#123;int, float, str&#125;</code>。最后，Typilus 选择这些类型中出现概率最高的一个（例如 <code>int</code>）作为 <code>num</code> 的预测类型。如果这个预测通过了类型检查器的检查，Typilus 就会将这个预测返回给开发者。</font></p>
+<h4 id="The-Deep-Learning-Model"><a href="#The-Deep-Learning-Model" class="headerlink" title="The Deep Learning Model"></a><strong>The Deep Learning Model</strong></h4><p>这部分包括深度学习架构，数据的转换方式，以及训练神经网络的目标函数。这个模型可以解决开放类型词汇的类型预测任务。</p>
+<p><strong>4.1 学习类型空间</strong></p>
+<p>神经网络常常将元素表示为“分布式向量表示”，这种表示方法将“意义”分布在向量的各个组成部分。这样，一个神经网络可能会计算这些向量。例如，一个由可学习参数θ参数化的神经网络e(·)可以接受一些代码片段S的表示作为输入，并返回每个符号s∈S的向量表示rs。这个向量表示被称为类型嵌入，它捕获了S中一个符号的相关类型属性。</p>
+<p>常见的选择是使用类型嵌入进行分类。为此，我们需要一个已知类型的有限集合T&#x3D;{τi }。对于这些类型中的每一个，我们必须学习一个“原型”向量表示r˜τi和一个标量偏置项bτi。然后，给定一个符号s的计算类型嵌入rs&#x3D;e(s)，我们寻求最大化概率P(s:τ )，即最小化分类损失LClass(rs, τ )。</p>
+<p><strong>4.2 自适应类型预测</strong></p>
+<p>一旦训练完成，e(·)已经隐式地学习了一个类型空间。然而，类型空间并不明确地包含类型，因此，对于我们知道类型的一组符号，我们构造一个从他们的类型嵌入到他们类型的映射。形式上，对于每个已知类型τ的符号s，我们使用训练后的e(·)并添加类型标记到类型空间，创建一个映射τmap[e(S)[s]] 7→ τ。</p>
+<p><strong>4.3 图神经网络架构</strong></p>
+<p>到目前为止，我们假设有一些神经网络e(·)可以计算类型嵌入rs，但我们还没有定义这个网络。图神经网络（GNN）是一种在图结构上操作的神经网络。GNN的目标是在图数据中识别模式，这些模式基于节点内的数据和相互连接性。这里，我们描述了消息传递神经网络的广泛类别，然后讨论了我们在这项工作中使用的GNN的具体设计。</p>
+<p><font color="red">TypeSpace不能预测一个从未见过的类型</font></p>
+<p><font color="red">当需要预测一个代码片段的类型时，TypeSpace会找到向量空间中离这个点最近的类型点，并将其作为预测结果。由于从未见过的类型在向量空间中并没有对应的点，所以TypeSpace无法直接预测出这种类型。然而，它可以找到最接近代码片段表示的已知类型，并将其作为预测结果。</font></p>
+<h4 id="Typilus-A-Python-Implementation"><a href="#Typilus-A-Python-Implementation" class="headerlink" title="Typilus: A Python Implementation"></a><strong>Typilus: A Python Implementation</strong></h4><p>作者将Python代码转化为图形（graph）格式，以便作为神经网络的输入。他们提出了一个四种节点类型的图，这个图编码了Python程序的标记、语法树、数据流以及符号表：</p>
+<ol>
+<li><strong>标记节点（Token Nodes)）</strong>：代表程序中的原始词素（lexeme）。</li>
+<li><strong>非终结节点（Non-terminal Nodes）</strong>：表示语法树中的非终端节点。</li>
+<li><strong>词汇节点 （Vocabulary Nodes）</strong>：表示子标记（subtoken），即通过将标识符在camelCase或pascal_case处分割得到的类似单词的元素。</li>
+<li><strong>符号节点（Symbol Nodes）</strong>：表示符号表中的唯一符号，比如一个变量或函数参数。</li>
+</ol>
+<p>在这个图中，他们使用边来表示节点之间的关系，这将被图神经网络（GNN）用于生成输出表示。他们的边具有一些特定的标签，其中有些标签可能从传统的程序分析的角度看起来不太相关，但是之前的研究已经证明它们在捕捉代码模式上是有用的。例如，”NEXT_TOKEN”在程序分析中是冗余的（解析后会被丢弃），但却对预测很有用。对他们的方法特别重要的是”OCCURRENCE_OF”边。例如，绑定变量的标记节点”x”将被连接到其变量符号节点，或者成员访问的AST节点”self.y”将被连接到相关的符号节点。这个边标签让相同符号的不同使用在GNN中交换信息。</p>
+<p><img src="/2023/05/19/Typilus-Neural-Type-Hints/image-20230519215442387.png" alt="image-20230519215442387"></p>
+<p>语法树（AST）编码了传统上用于类型推断的语法信息（例如赋值和运算符），所以GNN可以学习这些关系。函数调用并没有被特别对待（即，没有被链接到它们的定义），因为在部分注释的代码库中，静态解析接收对象和函数通常过于粗糙。相反，GNN包含了被调用函数的名称以及所有关键字参数的名称。</p>
+<p>最后，”SUBTOKEN_OF”将包含子标记的所有标识符连接到代表子标记的唯一词汇节点。这类边显著提高了模型在检测变量误用和建议变量名的任务上的性能。它代表了变量和函数名之间的文本相似性，即使这些名称是先前未见过的。例如，变量名numNodes和函数名getNodes，共享相同的子标记节点。通过添加这个边，GNN学习了程序不同元素的文本相似性，捕捉了依赖于开发者使用的单词的模式。</p>
+<h3 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation:"></a>Evaluation:</h3><h4 id="6-1-Quantitative-Evaluation"><a href="#6-1-Quantitative-Evaluation" class="headerlink" title="6.1 Quantitative Evaluation"></a><strong>6.1 Quantitative Evaluation</strong></h4><p><font color="red">Benchmark:</font></p>
+<p>从Github上搜集了600个带有注解的库，然后，&#x3D;克隆这些存储库并运行pytype，使用可以从静态分析工具推断出的类型注释来增强我们的语料库。</p>
+<p><font color="red">Baselines:</font></p>
+<p>DeepTyper：基于DeepTyper  [31]的基准（带有“Seq”前缀）。</p>
+<p>Code2Sesq：基于code2seq [8]的基准（带有“*Path”后缀）。</p>
+<p>[8] Uri Alon, Omer Levy, and Eran Yahav. 2010. code2seq: Generating Sequences from Structured Representations of Code. In <em>Proceedings of</em> <em>the International Conference on Learning Representations (ICLR)</em>.</p>
+<p><font color="red">Metrics:</font></p>
+<p>度量标准包括：</p>
+<ol>
+<li>精确匹配（Exact Match）：预测类型τp与真实类型τд完全匹配。<font color="green">比如说，如果一个变量的真实类型是<code>List[str]</code>，那么只有当模型预测的结果也是<code>List[str]</code>时，才能算作精确匹配。</font></li>
+<li>忽略所有类型参数后的精确匹配（Match up to Parametric Type）：当忽略所有类型参数（最外层的[]）时，预测类型τp与真实类型τд完全匹配。<font color="green">例如，如果一个变量的真实类型是<code>List[str]</code>，那么无论模型预测的结果是<code>List[str]</code>、<code>List[int]</code>还是<code>List[any]</code>，都算作参数类型匹配。</font></li>
+<li>类型中立（Type Neutral）：预测类型τp与真实类型τд是可互换的，或者在可选类型下是中立的。<font color="green">例如，如果一个变量的真实类型是<code>List[any]</code>，那么当模型预测的结果是<code>List[str]</code>时，可以算作类型中立，因为在可选类型检查的情况下，<code>List[any]</code>是<code>List[str]</code>的子类型。将<code>List[str]</code>传给<code>List[any]</code>不会报错。</font></li>
+</ol>
+<p><font color="red">Experiment Setup：</font></p>
+<ol>
+<li>评估方式：首先，作者查看模型预测真实类型的能力。为此，他们选取现有代码，擦除所有类型注解，然后尝试恢复原始注解。在Sec. 6.1和Sec. 6.2中，他们近似计算类型中立性。他们预处理在语料库中看到的所有类型，将嵌套层次大于2的参数化类型的组成部分重写为Any。然后，他们为预处理过的类型构建了类型层次结构。在Sec. 6.3中，他们通过运行一个可选类型检查器来评估类型中立性。他们在部分注释的程序P中用τp替换τд，创建一个新程序P’，并对P’进行可选类型检查，以观察替换是否触发了类型错误。</li>
+<li>数据集划分：他们将数据集划分为训练集、验证集和测试集，比例为70-10-20。</li>
+</ol>
+<p><font color="red">Results：</font></p>
+<p><img src="/2023/05/19/Typilus-Neural-Type-Hints/image-20230519221631453.png" alt="image-20230519221631453"></p>
+<p>我的感觉是提升的效果很少。Exact Match的准确率不到60%。</p>
+<h4 id="6-2-Ablation-Analysis"><a href="#6-2-Ablation-Analysis" class="headerlink" title="6.2 Ablation Analysis"></a><strong>6.2 Ablation Analysis</strong></h4><p>在这项研究中，作者进行了消融分析（ablation study），通过逐步删除或改变Typilus架构中的不同元素，来测试其对类型预测性能的影响。他们的目标不是详尽无遗地测试所有可能，而是为了展示不同方面如何影响类型预测。</p>
+<h4 id="6-3-Correctness-Modulo-Type-Checker"><a href="#6-3-Correctness-Modulo-Type-Checker" class="headerlink" title="6.3 Correctness Modulo Type Checker"></a><strong>6.3 Correctness Modulo Type Checker</strong></h4><p>在这篇论文中，作者使用了两种可选的类型检查器（mypy和pytype）来评估Typilus的类型预测的正确性。他们将这两个类型检查器的输出作为”ground truth”（参考标准）来进行比较。</p>
+<p>首先，他们排除了那些在使用Typilus之前无法通过类型检查的程序，因为即使Typilus的类型预测是正确的，这些程序也会失败。然后，他们通过检查mypy和pytype的错误类别，筛选出与类型相关的错误，并将这些错误类别用于过滤语料库中的程序。为了解决一些错误类别混合了类型错误和其他错误的问题，他们对经过筛选的程序进行了抽样，并手动确定抽样程序是否存在类型错误。</p>
+<p>在预处理语料库之后，他们分别在剩余的程序上运行mypy和pytype，并逐个测试类型预测。他们跳过了Any类型的预测，以及mypy或pytype在某些预测上崩溃或花费超过20秒的情况。总共，他们使用mypy对350,374个类型预测进行了评估，使用pytype对85,732个类型预测进行了评估。</p>
+<p>表5呈现了应用mypy和pytype于Typilus的顶部类型预测的结果。总体而言，在mypy中，89%的Typilus预测不会导致类型错误，在pytype中为83%。这表明，从可选类型的角度来看，Typilus的类型预测通常是正确的。</p>
+<p>作者利用类型检查器对Typilus的类型预测进行验证，以确定其准确性和有效性。通过与可选类型检查器的比较，作者能够评估Typilus的类型预测在实际应用中的效果，并展示了可选类型检查器如何提高Typilus的建议质量。</p>
+<p><img src="/2023/05/19/Typilus-Neural-Type-Hints/image-20230519223137549.png" alt="image-20230519223137549"></p>
+<p><font color="red">使用mypy检查通过就算正确</font></p>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion:"></a>Conclusion:</h3><ul>
+<li>a. Significance of the work:<ul>
+<li>Typilus为动态类型语言的程序员提供了一种准确、快速的类型推断方法。</li>
+</ul>
+</li>
+<li>b. Innovation, performance, and workload:<ul>
+<li>与过去的类似工具相比，Typilus具有开放词汇的预测方法，克服了封闭词汇预测工具所面临的性能瓶颈。它是一种高效、高精度的类型预测工具。</li>
+</ul>
+</li>
+<li>c. Research conclusions (list points):<ul>
+<li>本文提出了一种新型的机器学习方法Typilus，利用图神经网络模型来预测动态类型语言的类型。</li>
+<li>Typilus使用一种新颖的训练损失将符号的类型特性嵌入TypeSpace中，以提高预测准确性。</li>
+<li>Typilus可以有效地预测多种类型，包括罕见的类型和用户定义的类型。</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/05/19/Typilus-Neural-Type-Hints/">http://example.com/2023/05/19/Typilus-Neural-Type-Hints/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/05/18/Deep-Learning-Type-Inference/" title="Deep Learning Type Inference"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Deep Learning Type Inference</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Typilus-Neural-Type-Hints"><span class="toc-number">1.</span> <span class="toc-text">Typilus: Neural Type Hints</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.2.</span> <span class="toc-text">INTRODUCTION:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Summary"><span class="toc-number">1.3.</span> <span class="toc-text">Summary:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Background"><span class="toc-number">1.4.</span> <span class="toc-text">Background:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Methods"><span class="toc-number">1.5.</span> <span class="toc-text">Methods:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Overview"><span class="toc-number">1.5.1.</span> <span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#The-Deep-Learning-Model"><span class="toc-number">1.5.2.</span> <span class="toc-text">The Deep Learning Model</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Typilus-A-Python-Implementation"><span class="toc-number">1.5.3.</span> <span class="toc-text">Typilus: A Python Implementation</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Evaluation"><span class="toc-number">1.6.</span> <span class="toc-text">Evaluation:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-Quantitative-Evaluation"><span class="toc-number">1.6.1.</span> <span class="toc-text">6.1 Quantitative Evaluation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-Ablation-Analysis"><span class="toc-number">1.6.2.</span> <span class="toc-text">6.2 Ablation Analysis</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-3-Correctness-Modulo-Type-Checker"><span class="toc-number">1.6.3.</span> <span class="toc-text">6.3 Correctness Modulo Type Checker</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conclusion"><span class="toc-number">1.7.</span> <span class="toc-text">Conclusion:</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/19/Typilus-Neural-Type-Hints/" title="Typilus: Neural Type Hints">Typilus: Neural Type Hints</a><time datetime="2023-05-19T14:53:02.000Z" title="发表于 2023-05-19 22:53:02">2023-05-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/18/Deep-Learning-Type-Inference/" title="Deep Learning Type Inference">Deep Learning Type Inference</a><time datetime="2023-05-18T10:39:33.000Z" title="发表于 2023-05-18 18:39:33">2023-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/17/TypeWriter-Neural-Type-Prediction-with-Search-based-Validation/" title="TypeWriter Neural Type Prediction with Search-based Validation">TypeWriter Neural Type Prediction with Search-based Validation</a><time datetime="2023-05-17T12:30:53.000Z" title="发表于 2023-05-17 20:30:53">2023-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/15/PyART%EF%BC%9APython-API-Recommendation-in-Real-Time/" title="PyART：Python API Recommendation in Real-Time">PyART：Python API Recommendation in Real-Time</a><time datetime="2023-05-15T11:51:51.000Z" title="发表于 2023-05-15 19:51:51">2023-05-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/09/Static-Type-Recommendation-for-Python/" title="Static Type Recommendation for Python">Static Type Recommendation for Python</a><time datetime="2023-05-09T11:20:55.000Z" title="发表于 2023-05-09 19:20:55">2023-05-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
