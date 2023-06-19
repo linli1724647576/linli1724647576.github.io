@@ -1,0 +1,379 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIsBasic Information: Title: Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated AP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs">
+<meta property="og:url" content="http://example.com/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIsBasic Information: Title: Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated AP">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-06-19T11:32:34.000Z">
+<meta property="article:modified_time" content="2023-06-19T11:33:28.078Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-19 19:33:28'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-19T11:32:34.000Z" title="发表于 2023-06-19 19:32:34">2023-06-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-19T11:33:28.078Z" title="更新于 2023-06-19 19:33:28">2023-06-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs"><a href="#Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs" class="headerlink" title="Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs"></a>Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs (使用自动升级过时API恢复Jupyter Notebook的可执行性)</li>
+<li>Authors: Chenguang Zhu, Ripon K. Saha, Mukul R. Prasad, and Sarfraz Khurshid</li>
+<li>Affiliation: The first author’s affiliation is The University of Texas at Austin (德克萨斯大学奥斯汀分校)</li>
+<li>Keywords: data science, API migration, software evolution</li>
+<li>URLs: <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3423313.3423953">Paper</a>, <a target="_blank" rel="noopener" href="https://github.com/SoftwareDesignLab/relancer">GitHub</a></li>
+</ul>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction:"></a>Introduction:</h3><p><strong>Motivation:</strong></p>
+<p>数据科学领域的迅猛发展导致了对Jupyter  Notebooks的需求增加，这些Notebooks被用于编程、记录和共享数据分析。然而，许多现有的Notebooks无法被轻松地重新执行，其中一个主要原因是使用了过时的API。本论文提出了一种名为RELANCER的技术，旨在通过自动诊断、推断和升级Notebook中使用的过时API，从而恢复Notebooks的可执行性。</p>
+<p><strong>相关工作：</strong> </p>
+<p>最近的研究已经确定了为什么Jupyter notebook不能轻易地重新执行的一些根本原因。这些包括，Jupyter notebook单元格[14]的执行顺序不明确，缺乏对Jupyter notebook的执行环境[15]的了解，以及引用外部资源（如外部服务器上的数据）[12]，[14]。一项新兴的工作还旨在通过自动推断正确的单元格执行顺序[14]或推断适当的执行环境[15]来恢复此类笔记本的可执行性。</p>
+<p><strong>相关工作存在以下局限性：</strong></p>
+<p>API映射技术[20]、[23]、[29]、[30]、[31]、[32]的局限性：许多API映射技术仅创建映射而不执行端到端的迁移。然而，本论文中的使用情况要求进行完整的迁移。这意味着现有的技术不能直接应用于解决论文中的问题。</p>
+<blockquote>
+<p>API映射技术的方法包括静态分析、动态分析和机器学习等。静态分析方法通过分析源代码和目标代码的语法结构和语义信息，找到相似的函数、类或方法进行映射。动态分析方法则通过运行源代码并监视API调用，然后根据运行时行为来推断目标API的对应关系。机器学习方法可以利用大量的训练数据，通过学习源API和目标API之间的对应关系，从而自动推断映射关系。</p>
+<p>当许多API映射技术仅创建映射而不执行端到端迁移时，意味着它们只提供了源API和目标API之间的对应关系，而没有提供将实际代码从源库迁移到目标库的具体步骤。</p>
+<p>举个例子，假设有一个API映射技术可以将代码从TensorFlow库迁移到PyTorch库。该技术可以分析TensorFlow和PyTorch之间的语法和语义差异，找到相应的函数和类之间的对应关系。它可以生成一个映射表，指示哪些TensorFlow的API应该在PyTorch中使用哪些API来替代。</p>
+<p>然而，这种技术仅提供了API之间的对应关系，而不提供实际的代码转换步骤。开发人员仍然需要手动修改源代码，将TensorFlow的API调用替换为PyTorch的API调用。这可能涉及到修改参数名称、调整函数调用方式等。</p>
+<p>因此，该API映射技术只提供了帮助开发人员理解源代码和目标代码之间的对应关系，但并不提供自动转换源代码的功能。开发人员仍然需要根据映射关系手动执行端到端的迁移步骤，确保代码能够在目标库中正确执行。</p>
+</blockquote>
+<p>依赖参考实现的局限性[27]、[28]、[18]：完成迁移的技术通常依赖源库&#x2F;平台中的参考实现作为强大的迁移预测模型。然而，本论文中的使用情况缺乏这样的参考实现，只有一个无法执行的Notebook。因此，现有的技术无法直接适用于解决该问题。</p>
+<blockquote>
+<p>其次，所有执行完全迁移[27]、[28]、[18]的技术都依赖于源库&#x2F;平台中的引用实现，作为迁移的强预言。</p>
+</blockquote>
+<p>单一信息源的局限性 [27], [28], [18]：现有技术通常依赖单一信息源来计算映射或迁移，通常是现有的更新示例（如GitHub上的示例）或API文档。然而，由于数据科学库的快速演进，可能不存在公开的最新API更改示例。此外，即使API文档可能存在，也可能无法全面捕获所有废弃信息。这就需要一种结合两个信息源的迁移技术。本论文中的使用情况要求在几乎实时的情况下修复由用户选择进行探索的损坏Notebook。传统的API迁移技术没有类似的约束条件，无法满足这种需求。</p>
+<p><img src="/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/image-20230619095958985.png" alt="image-20230619095958985"></p>
+<p><strong>实证研究：</strong></p>
+<p>事实上，我们对Kaggle Jupyter的研究（第二-A节）发现，弃用的api至少是至少31%的不可执行笔记本不可执行的原因之一（如果不是唯一的原因）。</p>
+<p><strong>创新点：</strong> </p>
+<p>论文的创新点基于三个关键见解。首先，每个API升级都可以独立诊断和执行，即一次只处理一个API升级。其次，运行时错误信息可以准确地标识出错误的原因，特别是对于过时的API，运行时错误可以用于精确地确定需要更改的程序元素类型。第三，API升级的先前实例和API库文档是互补的知识来源，可以共同支持自动化的API迁移技术。</p>
+<p>RELANCER方法采用分而治之的策略，通过使用运行时错误来迭代地识别和修复一个API问题，从而恢复损坏的Notebook的可执行性。RELANCER的两个关键组成部分是：使用运行时错误消息预测修复操作的机器学习模型，以及从GitHub示例和API文档中聚合候选API映射的搜索空间。RELANCER利用这两个来源的知识来生成一个候选API映射的排序列表，从而加速搜索过程。</p>
+<p><strong>评估：</strong></p>
+<p>根据所提到的评估结果，RELANCER在一个由255个无法执行的Kaggle Jupyter Notebooks组成的精选数据集上进行了评估。结果显示，RELANCER可以成功地恢复56%的笔记本的可执行性，而仅依赖GitHub示例或API文档的基线方法只能修复38%和36%的笔记本。</p>
+<p>值得注意的是，在大数据和数据分析应用中，几分钟的响应时间被认为是实时或接近实时性能[33]，[34]。因此，本文将5分钟作为接近实时性能的阈值。针对其实时应用场景，RELANCER在5分钟的时间范围内可以使49%的笔记本恢复可执行性，而缺乏其机器学习模型的基线方法只能修复24%的笔记本。</p>
+<p>综合评估结果来看，RELANCER在恢复Jupyter Notebooks的可执行性方面表现优于基线方法，尤其是在实时性能方面。它利用机器学习模型的支持，在短时间内能够较高地修复无法执行的笔记本，提供更高的修复效率和准确性。这些结果表明RELANCER方法具有潜力成为处理无法执行的Jupyter Notebooks的有效解决方案。</p>
+<p><strong>贡献：</strong></p>
+<p>该论文的贡献主要包括以下几点：</p>
+<ol>
+<li>问题：论文提出了将已弃用的API升级来恢复Jupyter Notebooks的执行的问题，并以实时方式支持数据科学家通常使用的探索性编程用例。</li>
+<li>技术：论文提出了一种基于自动化机器学习的技术RELANCER，用于协调修复无法执行的笔记本的升级过程。</li>
+<li>评估：论文在从Kaggle获取的255个无法执行的Jupyter Notebooks的精选数据集上对RELANCER进行了评估，并进行了消融研究，将其性能与5个不同的基准方法进行了比较。</li>
+<li>实现和数据集：论文公开发布了用于该研究的源代码和数据集，以促进结果的复制和开放科学，并可在<a target="_blank" rel="noopener" href="https://sites.google.com/view/relancer">https://sites.google.com/view/relancer</a> 上获取。</li>
+</ol>
+<p><strong>总结：</strong></p>
+<p> 论文的动机是解决现有Jupyter Notebooks的可执行性问题，特别是由于使用了过时的API而导致的问题。为此，作者提出了一种名为RELANCER的技术，该技术通过自动诊断、推断和升级Notebook中使用的过时API来恢复Notebooks的可执行性。RELANCER的创新点包括使用运行时错误信息来指导修复操作、结合GitHub示例和API文档的知识生成候选API映射，并采用分而治之的策略来逐步修复API问题。</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><ul>
+<li>a. 本文研究背景：<ul>
+<li>这篇文章介绍了一种称为RELANCER的技术，它可以通过近实时升级弃用的API来恢复Jupyter Notebooks的可执行性。这对于依赖现有Notebooks查找和分析数据的数据科学家来说非常重要，但由于Python库中的弃用问题，他们经常无法执行它们。RELANCER使用分而治之的策略，通过使用机器学习模型诊断和升级一个API问题来完成。通过基于运行时错误消息预测所需修复类型，RELANCER使用来自GitHub的API迁移示例和API文档的知识创建候选修复的搜索空间。第二个机器学习模型对候选映射进行排名和选择。评估表明，RELANCER可成功恢复56%员工的可执行性，而仅依赖GitHub示例和API文档的基准仅能修复38%和36%员工。在5分钟的时间范围内，RELANCER可以恢复49%员工的执行能力，而没有机器学习模型的基准只能修复24%员工。这项工作解决了通过升级弃用的API来恢复Jupyter Notebooks的执行能力的问题，以促进数据科学中的探索式编程。</li>
+</ul>
+</li>
+</ul>
+<h3 id="背景："><a href="#背景：" class="headerlink" title="背景："></a>背景：</h3><ul>
+<li>a. 题目和特征：<ul>
+<li>本文讨论了Jupyter Notebooks不可执行的问题，这是影响它们在数据科学中的可重用性和可重复性的问题。为了验证最近针对GitHub项目报告的不可执行Notebooks的问题是否也存在于Kaggle上，作者对Kaggle上的Jupyter Notebooks进行了研究，重点研究了使用Python编写的执行预测任务的Notebooks。使用Meta Kaggle收集数据，并从前350个数据集中选择4000个Notebooks进行样本选择。作者执行Notebooks并发现，由于至少出现一种错误，总体语料库中的47%未执行，这与以前针对GitHub的研究结果一致。为了量化API弃用对Notebook可执行性的影响，作者通过手动检查流行DS库的发布说明创建了一个弃用的API ground-truth列表，并识别其语料库中包含582个不可执行的Notebooks，其中包含弃用的API。作者提出了RELANCER，一种有效地结合两个主要信息源-GitHub示例和API文档-以通过错误消息迭代式地解决问题的工具。呈现了一个激励性的例子，说明了RELANCER的工作原理，并提供了由RELANCER生成的修补程序，用于在Kaggle上实际的Jupyter Notebook上修复所有API弃用错误。作者得出结论，RELANCER可以成为解决数据科学中不可执行的Jupyter Notebooks的可行解决方案。本文中使用的源代码和数据集已公开发布以促进复制和开放科学。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Empirical-Study-and-Motivation"><a href="#Empirical-Study-and-Motivation" class="headerlink" title="Empirical Study and Motivation"></a>Empirical Study and Motivation</h3><p>在这项实证研究中，作者通过以下步骤进行了分析和验证：</p>
+<ol>
+<li>数据收集：作者使用了Kaggle的元数据存储库Meta Kaggle作为数据源。他们在2020年7月20日下载了Meta Kaggle的快照，其中包含了49,061个数据集和381,556个Jupyter Notebooks（kernels）。</li>
+<li>抽样：为了简化和提高效率，作者对数据进行了筛选。他们选择了用于预测任务的Python笔记本，并排除了包含媒体数据（如图像、音频和视频）或跨多个或大型文件（&gt;500 MB）的数据集。通过使用Kaggle上的点赞数作为质量的代理指标，他们按照点赞数对通过筛选条件的所有数据集进行排序，并对每个数据集的笔记本使用相同的指标进行排序。作者选择了每个数据集的前100个笔记本（如果可用的话），以保持多样性。最终，作者从前350个数据集中获得了4043个笔记本。</li>
+<li>执行环境：为了执行这些Jupyter Notebooks，作者使用nbconvert工具将它们转换为Python程序。他们在基于Python 3.6的标准Anaconda科学计算环境上设置了一个统一的虚拟执行环境，该环境也被其他研究使用过。该环境包括所有流行的库（超过200个库包）。此外，他们对笔记本集合进行了静态导入分析，并手动安装了最常用的20个Python库。</li>
+<li>执行和分析：在研究集合的4043个笔记本中，2155个笔记本成功执行，而1888个笔记本，即总集合的47%，由于至少一个错误而无法执行。这与之前在GitHub上的研究结果一致，显示无法执行的笔记本也是Kaggle上的一个重要问题，尽管具体的数字由于平台的不同而有所不同。</li>
+<li>弃用错误：为了量化API弃用对笔记本可执行性的影响，作者通过手动检查12个流行的数据科学库的发布说明来创建了一个已弃用API的真实列表。这些库包括scikit-learn、pandas、seaborn、NumPy、SciPy、XGBoost、Plotly、TensorFlow、Keras、statsmodels、imbalanced-learn和CatBoost。通过发布说明，作者手动识别出了317个升级（即API弃用），其中包括198个函数名弃用和119个参数弃用。将这些弃用API与1888个无法执行的笔记本进行对比后发现，其中582个笔记本（31%）至少包含一个这些已弃用的API。</li>
+</ol>
+<p>通过这些实证研究步骤，作者验证了在Kaggle上存在无法执行的笔记本问题，并确认了API弃用对于笔记本可执行性的影响。</p>
+<p><img src="/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/image-20230619094251052.png" alt="image-20230619094251052"></p>
+<p>以下是作者所遇到的困难和他们的解决方法：</p>
+<ol>
+<li>单一信息源的局限性：传统的API迁移技术通常仅依赖于单一信息源，例如GitHub或API文档。然而，在论文中提到的示例中，ShuffleSplit的参数更改的修复补丁并不直接在GitHub上可用。另一方面，仅使用文档的工具可能很难找到示例中其他已弃用API的正确映射，因为cross_validation和model_selection并不在文本上相似。在文档中尝试每个API的brute-force方法是不切实际的，尤其是对于多个已弃用的API。在实验中，使用仅文档的方法在30分钟的时间限制内无法修复该笔记本。</li>
+</ol>
+<p>解决方法：RELANCER通过有效地结合两个主要信息源（GitHub示例和API文档），并根据错误消息进行迭代修复来克服这些挑战。RELANCER首先执行原始笔记本，在第235行发现ImportError错误。然后，RELANCER的修复动作预测器自动识别出需要更改模块的完全限定名。RELANCER通过分析第240行的抽象语法树（AST）来确定受影响的模块名，并在GitHub和文档中搜索潜在的映射关系：APIold → APInew。对于这种特定情况，RELANCER将正确的APInew（model_selection.train_test_split）排在首位。在应用补丁时，RELANCER不仅修复实际引用，还修复必要的导入语句。通过这种方式，RELANCER修复了所有已弃用的错误，直到笔记本完全执行。</p>
+<ol>
+<li>多个错误的处理：在这个示例笔记本中，存在五个唯一的API弃用错误，分布在七个位置上。这意味着每个位置平均有355个候选补丁选择。</li>
+</ol>
+<p>解决方法：RELANCER通过系统地缩小搜索空间和逐个验证候选补丁的方式，有效地解决了多个错误。RELANCER根据错误消息预测适当的修复操作，并通过利用GitHub和文档来获取所有候选的修复选项，并逐个进行验证。通过这种方法，RELANCER在十分钟内修复了所有已弃用的错误。</p>
+<h3 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h3><ul>
+<li>a. 研究的理论基础：<ul>
+<li>RELANCER模型介绍：RELANCER利用机器学习模型使Notebook中的弃用API可执行，采用分治策略，进行多个API问题的诊断和升级。RELANCER创建了一个API修复候选空间，并使用共享变量捕获与语言迁移相关的约束。RELANCER的两个子模型通过meta-learning和RL学习显式学习如何升级单个API，并将其转换为迁移问题。DiagNN模型通过分类器识别错误类型，然后将错误消息传递给GRU，以从RELANCER候选API的语料库中重新排列单词来生成修复句子。TransNN模型通过使用值函数学习来对修复进行积极的筛选。RELANCER采用相似度作为关闭API号码的标记，从GitHub和StackOverflow的API文档和代码示例中学习。作者通过Kaggle平台对RELANCER的有效性进行了评估。</li>
+</ul>
+</li>
+<li>b. 文章中的技术路线（一步一步）：<ul>
+<li>步骤1：通过Meta Kaggle在Kaggle上选择4000个Notebooks来构建数据集</li>
+<li>步骤2：使用Python库和框架(Keras和TensorFlow)编写对Notebooks进行诊断和升级的RELANCER算法</li>
+<li>步骤3：对数据集进行分析以了解API重构问题，并创建一个弃用API ground-truth列表，识别582个包含弃用API的无法执行的Notebooks</li>
+<li>步骤4：RELANCER中使用两个子模型（DiagNN和TransNN），根据错误消息从候选API的语料库中生成正确的修复程序</li>
+<li>步骤5：评估RELANCER模型的有效性，并将其与基准模型进行比较</li>
+</ul>
+</li>
+</ul>
+<p>Refinder:</p>
+<ol>
+<li>错误分析：该步骤分析当前的错误消息，首先预测需要解决该特定错误所需的原子修复操作，然后识别已弃用的API。</li>
+<li>候选映射的聚合：该步骤通过挖掘GitHub代码库和API文档来聚合程序元素之间的候选映射：P Edep → P Enew，其中P E表示API、参数名称或参数值。</li>
+<li>候选映射的排序：该步骤使用学习排序模型对候选映射进行排序，以便更有希望的映射在排序中排名较高。</li>
+<li>创建和验证修改后的程序：该步骤根据排序逐个创建候选程序，并执行它们以检查是否修复了当前的错误。</li>
+</ol>
+<p>这些步骤一直迭代执行，直到笔记本没有任何错误为止，RELANCER自动应用必要的程序转换来升级所有已弃用的API。</p>
+<p><img src="/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/image-20230619100739255.png" alt="image-20230619100739255"></p>
+<h4 id="A-Step-1-Analysis-of-Error-Message"><a href="#A-Step-1-Analysis-of-Error-Message" class="headerlink" title="A. Step-1: Analysis of Error Message"></a>A. Step-1: Analysis of Error Message</h4><p>作者在错误信息的分析中进行了两个部分的处理，即(1) 预测修复操作和(2) 定位有错误的元素以应用修复操作。</p>
+<p><font color="red">预测修复操作：</font>Python程序中主要存在三种API弃用问题：函数弃用、参数弃用和参数值弃用。这些问题广义上对应于修复错误所需的修复操作类型。作者观察到错误消息通常可以指示弃用的类型。例如，修复函数弃用需要重命名API。下面是一些此类弃用的示例错误消息： ImportError: cannot import name ‘jaccard_similarity_score’. ModuleNotFoundError: No module named ‘sklearn.grid_search’.</p>
+<p>直观上，错误消息中存在一些常见的模式，例如某个特定名称无法导入或找到。然而，它们并不完全相同，可能在库和API之间存在差异。为了系统和可靠地利用这些信息，作者构建了一个机器学习分类器，直接从错误消息中预测修复操作。具体而言，分类器预测三种不同的修复操作之一：i) 更改函数的全限定名称，ii) 更改参数名称，和 iii) 更改参数值。</p>
+<p><strong>构建分类器</strong>：作者首先应用标准的文本预处理技术来清理错误消息，例如去除非字母字符，对文本进行分词和标准化。然后将文本转换为令牌计数矩阵，其中每个单词成为一个特征，值表示该令牌的计数。因此，在这一步之后，训练数据集中的每个错误消息都变成了表示错误消息中的文本的数值元组，而目标值则是相应的修复操作。为了从错误消息中预测修复操作，作者使用线性支持向量分类器[53]，因为它被广泛认为非常适合文本分类[54]。</p>
+<p>假设我们有一个错误消息如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ImportError: cannot import name &#x27;jaccard_similarity_score&#x27;.</span><br></pre></td></tr></table></figure>
+
+<p>我们的目标是预测修复操作，即在这种情况下是更改函数的全限定名称。为了构建分类器，我们需要一个训练数据集，其中包含一些示例错误消息及其对应的修复操作。</p>
+<p>我们可以手动创建一个训练数据集，包含多个实例，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Instance 1:</span><br><span class="line">- 错误消息: ImportError: cannot import name &#x27;jaccard_similarity_score&#x27;.</span><br><span class="line">- 修复操作: 更改函数的全限定名称</span><br><span class="line"></span><br><span class="line">Instance 2:</span><br><span class="line">- 错误消息: ImportError: cannot import name &#x27;grid_search&#x27;.</span><br><span class="line">- 修复操作: 更改函数的全限定名称</span><br><span class="line"></span><br><span class="line">Instance 3:</span><br><span class="line">- 错误消息: ModuleNotFoundError: No module named &#x27;sklearn.metrics&#x27;.</span><br><span class="line">- 修复操作: 更改函数的全限定名称</span><br></pre></td></tr></table></figure>
+
+<p>接下来，我们需要对错误消息进行文本预处理和特征提取，以便将其转换为适用于机器学习的数值表示。常见的预处理步骤包括去除非字母字符、分词和标准化。在这个例子中，我们可以将错误消息拆分成单词，并去除特殊字符，得到如下的处理结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Instance 1:</span><br><span class="line">- 错误消息处理后: ImportError cannot import name jaccard_similarity_score</span><br><span class="line">- 修复操作: 更改函数的全限定名称</span><br><span class="line"></span><br><span class="line">Instance 2:</span><br><span class="line">- 错误消息处理后: ImportError cannot import name grid_search</span><br><span class="line">- 修复操作: 更改函数的全限定名称</span><br><span class="line"></span><br><span class="line">Instance 3:</span><br><span class="line">- 错误消息处理后: ModuleNotFoundError No module named sklearn metrics</span><br><span class="line">- 修复操作: 更改函数的全限定名称</span><br></pre></td></tr></table></figure>
+
+<p>接下来，我们将文本转换为特征向量，可以使用词袋模型或TF-IDF等技术。假设我们使用词袋模型，我们可以将每个单词作为特征，并统计每个单词在错误消息中出现的次数。经过转换后，我们得到如下的特征向量表示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Instance 1:</span><br><span class="line">- 特征向量: [1, 1, 1, 1, 0, 0, 0]</span><br><span class="line"></span><br><span class="line">Instance 2:</span><br><span class="line">- 特征向量: [1, 1, 0, 0, 1, 0, 0]</span><br><span class="line"></span><br><span class="line">Instance 3:</span><br><span class="line">- 特征向量: [0, 0, 0, 1, 1, 1, 1]</span><br></pre></td></tr></table></figure>
+
+<p>现在我们有了训练数据集，其中每个实例都包含一个特征向量和对应的修复操作。我们可以使用这些实例来训练一个机器学习分类器，例如线性支持向量分类器。分类器将学习从错误消息的特征向量预测修复操作的映射关系。</p>
+<p>在训练完成后，我们可以使用该分类器来预测新的错误消息的修复操作。对于一个新的错误消息，我们首先对其进行相同的文本预处理和特征提取，然后使用训练好的分类器对其特征向量进行分类预测，得到预测的修复操作。</p>
+<p>通过这种方式，我们可以构建一个机器学习分类器，利用错误消息中的文本信息来预测修复操作，从而帮助自动化解决API迁移问题。</p>
+<p><font color="red">创建训练数据</font>（手动）：为了为修复操作预测器创建训练数据集，我们需要一对对应于已弃用API的有错误和修复版本的实例，其中有错误的版本提供错误消息，可执行的修复版本作为所需修复操作的基准答案。然而，Kaggle不提供跟踪版本和协作项目编辑（类似于GitHub）以方便收集这样的实例。因此，作者设计了一种新颖的基于变异的技术，以系统地创建我们的训练数据。</p>
+<p>假设我们有一个已知的API废弃实例：<code>P Edep → P Enew</code>，其中 <code>P Edep</code> 是废弃的API，<code>P Enew</code> 是修复后的API。我们希望创建一个训练数据示例，其中包含一个具有错误的笔记本、修复的笔记本和对应的修复操作。</p>
+<p>首先，我们需要一个使用了修复后的API的可执行笔记本，作为我们的基础。这个笔记本应该能够成功运行，没有错误。我们可以从我们的Kaggle研究中识别出一组可执行的笔记本，其中使用了修复后的API。</p>
+<p>接下来，我们根据已知的废弃映射 <code>&#123;P Edep → P Enew&#125;</code>，将废弃的API <code>P Edep</code> 替换为修复后的API <code>P Enew</code>，从而创建一个具有错误的版本的笔记本。这个错误版本的笔记本将包含废弃的API，这会导致一个错误出现。</p>
+<p>然后，我们执行这个错误版本的笔记本，以生成相应的错误消息。错误消息将作为训练数据的一部分。</p>
+<p>最终，我们的训练数据示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Instance:</span><br><span class="line">- 错误的笔记本: 包含废弃的API `P Edep`</span><br><span class="line">- 修复的笔记本: 使用修复后的API `P Enew`</span><br><span class="line">- 修复操作: 从 `P Edep` 更改为 `P Enew`</span><br><span class="line">- 错误消息: 生成的错误消息</span><br></pre></td></tr></table></figure>
+
+<p>通过这种方法，我们可以根据已知的废弃映射和可执行的笔记本，系统地创建训练数据示例，每个示例包含一个错误的笔记本、修复的笔记本、修复操作和相应的错误消息。这些示例将用于训练我们的修复操作预测器分类器。</p>
+<p><font color="red">定位Bug程序元素</font>：为了定位Bug程序元素，作者使用了错误消息的结构信息以及源代码的AST（抽象语法树）。</p>
+<p>首先，作者从错误消息的堆栈跟踪中提取出主文件中最近（最后）的调用点所在的行号。例如，在Figure 2中是第235行。</p>
+<p>接下来，作者从该源文件的AST中提取出该行中与废弃相关的程序元素，包括模块&#x2F;函数&#x2F;参数名称和值。</p>
+<p>然后，作者在错误消息的文本部分中搜索所有候选的程序元素，以确定错误所指的确切程序元素。作者通过比较候选程序元素和错误消息的文本来找到匹配的程序元素。</p>
+<p>通过这种方式，作者能够准确地定位错误消息所描述的Bug程序元素。在示例中，作者定位了与错误相关的cross_validation模块。</p>
+<h4 id="B-Step-2-Aggregation-of-Candidate-Mappings"><a href="#B-Step-2-Aggregation-of-Candidate-Mappings" class="headerlink" title="B. Step-2: Aggregation of Candidate Mappings"></a>B. Step-2: Aggregation of Candidate Mappings</h4><p>为了创建候选映射集合，作者利用了两个信息来源：API文档和GitHub。</p>
+<ol>
+<li>挖掘API文档：在这一步中，作者的目标是创建一个离线的知识库，其中包含每个库的最新版本中的每个API。大多数流行的库使用非常相似的格式结构来编写API文档。RELANCER解析（使用Beautiful Soup [59]）HTML页面，收集API方法的参数名称和可能的离散值集合（如果有）。然后将这些库的信息存储在内部的JSON数据库中。</li>
+<li>挖掘GitHub：由于RELANCER专注于逐个修复P Edep，它通过提供的REST API [61]使用GitHub的搜索引擎来高效地搜索相关的代码变更。首先，给定一个被识别的已弃用API Fdep，它需要修复，RELANCER将Fdep的完全限定名称进行分词，然后构建一个GitHub搜索查询，其中包括每个分词和关键词：“update”、“upgrade”、“replace”和“deprecate”。然后，RELANCER使用GitHub的REST API执行此查询，该API返回按照GitHub的“Best Match”度量标准 [62]降序排列的提交列表。</li>
+</ol>
+<blockquote>
+<p>假设我们仍然处理的是函数<code>jaccard_similarity_score</code>，我们需要在GitHub上找到与之相关的代码变更，以获取候选映射。</p>
+<p>RELANCER构造一个GitHub搜索查询，包括关键词：“update”、“upgrade”、“replace”和“deprecate”，以及函数名称的分词：”jaccard” 和 “similarity”。</p>
+<p>例如，构建的查询可能是：<code>jaccard update</code>, <code>jaccard upgrade</code>, <code>jaccard replace</code>, <code>jaccard deprecate</code>, <code>similarity update</code>, <code>similarity upgrade</code>, <code>similarity replace</code>, <code>similarity deprecate</code>等。</p>
+<p>然后，RELANCER通过GitHub的REST API执行这些查询，并获得相关的提交列表。</p>
+<p>对于每个提交，RELANCER会提取出变更前后的程序版本（V0和V1）的抽象语法树（AST）。如果V0的AST中包含了<code>jaccard_similarity_score</code>函数的调用，那么这个提交是相关的。</p>
+<p>然后，RELANCER分析V0和V1之间的AST差异。如果在V0中删除了<code>jaccard_similarity_score</code>函数的调用，并且在V1中添加了与之相似的调用，那么RELANCER将该添加的调用视为对<code>jaccard_similarity_score</code>的升级。</p>
+<p>最终，RELANCER可以得到一个候选映射集合，例如： <code>jaccard_similarity_score → &#123;jaccard_score, sklearn.metrics.jaccard_score, sklearn.metrics.accuracy_score&#125;</code>。</p>
+</blockquote>
+<p>编译候选映射集合：RELANCER允许三种类型的升级：i) API名称更改，ii) 参数名称更改，iii) 参数值更改。并且RELANCER一次只执行一个升级。因此，对于给定的弃用程序元素，即API、参数或值，RELANCER从API文档和GitHub中提取的元素集合取并集，编译成最终的候选映射集合：P Edep → {P E1new, P E2new, .., P Ennew}。</p>
+<p>通过这种方式，RELANCER能够综合利用API文档和GitHub中的信息，构建出包含所有可能的候选映射的集合。</p>
+<h4 id="C-Step-3-Ranking-of-Candidate-Mappings"><a href="#C-Step-3-Ranking-of-Candidate-Mappings" class="headerlink" title="C. Step-3: Ranking of Candidate Mappings"></a>C. Step-3: Ranking of Candidate Mappings</h4><p>作者使用基于机器学习的学习排序策略来对给定的废弃API的候选修复方案进行排名。他们设计了四个特征用于排名任务，其中两个特征来自API文档，另外两个特征来自GitHub。以下是这些特征的计算和使用方式：</p>
+<ol>
+<li>GitHub上的出现次数（OG）：RELANCER在GitHub提交中找到Fdep → Fnew映射的次数。该特征表示候选修复的流行度或使用情况。</li>
+<li>OG的百分比（POG）：通过将OG除以RELANCER找到的Fdep存在的总次数，计算出OG在总次数中的比例。POG提供了候选修复在相同废弃API的其他映射中的流行度的归一化度量。</li>
+<li>完全限定名之间的距离（DFQN）：RELANCER使用Damerau-Levenshtein距离算法计算Fdep和Fnew的完全限定名之间的距离。然后，将距离归一化为0到1之间的值，其中0表示完全相同的名称。此特征捕捉了废弃API和候选修复之间的相似性。</li>
+<li>简单名称的距离（DSimple）：RELANCER使用与DFQN相同的方法，但是计算Fdep和Fnew的简单名称之间的分数（不考虑包或模块名称）。该特征侧重于废弃API和候选修复的简单名称的相似性。</li>
+</ol>
+<p>作者使用正例和负例创建训练数据集。正例是具有正确的Fdep → Fnew映射的真实映射，而负例在语法上代表了正确的替代方案，但在功能上是不正确的。对于每个目标映射，以上述四个特征计算每个正例和负例的数值。因此，最终的训练数据集包含一系列数据样本，每行表示旧API到新API的映射，并包含四个特征值以及是否为有效映射的信息。</p>
+<p>现在，作者将学习排序算法构建为一个二元分类问题，目标是确定特定映射是否正确。为此，他们使用LightGBM作为分类模型，LightGBM是实践中广泛使用的机器学习技术。</p>
+<p>在操作中，对于给定的废弃API Fdep，RELANCER获取步骤2中的所有候选映射{F1new, F2new, …, F nnew}。然后，将这些候选映射传递给经过训练的LightGBM模型，该模型为每个候选映射计算一个概率分数，表示其正确性的可能性。RELANCER使用这些概率分数对所有候选映射进行排名，首先考虑函数映射，然后按照文档顺序排列参数映射。</p>
+<p>通过利用基于机器学习的学习排序策略和这四个特征，RELANCER有效地为给定的废弃API对候选API进行排名，帮助开发人员找到最合适的修复方案。</p>
+<h4 id="D-Step-4-Creation-and-Validation-of-Modifified-Programs"><a href="#D-Step-4-Creation-and-Validation-of-Modifified-Programs" class="headerlink" title="D. Step-4: Creation and Validation of Modifified Programs."></a>D. Step-4: Creation and Validation of Modifified Programs.</h4><p>作者使用以下步骤来创建和验证修改后的程序：</p>
+<ol>
+<li>给定一个按排名排序的候选映射列表，RELANCER从列表的顶部开始迭代每个映射。</li>
+<li>对于给定的映射：P Edep → P Enew，RELANCER将P Edep替换为P Enew，创建一个新版本的候选程序。</li>
+<li>RELANCER通过执行新版本的程序来验证修改是否有效。如果错误消息的类型没有改变，RELANCER继续到下一个映射。但是，如果RELANCER得到一个新的错误消息，它会认为已经修复了当前的错误，并返回到步骤1分析错误消息。</li>
+<li>RELANCER继续执行这些步骤，直到笔记本中没有错误，或者候选映射的搜索空间耗尽，或者超过了给定的时间限制。</li>
+</ol>
+<p>通过不断地替换和验证候选映射，RELANCER逐步改进程序，直到没有错误或搜索空间用尽。这样，开发人员可以找到修复错误的有效解决方案。</p>
+<h3 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h3><h4 id="实验设置"><a href="#实验设置" class="headerlink" title="实验设置"></a>实验设置</h4><p>A. 实现： RELANCER是用Python编程语言实现的。它主要有三个组件：i) API文档的挖掘，ii) 在Github上按需搜索编辑示例，和iii) AST（抽象语法树）操作和验证。我们使用Beautiful Soup [59]来解析API文档的HTML页面，提取相关信息。我们使用nbconvert [37]将Jupyter Notebooks转换为Python程序，以便于自动运行和生成错误消息。我们使用GitHub REST API [61]在GitHub上搜索潜在的示例，然后使用LibCST [68]，一个流行的用于Python的静态分析框架，来分析AST的差异等。我们还使用LibCST进行必要的更改，生成处理过时错误的潜在修复方案。我们使用scikit-learn [39]和LightGBM [67]这两个流行的开源机器学习库来实现我们的机器学习模型。</p>
+<p>B. 数据集的创建： 由于RELANCER是基于机器学习的技术，为了正确评估它，我们需要一个训练数据集和一个测试数据集，它们是互斥的。在第二节的初步研究中，我们得到了582个包含至少一个过时API的无法执行的笔记本。然而，由于RELANCER的目标只是修复过时错误，我们希望筛选掉那些有无关错误的笔记本。然而，检测所有这些无关错误是非常具有挑战性的。</p>
+<p>错误分析提供了一种自动检测候选过时错误的方法，因为先前的研究[17]表明，某些类型的错误消息与API使用问题相关，这可能导致过时错误。然而，错误消息只提供了程序执行过程中第一个错误的描述。因此，我们的目标是至少捕获那些第一个错误与废弃API相关的笔记本。我们对错误消息进行了自动分析，以识别候选的过时错误列表，其中包含五种错误：i) 导入错误，ii) 模块未找到错误，iii) 类型错误，iv) 值错误，v) 属性错误。然后我们在我们的真实API数据集中搜索这些API。最后，我们确定了255个笔记本，其中第一个错误是由于过时错误引起的。因此，我们将所有的255个笔记本作为我们的测试数据集，用于评估RELANCER。表I提供了有关数据集的更多详细信息。</p>
+<p>C. 训练RELANCER： 训练修复动作模型。为了使训练数据集和测试数据集互斥，我们的基于变异的框架（在第III-A2节中描述）没有使用任何来自测试数据集的过时API，即Ftest &#x3D; {F1test，F2test，..}。为此，我们从我们的真实API数据集FG中排除了Ftest，并且只使用剩余的过时API（Ftr &#x3D; FG - Ftest）来设计变异操作。我们使用我们在初步研究中获得的所有2155个可执行笔记本（第II-A节）作为种子程序，按照第III-A2节中的描述创建训练数据。最后，我们构建了一个包含500个&lt;错误消息，修复动作&gt;对的训练数据集。</p>
+<p>我们还按照第III-C节中描述的方法构建了用于学习排序模型的训练数据，从Ftr中获得了485个实例的训练数据集。</p>
+<p>D. 研究问题： 我们评估RELANCER与以下研究问题相关的表现： </p>
+<ul>
+<li>RQ-1：RELANCER在修复Jupyter Notebooks的API过时问题方面的效果如何？ </li>
+<li>RQ-2：RELANCER是否需要不同的信息来源才能表现良好？ </li>
+<li>RQ-3：RELANCER中的机器学习模型是否有助于在准实时情况下升级更多的API？</li>
+</ul>
+<h4 id="RQ1："><a href="#RQ1：" class="headerlink" title="RQ1："></a>RQ1：</h4><p>为了评估RELANCER的有效性，作者在测试数据集中的所有255个notebook上运行了RELANCER，并为每个notebook设置了30分钟的超时时间。然后，他们根据修复的notebook数量和完全修复notebook所需的时间来衡量其有效性。图5显示，RELANCER完全修复了255个notebook中的142个。在这142个被修复的notebook中，107个只需要升级API的完全限定名称。另外35个notebook需要更改参数名称或参数值，有些需要API的完全限定名称，而有些则不需要。RELANCER可以修复需要复杂修复的notebook中的多个错误，包括API的完全限定名称和参数。RELANCER在单个notebook中升级的最大数量的过时API为8个。此外，值得注意的是，Python是一种功能丰富的语言，允许使用默认值的可选参数，如果开发人员没有显式指定参数，则使用默认值。然而，有时甚至默认值也可能被弃用，导致notebook无法正常运行。在这种情况下，RELANCER可以使用正确的值显式传递有问题的参数。例如，如图7所示，当被弃用的API <code>jaccard_similarity_score</code> 更改为 <code>jaccard_score</code> 后，<code>average</code> 的默认值就不再有效。因此，RELANCER在调用点添加了该参数，并使用正确的值。</p>
+<p><img src="/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/image-20230619150609141.png" alt="image-20230619150609141"></p>
+<p>由RELANCER生成的补丁的大小在2到25行代码（LOC）之间，中位数为3 LOC。当RELANCER能够修复一个notebook时，执行时间从2秒到28分钟不等，平均每个notebook约2分钟（中位数为17秒）。这个结果表明RELANCER可以在实时环境中用于修复过时的错误。</p>
+<p>验证。作者手动验证了所有成功的补丁，确保RELANCER为每个弃用的API使用了最新的API和&#x2F;或参数。此外，他们还进行了客观评估，以确保修复后的notebook符合实际开发人员的意图。为此，他们利用了Jupyter Notebooks的输出单元格功能。具体而言，Jupyter Notebooks通常有一个输出单元格，用于存储原始运行的准确性。作者能够从输出单元格中识别出原始准确性，并发现修复弃用错误后的新准确性与原始准确性的中位数相差不超过1%。值得注意的是，大多数机器学习模型具有固有的随机性。因此，我们相信这种小的准确性差异并不令人意外。</p>
+<p><img src="/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/image-20230619150544775.png" alt="image-20230619150544775"></p>
+<blockquote>
+<p>对RQ1的回答：Refinder恢复了56%的笔记本的执行，修复了一个笔记本中多达8个错误。修复笔记本的平均时间只有17秒，适合实时使用。</p>
+</blockquote>
+<h4 id="RQ2："><a href="#RQ2：" class="headerlink" title="RQ2："></a>RQ2：</h4><p>为了了解API文档和Github这两个信息源是否都对RELANCER的性能发挥起到贡献作用，作者从RELANCER中创建了两个基准工具。其中，RELANCERgithub仅使用来自Github的信息，而不使用API文档的信息，而RELANCERdoc则只使用API文档的信息，而不使用Github的信息。两个基准工具的其他功能与RELANCER相似。需要强调的是，据我们所知，目前没有可用于升级Jupyter Notebooks的API的工具，因此我们无法直接比较任何现有的技术。然而，从概念上讲，基准工具RELANCERgithub和RELANCERdoc粗略地模拟了仅使用Github（例如Meditor [27]）或仅使用API文档和错误消息（例如SOAR [18]）的方法。</p>
+<p>实验结果显示，RELANCER在修复notebook的数量方面明显优于RELANCERgithub和RELANCERdoc。具体而言，RELANCER修复了142个notebook，而RELANCERgithub和RELANCERdoc分别修复了96个和92个notebook。</p>
+<p>类似地，Github上可能没有所有针对带有参数的弃用API的可能示例更改。例如，tensorflow.train.RMSPropOptimizer被弃用，并且在我们的数据集中的一个notebook中使用，但我们的按需搜索没有提供任何有用的候选项。这在较不常用的API中可能经常发生。</p>
+<p>总之，所有这些结果表明，如果不利用多个信息源的信息，RELANCER无法发挥其全部潜力，因为每个信息源对于特定任务起着重要作用。</p>
+<p><img src="/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/image-20230619151424819.png" alt="image-20230619151424819"></p>
+<blockquote>
+<p>对RQ2的回答：这两种信息来源都有助于Refinder的整体有效性。RELANCER可以成功地恢复56%的主题的可执行性，而仅依赖于GitHub示例和API文档的基线分别只能修复38%和36%的主题。</p>
+</blockquote>
+<h4 id="RQ3"><a href="#RQ3" class="headerlink" title="RQ3:"></a>RQ3:</h4><p>为了评估RELANCER中两个机器学习模型的贡献以及其对整体性能的影响，作者创建了三个基准工具。</p>
+<p>第一个基准工具是RELANCERrandom。在这个基准工具中，RELANCER将修复操作随机排序，而不使用其修复操作模型。</p>
+<p>第二个基准工具是RELANCERtext。在这个基准工具中，RELANCER的学习排序模型被基于编辑距离的排序所取代。具体而言，将来自GitHub和API文档的候选元素结合起来，并按照弃用元素和新元素之间的Damerau-Levenshtein距离得分[66]降序排序。</p>
+<p>第三个基准工具是RELANCERnaive。在这个基准工具中，将机器学习模型替换为RELANCERrandom和RELANCERtext，以了解两个模型在整体性能中的影响。</p>
+<p>实验结果如图9所示，显示了RELANCER和基准工具修复的notebook数量以及执行时间。从结果可以明显看出，即使我们用简单的基准模型替换一个机器学习模型，RELANCER的性能也会下降。具体而言，RELANCERrandom、RELANCERtext和RELANCERnaive分别修复了108、102和78个notebook，少于RELANCER修复的142个。这表明两个机器学习模型对RELANCER的整体性能有贡献。</p>
+<p>作者对每个基准工具与RELANCER的结果进行了无配对t检验。RELANCER与RELANCERrandom、RELANCER与RELANCERtext以及RELANCER与RELANCERnaive的p值分别为0.0014、0.0002和&lt;0.0001。检验结果表明，RELANCER相对于任何基准工具的性能改进不仅在数值上显著，而且在统计上也显著。</p>
+<p>如果我们减少RELANCER和其他基准工具的超时时间，预期每种技术修复的notebook数量会减少。然而，由于其机器学习模型，RELANCER的性能下降比其他基准工具更少。如果我们为所有工具设置5分钟的超时时间，RELANCER可以修复124个（49%）notebook，而naïve基准工具只能修复60个（24%）notebook。</p>
+<blockquote>
+<p>对RQ3的回答：这两个机器学习模型帮助Refinder实现其实时用例。相关器可以在5分钟内修复49%的受试者，而缺乏其机器学习模型的基线只能修复24%。</p>
+</blockquote>
+<h3 id="结论："><a href="#结论：" class="headerlink" title="结论："></a>结论：</h3><ul>
+<li>a. 工作的意义：<ul>
+<li>本文的创新点在于提出了一种利用近实时API重构技术使破碎的Jupyter Notebooks可执行的方法。作者完成了两个重要的任务。首先，作者创建了一个基于Meta Kaggle的数据集，并在该数据集上开发了RELANCER（利用两个子模型来执行API重构）。其次，作者通过评估Relancer的有效性，证明该方法优于之前提出deprecate API RESToration with reExecution-based技术的基准模型。 发现这种基于机器学习技术的Jupyter Notebook可执行性解决方案，对数据科学家非常重要，提高了Notebook的可重用性和复制的可重复性。</li>
+</ul>
+</li>
+<li>b. 创新性、性能和工作量：<ul>
+<li>RELANCER相对于其他已有的Jupyter Notebook修复技术具有显著的优势。它利用机器学习模型处理API问题，处理时间更短，修复的Notebooks更多，效果更好。研究还讨论了与软件工程和数据科学相关的论文和工具，并提供了进一步资源的链接。此外，本文还讨论了自动化补丁生成和静态分析违规数据驱动修复的程序修复研究。这篇文章研究了这些领域的最新趋势和技术，使研究人员和从业者可以了解新兴技术和方法。</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/">http://example.com/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/06/03/%E4%BB%A3%E7%A0%81%E8%A1%A8%E5%BE%81%E9%A2%84%E8%AE%AD%E7%BB%83%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%88%86%E6%9E%90%E5%92%8C%E4%BB%A3%E7%A0%81/" title="代码表征预训练语言模型学习指南：原理、分析和代码"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">代码表征预训练语言模型学习指南：原理、分析和代码</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs"><span class="toc-number">1.</span> <span class="toc-text">Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.2.</span> <span class="toc-text">Introduction:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">总结：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%EF%BC%9A"><span class="toc-number">1.4.</span> <span class="toc-text">背景：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Empirical-Study-and-Motivation"><span class="toc-number">1.5.</span> <span class="toc-text">Empirical Study and Motivation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">1.6.</span> <span class="toc-text">方法：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#A-Step-1-Analysis-of-Error-Message"><span class="toc-number">1.6.1.</span> <span class="toc-text">A. Step-1: Analysis of Error Message</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#B-Step-2-Aggregation-of-Candidate-Mappings"><span class="toc-number">1.6.2.</span> <span class="toc-text">B. Step-2: Aggregation of Candidate Mappings</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#C-Step-3-Ranking-of-Candidate-Mappings"><span class="toc-number">1.6.3.</span> <span class="toc-text">C. Step-3: Ranking of Candidate Mappings</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#D-Step-4-Creation-and-Validation-of-Modifified-Programs"><span class="toc-number">1.6.4.</span> <span class="toc-text">D. Step-4: Creation and Validation of Modifified Programs.</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%84%E4%BC%B0"><span class="toc-number">1.7.</span> <span class="toc-text">评估</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.7.1.</span> <span class="toc-text">实验设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RQ1%EF%BC%9A"><span class="toc-number">1.7.2.</span> <span class="toc-text">RQ1：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RQ2%EF%BC%9A"><span class="toc-number">1.7.3.</span> <span class="toc-text">RQ2：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RQ3"><span class="toc-number">1.7.4.</span> <span class="toc-text">RQ3:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA%EF%BC%9A"><span class="toc-number">1.8.</span> <span class="toc-text">结论：</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/" title="Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs">Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs</a><time datetime="2023-06-19T11:32:34.000Z" title="发表于 2023-06-19 19:32:34">2023-06-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/03/%E4%BB%A3%E7%A0%81%E8%A1%A8%E5%BE%81%E9%A2%84%E8%AE%AD%E7%BB%83%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%88%86%E6%9E%90%E5%92%8C%E4%BB%A3%E7%A0%81/" title="代码表征预训练语言模型学习指南：原理、分析和代码">代码表征预训练语言模型学习指南：原理、分析和代码</a><time datetime="2023-06-03T14:28:17.000Z" title="发表于 2023-06-03 22:28:17">2023-06-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/02/%E9%A2%84%E8%AE%AD%E7%BB%83%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F-%E4%BB%8EWord-Embedding%E5%88%B0BERT/" title="预训练语言模型的前世今生 - 从Word Embedding到BERT">预训练语言模型的前世今生 - 从Word Embedding到BERT</a><time datetime="2023-06-02T01:34:10.000Z" title="发表于 2023-06-02 09:34:10">2023-06-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/24/Type-Infer%E6%96%87%E7%8C%AE%E7%BB%BC%E8%BF%B0/" title="Type Infer文献综述">Type Infer文献综述</a><time datetime="2023-05-24T08:47:44.000Z" title="发表于 2023-05-24 16:47:44">2023-05-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/24/Static-Inference-Meets-Deep-Learning-A-Hybrid-Type-Inference-Approach-for-Python/" title="Static Inference Meets Deep Learning A Hybrid Type Inference Approach for Python">Static Inference Meets Deep Learning A Hybrid Type Inference Approach for Python</a><time datetime="2023-05-24T08:38:35.000Z" title="发表于 2023-05-24 16:38:35">2023-05-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
