@@ -1,0 +1,304 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Characterization and Automatic Update ofDeprecated Machine-Learning API Usages | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Characterization and Automatic Update of Deprecated Machine-Learning API Usages摘要： a. 本文的研究背景： 本文介绍了一种名为MLCatchUp的工具，用于自动更新Python中已停用的机器学习API。作者对Scikit-Learn、TensorFlow和PyTorch中的112个已停用的API进行了实证研究，并确定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Characterization and Automatic Update ofDeprecated Machine-Learning API Usages">
+<meta property="og:url" content="http://example.com/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Characterization and Automatic Update of Deprecated Machine-Learning API Usages摘要： a. 本文的研究背景： 本文介绍了一种名为MLCatchUp的工具，用于自动更新Python中已停用的机器学习API。作者对Scikit-Learn、TensorFlow和PyTorch中的112个已停用的API进行了实证研究，并确定">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-06-20T08:33:49.000Z">
+<meta property="article:modified_time" content="2023-06-20T08:35:10.339Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Characterization and Automatic Update ofDeprecated Machine-Learning API Usages',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-20 16:35:10'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">58</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Characterization and Automatic Update ofDeprecated Machine-Learning API Usages</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-20T08:33:49.000Z" title="发表于 2023-06-20 16:33:49">2023-06-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-20T08:35:10.339Z" title="更新于 2023-06-20 16:35:10">2023-06-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Characterization and Automatic Update ofDeprecated Machine-Learning API Usages"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Characterization-and-Automatic-Update-of-Deprecated-Machine-Learning-API-Usages"><a href="#Characterization-and-Automatic-Update-of-Deprecated-Machine-Learning-API-Usages" class="headerlink" title="Characterization and Automatic Update of Deprecated Machine-Learning API Usages"></a>Characterization and Automatic Update of Deprecated Machine-Learning API Usages</h2><h3 id="摘要："><a href="#摘要：" class="headerlink" title="摘要："></a>摘要：</h3><ul>
+<li>a. 本文的研究背景：<ul>
+<li>本文介绍了一种名为MLCatchUp的工具，用于自动更新Python中已停用的机器学习API。作者对Scikit-Learn、TensorFlow和PyTorch中的112个已停用的API进行了实证研究，并确定了三个与更新操作、API映射和上下文依赖性相关的停用API迁移维度。作者根据其发现构建了MLCatchUp，通过比较API的签名自动推导出停用到更新API所需的转换，并在其特定领域语言（DSL）中表达出来。在评估中，MLCatchUp实现了86.19％的精度，作者通过增加允许用户指定上下文相关迁移的转换约束功能将该精度提高到93.58％。与以前的工具相比，MLCatchUp在支持Python的特殊功能（如参数默认值和动态类型）方面是独特的。</li>
+</ul>
+</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ul>
+<li>a. 主体和特征：<ul>
+<li>本文研究的主体为Python机器学习API。</li>
+</ul>
+</li>
+<li>b. 历史发展：<ul>
+<li>Python机器学习API的不断发展和完善，同时也存在着不断停用和更新的API。</li>
+</ul>
+</li>
+<li>c. 过去的方法：<ul>
+<li>以往更新Python中停用的API需手动更新。</li>
+</ul>
+</li>
+<li>d. 过去研究的不足：<ul>
+<li>过去的方法效率低下，需要人工操作，耗时耗力，难以处理复杂的API更新操作。</li>
+</ul>
+</li>
+<li>e. 当前需解决的问题：<ul>
+<li>为了提高Python机器学习API的开发效率，研究自动化停用API更新的方法势在必行。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p><strong>背景</strong></p>
+<p>这篇论文的研究背景是机器学习的流行度在近年来迅速增长，Python成为最流行的机器学习编程语言，其中的Python库提供了丰富的机器学习功能和易于使用的API。然而，这些库的API会不断更新，包括废弃用法的更改。废弃的API用法必须替换为更新的API，以确保代码能够适应库的未来版本。</p>
+<p>之前的研究表明，手动更新废弃API用法是繁琐和耗时的，导致一些开发人员更倾向于使用旧版本的库。因此，本论文的创新点在于提出了一种自动更新Python废弃机器学习库API用法的工具，名为MLCatchUp。该工具通过比较废弃API和更新API的签名，自动推断所需的转换，并以自定义的领域特定语言（DSL）表达转换规则。</p>
+<p><strong>实证研究</strong></p>
+<p>在进行实证研究的基础上，论文发现了Python机器学习库中废弃API迁移的三个常见维度：选择的更新操作（基于API迁移中执行的操作类型）、API映射（基于弃用和更新的API的数量）和上下文依赖（基于API迁移是否取决于周围使用上下文中的信息）。论文提出了适用于Python语言的MLCatchUp工具，并与其他类似的重构和自动API用法更新工具进行了比较。相比于之前的工具，MLCatchUp是唯一支持Python语言并具有其独特特性的工具。论文提到这是第一篇关于弃用API检测的论文。</p>
+<p><strong>方法</strong></p>
+<p>论文通过实证研究和工具设计，提供了自动更新Python废弃机器学习库API用法的解决方案，填补了该领域的研究空白。同时，MLCatchUp工具考虑了Python语言的特殊性，并通过自定义<strong>DSL语言和转换规则</strong>来处理动态类型、关键字参数等Python的独特特点。</p>
+<p>根据实证研究的结果，论文提出了一个名为MLCatchUp的工具，用于自动更新Python废弃API用法。MLCatchUp的输入包括废弃API的签名、更新API的签名以及待更新的文件。它通过比较废弃API和更新API的签名来自动推断所需的转换操作。推断得到的转换操作以一种基于该研究实验结果构建的领域特定语言（DSL）的形式表示。</p>
+<p>简而言之，MLCatchUp的输入包括：</p>
+<ol>
+<li>废弃API的签名：即废弃API的描述和参数信息。</li>
+<li>更新API的签名：即更新后API的描述和参数信息。</li>
+<li>待更新的文件：即需要对其中的废弃API用法进行自动更新的源代码文件。</li>
+</ol>
+<p>MLCatchUp的输出是：</p>
+<ol>
+<li>推断的转换操作：MLCatchUp根据比较废弃API和更新API的签名，自动推断出必要的转换操作，以将废弃API用法更新为更新API的用法。</li>
+<li>表达式DSL：推断得到的转换操作以领域特定语言（DSL）的形式表示，该DSL是基于实证研究结果构建的，用于描述废弃API迁移的转换规则。</li>
+</ol>
+<p>综上所述，MLCatchUp的目标是根据提供的废弃API和更新API的签名，自动推断出转换操作，并以DSL的形式表示这些操作，以便自动更新源代码中的废弃API用法。</p>
+<p><strong>相关工作局限性</strong></p>
+<p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620105550207.png" alt="image-20230620105550207"></p>
+<p>根据论文提供的信息，MLCatchUp与之前研究中的其他类似重构和自动API用法更新工具相比，具有以下特点和区别：</p>
+<ol>
+<li>支持Python语言和其独特特性：与其他工具相比，MLCatchUp是唯一支持Python语言的工具。Python具有一些独特的特性，包括参数默认值、两种类型的参数（位置参数和关键字参数）、使用空格和缩进作为分隔符以及动态类型。关键字参数是一种只能通过名称访问的参数类型，而位置参数可以通过位置和名称进行访问。Python代码的解析与其他语言不同，其他语言通常依赖于特定的符号（如Java和C使用分号和括号），而Python使用空格和缩进作为分隔符。</li>
+<li>NEAT算法的局限性：在之前的工具中，与MLCatchUp最接近的是NEAT工具。然而，NEAT算法在Python中表现不佳。NEAT要求获取库中所有API的参数类型才能执行自动更新。需要为库中所有API标记参数类型意味着我们还需要为未废弃的API进行类型标记。由于Python的动态特性，我们需要手动进行参数类型标记，这使得NEAT不再完全自动化。</li>
+</ol>
+<p>综上所述，MLCatchUp相较于其他工具的主要区别在于其支持Python语言及其独特特性，并通过自定义DSL语言来处理Python的特殊语法和特性。与NEAT相比，MLCatchUp克服了Python动态类型的限制，实现了更高程度的自动化更新废弃API用法的能力。</p>
+<p><strong>评估</strong></p>
+<p>从公开的GitHub存储库中收集了一个数据集来评估MLCatchUp。评估数据集由258个文件组成，其中包含来自66个不同的Python机器学习库API的514个废弃API用法。MLCatchUp生成的更新结果由至少具有4年经验的Python程序员进行手动标注，这些程序员不是本研究的合著者。</p>
+<p>根据评估结果，MLCatchUp的精确度达到了86.19%。作者还对更新失败的结果进行了定性研究，发现其中一个主要问题是MLCatchUp无法推断上下文相关的废弃API迁移的转换约束。为了解决这个问题，作者在MLCatchUp中添加了一个功能，可以接受额外的用户输入作为转换约束的形式。利用这个功能，作者进行了一项后续实验，MLCatchUp的精确度达到了93.58%。</p>
+<p>综上所述，作者通过收集实际的废弃API用法数据集，并通过人工标注和定性研究对MLCatchUp进行了评估。评估结果表明，MLCatchUp在更新废弃API用法方面具有较高的精确度，并通过增加用户输入的转换约束功能进一步提高了精确度。</p>
+<p><strong>贡献</strong></p>
+<p>这项工作的主要贡献如下：</p>
+<ol>
+<li>收集Python废弃API列表：通过手动阅读Scikit-Learn、TensorFlow和PyTorch过去两年的主要和次要版本发布说明，收集了Python废弃API的列表。</li>
+<li>定义Python废弃API迁移维度：确定Python废弃API使用迁移的各个维度，并计算每个维度的类别分布，以确定在创建更新工具时应优先考虑哪种类型的API使用迁移。</li>
+<li>创建MLCatchUp工具：MLCatchUp是一个自动化的Python API使用更新工具，可以自动推断所需的API转换。据我们所知，这是首个针对Python创建的此类工具。</li>
+<li>评估MLCatchUp工具：使用手动收集的514个废弃API用法的数据集，从公开的GitHub存储库中收集，对MLCatchUp进行评估，其中精确度达到86%。</li>
+</ol>
+<p>综上所述，这项工作的主要贡献包括收集Python废弃API列表、定义废弃API迁移维度、创建自动化更新工具MLCatchUp，并对其进行评估。这些贡献为Python开发者提供了一种自动化的废弃API使用更新的方法。</p>
+<h3 id="Empirical-Study"><a href="#Empirical-Study" class="headerlink" title="Empirical Study"></a>Empirical Study</h3><p>这段话概括了一项实证研究的目标和过程。研究旨在通过分析Python中机器学习API的使用过时情况，以更好地理解过时API迁移的类别，并衡量这些类别的分布情况，从而创建一个可以自动更新过时Python机器学习API使用的工具。</p>
+<p>研究过程分为以下几个步骤：首先，明确研究问题。其次，选择作为案例研究的库和API，并定义收集这些API的方法。然后，通过对案例研究中的过时API迁移类别进行分析，回答第一个研究问题。最后，通过测量案例研究API中过时API迁移类别的分布情况，回答第二个研究问题。</p>
+<p>作者研究了以下两个问题：</p>
+<ol>
+<li>RQ1：Python机器学习废弃API使用中的API迁移维度是什么？ 该问题旨在确定Python机器学习废弃API中的API迁移维度，并对其类别进行分析。了解这些维度和类别有助于设计一种自动化的废弃API迁移工具。</li>
+<li>RQ2：Python机器学习库中废弃API迁移的分布情况是什么？ 该问题旨在了解Python机器学习库中废弃API迁移的频率和分布情况。了解每个API迁移维度及其类别的频率有助于研究人员确定最常见的API迁移类型。这样的了解有助于简化更新废弃API的工具的创建。同时，了解每个API迁移维度类别的频率还有助于研究人员和API迁移工具开发者确定在创建更新工具时应优先考虑哪种类型的API迁移。</li>
+</ol>
+<h4 id="Data-Collection"><a href="#Data-Collection" class="headerlink" title="Data Collection"></a>Data Collection</h4><p>由于Python机器学习库中的API废弃没有明确的规范或标准来记录，每个机器学习库都有不同的API废弃记录方式，甚至在同一库中，API废弃的文档也存在差异。虽然Python提供了一个警告函数来标记废弃的API，但这并不是API开发人员常用的方式。</p>
+<p>考虑到废弃文档的差异，没有自动化的方法可以列出机器学习库API的废弃情况。此外，我们考虑的所有库的文档和更改日志都是以非结构化文本形式存在，使得自动收集API废弃信息更加困难。因此，作者通过手动阅读每个库的更改日志来收集API废弃信息。为了简化搜索过程，他们主要寻找包含”deprecat-“和”replace-“这两个词的文本，以指示API的废弃或替换。对于scikit-learn库，更改日志可以在其官方文档页面找到；对于PyTorch和TensorFlow库，更改日志可以在它们的GitHub发布页面找到。</p>
+<p>作者仔细阅读了每个库提供的文档，以收集API废弃及其更新API的列表。他们将手动收集工作限制在过去两年（2018年7月至2020年8月）的主要和次要版本的更改日志上。对于scikit-learn库，他们阅读了版本0.21.0、0.22.0和0.23.0的更改日志；对于PyTorch库，研究包括了版本0.4.1、1.0.0、1.1.0、1.2.0、1.3.0、1.4.0、1.5.0和1.6.0的更改日志；最后，他们收集了TensorFlow版本1.9.0、1.10.0、1.11.0、1.12.0、1.13.0、1.14.0、1.15.0、2.0.0、2.1.0、2.2.0和2.3.0的更改日志。</p>
+<p>通过阅读文档，作者总共找到了112对废弃API和其更新API，并将其分布在不同的库中。其中，TensorFlow的废弃API数量最多，这是由于从1.x版本到2.x版本的重大更新引入了兼容性API模块。该兼容性模块提供了一个接口，用于使用旧版本TensorFlow中的废弃API。TensorFlow的创建者建议立即将兼容性模块API更新为2.x版本中的新API。</p>
+<p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620153747867.png" alt="image-20230620153747867"></p>
+<h4 id="RQ1-探索迁移维度"><a href="#RQ1-探索迁移维度" class="headerlink" title="RQ1 探索迁移维度"></a>RQ1 探索迁移维度</h4><p>在这项研究中的研究问题1（RQ1）旨在确定Python机器学习库中废弃API迁移的维度。为了回答这个问题，研究人员采用了主题分析，这是一种定性数据分析方法，用于系统地识别、组织和揭示数据集中的模式或主题。他们按照以下步骤进行了分析：</p>
+<ol>
+<li>熟悉数据：仔细阅读和分析收集到的废弃API迁移数据。</li>
+<li>对数据进行初步编码：识别需要更新废弃API的迁移中观察到的模式或操作。</li>
+<li>搜索主题：识别出在不同废弃API中出现的常见迁移维度。</li>
+<li>复审主题：复审和验证已识别的迁移维度，合并相似的维度，舍弃不相关的维度。</li>
+<li>定义和命名主题：定义废弃API迁移的维度，并为每个维度提供反映其主题和含义的信息性名称。</li>
+<li>撰写结果：编写分析结果，将其汇编在本文的实证研究部分。</li>
+</ol>
+<p>基于这种分析，确定了废弃API迁移的三个维度：</p>
+<ol>
+<li>更新操作：观察迁移过程中从废弃API到更新API所需的常见模式。该维度包括删除参数、重命名参数、将位置参数转换为关键字参数、重命名方法、添加参数、更改参数类型、对参数值添加约束以及删除API等类别。</li>
+<li>API映射：废弃API与更新API之间涉及的数量比例。识别出三种类型的映射：1:1的API映射（废弃API由单个更新API替代）、1:N的API映射（废弃API由至少两个更新API替代）和1:0的API映射（废弃API被删除且无建议的替代API）。</li>
+<li>上下文依赖性：废弃API迁移是否取决于其使用的上下文。发现了两个类别：上下文相关的更新（迁移取决于一个或多个参数的值）和上下文无关的更新（迁移不受参数值的影响）。</li>
+</ol>
+<p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620155034092.png" alt="image-20230620155034092"></p>
+<h4 id="RQ2-迁移维度分布"><a href="#RQ2-迁移维度分布" class="headerlink" title="RQ2 迁移维度分布"></a>RQ2 迁移维度分布</h4><p>在第二个研究问题中（RQ2），我们关注的是在第2.3节中定义的维度（更新操作、API映射和上下文依赖性）中废弃API迁移类别的分布情况。为此，我们对112个API进行了标记，基于这三个维度及其类别。</p>
+<p>首先，我们根据更新操作对API进行了标记。标记结果如表3所示。不同库中最常见的操作略有不同。我们发现scikit-learn中大多数废弃API迁移涉及删除参数。PyTorch和TensorFlow的废弃API迁移主要是重命名方法。TensorFlow的API迁移还经常重命名参数。在更新操作中，改变参数类型、给参数值添加约束和删除API是最不常见的，每个更新操作都涉及5个或更少的API。</p>
+<p>然后，我们根据API映射对每个API进行了标记，如表4所示。几乎所有废弃API迁移都遵循1:1的转换，这表明API开发人员更喜欢简单直接、不太复杂的API更新。在112个API中，只有1个API属于1:N的更新类别，而4个API属于1:0的类别。</p>
+<p>接下来，我们根据更新上下文对每个API进行了标记。标记结果如表5所示。大多数API更新是上下文无关的。在112个API中，只有9个API更新是上下文相关的。</p>
+<p>通过这些维度内的分布情况，我们发现在不同的Python机器学习库中，更简单的更新操作更受青睐。重命名方法、重命名参数、添加参数和删除参数是最常用的方法，每种方法至少有10个API使用。112个API中，有107个遵循1:1的更新映射，表明倾向于较简单的更新。最后，大多数API更新是上下文无关的，其中103个API属于这种情况。我们利用这些发现来指导我们在创建Python机器学习废弃API使用的自动更新工具时的优先事项。</p>
+<p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620155350092.png" alt="image-20230620155350092"></p>
+<p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620155454704.png" alt="image-20230620155454704"></p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>根据我们实证研究的结果以及Python废弃API仍然被开发人员使用的事实，我们有兴趣创建一种自动化方法来更新Python废弃API的使用。我们将实证研究的结果纳入到这个更新工具的创建中，主要是为了指导工具应该支持的转换类型。</p>
+<p>我们创建了一个名为MLCatchUp的工具，它提供了对Python废弃API使用的自动化更新。MLCatchUp通过比较废弃API签名和更新API签名之间的差异来推断所需的转换。使用这些API签名和包含废弃API使用的代码作为输入，MLCatchUp将自动提供一个新版本的代码，在该版本中，所有指定的废弃API的使用都被替换为相应的更新API。在转换过程中，MLCatchUp利用领域特定语言使其转换对用户更易读。</p>
+<h4 id="3-1-MLCatchUp-Architecture"><a href="#3-1-MLCatchUp-Architecture" class="headerlink" title="3.1 MLCatchUp Architecture"></a><strong>3.1 MLCatchUp Architecture</strong></h4><p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620155708491.png" alt="image-20230620155708491"></p>
+<p>MLCatchUp的架构和流程如图9所示。MLCatchUp有两个主要输入，即输入的Python文件（O-1）和输入的API签名（O-2）。输入的Python文件是需要更新的文件，而输入的API签名包括废弃API的签名和更新API的签名。输入的Python文件通过Python提供的抽象语法树（AST）模块转换为AST（S-1），生成输入文件的AST表示（O-3）。MLCatchUp根据AST检测和定位废弃API的使用，基于废弃API的签名进行匹配。这里的废弃API检测方法参考了Wang等人的工作[2]，通过将所有API使用归一化为其完全限定名称，并将这些名称与废弃API的签名进行比较。</p>
+<p>输入的API签名在转换推断过程中被用来自动推断API迁移所需的转换（S-2）。这些转换以DSL命令的形式给出（O-4），包含了按顺序执行的一系列原子操作，用于更新API的使用（例如，重命名方法、重命名参数等）。DSL然后由DSL解析器解析（S-3），转换为MLCatchUp可以执行的操作列表。这些操作被应用于输入文件的AST（S-4），生成更新后的AST（O-5）。然后，通过使用代码差异检查器（S-5）比较更新后的AST和输入文件的AST，列出两个AST之间的所有代码差异，并输出更新的差异（O-6）。最后，基于更新差异（O-6）中的代码差异，只对API使用进行必要的更改，而不对原始代码的注释和空格进行修改，将更新应用于输入的Python文件（S-6）。从而得到更新后的输入文件（O-7）。</p>
+<p>在接下来的部分中，我们将详细介绍MLCatchUp自动化更新过程的主要组成部分。第3.2节解释了MLCatchUp提供的转换操作及其DSL等价物。该节还描述了MLCatchUp使用的DSL语法。第3.3节讨论了我们的方法如何基于废弃和更新的API签名创建自动转换。</p>
+<h4 id="3-2-Transformation-Operations-and-DSL"><a href="#3-2-Transformation-Operations-and-DSL" class="headerlink" title="3.2 Transformation Operations and DSL"></a><strong>3.2 Transformation Operations and DSL</strong></h4><p>MLCatchUp利用了我们在经验研究中得出的结果，将废弃API迁移的不同类型总结为8种不同的更新操作，详见第2.3节。在提供所需的更新以减轻废弃API的使用时，MLCatchUp利用了几个基本的转换操作。我们根据这些发现选择了所需的基本转换操作，作为MLCatchUp提供的自动更新功能的构建模块。</p>
+<p>MLCatchUp中的每个操作都与领域特定语言中的相应结构配对，用于描述转换。</p>
+<p>DSL语法中列出的每个转换都对应于MLCatchUp提供的基本转换操作。每个基本转换操作与其DSL语法之间的映射关系如表6所示。</p>
+<p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620160419537.png" alt="image-20230620160419537"></p>
+<p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620160434511.png" alt="image-20230620160434511"></p>
+<h4 id="3-3-Transformation-Inference"><a href="#3-3-Transformation-Inference" class="headerlink" title="3.3 Transformation Inference"></a><strong>3.3 Transformation Inference</strong></h4><p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620161710901.png" alt="image-20230620161710901"></p>
+<p>MLCatchUp利用废弃API和更新API的签名作为输入，自动推断更新废弃API使用所需的更改。根据这些签名，MLCatchUp生成包含更新代码中废弃API使用所需步骤的DSL命令。</p>
+<p>API签名被定义为API的完全限定名称和可用参数的列表，其中每个参数包括名称、类型和可选的默认值。完全限定的API名称由API模块名称和API函数名称组成。这些信息足够了，因为Python不提供方法重载。API参数定义以逗号分隔的位置参数和关键字参数列表的形式声明，每个参数都有特定的类型，并且可以包括默认值。使用符号*来分隔位置参数和关键字参数。MLCatchUp接受的API签名语法如图11所示。</p>
+<p>通过比较废弃API签名和更新API签名的差异，自动推断API使用更新所需的转换。转换推断的伪代码如算法1所示。转换推断的输入是废弃API签名和更新API签名。使用这些输入，进行几个步骤来生成DSL命令，以更新废弃API的使用。首先，如果更新API签名是一个空字符串，我们添加一个remove_api操作（第2-3行）。如果更新API签名不为空，我们比较废弃API签名和更新API签名的完全限定名称（第5行），如果名称不同，则添加一个rename_method操作（第6行）。然后，我们从两个API签名中去除相同的API参数（第8行），因为两个API之间相同的参数不会影响API更新。如果两个API参数具有相同的类型但关键字名称不同，我们添加一个rename_parameter操作到DSL中（第11-14行）。如果两个API参数具有相同的类型，但在废弃API签名中有一个位置参数，在更新API签名中有一个关键字参数，我们添加一个positional_to_keyword_parameter操作（第15-18行）。然后，我们检查废弃API签名和更新API签名中是否有任何剩余的API参数。将废弃API签名中的每个剩余API参数作为remove_parameter操作添加到DSL命令中（第19-21行）。最后，对于更新API签名中的每个剩余API参数，我们添加一个add_parameter操作。</p>
+<p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620162518763.png" alt="image-20230620162518763"></p>
+<p>以TensorFlow.compat.v1.to_float()废弃API为例，该API使用需要更新为使用TensorFlow.cast(dtype&#x3D;TensorFlow.float32) API。使用这些API签名，MLCatchUp使用上述步骤进行转换推断。首先，MLCatchUp发现废弃API的完全限定名称与更新API的完全限定名称不同，因此添加了一个rename_method操作。然后，MLCatchUp发现两个API签名之间没有相同的参数，只剩下一个单独的API参数在更新API签名中。该参数作为add_parameter操作添加。在add_parameter操作中添加的参数值来自API签名中列出的默认参数值。生成的DSL命令如图12所示。</p>
+<p>然后，这些DSL命令可以应用于包含废弃的TensorFlow.compat.v1.to_float() API使用的文件。首先，需要将文件解析为其AST。然后，将解析并转换为相应的转换的每个DSL命令应用于AST。应用所有的转换后，AST被转换回代码形式，将更新后的代码与废弃的代码之间的代码差异呈现给用户。基于这些代码差异，MLCatchUp将转换应用于原始代码，仅对废弃API使用进行必要的更改，保留原始代码的注释和间距。代码差异的示例结果显示在图13的代码差异中。</p>
+<p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620162600293.png" alt="image-20230620162600293"></p>
+<p>虽然MLCatchUp可以推断所需的转换操作，但它无法推断有关转换本身所需的任何添加的约束信息。事实上，API签名并不提供这样的信息。为了解决这个问题，我们允许MLCatchUp在可选参数中运行，用户可以通过该参数指定转换约束作为输入。这个输入约束必须使用MLCatchUp领域特定语言编写。图14显示了对sklearn.model_selection.KFold API更新的推断的DSL脚本和提供的输入约束的示例。</p>
+<p>在图14中，我们可以看到根据API签名，MLCatchUp能够推断出sklearn.model_selection.KFold废弃API使用需要通过添加shuffle:bool&#x3D;True参数来更新。然而，MLCatchUp无法从API签名中获取转换约束信息，提供了一个不完整的推断的一系列转换命令。实际上，只有在random_state参数的值不为None时才应执行add_parameter更新操作。这个约束通过用户输入的约束来表达。</p>
+<p><img src="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/image-20230620162625485.png" alt="image-20230620162625485"></p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><ul>
+<li>a. 工作的意义：<ul>
+<li>开发了一个自动更新Python机器学习API的工具，可以有效提高Python机器学习API的开发效率。</li>
+</ul>
+</li>
+<li>b. 创新性、性能和工作负载：<ul>
+<li>本文提出了停用API迁移维度模型，构建了MLCatchUp工具，通过比较API的签名实现了自动更新Python中停用的机器学习API，且精度达到了93.58％。</li>
+</ul>
+</li>
+<li>c. 研究结论：<ul>
+<li>MLCatchUp工具能够自动更新Python机器学习API，且精度较高。然而，该工具目前存在无法创建1：N API映射迁移更新等不足之处。同时，今后的研究还需拓展到其他流行的Python库中，包括非机器学习库。</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/">http://example.com/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/" title="Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">58</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Characterization-and-Automatic-Update-of-Deprecated-Machine-Learning-API-Usages"><span class="toc-number">1.</span> <span class="toc-text">Characterization and Automatic Update of Deprecated Machine-Learning API Usages</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%91%98%E8%A6%81%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">摘要：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.2.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.3.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Empirical-Study"><span class="toc-number">1.4.</span> <span class="toc-text">Empirical Study</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Data-Collection"><span class="toc-number">1.4.1.</span> <span class="toc-text">Data Collection</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RQ1-%E6%8E%A2%E7%B4%A2%E8%BF%81%E7%A7%BB%E7%BB%B4%E5%BA%A6"><span class="toc-number">1.4.2.</span> <span class="toc-text">RQ1 探索迁移维度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RQ2-%E8%BF%81%E7%A7%BB%E7%BB%B4%E5%BA%A6%E5%88%86%E5%B8%83"><span class="toc-number">1.4.3.</span> <span class="toc-text">RQ2 迁移维度分布</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.5.</span> <span class="toc-text">方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-MLCatchUp-Architecture"><span class="toc-number">1.5.1.</span> <span class="toc-text">3.1 MLCatchUp Architecture</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-Transformation-Operations-and-DSL"><span class="toc-number">1.5.2.</span> <span class="toc-text">3.2 Transformation Operations and DSL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-Transformation-Inference"><span class="toc-number">1.5.3.</span> <span class="toc-text">3.3 Transformation Inference</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-number">1.6.</span> <span class="toc-text">结论</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/" title="Characterization and Automatic Update ofDeprecated Machine-Learning API Usages">Characterization and Automatic Update ofDeprecated Machine-Learning API Usages</a><time datetime="2023-06-20T08:33:49.000Z" title="发表于 2023-06-20 16:33:49">2023-06-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/" title="Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs">Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs</a><time datetime="2023-06-19T11:32:34.000Z" title="发表于 2023-06-19 19:32:34">2023-06-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/03/%E4%BB%A3%E7%A0%81%E8%A1%A8%E5%BE%81%E9%A2%84%E8%AE%AD%E7%BB%83%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97%EF%BC%9A%E5%8E%9F%E7%90%86%E3%80%81%E5%88%86%E6%9E%90%E5%92%8C%E4%BB%A3%E7%A0%81/" title="代码表征预训练语言模型学习指南：原理、分析和代码">代码表征预训练语言模型学习指南：原理、分析和代码</a><time datetime="2023-06-03T14:28:17.000Z" title="发表于 2023-06-03 22:28:17">2023-06-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/02/%E9%A2%84%E8%AE%AD%E7%BB%83%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F-%E4%BB%8EWord-Embedding%E5%88%B0BERT/" title="预训练语言模型的前世今生 - 从Word Embedding到BERT">预训练语言模型的前世今生 - 从Word Embedding到BERT</a><time datetime="2023-06-02T01:34:10.000Z" title="发表于 2023-06-02 09:34:10">2023-06-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/05/24/Type-Infer%E6%96%87%E7%8C%AE%E7%BB%BC%E8%BF%B0/" title="Type Infer文献综述">Type Infer文献综述</a><time datetime="2023-05-24T08:47:44.000Z" title="发表于 2023-05-24 16:47:44">2023-05-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
