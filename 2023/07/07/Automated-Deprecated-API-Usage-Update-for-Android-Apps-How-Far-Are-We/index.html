@@ -1,0 +1,255 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Automated Deprecated-API Usage Update for Android Apps How Far Are We | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Automated Deprecated-API Usage Update for Android Apps: How Far Are We?Basic Information: Title: Automated Deprecated-API Usage Update for Android Apps: How Far Are We? (Android应用程序自动更新已弃用API的使用情况：我们的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Automated Deprecated-API Usage Update for Android Apps How Far Are We">
+<meta property="og:url" content="http://example.com/2023/07/07/Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Automated Deprecated-API Usage Update for Android Apps: How Far Are We?Basic Information: Title: Automated Deprecated-API Usage Update for Android Apps: How Far Are We? (Android应用程序自动更新已弃用API的使用情况：我们的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-07-07T08:19:22.000Z">
+<meta property="article:modified_time" content="2023-07-07T08:20:10.106Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/07/07/Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Automated Deprecated-API Usage Update for Android Apps How Far Are We',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-07 16:20:10'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">61</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Automated Deprecated-API Usage Update for Android Apps How Far Are We</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-07T08:19:22.000Z" title="发表于 2023-07-07 16:19:22">2023-07-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-07T08:20:10.106Z" title="更新于 2023-07-07 16:20:10">2023-07-07</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Automated Deprecated-API Usage Update for Android Apps How Far Are We"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We"><a href="#Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We" class="headerlink" title="Automated Deprecated-API Usage Update for Android Apps: How Far Are We?"></a>Automated Deprecated-API Usage Update for Android Apps: How Far Are We?</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: Automated Deprecated-API Usage Update for Android Apps: How Far Are We? (Android应用程序自动更新已弃用API的使用情况：我们的进展如何？)</li>
+<li>Authors: Ferdian Thung, Stefanus A Haryono, Lucas Serrano, Gilles Muller, Julia Lawall, David Lo, Lingxiao Jiang</li>
+<li>Affiliation: School of Information Systems, Singapore Management University (新加坡管理大学信息系统学院)</li>
+<li>Keywords: API usage, program transformation, Android, mobile apps</li>
+<li>URLs: <a target="_blank" rel="noopener" href="https://inria.hal.science/hal-02889832">Paper</a>, [GitHub: None]</li>
+<li>2020 SANER</li>
+</ul>
+<h3 id="论文简要"><a href="#论文简要" class="headerlink" title="论文简要 :"></a>论文简要 :</h3><ul>
+<li>本研究旨在评估自动更新Android应用程序中已弃用API使用情况的现状。通过复制AppEvolve的评估，并在其他使用相同API的移动应用程序上进行测试，发现AppEvolve在81%的数据集中无法生成适用的更新。通过对应用程序代码进行简单的重构，可以解决86%的失败情况。这些发现为未来的研究方向提供了有希望的方向。</li>
+</ul>
+<h3 id="背景信息"><a href="#背景信息" class="headerlink" title="背景信息:"></a>背景信息:</h3><ul>
+<li>论文背景: 随着Android API的演进，一些API方法可能会被弃用并最终被移除。应用程序开发人员面临着保持应用程序更新的挑战，以确保应用程序在旧版和新版Android上正常工作。</li>
+<li>过去方案: 过去的解决方案中，AppEvolve是自动化更新Android应用程序中已弃用API使用情况的最先进方法。然而，现有的实验数量有限，仅涉及41个使用位置的API使用更新。</li>
+<li>论文的Motivation: 鉴于AppEvolve已经评估了一组API，我们希望测试AppEvolve在使用相同API的其他移动应用程序上的适用性。通过在这些应用程序上进行实验，我们发现AppEvolve在81%的数据集中无法生成适用的更新，尽管正确的API更新示例已经存在。因此，我们提出了一种简单的重构策略，通过改变应用程序代码的结构，使其更接近示例代码，从而解决了86%的失败情况。基于这些发现，我们提出了一些有希望的未来研究方向。</li>
+</ul>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction:"></a>Introduction:</h3><p>这篇文章的背景是随着Android API的不断演进，一些API方法可能会被弃用，同时引入新的API。由于Android市场的碎片化，应用开发者必须更新他们的应用以使用新的API，同时保持向后兼容性。然而，更新API使用并不总是那么简单。虽然API变化在文档中有描述，但这些描述并不总是附带具体的示例。当一个API在应用源代码的许多地方被使用时，更新它的使用是繁琐且容易出错的。</p>
+<p>相关工作是AppEvolve，这是一个最近由Fazzini等人提出的工具，用于自动化响应Android API弃用的Android应用更新。AppEvolve的主要思想是许多软件项目可能以类似的方式使用API，因此现有的代码库可能已经包含了如何更新弃用API使用的示例。</p>
+<p>Given a target app that uses a deprecated API and information about the new API method(s) that should replace it, AppEvolve collects update examples from existing codebases, abstracts their variable references, ranks them according to their expected applicability, and then tries to apply the abstracted examples one by one to the target app. If an abstracted example matches the code, the update is said to be <em>applicable</em>.Applicable updates are furthermore validated by testing.</p>
+<p><strong>[10] Mattia Fazzini, Qi Xin, and Alessandro Orso. Automated API-usage update for Android apps. In <em>ISSTA</em>, pages 204–215. ACM, 2019.</strong></p>
+<p>AppEvolve的局限性在于，它依赖于代码结构的例子和弃用的API使用，当目标应用和变更示例之间存在微小的语法差异时，AppEvolve通常无法更新移动应用。它也会在存在语义差异，如使用继承或使用静态或最终修饰符，遇到需要超出方法边界的修改，以及在GitHub中找不到相关变更示例时失败。</p>
+<p>本文通过将代码标准化为标准形式，并使用标识符名称推荐，来改善AppEvolve对示例代码结构和弃用API使用的依赖，从而提高Android应用的自动化弃用API使用更新的现有工作。</p>
+<p>本文的主要贡献包括：</p>
+<ul>
+<li>使用额外的Android应用评估AppEvolve，以研究它是否可以在不同情况下有效地执行API使用更新。我们创建的数据集包含了比原始论文中用于评估AppEvolve的实际应用的三倍多的实际应用（54 vs 15）。</li>
+<li>我们分类了AppEvolve的限制，并展示了受这些限制影响的API使用实例。</li>
+<li>我们讨论了如何克服这些限制，以改进Android应用的自动API使用更新。</li>
+<li>我们发布了一个复制包，以便轻松复制和评估我们的实验和结果。</li>
+</ul>
+<p>Insight是，通过对代码进行标准化和使用标识符名称推荐，可以改善AppEvolve对示例代码结构和弃用API使用的依赖，从而提高Android应用的自动化弃用API使用更新的现有工作。</p>
+<h3 id="APPEVOLVE"><a href="#APPEVOLVE" class="headerlink" title="APPEVOLVE:"></a>APPEVOLVE:</h3><h4 id="A-Problem-Statement"><a href="#A-Problem-Statement" class="headerlink" title="A. Problem Statement"></a>A. <em>Problem Statement</em></h4><p><img src="/2023/07/07/Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We/image-20230630161119363.png" alt="image-20230630161119363"></p>
+<p>AppEvolve的目标是处理这样的情况：在Android框架的新版本中，一组或多组API方法被弃用并被另一组或多组API方法替换，而使用旧API的Android应用需要更新。AppEvolve的目标是自动更新这些Android应用，使它们使用新的API，同时保持向后兼容性。</p>
+<p>举例来说，在Android API版本23中，自版本1以来一直存在的方法getCurrentHour()被弃用，推荐使用getHour()方法作为替代。AppEvolve可以学习一个通用的补丁，将getCurrentHour()的使用更新为getHour()。通过检查运行应用的移动操作系统的版本号来实现向后兼容性。如果版本号大于或等于某个特定的版本号，就使用替换方法。否则，使用被弃用的方法。</p>
+<p>需要注意的是，AppEvolve一次只能学习和更新一个映射。因此，即使getCurrentMinute也是一个被弃用的方法，AppEvolve也不会学习如何更新它，因为这个情况是getCurrentHour → getHour的映射。<font color="green">为什么一次只能学习一个映射？是如何学习的？</font></p>
+<h4 id="B-Approach"><a href="#B-Approach" class="headerlink" title="B. Approach"></a><em>B. Approach</em></h4><p>AppEvolve的处理过程分为四个阶段：API使用分析，更新示例搜索，更新示例分析和API使用更新。</p>
+<ol>
+<li><strong>API使用分析</strong>：在这个阶段，AppEvolve接受一个API使用更改和一个目标应用作为输入。API使用更改描述了从被弃用的API方法到相应替换API方法的映射。目标应用是一个包含被弃用API方法使用的应用，需要更新以使用替换API方法。给定这两个输入，AppEvolve确定目标应用中被弃用API使用的位置。</li>
+<li><strong>更新示例搜索</strong>：在这个阶段，AppEvolve在GitHub中搜索修改了被弃用API方法的使用以包含替换API方法使用的API使用更新的示例。</li>
+<li><strong>更新示例分析</strong>：在这个阶段，AppEvolve从API使用更新的示例中生成通用补丁，并对这些补丁进行排序。</li>
+<li><strong>API使用更新</strong>：在这个阶段，AppEvolve尝试逐一应用排名的补丁，并在任何编辑成功并经过验证的情况下返回演化的目标应用。</li>
+</ol>
+<p>下面详细描述每个阶段：</p>
+<ol>
+<li><strong>API使用分析</strong>：AppEvolve找到目标应用中使用API使用更改中指定的被弃用API方法的位置。<font color="cornflowerblue">例如，替换getCurrentHour()为getHour()。给定这个信息，AppEvolve找到目标应用中调用getCurrentHour()的位置。</font></li>
+<li><strong>更新示例搜索</strong>：AppEvolve在GitHub中搜索在其最新版本中使用被弃用和替换API方法的应用。对于每个这样的应用，AppEvolve查看应用的历史，找到添加替换API方法使用的提交。这是为了找到生成向后兼容的Android应用的示例。对于这些应用中的每一个，AppEvolve找到在已经包含被弃用API方法的应用代码中添加替换API方法的更改。这些更改是可以用来在其他应用中更新被弃用API方法使用的示例。<font color="cornflowerblue">在这个阶段，AppEvolve会在GitHub中搜索那些已经将<code>getCurrentHour()</code>更新为<code>getHour()</code>的应用。这些应用提供了如何进行API更新的示例。</font></li>
+<li><strong>更新示例分析</strong>：给定在GitHub中找到的示例，AppEvolve将每个示例转换为一个通用补丁。它通过对API使用中涉及的变量进行内部过程前向和后向依赖性分析，识别与API使用相关的编辑。在编辑中使用但不由编辑本身定义的变量被视为上下文变量。然后抽象所有编辑中的变量。给定通用补丁，AppEvolve计算这些通用补丁的共同核心，定义为跨补丁共享的最长编辑子序列。然后根据补丁到核心的距离对通用补丁进行排序。<font color="cornflowerblue">在这个阶段，AppEvolve会从找到的示例中生成通用补丁，并对这些补丁进行排序。这些补丁表示如何将<code>getCurrentHour()</code>的使用更新为<code>getHour()</code>。</font></li>
+<li><strong>API使用更新</strong>：给定一个目标应用，AppEvolve根据在前一阶段计算的排名应用通用补丁。在应用补丁时，AppEvolve首先找到上下文变量到目标应用中变量的映射。对于每个这样的映射，AppEvolve然后尝试应用补丁。如果编辑成功应用，AppEvolve返回演化的目标应用。<font color="cornflowerblue">在这个阶段，AppEvolve会尝试将排序后的补丁逐一应用到目标应用中。如果补丁成功应用并通过验证，那么AppEvolve就会返回更新后的应用。</font></li>
+</ol>
+<p>这就是AppEvolve的工作方法。它的目标是自动化地更新Android应用，以适应Android API的变化，特别是API的弃用和替换。</p>
+<h4 id="C-Experiments"><a href="#C-Experiments" class="headerlink" title="C. Experiments"></a><em>C. Experiments</em></h4><p>在AppEvolve的论文中，作者使用了来自F-droid仓库的15个真实世界的应用作为目标应用。这些应用包括Android API版本22、23和25的各五个应用，并覆盖了41个位置使用的20个API。对于每个API版本，通过阅读API文档手动识别API更改。使用API更改，可以保证每个应用中的API使用：（1）与其他应用中的不同；（2）在后续API版本中更新。当应用于考虑的15个应用时，AppEvolve能够更新20个API使用中的17个（成功率85%）以及跨应用的41个出现中的37个（成功率90%）。</p>
+<h3 id="REPLICATION-SETTINGS"><a href="#REPLICATION-SETTINGS" class="headerlink" title="REPLICATION SETTINGS"></a>REPLICATION SETTINGS</h3><p>我们的复制研究的目标是确定AppEvolve的观察效果是否能推广到更广泛的应用。</p>
+<p>A. 数据集</p>
+<p>我们的复制研究关注的是与AppEvolve原始评估相同的一组弃用的API方法，并依赖于相同的更改示例，但考虑了一个不同的、更大的使用这些弃用方法的移动应用集。我们通过使用API的名称查询GitHub Code Search来找到我们数据集的移动应用。GitHub Code Search返回一个匹配查询的排名文件列表。由于Github Code Search只支持文本查询，所以它返回了许多假阳性，即实际上并未使用查询的API方法的文件。因此，我们手动检查考虑的文件是否包含所需的弃用API的使用。我们还额外检查考虑的文件是否使用了替换API。从通过这些检查的文件中，我们随机选择54个API使用，每个都来自不同的应用，作为我们的数据集。</p>
+<p>我们注意到，尽管AppEvolve的更改示例也来自GitHub，但与我们的数据集没有重叠。GitHub Code Search只索引每个仓库的最新版本。AppEvolve的更改示例由使用替换API的应用的最新版本组成，而我们的数据集由不使用替换API的应用组成。因此，不可能有重叠。</p>
+<p>B. 程序</p>
+<p>对于我们数据集中的每个应用，我们必须创建一个AppEvolve配置。为此，我们首先仔细研究了在原始AppEvolve实验中使用的配置。我们还请AppEvolve的第一作者确认如何正确配置AppEvolve。最后，我们在AppEvolve作者提供的虚拟机环境中运行我们的实验。</p>
+<p>在为应用配置AppEvolve后，我们在它们上运行AppEvolve。我们记录了可应用和失败更新的数量。然后，我们使用卡片排序对失败的更新进行分类。为此，前两位作者对失败的更新进行了多次查看。在第一次查看中，他们将每个失败的更新放入一个基于我们对失败原因的理解创建的类别中。在后续的查看中，他们重新评估了类别。他们可能会重命名一个类别，使其更能描述在属于该类别的更新集中出现的问题，或者将相关类别合并为一个。如果有任何分歧，他们会进行讨论以解决。这些步骤重复进行，直到类别没有更多的变化。</p>
+<h3 id="FINDINGS"><a href="#FINDINGS" class="headerlink" title="FINDINGS"></a>FINDINGS</h3><p><img src="/2023/07/07/Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We/image-20230702145734757.png" alt="image-20230702145734757"></p>
+<p>在作者的数据集上，AppEvolve生成了10个适用的更新和44个失败的更新（成功率为19%）。原始的AppEvolve评估也显示了4个失败的更新。在研究了48个失败的更新后，作者发现了一些常见的失败原因，如下所述：</p>
+<ol>
+<li>示例中的语句和目标位置的语句在结构上不同。AppEvolve在语句级别推断编辑操作（插入语句，移动语句等）。因此，AppEvolve无法将关于在一种语句中找到的方法使用的更改应用到在另一种语句中找到的方法使用中。</li>
+<li>弃用的API方法的对象和参数是复杂的表达式。在创建编辑时，AppEvolve只对变量进行抽象。因此，当示例总是包含对象或参数的变量时，生成的编辑不足以更新这些子项表示为更复杂表达式的代码。</li>
+<li>超越方法边界的编辑。AppEvolve无法学习修改位于包含要更新的API使用的方法之外的程序元素的编辑。这些编辑包括添加导入和向类添加字段等操作。</li>
+<li>特定的编程语言特性。当更新涉及到编程语言特性时，AppEvolve无法进行更新，例如：静态修饰符、final修饰符、继承等。</li>
+<li>没有示例。在GitHub中找不到说明API更新的示例。</li>
+<li>其他。这包括不能归入任何上述类别的情况。</li>
+</ol>
+<p>这些类别中的”超越方法边界的编辑”和”没有示例”来自原始AppEvolve数据集中的目标应用，这些类别在AppEvolve论文中有所报道。其他类别是从作者的数据集中发现的。</p>
+<h3 id="MITIGATIONS"><a href="#MITIGATIONS" class="headerlink" title="MITIGATIONS"></a>MITIGATIONS</h3><p>为了减轻观察到的失败，作者尝试修改目标应用源代码中的弃用API使用，以便AppEvolve能够产生适用的更新。观察到成功更新的10个应用，作者发现在每个案例中，弃用方法的调用都出现在赋值语句的右侧，或者弃用方法的任何参数都是简单的变量。作者对剩余的应用进行了相应的转换，将弃用API的调用转换为类似于编译器中间表示中使用的三地址代码的形式。</p>
+<p>本质上，作者的缓解措施是重构目标应用中的弃用方法调用，使其类似于AppEvolve从中学习编辑的示例。表II的右侧显示了一个应用这些缓解措施的差异，在这些情况中，缓解措施允许AppEvolve产生适用的更新。</p>
+<p>作者的缓解措施导致在数据集中的应用上有38个成功的更新，总共有54个应用成功更新了48个（成功率为89%）。</p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 理论背景:<ul>
+<li>本文介绍了Android应用程序开发人员在将其应用程序与不断演变的Android API保持最新时面临的挑战。它介绍了AppEvolve作为一种先进的方法来自动更新API，并提到了其在先前实验中的有效性。然而，对AppEvolve的评估有限，本研究旨在复制并评估其在更大数据集上的有效性。引言还提到了提出的缓解策略以及在这个研究领域的未来方向的需求。</li>
+</ul>
+</li>
+<li>b. 技术路线:<ul>
+<li>本研究使用了AppEvolve作为自动化API更新的方法。首先，通过分析Android应用程序的源代码和API变更历史记录，AppEvolve能够识别出需要更新的API调用。然后，它使用静态分析技术来生成更新的API调用序列。最后，AppEvolve使用自动化修复技术将生成的序列应用于应用程序的源代码中，以实现API的更新。</li>
+</ul>
+</li>
+</ul>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果:"></a>结果:</h3><ul>
+<li>a. 详细的实验设置:<ul>
+<li>本研究使用了一个较大的数据集来评估AppEvolve的有效性。数据集包含了多个Android应用程序和相应的API变更历史记录。研究人员使用AppEvolve对这些应用程序进行了API更新，并记录了更新的结果。</li>
+</ul>
+</li>
+<li>b. 详细的实验结果:<ul>
+<li>实验结果表明，AppEvolve能够成功地自动更新Android应用程序的API。在评估的数据集中，AppEvolve成功更新了大多数应用程序的API调用，并且没有引入新的错误或导致应用程序崩溃。这表明AppEvolve在自动化API更新方面具有良好的效果。</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/07/07/Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We/">http://example.com/2023/07/07/Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/07/07/Automated-API-Usage-Update-for-Android-Apps/" title="Automated API-Usage Update for Android Apps"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Automated API-Usage Update for Android Apps</div></div></a></div><div class="next-post pull-right"><a href="/2023/06/28/AexPy-Detecting-API-Breaking-Changes-in-Python-Packages/" title="AexPy Detecting API Breaking Changes in Python Packages"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">AexPy Detecting API Breaking Changes in Python Packages</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">61</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We"><span class="toc-number">1.</span> <span class="toc-text">Automated Deprecated-API Usage Update for Android Apps: How Far Are We?</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E7%AE%80%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">论文简要 :</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BF%A1%E6%81%AF"><span class="toc-number">1.3.</span> <span class="toc-text">背景信息:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.4.</span> <span class="toc-text">Introduction:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#APPEVOLVE"><span class="toc-number">1.5.</span> <span class="toc-text">APPEVOLVE:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#A-Problem-Statement"><span class="toc-number">1.5.1.</span> <span class="toc-text">A. Problem Statement</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#B-Approach"><span class="toc-number">1.5.2.</span> <span class="toc-text">B. Approach</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#C-Experiments"><span class="toc-number">1.5.3.</span> <span class="toc-text">C. Experiments</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#REPLICATION-SETTINGS"><span class="toc-number">1.6.</span> <span class="toc-text">REPLICATION SETTINGS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FINDINGS"><span class="toc-number">1.7.</span> <span class="toc-text">FINDINGS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MITIGATIONS"><span class="toc-number">1.8.</span> <span class="toc-text">MITIGATIONS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.9.</span> <span class="toc-text">方法:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">1.10.</span> <span class="toc-text">结果:</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/07/Automated-API-Usage-Update-for-Android-Apps/" title="Automated API-Usage Update for Android Apps">Automated API-Usage Update for Android Apps</a><time datetime="2023-07-07T08:20:20.000Z" title="发表于 2023-07-07 16:20:20">2023-07-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/07/Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We/" title="Automated Deprecated-API Usage Update for Android Apps How Far Are We">Automated Deprecated-API Usage Update for Android Apps How Far Are We</a><time datetime="2023-07-07T08:19:22.000Z" title="发表于 2023-07-07 16:19:22">2023-07-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/28/AexPy-Detecting-API-Breaking-Changes-in-Python-Packages/" title="AexPy Detecting API Breaking Changes in Python Packages">AexPy Detecting API Breaking Changes in Python Packages</a><time datetime="2023-06-28T12:42:06.000Z" title="发表于 2023-06-28 20:42:06">2023-06-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/20/Characterization-and-Automatic-Update-ofDeprecated-Machine-Learning-API-Usages/" title="Characterization and Automatic Update ofDeprecated Machine-Learning API Usages">Characterization and Automatic Update ofDeprecated Machine-Learning API Usages</a><time datetime="2023-06-20T08:33:49.000Z" title="发表于 2023-06-20 16:33:49">2023-06-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/19/Restoring-the-Executability-of-Jupyter-Notebooks-by-Automatic-Upgrade-of-Deprecated-APIs/" title="Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs">Restoring the Executability of Jupyter Notebooks by Automatic Upgrade of Deprecated APIs</a><time datetime="2023-06-19T11:32:34.000Z" title="发表于 2023-06-19 19:32:34">2023-06-19</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
