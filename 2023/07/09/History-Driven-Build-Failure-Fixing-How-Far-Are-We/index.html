@@ -1,0 +1,290 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>History-Driven Build Failure Fixing: How Far Are We? | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="History-Driven Build Failure Fixing: How Far Are We?(2019)Basic Information: Title: History-Driven Build Failure Fixing: How Far Are We? (历史驱动的构建失败修复：我们走了多远？) Authors: Yiling Lou, Junjie Chen, Lingmin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="History-Driven Build Failure Fixing: How Far Are We?">
+<meta property="og:url" content="http://example.com/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="History-Driven Build Failure Fixing: How Far Are We?(2019)Basic Information: Title: History-Driven Build Failure Fixing: How Far Are We? (历史驱动的构建失败修复：我们走了多远？) Authors: Yiling Lou, Junjie Chen, Lingmin">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-07-09T07:58:11.000Z">
+<meta property="article:modified_time" content="2023-07-09T07:58:40.364Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'History-Driven Build Failure Fixing: How Far Are We?',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-09 15:58:40'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">63</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">History-Driven Build Failure Fixing: How Far Are We?</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-09T07:58:11.000Z" title="发表于 2023-07-09 15:58:11">2023-07-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-09T07:58:40.364Z" title="更新于 2023-07-09 15:58:40">2023-07-09</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="History-Driven Build Failure Fixing: How Far Are We?"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="History-Driven-Build-Failure-Fixing-How-Far-Are-We-2019"><a href="#History-Driven-Build-Failure-Fixing-How-Far-Are-We-2019" class="headerlink" title="History-Driven Build Failure Fixing: How Far Are We?(2019)"></a>History-Driven Build Failure Fixing: How Far Are We?(2019)</h1><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: History-Driven Build Failure Fixing: How Far Are We? (历史驱动的构建失败修复：我们走了多远？)</li>
+<li>Authors: Yiling Lou, Junjie Chen, Lingming Zhang, Dan Hao, Lu Zhang</li>
+<li>Affiliation: HCST (Peking University), China</li>
+<li>Keywords: Automated Program Repair, Build System, Build Failure Fixing</li>
+<li>URLs: <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3293882.3330578">Paper</a>, [GitHub: None]</li>
+</ul>
+<h3 id="论文简要"><a href="#论文简要" class="headerlink" title="论文简要 :"></a>论文简要 :</h3><ul>
+<li>本研究通过构建一个新的大型构建失败数据集，对历史驱动的构建失败修复技术进行了评估，并提出了一种基于当前信息的简化修复技术。实验结果表明，基于当前信息的方法成功修复了比基于历史信息的方法多2倍的可重现构建失败。</li>
+</ul>
+<h3 id="背景信息"><a href="#背景信息" class="headerlink" title="背景信息:"></a>背景信息:</h3><ul>
+<li>论文背景: 构建系统在现代软件开发中起着重要作用，但是构建系统在软件演化过程中经常出现故障。因此，自动化构建失败修复技术需求巨大。</li>
+<li>过去方案: 过去的研究提出了各种不同类型的构建失败修复技术，其中包括基于历史信息的修复技术。然而，这些方法的有效性和适用性仍存在一定的限制。</li>
+<li>论文的Motivation: 本文旨在评估历史驱动的构建失败修复技术的有效性和局限性，并提出一种基于当前信息的简化修复技术。通过对比实验结果，揭示了当前信息在自动化构建失败修复中的潜力和未来研究的指导意义。</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 理论背景:<ul>
+<li>本文介绍了构建系统在软件开发中的重要性以及构建失败的频繁发生。它提到了关于构建失败修复技术的现有研究，并介绍了HireBuild，这是一个用于Gradle的基于历史的构建失败修复工具。然而，它也强调了HireBuild的局限性，并指出了对构建失败修复技术的进一步研究和改进的需求。</li>
+</ul>
+</li>
+<li>b. 技术路线:<ul>
+<li>HoBuFF使用两步方法来修复软件项目中的构建失败。在故障定位步骤中，HoBuFF搜索分配给同一配置元素的值。它可以在项目内部搜索值，也可以从资源（如Gradle中央仓库、Gradle DSL文档和Android DSL文档）中搜索值。外部资源提前收集并以结构化形式表示。在修补生成步骤中，HoBuFF基于定位的根因语句生成修补候选。它应用不同的修补操作符，如插入、更新和删除，生成修补候选。然后，验证生成的修补程序以确定其正确性。</li>
+</ul>
+</li>
+</ul>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果:"></a>结果:</h3><ul>
+<li>a. 详细的实验设置:<ul>
+<li>HoBuFF使用Groovy AST API实现，并在具有特定硬件和软件规格的计算机上进行评估。实验针对一组可重现的构建失败进行，对每个失败应用HoBuFF生成修补程序。根据成功的构建任务完成和匹配的编译文件大小等标准对修补程序进行验证。</li>
+</ul>
+</li>
+<li>b. 详细的实验结果:<ul>
+<li>HoBuFF成功修复了102个可重现的构建失败中的18个（18%），而最先进的工具HireBuild只修复了9个（9%）。在HireBuild修复的9个构建失败中，HoBuFF也修复了8个。这表明在修复构建失败方面，HoBuFF的表现优于HireBuild。HoBuFF在修复与内部元素相关的失败方面特别有效，其中内部配置元素的值对项目是特定的。但在修复与外部元素相关的失败方面，HoBuFF的效果较差，这些失败是由于外部配置元素的不正确值引起的。</li>
+</ul>
+</li>
+</ul>
+<h3 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h3><p>这篇论文的主题是自动化构建修复技术，尤其是针对广泛应用于开源Java项目的主流构建系统Gradle。近期提出的最先进的针对Gradle的构建修复工具HireBuild，通过挖掘历史修复记录来修复Gradle构建失败。虽然已经证明HireBuild在修复实际Gradle构建失败方面非常有效，但是其在有限的构建失败集上进行了评估，并且在很大程度上依赖于历史修复信息的质量和可用性。</p>
+<p>为了调查历史驱动构建修复的有效性和局限性，作者首先构建了一个从GitHub的Top-1000项目中收集的新的大型构建失败数据集。然后，他们在这个扩展数据集上定量和定性地评估了HireBuild。受研究发现的启发，他们提出了一种简单的新技术，该技术通过从当前测试项目和外部资源中搜索，而不是历史修复信息，来生成可能的补丁。</p>
+<p>根据他们的实验结果，基于现有信息的简单方法比基于历史修复信息的最新技术HireBuild成功地修复了2倍的可重现构建失败。此外，他们的结果还揭示了未来高级构建失败修复的各种发现&#x2F;指南。</p>
+<p>KEYWORDS  <strong>自动程序修复，构建系统，构建故障修复</strong></p>
+<h3 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h3><p>这篇论文的背景是现代软件开发中广泛使用的构建系统（例如Gradle，Ant和Maven）及其对应的构建脚本。这些构建脚本在软件演进过程中频繁更新，以保持与改变的源代码或环境（例如，第三方库和插件）的一致性。如果出现不一致或错误，构建脚本可能会引发构建失败。构建失败在商业和开源软件系统中都频繁发生，并且可能严重推迟软件开发中的其他活动。因此，广泛的构建失败问题已经引起了软件工程研究者的越来越多的关注，对不同类型的构建失败进行了各种研究&#x2F;技术。</p>
+<p>相关工作中，例如，HireBuild是一种在ICSE’18提出的最先进的通用构建失败修复技术，它从历史项目中成功的修复中学习修复模式，并通过应用学习到的修复模式生成补丁。但是，HireBuild的有效性仅在有限的数据集上进行了评估，且作为一种基于历史的技术，其有效性依赖于训练数据的质量和可用性。</p>
+<p>该论文指出了HireBuild的局限性，并通过构建一个新的、大型的实际构建失败数据集，对HireBuild进行了全面的评估，以充分了解基于历史的构建修复技术HireBuild的效用和限制，并推动未来的构建修复研究。他们对数据集中可复现的构建失败进行了HireBuild的性能复查，也对HireBuild的成功和失败案例进行了定性手动检查。</p>
+<p>根据这项研究的发现，作者提出了一种轻量级的构建失败修复技术——HoBuFF（不依赖历史的构建失败修复），它不依赖历史数据，而只是简单地利用构建代码、构建日志和外部构建相关资源的当前信息。HoBuFF包括两个阶段：（1）故障定位，（2）补丁生成。在进行HireBuild和HoBuFF的实证比较后，他们发现在102个可复现的失败中，HoBuFF能够在更短的时间内成功修复18个错误，包括HireBuild修复的8个错误（HireBuild总共修复了9个错误）。</p>
+<p>这篇论文的贡献包括：</p>
+<ul>
+<li>数据集：包含375个实际构建失败中的102个可复现构建失败的数据集，这比现有的构建失败数据集要大得多，并可作为未来构建修复研究的基准数据集。</li>
+<li>研究：对扩展数据集中最先进的基于历史的构建失败修复（HireBuild）进行了广泛研究，并对其优点和局限性进行了详细的手动检查。</li>
+<li>技术：一个新的构建失败修复技术（HoBuFF），只需要当前信息（即，无需历史数据），通过使用轻量级的数据流分析和查询内部&#x2F;外部资源来进行构建修复。</li>
+<li>启示：对HoBuFF和最先进的HireBuild进行的实证评估，表明当前项目信息可以大大补充历史构建修复信息，用于自动化构建失败修复，并揭示了未来高级构建失败修复的各种发现&#x2F;指南。</li>
+</ul>
+<h3 id="BACKGROUND"><a href="#BACKGROUND" class="headerlink" title="BACKGROUND"></a><strong>BACKGROUND</strong></h3><h4 id="2-1-Build-Failure-Fixing-Challenges"><a href="#2-1-Build-Failure-Fixing-Challenges" class="headerlink" title="2.1 Build Failure Fixing:Challenges"></a>2.1 Build Failure Fixing:Challenges</h4><p><img src="/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/image-20230706101435497.png" alt="image-20230706101435497"></p>
+<p>作者通过一个名为Mockito&#x2F;db8a3f3的构建失败和其手动修复补丁的示例，说明了修复Gradle构建失败的挑战。</p>
+<p>在这个示例中，表1展示了一个构建失败示例，包含从构建日志中获取的相关错误信息片段（即错误消息）和其手动修复补丁。在执行任务releaseNeeded期间，构建过程在第104行终止，因为第104行试图访问属性ext.needed，而这个属性在else分支上并没有被定义。为了修复这个失败，开发人员在第102行后面添加了一个额外的语句ext.needed &#x3D; false。</p>
+<p>在含有与失败相关信息的构建日志给出的情况下，第一个挑战在于在Gradle脚本中定位故障。如表1中的错误消息所示，第104行是触发构建失败并停止构建过程的代码位置。然而，根据手动补丁，修复是在第102行之后添加的。第104行揭示了构建失败，但它可能并非构建失败的根本原因。因此，如果没有识别出所有可能的根本原因语句，我们可能无法修复构建失败。</p>
+<p>即使已经确定了根本原因语句的集合，还存在另一个挑战：如何生成正确的补丁。具体来说，要修复这个示例中的构建失败，自动化修复技术需要找出错误属性ext.needed的正确值，这需要理解程序。在其他情况下，当构建失败是由于使用了外部资源（例如，第三方库依赖）的错误值引起的，自动化修复技术也需要对外部资源有开放的了解。[8]</p>
+<p><img src="/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/image-20230706101031311.png" alt="image-20230706101031311"></p>
+<blockquote>
+<p>在Gradle构建系统中，一个“任务（Task）”是构建过程中要执行的一个步骤。任务可以执行各种不同的操作，如编译Java源代码、创建一个JAR文件、生成Javadoc等。每个任务都由一系列的操作（Action）组成，这些操作在执行任务时按顺序执行。</p>
+<p>“releaseNeeded”是一个特定的任务名称，可能特定于某个项目或构建过程。这个任务的具体作用取决于它在Gradle构建脚本中的定义。根据这个任务的名称，它可能是用来检查是否需要进行软件发布的任务，但这需要查看具体的项目和构建脚本来进行确认。</p>
+<p>在论文中的这个例子中，”releaseNeeded”任务在执行过程中出现了错误，因为它试图访问一个在某个执行路径上未被定义的属性<code>ext.needed</code>，这导致了构建失败。</p>
+</blockquote>
+<h4 id="2-2-HireBuild"><a href="#2-2-HireBuild" class="headerlink" title="2.2 HireBuild"></a>2.2 HireBuild</h4><p>HireBuild 是一个现有的自动构建失败修复技术。它的工作方式主要分为两个阶段：模式提取（Pattern Extraction）和补丁生成（Patch Generation）。</p>
+<p>在模式提取阶段，HireBuild 首先需要一个训练集，该训练集由历史上收集的构建修复组成。然后，它从训练集中选择一些错误信息与给定构建失败的错误信息相似的构建修复，将这些选定的构建修复视为种子修复（Seed Fixes）。HireBuild 从这些种子修复中提取模式，并使用一些启发式策略对它们进行排序。</p>
+<p>在补丁生成阶段，HireBuild为四种类型的构建元素定义了一些规则，并在这些元素的模式中填入具体的值。这四种元素类型包括：（1）标识符（包括任务名、块名、变量名），（2）Gradle 插件和第三方工具&#x2F;库的名称，（3）项目内的文件路径，和（4）版本号。然后，HireBuild会根据补丁和种子修复之间的相似度对生成的补丁进行排序，将补丁应用到匹配模式的代码位置，并最后按顺序验证它们。</p>
+<p>然而，HireBuild虽然考虑了这四种类型的元素，但仍有一些其他元素（如项目特定变量）的具体值在生成补丁时是必需的，但HireBuild并未考虑。对于这些元素，HireBuild并没有为生成具体值设计特定的规则，因此不能为相应的构建失败生成候选补丁。这就是HireBuild的一些局限性。</p>
+<p>对于表1中的示例 ext.needed（whose value is true or false）不属于这四种类型中的任何一种。</p>
+<h3 id="STUDY-ON-HIREBUILD"><a href="#STUDY-ON-HIREBUILD" class="headerlink" title="STUDY ON HIREBUILD"></a><strong>STUDY ON HIREBUILD</strong></h3><p>在关于HireBuild的研究中，研究人员发现HireBuild在非常小的数据集上的评估可能导致过拟合，因此有必要在一个不同且更大的数据集上重新评估其性能。研究还强调了手动检查HireBuild成功和失败案例的必要性，以了解其效能和可能的限制。</p>
+<p>为了减少由于在原始HireBuild研究中使用小数据集所带来的有效性威胁，研究人员扩展了现有的数据集。他们从GitHub上最受欢迎的1000个Java项目中收集了额外的375个构建失败（其中102个可重现）。新收集的数据集被称为”扩展数据集”。</p>
+<p>本研究提出的研究问题围绕HireBuild在扩展数据集上的表现，其修复构建错误的成功或失败的原因，以及其限制。研究发现，HireBuild只修复了扩展数据集中的9%的构建失败，这个成功率比在其原始数据集中报告的成功率（46%）低得多，暗示可能存在过拟合问题。</p>
+<p><img src="/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/image-20230706102744081.png" alt="image-20230706102744081"></p>
+<blockquote>
+<p>历史信息： Diff</p>
+<p>当前信息：error message， script code，external resources.</p>
+</blockquote>
+<p>论文提供了一些关于自动修复构建失败的指导原则：</p>
+<ol>
+<li>使用历史数据的必要性：历史修复数据并不是构建失败修复技术的必需因素。相反，更重要的是充分利用当前信息（如当前的脚本代码，当前的构建日志和内部&#x2F;外部资源）。</li>
+<li>使用当前数据的可行性：对于给定的构建失败，通常可以获得当前的脚本代码和构建日志。此外，许多程序分析技术可以用来分析脚本代码。再者，构建日志通常结构良好，允许直接提取错误信息。对于资源，有结构良好的官方文档和存储库可供自动参考。</li>
+<li>分析更多的构建代码模式：由HireBuild提取的模式较为死板，因为它保留的程序信息很少。这暗示，从构建代码中分析更多的修复模式可以帮助获取修复构建失败的关键线索。</li>
+<li>考虑构建代码中的更多元素：在生成补丁时考虑的构建代码中的元素类型有限，这也限制了HireBuild的效能。这暗示，一个更通用&#x2F;系统的构建失败修复方法也需要考虑更多的脚本元素。</li>
+</ol>
+<h3 id="A-NEW-TECHNIQUE-HOBUFF"><a href="#A-NEW-TECHNIQUE-HOBUFF" class="headerlink" title="A NEW TECHNIQUE: HOBUFF"></a><strong>A NEW TECHNIQUE: HOBUFF</strong></h3><p>在对HireBuild研究的发现的启发下，我们提出了一种轻量级的构建失败修复技术，名为HoBuFF（忽视历史的构建失败修复），它不以历史修复为输入，而是以更全面的方式利用当前信息。HoBuFF主要包含两个阶段：基于数据流的故障定位和基于搜索的补丁生成。在故障定位的第一阶段，HoBuFF通过分析构建日志提取错误信息，然后通过应用轻量级的数据流分析定位可能的错误代码。在补丁生成的第二阶段，HoBuFF设计修复操作符并搜索修复成分，以生成补丁候选项。为了方便理解，我们将在整个章节中使用第2节中提出的例子来说明我们的方法。</p>
+<p><img src="/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/image-20230706105742107.png" alt="image-20230706105742107"></p>
+<h4 id="4-1-基于数据流的故障定位"><a href="#4-1-基于数据流的故障定位" class="headerlink" title="4.1 基于数据流的故障定位"></a>4.1 基于数据流的故障定位</h4><p>当构建失败时，构建日志会记录相应的错误信息，这对手动定位构建失败的根源非常有帮助。因此，HoBuFF进行故障定位的第一步是从构建日志中提取错误信息。基于提取的错误信息，HoBuFF然后定位显示构建过程中构建失败的语句，这就是在构建脚本中暴露构建失败的语句。最后，HoBuFF通过轻量级的跨过程数据流分析，从显示错误的语句中追溯到错误的根源。</p>
+<p>4.1.1 错误信息提取。构建日志可能记录了许多与构建过程的各个阶段相关的信息，比如初始化和任务执行等。因此，HoBuFF首先解析构建日志，提取与构建失败相关的信息，也就是错误信息。由于Gradle构建日志的标准形式，日志中存在错误指示头来标记错误信息。HoBuFF使用这些错误指示头从构建日志中提取错误信息。此外，由于构建失败的原因可能完全不同，设计固定的提取模板来提取所有错误元素名称是不现实的，因此我们采取了不同的策略，包括POS标记、异常名词提取、特殊标记处理等，以获取潜在的错误元素名称和值进行进一步分析。</p>
+<p>总的来说，将会收集以下特定的错误信息来帮助故障定位过程：(1) 项目，(2) 任务，(3) 配置元素，(4) 元素的值，(5) 显示错误的语句的位置。</p>
+<p>4.1.2 显示错误的语句识别。显示错误的语句可能并不是失败的根本原因，但实际上它对于识别根本原因非常重要。如果存在最后一种信息，也就是显示错误的语句的位置，HoBuFF可以根据行号直接在构建脚本中找到显示错误的语句。否则，HoBuFF会使用其他类型的信息推断构建脚本中的显示错误的语句。</p>
+<p>4.1.3 根源定位。为了在构建脚本中识别根源，HoBuFF从显示错误的语句反向追溯，执行跨过程的数据流分析。请注意，我们只考虑数据流依赖关系（忽略控制流依赖关系），以避免过度近似，使得分析更为轻量级。首先，HoBuFF构建一个跨过程的控制流图，并用通过可达定义分析计算出的数据依赖信息进行标注。然后，基于图，HoBuFF识别所有影响显示错误语句（包括显示错误的语句）的语句，作为潜在的根源语句，这就是故障定位过程的输出。</p>
+<p><img src="/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/image-20230708172847407.png" alt="image-20230708172847407"></p>
+<h4 id="4-2-基于搜索的补丁程序生成"><a href="#4-2-基于搜索的补丁程序生成" class="headerlink" title="4.2 基于搜索的补丁程序生成"></a>4.2 基于搜索的补丁程序生成</h4><p>本章节主要介绍了如何使用基于搜索的方法生成补丁，来修复构建失败的问题。这一章分为三个部分，分别是修复运算符（4.2.1），修复成分（4.2.2）和补丁候选者生成（4.2.3）。</p>
+<ol>
+<li>修复运算符：HoBuFF定义了三种修复运算符，包括更新、插入和删除，这些运算符主要用于修改buggy的配置。<ul>
+<li>更新: 通过替换错误的值ψb为正确的值ψ+b，来更新配置cb。</li>
+<li>插入: 插入一个配置cb，其中eb是通过错误定位确定的，ψ+b是需要引入的成分。</li>
+<li>删除: 删除配置cb，不需要任何成分。为了避免语法问题，进一步分析从cb到删除所有受影响的语句的数据依赖关系。</li>
+</ul>
+</li>
+<li>修复成分：为了修复错误，HoBuFF需要查找正确的修复成分。根据它们的来源，这些成分可以分为内部和外部两种类型。<ul>
+<li>内部搜索: HoBuFF会在项目内部搜索所有赋值给相同配置元素的值。</li>
+<li>外部搜索: HoBuFF会从外部资源中搜索值。这些外部资源包括Gradle中心仓库、Gradle DSL文档和Android DSL文档。</li>
+</ul>
+</li>
+<li>补丁候选者生成：补丁候选者生成过程的输入是一组定位的根源语句，输出是构建失败的补丁候选者列表。具体地说，补丁候选者生成过程可以分为三个层次：首先，对于每个根源语句，HoBuFF首先决定应用哪种修复运算符，这取决于语句是否为空定义；然后，对于每种修复运算符，HoBuFF直接生成一个补丁候选者，如果是”删除”，而如果是”插入”或”更新”，HoBuFF通过内部或外部搜索生成修复成分；最后，对于每个修复成分，HoBuFF生成一个补丁并验证它。</li>
+</ol>
+<blockquote>
+<p>假设你正在使用Gradle构建一个Android项目，并遇到了一个构建失败的问题。构建日志显示失败的原因是“找不到com.example:mylib:1.0.0这个依赖”。</p>
+<p>在这种情况下，HoBuFF将会启动以下步骤：</p>
+<ol>
+<li><strong>错误定位（Fault Localization）</strong>：HoBuFF首先会分析构建日志和脚本，确定问题的原因是Gradle脚本中的一个依赖声明（com.example:mylib:1.0.0）有误。</li>
+<li><strong>修复操作符的选择</strong>：因为这个错误的依赖声明是一个错误的值（也就是说，这个依赖版本并不存在），所以HoBuFF会按照”更新”-“插入”-“删除”的顺序选择修复操作符。<ul>
+<li>首先，”更新”操作符会被应用，HoBuFF将尝试替换错误的依赖版本号。</li>
+</ul>
+</li>
+<li><strong>修复成分（Fixing Ingredient）的生成</strong>：为了找到正确的依赖版本，HoBuFF会在Gradle中心仓库中搜索com.example:mylib这个库，并找到一个存在的版本，比如1.0.1。</li>
+<li><strong>生成并应用补丁</strong>：HoBuFF将会生成一个包含新依赖版本的补丁，也就是将com.example:mylib:1.0.0替换为com.example:mylib:1.0.1，并应用到原始的Gradle脚本上。</li>
+<li><strong>补丁验证</strong>：应用了新补丁的Gradle脚本会被重新执行，如果构建成功，那么这个补丁就被视为有效的补丁。</li>
+</ol>
+<p>这就是一个HoBuFF修复Gradle构建错误的具体例子。</p>
+</blockquote>
+<h3 id="EMPIRICAL-EVALUATION"><a href="#EMPIRICAL-EVALUATION" class="headerlink" title="EMPIRICAL EVALUATION"></a><strong>EMPIRICAL EVALUATION</strong></h3><p>两个主要研究问题是：</p>
+<p><strong>• RQ4：HoBuFF在修复构建失败的数量上的表现如何？</strong> </p>
+<p><strong>• RQ5：HoBuFF在修复构建失败所需时间和生成候选修复方案的数量上的表现如何？</strong></p>
+<p>研究使用Groovy AST API实现了HoBuFF，并在一台配备64个Intel(R) Xeon e5 CPU核心、128GB内存和Ubuntu 14.04.1的计算机上进行了所有实验。</p>
+<p>在RQ4的评估中，HoBuFF成功修复了102个可复现构建失败中的18个（18%），而最新的HireBuild只修复了其中的9个（9%）。这表明了仅使用当前项目信息，而非使用历史修复信息进行构建失败修复的优势。此外，HireBuild修复的9个构建失败中，有8个也被HoBuFF修复了。</p>
+<p>在RQ5的评估中，研究发现HoBuFF在成功修复失败后的平均修复时间为156秒，显示出其在修复真实世界构建失败中的效率。在两种技术成功修复失败的情况下，他们都没有花费很长的时间（即少于800秒）。但是，HoBuFF的修复时间集中在较小的范围内（即少于200秒），比HireBuild更优秀。</p>
+<p>然而，尽管HoBuFF在很大程度上超越了最新的HireBuild，但它并没有修复所有的构建失败。在这部分，研究调查了不能被我们的方法修复的剩余构建失败，以了解其在故障定位和修复方案生成方面的局限性。研究发现，无法被HoBuFF修复的84个构建失败中，有58个是由于HoBuFF故障定位阶段的局限性，而另外26个是由于修复方案生成阶段的局限性。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/">http://example.com/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/07/09/HireBuild-An-Automatic-Approach-to-History-Driven-Repair-of-Build-Scripts/" title="HireBuild: An Automatic Approach to History-Driven Repair of Build Scripts"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">HireBuild: An Automatic Approach to History-Driven Repair of Build Scripts</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">63</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#History-Driven-Build-Failure-Fixing-How-Far-Are-We-2019"><span class="toc-number">1.</span> <span class="toc-text">History-Driven Build Failure Fixing: How Far Are We?(2019)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.0.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E7%AE%80%E8%A6%81"><span class="toc-number">1.0.2.</span> <span class="toc-text">论文简要 :</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BF%A1%E6%81%AF"><span class="toc-number">1.0.3.</span> <span class="toc-text">背景信息:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.0.4.</span> <span class="toc-text">方法:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">1.0.5.</span> <span class="toc-text">结果:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ABSTRACT"><span class="toc-number">1.0.6.</span> <span class="toc-text">ABSTRACT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.0.7.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BACKGROUND"><span class="toc-number">1.0.8.</span> <span class="toc-text">BACKGROUND</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-Build-Failure-Fixing-Challenges"><span class="toc-number">1.0.8.1.</span> <span class="toc-text">2.1 Build Failure Fixing:Challenges</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-HireBuild"><span class="toc-number">1.0.8.2.</span> <span class="toc-text">2.2 HireBuild</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#STUDY-ON-HIREBUILD"><span class="toc-number">1.0.9.</span> <span class="toc-text">STUDY ON HIREBUILD</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#A-NEW-TECHNIQUE-HOBUFF"><span class="toc-number">1.0.10.</span> <span class="toc-text">A NEW TECHNIQUE: HOBUFF</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-%E5%9F%BA%E4%BA%8E%E6%95%B0%E6%8D%AE%E6%B5%81%E7%9A%84%E6%95%85%E9%9A%9C%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.0.10.1.</span> <span class="toc-text">4.1 基于数据流的故障定位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-%E5%9F%BA%E4%BA%8E%E6%90%9C%E7%B4%A2%E7%9A%84%E8%A1%A5%E4%B8%81%E7%A8%8B%E5%BA%8F%E7%94%9F%E6%88%90"><span class="toc-number">1.0.10.2.</span> <span class="toc-text">4.2 基于搜索的补丁程序生成</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EMPIRICAL-EVALUATION"><span class="toc-number">1.0.11.</span> <span class="toc-text">EMPIRICAL EVALUATION</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/" title="History-Driven Build Failure Fixing: How Far Are We?">History-Driven Build Failure Fixing: How Far Are We?</a><time datetime="2023-07-09T07:58:11.000Z" title="发表于 2023-07-09 15:58:11">2023-07-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/09/HireBuild-An-Automatic-Approach-to-History-Driven-Repair-of-Build-Scripts/" title="HireBuild: An Automatic Approach to History-Driven Repair of Build Scripts">HireBuild: An Automatic Approach to History-Driven Repair of Build Scripts</a><time datetime="2023-07-09T07:57:05.000Z" title="发表于 2023-07-09 15:57:05">2023-07-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/07/Automated-API-Usage-Update-for-Android-Apps/" title="Automated API-Usage Update for Android Apps">Automated API-Usage Update for Android Apps</a><time datetime="2023-07-07T08:20:20.000Z" title="发表于 2023-07-07 16:20:20">2023-07-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/07/Automated-Deprecated-API-Usage-Update-for-Android-Apps-How-Far-Are-We/" title="Automated Deprecated-API Usage Update for Android Apps How Far Are We">Automated Deprecated-API Usage Update for Android Apps How Far Are We</a><time datetime="2023-07-07T08:19:22.000Z" title="发表于 2023-07-07 16:19:22">2023-07-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/28/AexPy-Detecting-API-Breaking-Changes-in-Python-Packages/" title="AexPy Detecting API Breaking Changes in Python Packages">AexPy Detecting API Breaking Changes in Python Packages</a><time datetime="2023-06-28T12:42:06.000Z" title="发表于 2023-06-28 20:42:06">2023-06-28</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
