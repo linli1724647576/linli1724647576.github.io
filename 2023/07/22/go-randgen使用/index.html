@@ -1,0 +1,487 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>go-randgen使用 | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="go randgengo 版本的 mysql randgen go get 安装1go get -u  github.com&#x2F;pingcap&#x2F;go-randgen&#x2F;cmd&#x2F;go-randgen  尝试一下： 1go-randgen -h   编译安装 安装 go-bindata 命令行工具  1go get -u github.com&#x2F;jteeuwen&#x2F;go-bindata&#x2F;...   编译 go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="go-randgen使用">
+<meta property="og:url" content="http://example.com/2023/07/22/go-randgen%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="go randgengo 版本的 mysql randgen go get 安装1go get -u  github.com&#x2F;pingcap&#x2F;go-randgen&#x2F;cmd&#x2F;go-randgen  尝试一下： 1go-randgen -h   编译安装 安装 go-bindata 命令行工具  1go get -u github.com&#x2F;jteeuwen&#x2F;go-bindata&#x2F;...   编译 go">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-07-22T03:08:23.000Z">
+<meta property="article:modified_time" content="2023-07-22T03:09:08.228Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="db">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/07/22/go-randgen%E4%BD%BF%E7%94%A8/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'go-randgen使用',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-22 11:09:08'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">67</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">go-randgen使用</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-22T03:08:23.000Z" title="发表于 2023-07-22 11:08:23">2023-07-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-22T03:09:08.228Z" title="更新于 2023-07-22 11:09:08">2023-07-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="go-randgen使用"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="go-randgen"><a href="#go-randgen" class="headerlink" title="go randgen"></a>go randgen</h1><p>go 版本的 mysql randgen</p>
+<h2 id="go-get-安装"><a href="#go-get-安装" class="headerlink" title="go get 安装"></a>go get 安装</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get -u  github.com/pingcap/go-randgen/cmd/go-randgen</span><br></pre></td></tr></table></figure>
+
+<p>尝试一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go-randgen -h</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h2><ul>
+<li>安装 go-bindata 命令行工具</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get -u github.com/jteeuwen/go-bindata/...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编译 go-randgen</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make all</span><br></pre></td></tr></table></figure>
+
+<h2 id="特色"><a href="#特色" class="headerlink" title="特色"></a>特色</h2><ol>
+<li>内置一个默认 zz 文件，也就是说你只给一个 yy 文件，就能自动生成 sql</li>
+<li>生成 sql 的过程中可以不连接数据库，非常迅速</li>
+<li>兼容 mysql randgen 的 yy 文件的语法，只要在 yy 文件中没有插入 perl 代码，就可以直接拿过来运行</li>
+<li>和 mysql randgen 支持嵌入 perl 代码类似，go randgen 支持嵌入 lua 代码</li>
+<li>纯 Go 实现，设计得非常灵活，非常易于 Hack</li>
+<li>除了 cmd 包下面的函数，其他包对外暴露的函数的实现全部是无状态，如果需要可以完全当成一个库来调用</li>
+</ol>
+<h2 id="Quick-start"><a href="#Quick-start" class="headerlink" title="Quick start"></a>Quick start</h2><h3 id="gentest"><a href="#gentest" class="headerlink" title="gentest"></a>gentest</h3><p>生成测试 window functions 的 sql：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -Y 表示使用的 yy 文件</span></span><br><span class="line"><span class="comment"># -Q 表示生成的查询数量</span></span><br><span class="line"><span class="comment"># -B 表示将数据库构造语句与查询语句分开成两个文件存放</span></span><br><span class="line"><span class="comment"># 这里不需要指定 zz 文件是因为系统自带了一个默认的 zz 文件</span></span><br><span class="line">./go-randgen gentest -Y examples/windows.yy -Q 10 -B</span><br></pre></td></tr></table></figure>
+
+<p>在当前目录下看到<code>output.data.sql</code>即是生成的 ddl(表结构定义) 和 dml(初始化表中数据)，<br><code>output.rand.sql</code>即是根据 yy 文件生成的查询 sql。</p>
+<p>上述案例使用的是系统<a href="resource/resource/default.zz.lua">默认的 zz 文件 </a>，也可以自己重新写<br>，然后通过<code>-Z</code>参数指定路径，具体规则见语法手册。</p>
+<p>系统默认的zz文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">tables = &#123;</span><br><span class="line">    rows = &#123;10, 20, 30, 90&#125;,</span><br><span class="line">    -- SHOW CHARACTER SET;</span><br><span class="line">    charsets = &#123;&#x27;utf8&#x27;, &#x27;latin1&#x27;, &#x27;binary&#x27;&#125;,</span><br><span class="line">    -- partition number</span><br><span class="line">    partitions = &#123;4, 6, &#x27;undef&#x27;&#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fields = &#123;</span><br><span class="line">    types = &#123;&#x27;bigint&#x27;, &#x27;float&#x27;, &#x27;double&#x27;, &#x27;decimal(40, 20)&#x27;,</span><br><span class="line">        &#x27;char(20)&#x27;, &#x27;varchar(20)&#x27;, &#x27;enum&#x27;&#125;,</span><br><span class="line">    sign = &#123;&#x27;signed&#x27;, &#x27;unsigned&#x27;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data = &#123;</span><br><span class="line">    numbers = &#123;&#x27;null&#x27;, &#x27;tinyint&#x27;, &#x27;smallint&#x27;,</span><br><span class="line">        &#x27;12.991&#x27;, &#x27;1.009&#x27;, &#x27;-9.183&#x27;,</span><br><span class="line">        &#x27;decimal&#x27;,</span><br><span class="line">    &#125;,</span><br><span class="line">    strings = &#123;&#x27;null&#x27;, &#x27;letter&#x27;, &#x27;english&#x27;&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果你不想生成 ddl，只想根据 yy 生成一些 sql，<br>可以使用<code>--skip-zz</code>跳过 ddl 的生成，<br>不过此时也不允许在 yy 文件中包含表名或者字段相关的关键字。</p>
+<p>yy 文件的具体写法也见后面的语法手册</p>
+<p><font color="red"><code>gentest</code>是<code>go-randgen</code>工具中的一个命令，其主要用途是生成用于测试的SQL语句。</font></p>
+<p><font color="red">具体来说，它会根据你提供的<code>yy</code>文件（这是一个描述了如何生成随机SQL的模板文件）来生成一定数量的随机SQL查询。你可以通过<code>-Q</code>参数指定要生成的查询数量。</font></p>
+<p><font color="red">除了生成查询语句，<code>gentest</code>也会生成DDL（数据定义语言）和DML（数据操作语句）语句。这些语句定义了用于执行查询的数据库表的结构，以及这些表中的初始数据。这使得你可以在一个空的数据库中执行生成的查询，而不需要预先准备任何数据。</font></p>
+<p><font color="red">总的来说，<code>gentest</code>的主要用途是生成用于测试的SQL语句，这些语句可以用于测试数据库的性能，或者验证SQL查询的正确性。</font></p>
+<h3 id="gendata"><a href="#gendata" class="headerlink" title="gendata"></a>gendata</h3><p>根据指定的 zz，往指定的 dsns 中灌入相应数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在指定的 dsn 中灌入内置 zz 文件定义的数据</span></span><br><span class="line"><span class="comment"># 通过逗号分割多个dsn</span></span><br><span class="line">./go-randgen gendata --dsns <span class="string">&quot;root:@tcp(127.0.0.1:3306)/randgen,root:@tcp(127.0.0.1:4000)/randgen&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><font color="red"><code>gendata</code>是<code>go-randgen</code>工具中的一个命令，它的主要作用是根据指定的zz文件，将数据插入到指定的数据源名称（DSN）中。</font></p>
+<p><font color="red">具体来说，<code>gendata</code>会首先读取zz文件，这个文件包含了数据库表的定义，以及如何生成表中的数据的规则。然后，<code>gendata</code>会根据这些规则生成数据，并插入到你指定的DSN中。</font></p>
+<p><font color="red">DSN是一种格式化的字符串，用于描述如何连接到数据库。在<code>go-randgen</code>的语境中，你可以通过<code>--dsns</code>参数指定一个或多个DSN，<code>gendata</code>会在这些DSN对应的数据库中插入数据。</font></p>
+<p><font color="red">DSN全称是Data Source Name，即数据源名称，它是一种用来描述如何连接到数据库的字符串格式。DSN通常会包含数据库服务器的地址、端口号、数据库名称、用户名称、用户密码等信息。</font></p>
+<p><font color="red">例如：root:password@tcp(127.0.0.1:3306)&#x2F;my_database</font></p>
+<p><font color="green">这段命令使用了<code>go-randgen</code>的<code>gendata</code>命令来向两个数据源（DSNs）插入数据。</font></p>
+<p><font color="green"><code>--dsns</code>参数后面的字符串指定了两个数据源，它们通过逗号<code>,</code>分隔：</font></p>
+<ol>
+<li><code>&quot;root:@tcp(127.0.0.1:3306)/randgen&quot;</code>: 这是第一个数据源，它使用<code>root</code>用户（没有密码）通过TCP协议连接到本地（IP地址为<code>127.0.0.1</code>）的3306端口上的<code>randgen</code>数据库。</li>
+<li><code>&quot;root:@tcp(127.0.0.1:4000)/randgen&quot;</code>: 这是第二个数据源，它同样使用<code>root</code>用户（没有密码）通过TCP协议连接到本地（IP地址为<code>127.0.0.1</code>）的4000端口上的<code>randgen</code>数据库。</li>
+</ol>
+<p><font color="green">简单来说，这条命令的作用是使用<code>go-randgen</code>的<code>gendata</code>命令向两个本地MySQL数据库（一个运行在3306端口，另一个运行在4000端口）的<code>randgen</code>数据库中插入数据。</font></p>
+<h3 id="gensql"><a href="#gensql" class="headerlink" title="gensql"></a>gensql</h3><p>根据指定的 dsn，解析 yy 文件生成 sql：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./go-randgen gensql -Y examples/functions.yy \  </span><br><span class="line">             --dsn <span class="string">&quot;root:@tcp(127.0.0.1:3306)/randgen&quot;</span> \ </span><br><span class="line">             -Q 100</span><br></pre></td></tr></table></figure>
+
+<p>注意<code>gensql</code>会假设 dsn 中所有表的字段及类型都是一样的（因为 randgen 生成的数据有这个特点）</p>
+<p><font color="red"><code>gensql</code>是<code>go-randgen</code>工具中的一个命令，其主要作用是根据指定的数据源名称（DSN）和提供的yy文件（一个描述如何生成随机SQL的模板文件），生成一定数量的随机SQL查询语句。</font></p>
+<p><font color="red">通过<code>-Y</code>参数，你可以指定一个yy文件，<code>gensql</code>会读取这个文件，并根据其中的规则生成SQL查询。你还可以通过<code>-Q</code>参数来指定要生成的查询数量。</font></p>
+<p><font color="red">通过<code>--dsn</code>参数，你可以指定一个DSN，<code>gensql</code>会假设DSN中所有表的字段及类型都是一样的（因为randgen生成的数据有这个特点）。</font></p>
+<h3 id="exec"><a href="#exec" class="headerlink" title="exec"></a>exec</h3><p>指定两个 dsn，直接将生成的 sql 在两个 dsn 上执行，并 dump 出运行结果不一致的 sql</p>
+<p>示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">./go-randgen <span class="built_in">exec</span> -Y examples/functions.yy \</span><br><span class="line">             --dsn1 <span class="string">&quot;root:@tcp(127.0.0.1:4000)/randgen&quot;</span> \</span><br><span class="line">             --dsn2 <span class="string">&quot;root:@tcp(127.0.0.1:3306)/randgen&quot;</span> \  </span><br><span class="line">             -Q 100</span><br></pre></td></tr></table></figure>
+
+<p><font color="red">这个命令会根据<code>examples/functions.yy</code>文件生成100条SQL查询，然后在两个数据库服务（地址分别为<code>127.0.0.1:4000</code>和<code>127.0.0.1:3306</code>）上执行这些查询。然后，它会比较两个数据库的查询结果是否一致，并将不一致的查询和结果输出。</font></p>
+<p>分别在两个 dsn 中先通过内置的 zz 生成数据，然后通过 functions.yy 中定义的规则随机生成 100 条 sql，<br>在两个 dsn 中同时执行，然后对比执行结果是否一致，如果不一致，则把相关信息输出到程序执行目录的<code>dump</code>目录下（可以通过<code>--dump</code>选项修改 dump 目录）</p>
+<p>如果你想让 go-randgen 一直运行下去，而不是执行有限条 sql 后停止，<br>可以将<code>-Q</code>设置为负数，比如<code>-Q -1</code>.</p>
+<p>注意，默认情况下，对比两个 sql 的执行结果是无序的，比如下面两个运行结果，<br>go randgen 会认为他们是一样的：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Result1:</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">------+------+</span></span><br><span class="line"><span class="operator">|</span> p    <span class="operator">|</span> s    <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+------+</span></span><br><span class="line"><span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span> aaa  <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>    <span class="number">2</span> <span class="operator">|</span> bbb  <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+------+</span></span><br><span class="line"></span><br><span class="line">Result2:</span><br><span class="line"></span><br><span class="line"><span class="operator">+</span><span class="comment">------+------+</span></span><br><span class="line"><span class="operator">|</span> p    <span class="operator">|</span> s    <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+------+</span></span><br><span class="line"><span class="operator">|</span>    <span class="number">2</span> <span class="operator">|</span> bbb  <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span>    <span class="number">1</span> <span class="operator">|</span> aaa  <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">------+------+</span></span><br></pre></td></tr></table></figure>
+
+<p>如果想要精确到 byte 的有序比较的话，可以添加<code>--order</code>选项</p>
+<p><code>exec</code>也可以通过<code>--skip-zz</code>选项跳过数据生成的过程，此时它会采用<br>类似于<code>gensql</code>的方式生成 sql 并执行</p>
+<p><font color="red"><code>exec</code>命令在<code>go-randgen</code>中有特别的用处。它主要是用于在两个数据库服务上执行生成的SQL查询，并对比这两个服务的查询结果是否一致。</font></p>
+<p><font color="red">这种功能在数据库开发和测试中非常有用，尤其是在测试新版本数据库或新功能时。开发者可以使用<code>go-randgen</code>生成随机的、复杂的SQL查询，然后使用<code>exec</code>命令在旧版本数据库和新版本数据库上执行这些查询。如果两个数据库的查询结果一致，那么就证明新版本数据库在这些查询上的行为和旧版本数据库是一致的，新功能或优化没有引入bug。</font></p>
+<p><font color="red">这种方法也适用于不同类型数据库之间的对比测试，例如比较MySQL和PostgreSQL的行为是否一致。</font></p>
+<h3 id="作为一个库"><a href="#作为一个库" class="headerlink" title="作为一个库"></a>作为一个库</h3><p>除了 cmd 目录下的包，其他所有包对外暴露的函数的实现都是无状态的，可以很安全地作为<br>一个库被反复调用。至于使用的方法，可以参考 cmd 包下相关命令的实现。</p>
+<p>示例：通过 yy 的文本内容获得一个 Iterator ，并且生成 10 条 sql</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/pingcap/go-randgen/grammar&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/pingcap/go-randgen/grammar/sql_generator&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	yy := <span class="string">`</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="string">i = 1</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">query: </span></span><br><span class="line"><span class="string">    create</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">create:</span></span><br><span class="line"><span class="string">    CREATE TABLE </span></span><br><span class="line"><span class="string">    &#123;print(string.format(&quot;table%d&quot;, i)); i = i+1&#125;</span></span><br><span class="line"><span class="string">    (a int)</span></span><br><span class="line"><span class="string">`</span></span><br><span class="line">	iterator, err := grammar.NewIter(yy, <span class="string">&quot;query&quot;</span>, <span class="number">5</span>, <span class="literal">nil</span>, <span class="literal">false</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatalf(<span class="string">&quot;get iter err %v\n&quot;</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	iterator.Visit(sql_generator.FixedTimesVisitor(<span class="function"><span class="keyword">func</span><span class="params">(_ <span class="type">int</span>, sql <span class="type">string</span>)</span></span> &#123;</span><br><span class="line">		fmt.Println(sql)</span><br><span class="line">	&#125;, <span class="number">5</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意这里 NewIter 第三个参数传 nil 没有问题是因为示例的 yy 并没有使用关键字，如果<br>其中使用了 yy 的关键字，则最好使用 gendata.NewKeyfun() 来创建该参数</p>
+</blockquote>
+<p>打印的结果为：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table1 (a <span class="type">int</span>)</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table2 (a <span class="type">int</span>)</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table3 (a <span class="type">int</span>)</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table4 (a <span class="type">int</span>)</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table5 (a <span class="type">int</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="语法手册"><a href="#语法手册" class="headerlink" title="语法手册"></a>语法手册</h2><h3 id="zz-文件"><a href="#zz-文件" class="headerlink" title="zz 文件"></a>zz 文件</h3><h4 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h4><p>zz 文件是一个 lua 脚本,zz 文件会定义三件事情:</p>
+<ol>
+<li>生成哪些表</li>
+<li>表中哪些字段</li>
+<li>字段中有哪些数据</li>
+</ol>
+<p>以内置的 zz 文件为例：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 表相关定义</span></span><br><span class="line">tables = &#123;</span><br><span class="line">    <span class="comment">-- 生成的表的记录数</span></span><br><span class="line">    rows = &#123;<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">90</span>&#125;,</span><br><span class="line">    <span class="comment">-- 表的字符编码</span></span><br><span class="line">    charsets = &#123;<span class="string">&#x27;utf8&#x27;</span>, <span class="string">&#x27;latin1&#x27;</span>, <span class="string">&#x27;binary&#x27;</span>&#125;,</span><br><span class="line">    <span class="comment">-- 表的分区数, &#x27;undef&#x27; 表示不分区</span></span><br><span class="line">    partitions = &#123;<span class="number">4</span>, <span class="number">6</span>, <span class="string">&#x27;undef&#x27;</span>&#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 字段相关定义</span></span><br><span class="line">fields = &#123;</span><br><span class="line">    <span class="comment">-- 需要测试的数据类型</span></span><br><span class="line">    types = &#123;<span class="string">&#x27;bigint&#x27;</span>, <span class="string">&#x27;float&#x27;</span>, <span class="string">&#x27;double&#x27;</span>, <span class="string">&#x27;decimal(40, 20)&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;char(20)&#x27;</span>, <span class="string">&#x27;varchar(20)&#x27;</span>&#125;,</span><br><span class="line">    <span class="comment">-- 所有的上面的数字类型都要测试带符合和不带符号两种</span></span><br><span class="line">    sign = &#123;<span class="string">&#x27;signed&#x27;</span>, <span class="string">&#x27;unsigned&#x27;</span>&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 数据初始化相关定义</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="comment">-- 数字字段的生成方案</span></span><br><span class="line">    numbers = &#123;<span class="string">&#x27;null&#x27;</span>, <span class="string">&#x27;tinyint&#x27;</span>, <span class="string">&#x27;smallint&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;12.991&#x27;</span>, <span class="string">&#x27;1.009&#x27;</span>, <span class="string">&#x27;-9.183&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;decimal&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">-- 字符串字段的生成方案</span></span><br><span class="line">    strings = &#123;<span class="string">&#x27;null&#x27;</span>, <span class="string">&#x27;letter&#x27;</span>, <span class="string">&#x27;english&#x27;</span>&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上所示，在 zz 文件中必须要有三个 Table 类型的变量，分别是<strong>tables</strong>,<strong>fields</strong>和<strong>data</strong>.</p>
+<p><font color="red">这个zz文件定义了如何生成数据库的表，字段和数据。根据定义的规则，会生成多个表，每个表包含多个字段，每个字段又包含多个数据。具体来说：</font></p>
+<hr>
+<ol>
+<li><p><strong>表的生成</strong></p>
+<p>定义在<code>tables</code>的变量中，有以下几个属性：</p>
+<ul>
+<li><code>rows</code>: 表的记录数。根据定义，将会生成有10、20、30和90条记录的表。</li>
+<li><code>charsets</code>: 表的字符编码。将生成使用’utf8’、’latin1’和’binary’字符集的表。</li>
+<li><code>partitions</code>: 表的分区数。将生成有4个分区、6个分区的表，以及不分区的表（’undef’表示不分区）。</li>
+</ul>
+<p>综上，根据全组合规则，该文件将生成 4 (记录数种类) * 3 (字符集种类) * 3 (分区数种类) &#x3D; 36 张表。</p>
+</li>
+<li><p><strong>字段的生成</strong></p>
+<p>定义在<code>fields</code>变量中，有以下几个属性：</p>
+<ul>
+<li><code>types</code>: 需要测试的数据类型。定义了’bigint’、’float’、’double’、’decimal(40, 20)’、’char(20)’、’varchar(20)’这些类型的字段。</li>
+<li><code>sign</code>: 是否带符号。对于数字类型的字段，将会测试带符号（’signed’）和不带符号（’unsigned’）两种情况。</li>
+</ul>
+<p>注意：虽然全组合的数量为 6 (类型数种类) * 2 (符号种类) &#x3D; 12，但是实际生成的字段数量会小于12，因为符号属性只适用于数字类型的字段，对于非数字类型字段（例如’char(20)’和’varchar(20)’），符号属性会被忽略。</p>
+</li>
+<li><p><strong>数据的生成</strong></p>
+<p>定义在<code>data</code>变量中，定义了数字和字符串两类数据的生成方案：</p>
+<ul>
+<li><p><code>numbers</code>: 数字字段的生成方案。包括’null’、’tinyint’、’smallint’、’12.991’、’1.009’、’-9.183’、’decimal’，其中前三种是字面量，会直接作为值，后四种是生成器，会生成相应的值。</p>
+</li>
+<li><p><code>strings</code>: 字符串字段的生成方案。包括’null’、’letter’、’english’，同样包含字面量和生成器。</p>
+</li>
+<li><p><strong>字面量（Literal）</strong>：字面量是指数据中的一个固定的值。在代码或者脚本中，当你看到一段内容被引号包围，或者是一个具体的数字，通常可以认为它是一个字面量。例如，在你提供的脚本中，’12.991’, ‘1.009’, ‘-9.183’就是数字字面量，’null’, ‘letter’, ‘english’则是字符串字面量。字面量表示的是它本身的值，不会改变。</p>
+</li>
+<li><p><strong>生成器（Generator）</strong>：与字面量相对的是生成器。生成器不是一个具体的值，而是一种数据生成的规则或者方法。比如在你的脚本中，’tinyint’, ‘smallint’, ‘decimal’就是生成器。当遇到这些生成器时，它会按照对应的规则生成一个值。比如’tinyint’生成器，它会从<code>-128~127</code>中随机生成一个数值。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><img src="/2023/07/22/go-randgen%E4%BD%BF%E7%94%A8/image-20230722110711085.png" alt="image-20230722110711085"></p>
+<hr>
+<h4 id="tables"><a href="#tables" class="headerlink" title="tables"></a>tables</h4><table>
+<thead>
+<tr>
+<th>字段名称</th>
+<th>含义</th>
+<th>可选值</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>rows</td>
+<td>表的记录数</td>
+<td>任意大于 0 的数字</td>
+<td>[0, 1, 2, 10, 100]</td>
+</tr>
+<tr>
+<td>charsets</td>
+<td>字符编码</td>
+<td>‘utf8’,’utf8mb4’,’ascii’,’latin1’,’binary’, ‘undef’ 表示不显式设置字符集</td>
+<td>[‘undef’]</td>
+</tr>
+<tr>
+<td>partitions</td>
+<td>分区数</td>
+<td>任意大于 0 的数字或者 ‘undef’, ‘undef’ 表示不分区</td>
+<td>[‘undef’]</td>
+</tr>
+</tbody></table>
+<p>可设置的字段与默认值在源码中见<a href="gendata/tables.go">gendata&#x2F;tables.go</a> 的<code>tablesVars</code>变量</p>
+<h4 id="fields"><a href="#fields" class="headerlink" title="fields"></a>fields</h4><table>
+<thead>
+<tr>
+<th>字段名称</th>
+<th>含义</th>
+<th>可选值</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>types</td>
+<td>字段类型</td>
+<td>任意合法的 mysql 类型</td>
+<td>[‘int’, ‘varchar’, ‘date’, ‘time’, ‘datetime’]</td>
+</tr>
+<tr>
+<td>keys</td>
+<td>索引信息</td>
+<td>‘key’ 表示加索引,’undef’ 表示不加</td>
+<td>[‘undef’, ‘key’]</td>
+</tr>
+<tr>
+<td>sign</td>
+<td>是否带符号</td>
+<td>‘signed’, ‘unsigned’</td>
+<td>[‘signed’]</td>
+</tr>
+</tbody></table>
+<p>可设置的字段与默认值在源码中见<a href="gendata/fields.go">gendata&#x2F;fields.go</a> 的<code>fieldVars</code>变量</p>
+<h4 id="data"><a href="#data" class="headerlink" title="data"></a>data</h4><p>data 的设置是和 mysql randgen 不太一样的地方，除了支持 numbers, blobs, temporals, enum, strings 五种梗概类型以外，还可以用用更细的类型，比如 decimal，bigint 等等，如果存在更细类型的 key 的话，则以更细类型的定义为准。</p>
+<p>比如：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">data = &#123;</span><br><span class="line">    numbers = &#123;<span class="string">&#x27;null&#x27;</span>, <span class="string">&#x27;tinyint&#x27;</span>, <span class="string">&#x27;smallint&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;12.991&#x27;</span>, <span class="string">&#x27;1.009&#x27;</span>, <span class="string">&#x27;-9.183&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;decimal&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    bigint = &#123;<span class="number">100</span>, <span class="number">10</span>, <span class="number">3</span>&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面这个配置，在遇到 bigint 类型的字段时，每次生成数据会从 100, 10, 3 中随机选择一个，而不会理会更粗犷的 numbers 的配置。</p>
+<p>具体数据类型与梗概数据类型的对应关系见<a href="gendata/data.go">gendata&#x2F;data.go</a>中的<code>summaryType</code>变量。</p>
+<p>其中 ‘tinyint’, ‘smallint’, ‘decimal’ 都是 go randgen 自带的数据生成规则。</p>
+<p>go randgen 中支持的所有数据生成规则见<a href="gendata/generators/register.go">gendata&#x2F;generators&#x2F;register.go</a>的<code>init</code>函数</p>
+<h3 id="yy-文件"><a href="#yy-文件" class="headerlink" title="yy 文件"></a>yy 文件</h3><h4 id="快速入门-1"><a href="#快速入门-1" class="headerlink" title="快速入门"></a>快速入门</h4><p>一个简单的示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 单行注释</span><br><span class="line">/*</span><br><span class="line">多行注释</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">query:</span><br><span class="line">    select</span><br><span class="line">    | select1</span><br><span class="line"></span><br><span class="line">select:</span><br><span class="line">    SELECT fields FROM _table</span><br><span class="line">    </span><br><span class="line">fields:</span><br><span class="line">    _field</span><br><span class="line">    | _field_int</span><br></pre></td></tr></table></figure>
+
+<p>他的一次生成结果可能如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select1</span><br><span class="line"><span class="keyword">SELECT</span> 随机的一个字段 <span class="keyword">FROM</span> 随机的一张表</span><br><span class="line"><span class="keyword">SELECT</span> 随机的一个整型字段 <span class="keyword">FROM</span> 随机的一张表</span><br><span class="line">select1</span><br></pre></td></tr></table></figure>
+
+<p><font color="red">上述提到的简单示例主要展示了如何在 .yy 文件中定义查询生成的规则。这个示例中定义了三个非终结符：<code>query</code>, <code>select</code>, 和 <code>fields</code>，其中 <code>query</code> 是启动规则。</font></p>
+<p><font color="red">首先，<code>query</code> 非终结符表明每一个生成的查询要么是 <code>select</code> 规则生成的，要么是终结符 <code>select1</code>。换句话说，每一个生成的查询都是 <code>SELECT fields FROM _table</code> 或者是 <code>select1</code>。</font></p>
+<p><font color="red">然后，在 <code>select</code> 规则中，<code>SELECT fields FROM _table</code> 代表生成的 SQL 语句的格式。这里的 <code>fields</code> 是另一个非终结符，它指代一个字段名，而 <code>_table</code> 是一个关键字，它会被随机生成的表名替换。</font></p>
+<p><font color="red">最后，<code>fields</code> 非终结符表明字段可以是 <code>_field</code> 或者 <code>_field_int</code>。这两个都是关键字，<code>_field</code> 会被随机生成的字段名替换，<code>_field_int</code> 会被随机生成的整数字段名替换。</font></p>
+<p><font color="red">例如：在PyDR的数据库中，会生成一下的形如下面的sql查询语句：</font></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> `package` <span class="keyword">FROM</span> api_version_range_2;</span><br><span class="line"><span class="keyword">SELECT</span> `api_name` <span class="keyword">FROM</span> typet5_infer;</span><br><span class="line"><span class="keyword">SELECT</span> `package` <span class="keyword">FROM</span> base_infer;</span><br><span class="line">select1;</span><br><span class="line">select1;</span><br><span class="line">select1;</span><br><span class="line">select1;</span><br><span class="line">select1;</span><br><span class="line"><span class="keyword">SELECT</span> `id` <span class="keyword">FROM</span> git_projects;</span><br><span class="line">select1;</span><br><span class="line"><span class="keyword">SELECT</span> `id` <span class="keyword">FROM</span> Annotation_api_version_range;</span><br><span class="line">select1;</span><br><span class="line"><span class="keyword">SELECT</span> `version_range` <span class="keyword">FROM</span> differences;</span><br><span class="line">select1;</span><br><span class="line">select1;</span><br></pre></td></tr></table></figure>
+
+<h4 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h4><ul>
+<li>单行注释<code>#</code></li>
+<li>多行注释<code>/**/</code></li>
+</ul>
+<h4 id="标识符的分类"><a href="#标识符的分类" class="headerlink" title="标识符的分类"></a>标识符的分类</h4><ul>
+<li>非终结符：由小写字母,数字或者下划线组成，但是不能以数字开头</li>
+<li>终结符：大写字母，特殊字符或者数字组成，但是不能以下划线开头</li>
+<li>关键字：下划线开头</li>
+</ul>
+<blockquote>
+<p>对于写在表达式右边的非终结符，如果找不到对应的产生式，也会退化成终结符</p>
+</blockquote>
+<h4 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h4><p>关键字都是以下划线开头</p>
+<p>获取表名和字段名的接口:</p>
+<ul>
+<li><code>_table</code>: 从生成的表中随机选择一张</li>
+<li><code>_field</code>: 从生成的字段中随机选择一个</li>
+<li><code>_field_int</code>: 从整型字段中随机选择一个</li>
+<li><code>_field_invariant</code>: 一次性从所有的字段中随机选择一个并保存，以后每次调用都返回这个字段，实现一致性。</li>
+<li><code>_field_char</code>: 从 char 和 varchar 类型字段中随机选择一个</li>
+<li><code>_field_list</code>: 获取全部字段，以逗号分隔</li>
+<li><code>_field_int_list</code>: 获取全部整型字段，以逗号分隔</li>
+<li><code>_field_char_list</code>: 获取全部字符型字段，以逗号分隔</li>
+</ul>
+<p><font color="red">没有写全，代码位于   &#x2F;gendata&#x2F;gendata.go 中的  NewKeyfun 方法，可以自行查看（<font color="green">已经补全</font>）</font></p>
+<p>随机生成数据的一些糖 (字符相关的会在两边自动生成双引号):</p>
+<ul>
+<li><code>_digit</code>: 随机生成一个 0-9 的数字</li>
+<li><code>_letter</code>: 随机生成一个 ‘a’ 到 ‘z’ 之间的字母</li>
+<li><code>_english</code>: 随机生成一个英文单词</li>
+<li><code>_int</code>: 随机生成一个整型</li>
+<li><code>_date</code>: 生成<code>yyyy-MM-dd</code>格式的随机日期</li>
+<li><code>_year</code>: 随机生成一个年份</li>
+<li><code>_time</code>: 随机生成一个<code>hh:mm:ss</code>的随机时间</li>
+<li><code>_datetime</code>: 随机生成一个<code>yyyy-MM-dd hh:mm:ss</code>的随机时间</li>
+</ul>
+<p><font color="red">这部分代码位于 &#x2F;gendata&#x2F;data.go 中</font></p>
+<h4 id="嵌入-lua-代码"><a href="#嵌入-lua-代码" class="headerlink" title="嵌入 lua 代码"></a>嵌入 lua 代码</h4><p>可以在大括号（”{}”）的包围中写 lua 代码，调用 print 可以想要的内容拼接到 sql 中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">query:&#123;a = 1&#125;</span><br><span class="line">    CREATE TABLE </span><br><span class="line">    &#123;print(string.format(&quot;t%d&quot;, a))&#125; (a INT)</span><br></pre></td></tr></table></figure>
+
+<p>以上代码始终生成 sql 为<code>CREATE TABLE t1 (a INT)</code></p>
+<p>在代码块中可以调用 lua 标准库中的任意函数，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 每次随机生成 10-20 的随机数</span><br><span class="line">query:</span><br><span class="line">    &#123;print(math.random(10,20))&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>正常的代码块会在每次分支被运行到的时候执行一遍。</p>
+<p>go randgen 支持在文件的头部插入一个代码块，这个代码块在整个<br>sql 执行的过程中只会执行一次，称为<strong>头部代码块</strong>，主要用于变量或者函数的申明：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 头部代码块对后面 sql 生成需要的一些变量或函数的进行申明</span><br><span class="line">&#123;</span><br><span class="line">i = 1</span><br><span class="line">a = 100</span><br><span class="line">function add(num1, num2)</span><br><span class="line">    return num1 + num2    </span><br><span class="line">end</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">query:</span><br><span class="line">   select</span><br><span class="line"></span><br><span class="line">select:</span><br><span class="line">   SELECT * FROM _table WHERE where_clause</span><br><span class="line">   </span><br><span class="line">where_clause:</span><br><span class="line">   _field_int &gt; &#123;print(i)&#125;</span><br><span class="line">   | _field_char &gt; &#123;print(a)&#125;</span><br><span class="line">   | _field_int + _field_int &gt; &#123;print(add(i, a))&#125;</span><br><span class="line">   </span><br></pre></td></tr></table></figure>
+
+
+<p>通过大括号包围 lua 代码看起来会和 lua 本身的 table 语法相矛盾，<br>但是你不用担心，我在解析的时候已经作了处理，可以放心大胆地<br>在代码块中使用 table 语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">f=&#123;a=1, b=3&#125;</span><br><span class="line">arr=&#123;0,2,3,4&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">query:</span><br><span class="line">  &#123;print(arr[f.a])&#125; | &#123;print(arr[f.b])&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码将只会生成”0”或者”3”（注意 lua 数组的下标是从 1 开始的）</p>
+<p>这个示例并没有什么实际意义，只是表达个意思</p>
+<p>另一个比较重要的特性是你可以在 lua 代码块中用<code>_xxx()</code>的方式调用 yy 关键字：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">query:&#123;table = _table()&#125;</span><br><span class="line">    BEGIN ; update ; select ; END</span><br><span class="line"></span><br><span class="line">update:</span><br><span class="line">    UPDATE &#123;print(table)&#125; SET _field_int = 10</span><br><span class="line"></span><br><span class="line">select:</span><br><span class="line">    SELECT * FROM &#123;print(table)&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面这种写法将能够保证 <code>update</code> 和 <code>selet</code> 的是同一张随即表。</p>
+<h4 id="常用模式"><a href="#常用模式" class="headerlink" title="常用模式"></a>常用模式</h4><ul>
+<li>递归地嵌套子查询</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">query:</span><br><span class="line">    select</span><br><span class="line"></span><br><span class="line">select:</span><br><span class="line">    SELECT * FROM</span><br><span class="line">    (select)</span><br><span class="line">    WHERE _field_int &gt; 10</span><br><span class="line">    | SELECT * FROM _table WHERE _field_char = _english</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可能为空的规则</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">order:</span><br><span class="line">    ASC</span><br><span class="line">    |DESC</span><br><span class="line">    |    # 空规则</span><br><span class="line">    </span><br><span class="line">#....省略其他规则</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>生成多条相邻的 sql 语句</li>
+</ul>
+<p>有的时候我们希望相关的几条 sql 生成在相邻的位置，比如在测试<br>Prepared statement 时，下面例子改自<a href="examples/functions.yy">examples&#x2F;functions.yy</a> </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">query:</span><br><span class="line">	SET @stmt = &#123;print(&#x27;&quot;&#x27;)&#125; select &#123;print(&#x27;&quot;&#x27;)&#125;;</span><br><span class="line">	PREPARE stmt FROM @stmt_create ; </span><br><span class="line">	EXECUTE stmt ;</span><br><span class="line">	</span><br><span class="line">select:</span><br><span class="line">    SELECT * FROM _table</span><br></pre></td></tr></table></figure>
+
+<p>此时如果你指定生成的 sql 数量为 3（即<code>-Q</code>参数指定为 3）的话，那么就<br>会生成如下的 sql</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="variable">@stmt</span> <span class="operator">=</span> &quot; SELECT * FROM _table &quot;;</span><br><span class="line"><span class="keyword">PREPARE</span> stmt <span class="keyword">FROM</span> <span class="variable">@stmt</span>_create; </span><br><span class="line"><span class="keyword">EXECUTE</span> stmt;</span><br></pre></td></tr></table></figure>
+
+<p>指定生成 6 条 sql 的话，就会把上面的 sql 生成两遍。</p>
+<p>假如指定生成 sql 数目为 2 的话，那么会生成：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> <span class="variable">@stmt</span> <span class="operator">=</span> &quot; SELECT * FROM _table &quot;;</span><br><span class="line"><span class="keyword">PREPARE</span> stmt <span class="keyword">FROM</span> <span class="variable">@stmt</span>_create; </span><br></pre></td></tr></table></figure>
+
+<p>从这里我们也可以看出<code>;</code>的语义，这个语义继承自 mysql randgen，<br>表示一次性生成数条相邻的 sql</p>
+<ul>
+<li>测试 create 语句时创建名字不冲突的表</li>
+</ul>
+<p>方案一: 插入 lua 脚本,利用头部代码块</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 申明 i 为 1</span><br><span class="line">&#123;</span><br><span class="line">i = 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">query: </span><br><span class="line">    create</span><br><span class="line">    </span><br><span class="line">create:</span><br><span class="line">    CREATE TABLE </span><br><span class="line">    &#123;print(string.format(&quot;table%d&quot;, i)); i = i+1&#125;</span><br><span class="line">    (a int)</span><br></pre></td></tr></table></figure>
+
+<p>生成结果：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table1 (a <span class="type">int</span>);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table2 (a <span class="type">int</span>);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> table3 (a <span class="type">int</span>);</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>方案 2：先创建表，然后再把它删除了，利用之前提到的<code>;</code>符号</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">query:</span><br><span class="line">    create</span><br><span class="line">    </span><br><span class="line">create:</span><br><span class="line">    CREATE TABLE t (a int); DROP TABLE t</span><br></pre></td></tr></table></figure>
+
+<p>生成结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE t (a int);</span><br><span class="line">DROP TABLE t;</span><br><span class="line">CREATE TABLE t (a int);</span><br><span class="line">DROP TABLE t;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h2 id="How-to-hack"><a href="#How-to-hack" class="headerlink" title="How to hack"></a>How to hack</h2><p>相比 mysql randgen，go randgen 最大的特点就是易于 Hack，几乎没有任何硬编码，当你觉得缺少什么特性时，可以非常方便地自己加上</p>
+<h3 id="hack-zz-data"><a href="#hack-zz-data" class="headerlink" title="hack zz data"></a>hack zz data</h3><p>如果你觉得 go randgen 在 zz 文件中 data 字段提供的数据生成指令不够用时，可以进入<a href="gendata/generators/register.go">gendata&#x2F;generators&#x2F;register.go</a>的<code>init</code>方法里添加。</p>
+<p>假设你在里面添加了一个<code>aaa</code>指令，除了能够在<br>zz 的 data 字段中使用<code>&quot;aaa&quot;</code>指令外，<br>在 yy 文件中也会自动增加一个<code>_aaa</code>关键字可以使用</p>
+<h3 id="hack-yy-key-word"><a href="#hack-yy-key-word" class="headerlink" title="hack yy key word"></a>hack yy key word</h3><p>如果觉得 yy 中提供的关键字不够用，可以在<br><a href="gendata/gendata.go">gendata&#x2F;gendata.go</a><br>中的<code>NewKeyfun</code>方法中添加。</p>
+<h2 id="与-Mysql-randgen-不同的地方"><a href="#与-Mysql-randgen-不同的地方" class="headerlink" title="与 Mysql randgen 不同的地方"></a>与 Mysql randgen 不同的地方</h2><ul>
+<li>不要在规则尾部加分号, mysql randgen 有这个习惯，但是 go randgen 不需要这么做，我们不依赖这个分号<br>来判断不同的规则。当然，你加了也没什么问题，为了兼容 mysql randgen，<br>  作了额外的处理</li>
+<li>数据初始化时使用<code>insert</code>，而不是<code>insert ignore</code>，在给 unsigned 类型列<br>生成数据时会自动适配非负数，尝试最多 10 次随机，直到生成正数，如果十次都是负数，<br>则直接赋予 1</li>
+<li>zz 文件中 data 的定义可以使用更加精确的数据类型，而不是只有 mysql randgen 中的四种</li>
+<li>生成 sql 时可以不连接数据库，利用在生成 ddl 时自动记录下的 schema，非常迅速</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/07/22/go-randgen%E4%BD%BF%E7%94%A8/">http://example.com/2023/07/22/go-randgen%E4%BD%BF%E7%94%A8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/db/">db</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/07/20/Detecting-Optimization-Bugs-in-Database-Engines-via-Non-optimizing-Reference-Engine-Construction/" title="Detecting Optimization Bugs in Database Engines via Non-optimizing Reference Engine Construction"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Detecting Optimization Bugs in Database Engines via Non-optimizing Reference Engine Construction</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/07/18/%E4%BB%80%E4%B9%88%E6%98%AF%E8%9C%95%E5%8F%98%E6%B5%8B%E8%AF%95/" title="什么是蜕变测试?"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-18</div><div class="title">什么是蜕变测试?</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">67</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#go-randgen"><span class="toc-number">1.</span> <span class="toc-text">go randgen</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#go-get-%E5%AE%89%E8%A3%85"><span class="toc-number">1.1.</span> <span class="toc-text">go get 安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85"><span class="toc-number">1.2.</span> <span class="toc-text">编译安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E8%89%B2"><span class="toc-number">1.3.</span> <span class="toc-text">特色</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-start"><span class="toc-number">1.4.</span> <span class="toc-text">Quick start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gentest"><span class="toc-number">1.4.1.</span> <span class="toc-text">gentest</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gendata"><span class="toc-number">1.4.2.</span> <span class="toc-text">gendata</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gensql"><span class="toc-number">1.4.3.</span> <span class="toc-text">gensql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#exec"><span class="toc-number">1.4.4.</span> <span class="toc-text">exec</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E4%B8%BA%E4%B8%80%E4%B8%AA%E5%BA%93"><span class="toc-number">1.4.5.</span> <span class="toc-text">作为一个库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95%E6%89%8B%E5%86%8C"><span class="toc-number">1.5.</span> <span class="toc-text">语法手册</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#zz-%E6%96%87%E4%BB%B6"><span class="toc-number">1.5.1.</span> <span class="toc-text">zz 文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="toc-number">1.5.1.1.</span> <span class="toc-text">快速入门</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tables"><span class="toc-number">1.5.1.2.</span> <span class="toc-text">tables</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fields"><span class="toc-number">1.5.1.3.</span> <span class="toc-text">fields</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#data"><span class="toc-number">1.5.1.4.</span> <span class="toc-text">data</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#yy-%E6%96%87%E4%BB%B6"><span class="toc-number">1.5.2.</span> <span class="toc-text">yy 文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8-1"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">快速入门</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E9%87%8A"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">注释</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%87%E8%AF%86%E7%AC%A6%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">1.5.2.3.</span> <span class="toc-text">标识符的分类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">1.5.2.4.</span> <span class="toc-text">关键字</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B5%8C%E5%85%A5-lua-%E4%BB%A3%E7%A0%81"><span class="toc-number">1.5.2.5.</span> <span class="toc-text">嵌入 lua 代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.5.2.6.</span> <span class="toc-text">常用模式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-to-hack"><span class="toc-number">1.6.</span> <span class="toc-text">How to hack</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#hack-zz-data"><span class="toc-number">1.6.1.</span> <span class="toc-text">hack zz data</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hack-yy-key-word"><span class="toc-number">1.6.2.</span> <span class="toc-text">hack yy key word</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8E-Mysql-randgen-%E4%B8%8D%E5%90%8C%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="toc-number">1.7.</span> <span class="toc-text">与 Mysql randgen 不同的地方</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/22/go-randgen%E4%BD%BF%E7%94%A8/" title="go-randgen使用">go-randgen使用</a><time datetime="2023-07-22T03:08:23.000Z" title="发表于 2023-07-22 11:08:23">2023-07-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/20/Detecting-Optimization-Bugs-in-Database-Engines-via-Non-optimizing-Reference-Engine-Construction/" title="Detecting Optimization Bugs in Database Engines via Non-optimizing Reference Engine Construction">Detecting Optimization Bugs in Database Engines via Non-optimizing Reference Engine Construction</a><time datetime="2023-07-20T02:40:56.000Z" title="发表于 2023-07-20 10:40:56">2023-07-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/18/%E4%BB%80%E4%B9%88%E6%98%AF%E8%9C%95%E5%8F%98%E6%B5%8B%E8%AF%95/" title="什么是蜕变测试?">什么是蜕变测试?</a><time datetime="2023-07-18T02:19:20.000Z" title="发表于 2023-07-18 10:19:20">2023-07-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/17/Testing-database-engines-via-pivoted-query-synthesis/" title="Testing database engines via pivoted query synthesis">Testing database engines via pivoted query synthesis</a><time datetime="2023-07-17T02:42:50.000Z" title="发表于 2023-07-17 10:42:50">2023-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/09/History-Driven-Build-Failure-Fixing-How-Far-Are-We/" title="History-Driven Build Failure Fixing: How Far Are We?">History-Driven Build Failure Fixing: How Far Are We?</a><time datetime="2023-07-09T07:58:11.000Z" title="发表于 2023-07-09 15:58:11">2023-07-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
