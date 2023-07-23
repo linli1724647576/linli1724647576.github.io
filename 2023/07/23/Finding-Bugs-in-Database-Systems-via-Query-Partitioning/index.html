@@ -1,0 +1,542 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Finding Bugs in Database Systems via Query Partitioning | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Finding Bugs in Database Systems via Query PartitioningBasic Information: Title: Finding Bugs in Database Systems via Query Partitioning (通过查询分区在数据库系统中发现错误) Authors: Manuel Rigger, Zhendong Su Affilia">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Finding Bugs in Database Systems via Query Partitioning">
+<meta property="og:url" content="http://example.com/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Finding Bugs in Database Systems via Query PartitioningBasic Information: Title: Finding Bugs in Database Systems via Query Partitioning (通过查询分区在数据库系统中发现错误) Authors: Manuel Rigger, Zhendong Su Affilia">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-07-23T03:07:25.000Z">
+<meta property="article:modified_time" content="2023-07-23T03:08:28.906Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Finding Bugs in Database Systems via Query Partitioning',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-07-23 11:08:28'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Finding Bugs in Database Systems via Query Partitioning</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-23T03:07:25.000Z" title="发表于 2023-07-23 11:07:25">2023-07-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-07-23T03:08:28.906Z" title="更新于 2023-07-23 11:08:28">2023-07-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Finding Bugs in Database Systems via Query Partitioning"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Finding-Bugs-in-Database-Systems-via-Query-Partitioning"><a href="#Finding-Bugs-in-Database-Systems-via-Query-Partitioning" class="headerlink" title="Finding Bugs in Database Systems via Query Partitioning"></a>Finding Bugs in Database Systems via Query Partitioning</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: Finding Bugs in Database Systems via Query Partitioning (通过查询分区在数据库系统中发现错误)</li>
+<li>Authors: Manuel Rigger, Zhendong Su</li>
+<li>Affiliation: ETH Zurich, Switzerland (瑞士苏黎世联邦理工学院)</li>
+<li>Keywords: database testing, DBMS testing, test oracle, three-valued logic (数据库测试，DBMS测试，测试预言，三值逻辑)</li>
+<li>URLs: <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3428279">Paper</a> , <a target="_blank" rel="noopener" href="https://github.com/sqlancer">GitHub Code</a></li>
+</ul>
+<h3 id="论文简要"><a href="#论文简要" class="headerlink" title="论文简要 :"></a>论文简要 :</h3><ul>
+<li>通过查询分区的方法，本研究提出了一种在数据库系统中发现逻辑错误的通用有效方法，通过构建多个复杂查询来检测数据库系统中的错误，并在广泛的测试中发现了175个错误，其中77个是逻辑错误。</li>
+</ul>
+<h3 id="背景信息"><a href="#背景信息" class="headerlink" title="背景信息:"></a>背景信息:</h3><ul>
+<li>论文背景: 数据库管理系统（DBMS）中的逻辑错误是指在给定查询中导致结果不正确的错误，这些错误很容易被用户忽视，因此需要一种有效的方法来发现和修复这些错误。</li>
+<li>过去方案: 过去的方法如Pivoted Query Synthesis（PQS）和Non-optimizing Reference Engine Construction（NoREC）在测试WHERE谓词方面取得了一定的成果，但是它们的适用范围有限，无法全面检测数据库系统中的错误。</li>
+<li>论文的Motivation: 鉴于过去方法的局限性，本研究提出了一种新的方法，通过查询分区来检测数据库系统中的逻辑错误，该方法在广泛的测试中发现了大量的错误，并且具有较低的实现难度和高效性。通过提出这种新方法，可以提高数据库系统的质量和可靠性。</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 理论背景:<ul>
+<li>本文介绍了数据库管理系统（DBMS）中逻辑错误的普遍性以及检测这些错误的困难性。作者提出了一种称为查询分区的技术，用于有效地发现DBMS中的逻辑错误。查询分区的核心思想是从给定的原始查询中派生多个更复杂的查询（称为分区查询），每个查询计算结果的一个分区。然后将这些分区组合起来计算一个结果集，该结果集应该与原始查询的结果集等效。作者使用查询分区在广泛使用的DBMS中发现了175个错误，其中125个已经修复。他们期望查询分区在实践中被广泛采用。</li>
+</ul>
+</li>
+<li>b. 技术路线:<ul>
+<li>本文提出了一种用于在使用SQL作为查询语言的DBMS中查找逻辑错误的通用技术，称为查询分区。</li>
+<li>本文还提出了一种称为三值逻辑分区（TLP）的查询分区实例，用于将布尔谓词分区为TRUE、FALSE或NULL。</li>
+<li>本文还提出了用于测试使用WHERE、HAVING和GROUP BY子句以及聚合函数和DISTINCT查询的具体TLP测试用例。</li>
+<li>本文对六个广泛使用的DBMS进行了查询分区的广泛评估，发现了175个错误，并与最先进的方法NoREC进行了比较。</li>
+</ul>
+</li>
+</ul>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果:"></a>结果:</h3><ul>
+<li>a. 详细的实验设置:<ul>
+<li>本文使用SQLancer作为实现所提出方法的基础。SQLancer包括针对每个DBMS的特定组件，如数据库和表达式生成器。</li>
+<li>第一阶段，SQLancer通过创建表格和修改数据库状态来生成数据库，使用插入、删除和修改数据、设置选项、创建索引和视图等语句。生成的语句数量受到上限的限制，插入语句的默认值为30条。所有语句在语法上是有效的，但可能在语义上无效。每个语句都带有一系列预期错误的注释。该阶段的结果是生成的数据库。</li>
+<li>第二阶段，使用测试用例对基于随机生成的数据库进行DBMS测试。测试用例从表达式生成器中请求随机表达式，这些表达式也被语句生成器使用。测试用例主要请求在WHERE和HAVING子句中使用的谓词。</li>
+</ul>
+</li>
+<li>b. 详细的实验结果:<ul>
+<li>本文对六个广泛使用的DBMS进行了查询分区的广泛评估，发现了175个错误。</li>
+<li>通过与最先进的方法NoREC进行比较，证明了查询分区的显著优势。</li>
+</ul>
+</li>
+</ul>
+<h3 id="摘要："><a href="#摘要：" class="headerlink" title="摘要："></a>摘要：</h3><p>这篇论文提出了一种称为查询分区（Query Partitioning）的方法，用于寻找数据库管理系统（DBMS）中的逻辑错误。逻辑错误会导致查询返回错误的结果，比如，它可能忽略了应该获取的一行数据。这些错误非常重要，因为它们可能会被用户忽略。</p>
+<p>查询分区的核心思想是从给定的原始查询开始，派生出多个更复杂的查询（称为分区查询），每个查询都会计算结果的一个分区。然后，将这些独立的分区组合起来，得出一个结果集，这个结果集必须等同于原始查询的结果集。当这些结果集有差异时，就可以检测到数据库管理系统中的错误。论文的作者推测，由于分区查询的复杂性增加，它们更有可能测试数据库管理系统并触发逻辑错误。</p>
+<p>作为一个具体的分区策略，论文提出了三元逻辑分区（<strong>Ternary Logic Partitioning, TLP</strong>），它基于布尔谓词p的结果可能是True、False或NULL的观察。因此，一个查询可以分解为三个分区查询，每个查询在p、非p和p为空的行或中间结果上计算其结果。</p>
+<p>这种技术具有多样性，可以用来测试WHERE，GROUP BY，HAVING子句，聚合函数，以及DISTINCT查询。在一次广泛的测试活动中，作者在MySQL，TiDB，SQLite和CockroachDB等广泛使用的数据库管理系统中找到了175个错误，其中125个已经得到修复。值得注意的是，这些错误中有77个是逻辑错误，其余的是错误和崩溃错误。</p>
+<p>作者期望，由于查询分区的有效性和广泛适用性，它将在实践中得到广泛应用，并形成更多的分区策略。</p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction:"></a>Introduction:</h3><p><strong>背景：</strong></p>
+<p>这篇论文主要研究了数据库管理系统（DBMS）中的逻辑错误，即导致查询结果错误的错误。例如，对于给定的查询，DBMS可能会错误地从结果集中省略一个记录，获取不应在结果集中的记录，或者为函数或运算符计算错误的结果。这种错误对于用户来说很难检测，尤其是考虑到许多数据库的规模，这些错误可能会被忽视。</p>
+<p><strong>insight：</strong></p>
+<p>为了解决DBMS中的逻辑错误，作者提出了一个称为查询分区（Query Partitioning）的通用而有效的技术。查询分区的核心思想是，基于给定的查询Q，派生出n个查询Q’0到Q’n-1，每个查询都计算部分结果。然后，使用预定义的n元组合运算符来组合这n个部分结果，得到一个结果集。如果原始查询的结果集和组合的分区结果集不等，就可以检测到DBMS中的错误。这需要选择一个可以以不同方式压力测试DBMS和查询优化器的分区策略，以观察到不一致的结果集。</p>
+<p><font color="red">作为这项工作的一部分，作者提出了三元逻辑分区（<strong>Ternary Logic Partitioning, TLP</strong>），它可以有效地测试WHERE子句、GROUP BY子句、HAVING子句、聚合函数和DISTINCT子句的正确实现和优化。</font></p>
+<p>SQL基于三元布尔逻辑，这意味着谓词φ可以求值为TRUE、FALSE或NULL：</p>
+<p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230722144530964.png" alt="image-20230722144530964"></p>
+<p>无论我们选择（或随机生成）哪个谓词，我们都知道 p 的三个条件之一必须成立。</p>
+<p>根据这个洞察，我们可以通过推导三个查询来对任何 Q 进行分区，这三个查询基于 p 是否成立，¬p 是否成立，或 p 是否为空来过滤记录，同时保证组合结果包含原始查询的所有行。如果用于测试 WHERE 子句，各个子查询可以使用联合运算符进行聚合。</p>
+<p>所以，通过比较这三个子查询的结果与原始查询的结果，如果发现两者的结果集不一样，则可以判断出数据库中存在逻辑错误。</p>
+<p><strong>相关工作及局限性：</strong></p>
+<p>本文还讨论了两种现有的逻辑错误检测方法：Pivoted Query Synthesis（PQS）和Non-optimizing Reference Engine Construction（NoREC），并指出了它们的局限性。PQS通过检查随机选择的主轴行是否正确获取来检测逻辑错误，但其实现工作量大，需要详细了解DBMS的运算符和函数语义。NoREC通过重写查询来禁用DBMS的优化来检测使用WHERE谓词的查询中的错误，它解决了PQS的高实现工作量问题。然而，NoREC和PQS的主要局限性是它们主要用于测试WHERE谓词，而对于测试其他特性（如聚合查询）的能力较弱。</p>
+<p><strong>评估：</strong></p>
+<p>作者在六种广泛使用的DBMS上对查询分区进行了大规模的效果评估，结果发现了五种系统中的175个真实的、以前未知的错误。此外，作者还将提出的方法与NoREC进行了比较，发现TLP能够检测到17个NoREC无法覆盖的特性中的错误。作者认为，由于其高效性和低实现工作量，他们的方法可能会在实践中得到广泛应用。</p>
+<p><strong>贡献：</strong></p>
+<p>这篇论文的主要贡献包括：</p>
+<ol>
+<li>查询分区(Query Partitioning)：这是一种通用技术，设计用于发现使用SQL作为查询语言的数据库管理系统(DBMS)中的逻辑错误。</li>
+<li>三元逻辑分区(Ternary Logic Partitioning, TLP)：这是查询分区的一种实例化，基于一个洞察，即布尔谓词可以被分区以评估为真、假或空。</li>
+<li>具体的TLP测试令牌(Concrete TLP oracles)：用于测试使用WHERE，HAVING和GROUP BY子句以及聚合函数和DISTINCT查询的查询。</li>
+<li>对查询分区在六种广泛使用的DBMS上的广泛评估：在这种技术的应用中发现了175个错误，并与最先进的方法NoREC进行了比较。</li>
+</ol>
+<h3 id="Motivation-Example"><a href="#Motivation-Example" class="headerlink" title="Motivation Example:"></a>Motivation Example:</h3><p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230722145303663.png" alt="image-20230722145303663"></p>
+<p>这个例子展示了如何利用Ternary Logic Partitioning (TLP)发现MySQL 8.0.19版本中的一个错误。</p>
+<p>原始查询O没有WHERE子句，因此提取t0和t1中所有值的笛卡尔积。因为这两个表中都只有一个记录，所以只有一个记录被提取。然而，从这个查询中，我们发现一个未知的错误，即MySQL 8.0.19错误地处理了带有谓词t0.c0 &#x3D; t1.c0的查询，导致忽略了一行记录。这是因为在这个查询中，0和-0代表同一个数字，所以比较应该评估为TRUE。</p>
+<p>为了找到这个错误，作者通过随机生成谓词t0.c0 &#x3D; t1.c0来为WHERE子句创建了三个分区查询P，这些查询通过UNION ALL关键字连接，这个关键字合并了这些查询的结果集。然后，他们创建了两个其他变体，包含了否定谓词和IS NULL谓词。</p>
+<p>预期的是，P的结果集应该与查询O的结果集相同。然而，因为带有谓词t0.c0 &#x3D; t1.c0的查询被错误处理，导致忽略了一行，所以我们检测到了这个错误。基于O和P，作者手动创建了用于报告错误的测试用例1。</p>
+<h3 id="Background"><a href="#Background" class="headerlink" title="Background:"></a>Background:</h3><p>这篇文章主要讨论的是数据库管理系统（DBMS）的自动测试问题，特别是关系型DBMS和SQL的自动测试。文中讨论的DBMS主要是基于Codd [1970] 提出的关系数据模型，这种模型广泛用于Oracle、Microsoft SQL、PostgreSQL、MySQL和SQLite等数据库。</p>
+<p>关系型DBMS使用一种专门的语言，即结构化查询语言（SQL），进行交互。SQL的数据模型基于袋子（多重集），即同一行可以出现多次。这与基于集合概念的原始关系模型形成对比。在SQL中，UNION ALL操作符对应于多重集的合并操作，UNION操作符对应于集合的并集操作。这两个操作符都在不同的TLP测试预言器的组合操作符中使用。</p>
+<p><font color="red">简而言之，<code>UNION</code> 和 <code>UNION ALL</code> 都可以将多个查询的结果合并成一个结果集，但 <code>UNION</code> 会自动剔除重复的行，而 <code>UNION ALL</code> 会保留所有的行，包括重复的。</font></p>
+<blockquote>
+<p>在描述这个概念的例子中，我们可以先考虑一些简单的数据。比如我们有一个叫做”学生”的表，这个表中有以下的数据：</p>
+<table>
+<thead>
+<tr>
+<th>姓名</th>
+<th>年龄</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+<tr>
+<td>李四</td>
+<td>22</td>
+</tr>
+<tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+<tr>
+<td>王五</td>
+<td>23</td>
+</tr>
+<tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+</tbody></table>
+<p>在这个表格中，”张三，21岁”这行数据出现了三次。</p>
+<p>在SQL中，它的数据模型是基于袋子或者说多重集的。这意味着在一个表格中，完全一样的行可以出现多次，就像我们在上面的例子中看到的那样。所以，我们可以说，SQL的表就像一个大袋子，可以无差别地放入多个数据行，即使这些行看起来完全相同。</p>
+<p>而在原始的关系模型中，它是基于集合的概念。在数学中，集合是不考虑元素顺序，且每个元素只能出现一次。因此，如果我们要在集合的概念下描述”学生”的表，那么它看起来会像这样：</p>
+<table>
+<thead>
+<tr>
+<th>姓名</th>
+<th>年龄</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+<tr>
+<td>李四</td>
+<td>22</td>
+</tr>
+<tr>
+<td>王五</td>
+<td>23</td>
+</tr>
+</tbody></table>
+<p>在这个集合模型的表中，”张三，21岁”这个数据只出现了一次，即使在原始数据中它出现了三次。</p>
+<p>所以，当我们说“SQL的数据模型基于袋子（多重集），即同一行可以出现多次。这与基于集合概念的原始关系模型形成对比。”时，我们是在描述SQL如何允许数据的重复出现，而原始的关系模型则不允许这种情况发生。</p>
+</blockquote>
+<blockquote>
+<p>基于前述的学生数据表格例子，我们来解释 SQL 中的 <code>UNION</code> 和 <code>UNION ALL</code> 操作的区别。</p>
+<p>假设我们有两个表格，学生表 A 和学生表 B，数据如下：</p>
+<p>学生表 A:</p>
+<table>
+<thead>
+<tr>
+<th>姓名</th>
+<th>年龄</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+<tr>
+<td>李四</td>
+<td>22</td>
+</tr>
+<tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+</tbody></table>
+<p>学生表 B:</p>
+<table>
+<thead>
+<tr>
+<th>姓名</th>
+<th>年龄</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+<tr>
+<td>王五</td>
+<td>23</td>
+</tr>
+</tbody></table>
+<p>如果我们运行 SQL 语句 <code>SELECT * FROM A UNION SELECT * FROM B</code>，则结果会将 A 和 B 两个表的数据合并，并自动去除重复的行。结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>姓名</th>
+<th>年龄</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+<tr>
+<td>李四</td>
+<td>22</td>
+</tr>
+<tr>
+<td>王五</td>
+<td>23</td>
+</tr>
+</tbody></table>
+<p><code>UNION</code> 在合并表格时会自动去除重复的数据行，所以结果集中的 “张三, 21岁” 这一行只出现一次。</p>
+<p>然而，如果我们运行 SQL 语句 <code>SELECT * FROM A UNION ALL SELECT * FROM B</code>，则结果会将 A 和 B 两个表的数据合并，但不会去除重复的行。结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>姓名</th>
+<th>年龄</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+<tr>
+<td>李四</td>
+<td>22</td>
+</tr>
+<tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+<tr>
+<td>张三</td>
+<td>21</td>
+</tr>
+<tr>
+<td>王五</td>
+<td>23</td>
+</tr>
+</tbody></table>
+<p><code>UNION ALL</code> 在合并表格时会保留所有的数据行，包括重复的。所以，结果集中的 “张三, 21岁” 这一行出现了三次。</p>
+<p>简而言之，<code>UNION</code> 和 <code>UNION ALL</code> 都可以将多个查询的结果合并成一个结果集，但 <code>UNION</code> 会自动剔除重复的行，而 <code>UNION ALL</code> 会保留所有的行，包括重复的。</p>
+</blockquote>
+<p>作者主要关注SELECT语句，这是从数据库查询数据的语句。SQL提供了各种过滤、分组和聚合数据的方式，如WHERE子句、GROUP BY子句、DISTINCT子句和各种聚合函数等。</p>
+<p>对于聚合函数，文中讨论了各种类型的聚合函数，例如MIN()、MAX()、SUM()、COUNT()和AVG()等，这些函数主要用于计算输入表达式的最小值、最大值、求和、计数和平均值。这些聚合函数中，有一些具有自分解性，例如MIN()、MAX()、SUM()和COUNT()。</p>
+<p>DBMS自动测试方法，其主要包含两个核心组成部分：一是有效的测试用例生成器，可以生成用于测试系统各个部分的测试用例；二是有效的测试预言器，可以判断生成的测试用例的结果是否正确。SQLancer在生成数据库和执行测试预言器的过程中分为两个阶段进行，其中包括数据库生成、表达式生成和选项处理等各种DBMS相关和无关的组件。</p>
+<h3 id="APPROACH"><a href="#APPROACH" class="headerlink" title="APPROACH:"></a>APPROACH:</h3><p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230722151655673.png" alt="image-20230722151655673"></p>
+<h4 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h4><h5 id="Query-Partitioning"><a href="#Query-Partitioning" class="headerlink" title="Query Partitioning:"></a><strong>Query Partitioning</strong>:</h5><p>查询分区（<strong>Query Partitioning</strong>）的核心思想是从给定的查询开始，将其分解为多个等价的查询，这些查询的结果可以组合得到与原始查询相同的结果。</p>
+<h5 id="TLP"><a href="#TLP" class="headerlink" title="TLP:"></a><strong>TLP:</strong></h5><p>在本文中，我们只考虑了一般划分策略思想的一个实例，即三元逻辑划分（TLP）。三元逻辑分区（Ternary Logic  Partitioning，<strong>TLP</strong>）的核心思想是，对于行或中间结果的断言必须评估为真（TRUE）、假（FALSE）或空（NULL），因此，原始查询可以分解为三个分区查询，分别获取断言为真、假和空的行，进而实现对WHERE子句、GROUP BY子句、HAVING子句、聚合函数和DISTINCT查询的测试。</p>
+<h5 id="Process"><a href="#Process" class="headerlink" title="Process:"></a><strong>Process</strong>:</h5><p>在三元逻辑分区（TLP）的过程中，首先基于一个现有的随机生成的数据库，生成一个随机查询Q，我们将这个查询的结果集表示为RS(Q)。然后，根据TLP，我们从Q中派生出三个分区查询Q’p，Q’¬p和Q’p IS NULL。每个分区查询都计算结果的一个分区，我们将其表示为RS(Q’p)，RS(Q’¬p)和RS(Q’p IS NULL)。然后，根据组合运算符⋄，将各个分区组合得到结果集RS(Q’)。必须满足等式RS(Q) &#x3D; RS(Q’)。如果发现结果集不同，那么就检测到了数据库管理系统中的一个错误。</p>
+<p>下面是具体流程：</p>
+<ol>
+<li>生成一个数据库，包含一些表，以及一些数据</li>
+<li>随机生成一条查询SQL，称之为Q。查询结果指代为RS(Q)</li>
+<li>分化成3条查询SQL，称之为Q’(p)、Q’(not p)、Q’(p is null)。查询结果指代为RS(Q’(p))、RS(Q’(not p))、RS(Q’(p is null))</li>
+<li>根据Q类型的不同，使用特定的表达式将Q’的3个结果集组合起来，指代为RS(Q’)</li>
+<li>判断，RS(Q)&#x3D;&#x3D;RS(Q’)。如果不相等，则很可能遇到了一个逻辑bug</li>
+</ol>
+<h5 id="Intuition-on-the-partitions"><a href="#Intuition-on-the-partitions" class="headerlink" title="Intuition on the partitions."></a><strong>Intuition on the partitions.</strong></h5><p>在直观层面上，分区查询可以被看作是计算Q结果集的子集或部分多重集（即，分区是RS(Q)的子集或多重集）。对于WHERE和HAVING测试预言，⋄对应于多重集的加法⊎。对于DISTINCT和GROUP  BY预言，分区可能包含重复值；对于这些预言，⋄对应于集合并集∪。对于聚合测试预言，分区并非原始查询结果的子集，而是对应于中间值。例如，在测试MIN()聚合函数（计算最小值）时，分区表示各自分区的最小值。</p>
+<hr>
+<p>举个例子说明一下：</p>
+<p>Employee 表：</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Salary</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Bob</td>
+<td>5000</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Alice</td>
+<td>6000</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Jack</td>
+<td>4000</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Bob</td>
+<td>7000</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Jack</td>
+<td>4000</td>
+</tr>
+</tbody></table>
+<p><strong>测试 DISTINCT和Group by：</strong></p>
+<p>在这种情况下，如果我们使用集合并集 ∪ （对应 DISTINCT 和 GROUP BY 预言），那么合并后的结果集应该与原始查询Q得到的结果集相同。</p>
+<blockquote>
+<p><strong>测试 DISTINCT：</strong></p>
+<p>假设原始查询（Q）是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> Name <span class="keyword">FROM</span> Employee;</span><br></pre></td></tr></table></figure>
+
+<p>结果集（RS(Q)）将是：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">| Name |</span><br><span class="line">|<span class="comment">------|</span></span><br><span class="line">| Bob  |</span><br><span class="line">| Alice|</span><br><span class="line">| Jack |</span><br></pre></td></tr></table></figure>
+
+<p>接下来，我们可以将此查询分解为以下三个分区查询：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> Name <span class="keyword">FROM</span> Employee <span class="keyword">WHERE</span> Salary <span class="operator">&gt;</span> <span class="number">5000</span>;  <span class="comment">-- Q&#x27;p</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> Name <span class="keyword">FROM</span> Employee <span class="keyword">WHERE</span> <span class="keyword">NOT</span> (Salary <span class="operator">&gt;</span> <span class="number">5000</span>);  <span class="comment">-- Q&#x27;¬p</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> Name <span class="keyword">FROM</span> Employee <span class="keyword">WHERE</span> (Salary <span class="operator">&gt;</span> <span class="number">5000</span>) <span class="keyword">IS</span> <span class="keyword">NULL</span>;  <span class="comment">-- Q&#x27;p IS NULL</span></span><br></pre></td></tr></table></figure>
+
+<p>结果集分别为：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">Q</span>&#x27;<span class="selector-tag">p</span>：</span><br><span class="line">| Name |</span><br><span class="line">|------|</span><br><span class="line">| Alice|</span><br><span class="line">| Bob  |</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">Q</span>&#x27;¬<span class="selector-tag">p</span>：</span><br><span class="line">| Name |</span><br><span class="line">|------|</span><br><span class="line">| Bob  |</span><br><span class="line">| Jack |</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">Q</span>&#x27;<span class="selector-tag">p</span> IS NULL：</span><br><span class="line">| Name |</span><br><span class="line">|------|</span><br><span class="line">|      |</span><br></pre></td></tr></table></figure>
+
+<p>在 DISTINCT 示例中，我们将三个分区查询的结果集合并。在 SQL 中，我们可以使用 UNION 操作来实现这个功能。这个操作会将多个结果集合并，并且删除所有的重复项。</p>
+<p>基于我们的例子，合并的结果集会是：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">lua</span><br><span class="line">| Name |</span><br><span class="line">|------|</span><br><span class="line">| Alice|</span><br><span class="line">| Bob  |</span><br><span class="line">| Jack |</span><br></pre></td></tr></table></figure>
+
+<p>这与原始查询Q的结果集相同，从而验证了 DISTINCT 操作的正确性。</p>
+<p><strong>测试 GROUP BY：</strong></p>
+<p>假设原始查询（Q）是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Name, <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> Employee <span class="keyword">GROUP</span> <span class="keyword">BY</span> Name;</span><br></pre></td></tr></table></figure>
+
+<p>结果集（RS(Q)）将是：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">scss</span><br><span class="line">| Name | <span class="built_in">COUNT</span>(*) |</span><br><span class="line">|------|----------|</span><br><span class="line">| Bob  |    <span class="number">2</span>     |</span><br><span class="line">| Alice|    <span class="number">1</span>     |</span><br><span class="line">| Jack |    <span class="number">2</span>     |</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们可以将此查询分解为以下三个分区查询：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Name, <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> Employee <span class="keyword">WHERE</span> Salary <span class="operator">&gt;</span> <span class="number">5000</span> <span class="keyword">GROUP</span> <span class="keyword">BY</span> Name;  <span class="comment">-- Q&#x27;p</span></span><br><span class="line"><span class="keyword">SELECT</span> Name, <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> Employee <span class="keyword">WHERE</span> <span class="keyword">NOT</span> (Salary <span class="operator">&gt;</span> <span class="number">5000</span>) <span class="keyword">GROUP</span> <span class="keyword">BY</span> Name;  <span class="comment">-- Q&#x27;¬p</span></span><br><span class="line"><span class="keyword">SELECT</span> Name, <span class="built_in">COUNT</span>(<span class="operator">*</span>) <span class="keyword">FROM</span> Employee <span class="keyword">WHERE</span> (Salary <span class="operator">&gt;</span> <span class="number">5000</span>) <span class="keyword">IS</span> <span class="keyword">NULL</span> <span class="keyword">GROUP</span> <span class="keyword">BY</span> Name;  <span class="comment">-- Q&#x27;p IS NULL</span></span><br></pre></td></tr></table></figure>
+
+<p>结果集分别为：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">Q</span>&#x27;<span class="selector-tag">p</span>：</span><br><span class="line">| Name | <span class="built_in">COUNT</span>(*) |</span><br><span class="line">|------|----------|</span><br><span class="line">| Alice|    <span class="number">1</span>     |</span><br><span class="line">| Bob  |    <span class="number">1</span>     |</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">Q</span>&#x27;¬<span class="selector-tag">p</span>：</span><br><span class="line">| Name | <span class="built_in">COUNT</span>(*) |</span><br><span class="line">|------|----------|</span><br><span class="line">| Bob  |    <span class="number">1</span>     |</span><br><span class="line">| Jack |    <span class="number">2</span>     |</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">Q</span>&#x27;<span class="selector-tag">p</span> IS NULL：</span><br><span class="line">| Name | <span class="built_in">COUNT</span>(*) |</span><br><span class="line">|------|----------|</span><br><span class="line">|      |          |</span><br></pre></td></tr></table></figure>
+
+<p>对于 GROUP BY 示例，我们需要将分区查询的结果集按照 <code>Name</code> 字段进行合并，并将对应的 <code>COUNT(*)</code> 值进行相加。这是因为 GROUP BY 操作会按照指定的字段对数据进行分组，并对每个组进行聚合操作。</p>
+<p>基于我们的例子，合并的结果集会是：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">| Name | <span class="built_in">COUNT</span>(*) |</span><br><span class="line">|------|----------|</span><br><span class="line">| Bob  |    <span class="number">2</span>     |</span><br><span class="line">| Alice|    <span class="number">1</span>     |</span><br><span class="line">| Jack |    <span class="number">2</span>     |</span><br></pre></td></tr></table></figure>
+
+<p>这与原始查询Q的结果集相同，从而验证了 GROUP BY 操作的正确性。</p>
+<p>这种方法可以用来检测DBMS在处理 DISTINCT 或 GROUP BY 操作时是否存在问题。</p>
+</blockquote>
+<p>测试聚合函数</p>
+<p>使用 TLP (Ternary Logic Partitioning) 测试聚合函数（例如 MIN()）的时候，每个分区都将独立地应用该聚合函数，得出的结果并不直接构成原查询结果的子集，而是代表着这些分区的中间结果。然后，通过一定的操作，我们将这些中间结果合并来检查原查询的结果。</p>
+<blockquote>
+<p><strong>测试Min</strong></p>
+<p>举个例子，假设我们有一个如下的表格数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sql</span><br><span class="line">| ID | Age |</span><br><span class="line">|----|-----|</span><br><span class="line">| 1  | 20  |</span><br><span class="line">| 2  | 30  |</span><br><span class="line">| 3  | 40  |</span><br><span class="line">| 4  | NULL|</span><br><span class="line">| 5  | 25  |</span><br></pre></td></tr></table></figure>
+
+<p>我们的原始查询 Q 是：<code>SELECT MIN(Age) FROM Table;</code>，其结果是 <code>20</code>。</p>
+<p>然后我们使用谓词 p (例如 <code>Age &gt; 25</code>) 来创建三个分区查询：</p>
+<ol>
+<li>Q’p: <code>SELECT MIN(Age) FROM Table WHERE Age &gt; 25;</code> 得到的结果是 <code>30</code>。</li>
+<li>Q’¬p: <code>SELECT MIN(Age) FROM Table WHERE NOT (Age &gt; 25);</code> 得到的结果是 <code>20</code>。</li>
+<li>Q’p IS NULL: <code>SELECT MIN(Age) FROM Table WHERE Age &gt; 25 IS NULL;</code> 得到的结果是 <code>NULL</code>。</li>
+</ol>
+<p>我们看到每个分区查询的结果代表着该分区中年龄的最小值。然后，我们需要把这些中间结果再次应用 MIN 函数，以期望得到与原始查询 Q 相同的结果。</p>
+<p>在这个例子中，我们会得到 <code>MIN(30, 20, NULL) = 20</code>，这与原查询 Q 的结果相同。因此，我们可以说在这个例子中，MIN 函数是正确的。如果我们得到的结果与原查询 Q 的结果不一致，那么可能表示 DBMS 在处理 MIN 函数时存在错误。</p>
+</blockquote>
+<p>Overview.详细介绍了各种不同类型的预设测试策略（oracles）。表格的第一列给出了测试策略的名字。第二列描述了随机生成的查询 Q 的格式。第三列描述了分区查询 Q’ptern的格式，这个查询将与三种三元谓词变体实例化。第四列描述了组合操作符的实现。</p>
+<h5 id="oracles"><a href="#oracles" class="headerlink" title="oracles"></a>oracles</h5><p>这段文字通过重温动机示例（如清单1中所示），更具体地解释了在表格的第一行描述的 WHERE oracle 如何工作。查询 O 对应于 Q 的格式，而查询 P 中的每个分区查询都对应于 Q’ptern 格式。查询 O 中的分区使用 <strong>UNION ALL</strong> 操作符组合，这对应于 ⊎ 操作符。为了排除重复的元素，将使用表示为∪的<strong>UNION</strong>操作符。</p>
+<p><font color="red">再说一遍，<code>UNION</code> 和 <code>UNION ALL</code> 都可以将多个查询的结果合并成一个结果集，但 <code>UNION</code> 会自动剔除重复的行，而 <code>UNION ALL</code> 会保留所有的行，包括重复的。</font></p>
+<p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230723095812967.png" alt="image-20230723095812967"></p>
+<p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230723095828147.png" alt="image-20230723095828147"></p>
+<p>下面解释在SQL查询中的一些占位符的含义：</p>
+<ul>
+<li><code>&lt;columns&gt;</code>：代表一组列或者在每行上求值的表达式；这个占位符也可以是星号（*），表示应获取所有的列。</li>
+<li><code>&lt;tables&gt;</code>：指从其中获取值的表。</li>
+<li><code>&lt;joins&gt;</code>：可以指任何联接（例如内联接、外联接、左联接、右联接和自然联接）；尽管作者并没有提出一个专门测试联接的预设测试策略，但他们发现现有的测试策略也能发现联接中的错误。</li>
+<li><code>&lt;e&gt;</code>：指任意的表达式。</li>
+<li>使用方括号（[]）括起来的元素表示该元素是可选的。</li>
+</ul>
+<p>“<strong>ORDER BYs</strong>“讨论了如何随机生成每个分区查询的ORDER BY子句。尽管这些子句不能影响查询结果的顺序，但它们增加了复杂性（例如，使DBMS使用索引进行排序），可以帮助揭示更多的错误。一些DBMS在使用UNION或UNION ALL连接查询时不允许使用单独的ORDER BY，对于这些DBMS，只能在使用UNION或UNION ALL操作符合并分区时使用一个ORDER BY。</p>
+<p>“<strong>Composition operator implementation</strong>“段落讨论了组合操作符的实现方法。测试工具可以通过迭代每个分区查询的结果集并使用适当的数据结构（例如列表或集合）来实现这些操作符。但是，当分区用于进一步的计算（如聚合操作符）时，就无法在测试工具中实现这些操作符。在这些情况下，使用SQL中的UNION ALL和UNION操作符是更方便的选择，这也可以测试这些操作符的实现，并可以找出其中的错误。</p>
+<h4 id="3-1-Testing-WHERE-Clauses"><a href="#3-1-Testing-WHERE-Clauses" class="headerlink" title="3.1 Testing WHERE Clauses"></a>3.1 Testing <strong>WHERE</strong> Clauses</h4><p>第3.1节介绍了用于测试WHERE子句的WHERE oracle。尽管它是最基本的测试oracle，但评估显示它是最有效的。WHERE  oracle使用原始查询，该查询没有WHERE子句，然后构造带有WHERE子句的分区查询，每个查询都使用三元逻辑谓词。其主要思想是原始查询不太可能计算出错误的结果，因为它只是获取一组表的所有记录，而分区查询的WHERE子句可能会导致记录的错误省略或添加。WHERE oracle足以找到TLP  oracle可以检测到的大多数错误。特别地，这个测试oracle可以发现物理访问方法（特别是索引扫描）、常见的物理操作符、联接算法、查询重写以及应用于谓词的一般优化的错误。此外，还介绍了WHERE Extended  oracle，它基于现有的WHERE子句和一个谓词，派生出使用AND运算符向谓词添加额外三元变量的分区查询。最后，作者认为WHERE  oracle与NoREC的错误查找能力相似，两者都关注于测试WHERE子句，但它们各自使用不同的方式来禁用大多数优化，以找到优化错误。</p>
+<h4 id="3-2-Testing-Grouping"><a href="#3-2-Testing-Grouping" class="headerlink" title="3.2 Testing Grouping"></a>3.2 Testing Grouping</h4><p>第3.2节介绍了用于测试数据分组的GROUP  BY、DISTINCT和HAVING测试oracles，它们都测试行的分组和过滤，因此被统称为分组oracles。DISTINCT  oracle通过使用∪运算符排除重复的行，因此分区查询本身可以选择性地省略DISTINCT关键字。与DISTINCT  oracle类似，GROUP BY测试oracle也依赖于∪运算符来排除重复行。在GROUP  BY子句中的列必须对应于获取的那些列。如果GROUP BY子句包含了未在<columns>中表示的额外列，那么这些额外的组对于组合运算符将是不可见的。相似地，如果获取的列未在GROUP BY子句中表示，那么∪仍然会移除重复的值，这可能会阻止找到一些错误。HAVING oracle验证在执行GROUP  BY后逻辑应用的HAVING子句是否正确执行。因此，与DISTINCT和GROUP BY  oracles不同，三元谓词用于HAVING子句，而不是在WHERE子句中。</columns></p>
+<p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230723100841898.png" alt="image-20230723100841898"></p>
+<h4 id="3-3-Aggregate-Functions"><a href="#3-3-Aggregate-Functions" class="headerlink" title="3.3 Aggregate Functions"></a>3.3 Aggregate Functions</h4><p>第3.3节介绍了用于测试聚合函数的聚合查询分区测试oracles，主要考虑最常用的聚合函数MIN()、MAX()、COUNT()、SUM()和AVG()。聚合函数可以通过分解计算和分布式处理来进行优化，这种分布式计算的核心思想被用作测试聚合函数的基础。</p>
+<p>最简单的聚合函数测试oracles是用于自组合聚合函数（即MIN()、MAX()、SUM()和COUNT()）。与前述的oracles不同，对于聚合函数，分区是一个中间结果，而不是原始查询结果集的子集。例如，MIN oracle的一个分区计算相应分区查询的最小值。为了计算分区，需要一个额外的步骤；例如，对于MIN()，必须计算出总的最小值。为此，可以再次应用另一个聚合函数；例如，要计算总的最小值，可以再次应用MIN()。分区查询的聚合函数不一定与组合操作符的聚合函数相同。例如，考虑COUNT oracle，分区查询使用COUNT()计算它们分区中的行数，然后使用SUM()聚合函数将它们求和。</p>
+<p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230723100904945.png" alt="image-20230723100904945"></p>
+<p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230723101005223.png" alt="image-20230723101005223"></p>
+<h3 id="EVALUATION"><a href="#EVALUATION" class="headerlink" title="EVALUATION"></a>EVALUATION</h3><h4 id="Experiment-Setup"><a href="#Experiment-Setup" class="headerlink" title="Experiment Setup"></a>Experiment Setup</h4><p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230723101923424.png" alt="image-20230723101923424"></p>
+<p>DB-Engines: 是数据库管理系统在DB-Engines排名中的位置。DB-Engines是一个在线平台，提供了关于各种数据库管理系统的信息和排名。</p>
+<p>Stack Overflow: 是数据库管理系统在Stack Overflow（一个程序员的问答社区）的讨论频率排名。</p>
+<p>Kind: 描述了数据库管理系统的类型和主要工作负载类型，例如嵌入式数据库、传统数据库、NewSQL数据库，以及主要针对在线事务处理（OLTP）或在线分析处理（OLAP）的优化。</p>
+<h4 id="5-1-Effectiveness"><a href="#5-1-Effectiveness" class="headerlink" title="5.1 Effectiveness"></a>5.1 Effectiveness</h4><p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230723102818734.png" alt="image-20230723102818734"></p>
+<p>共提交了181个错误报告，其中175个已经被开发者修复或确认。其中，125个错误已经得到修复，这说明DBMS开发者认为大部分错误都很重要。几乎所有的错误都通过代码修改来解决，只有1个错误通过文档变更解决。</p>
+<p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230723103327824.png" alt="image-20230723103327824"></p>
+<h4 id="5-2-Comparison-with-NoREC"><a href="#5-2-Comparison-with-NoREC" class="headerlink" title="5.2 Comparison with NoREC"></a>5.2 Comparison with NoREC</h4><p>在第5.2节中，作者对变形测试方法NoREC和TLP进行了比较，发现这两种方法在发现数据库管理系统（DBMS）错误方面有相似的优点和缺点，然后通过应用这两种方法于相同的DBMS，分析各自发现的错误以揭示它们各自的特性和限制，最后对这些错误进行了手动分析，了解了在特定场景下哪种方法可能更有效。</p>
+<h4 id="5-3-Test-Oracle-Coverage"><a href="#5-3-Test-Oracle-Coverage" class="headerlink" title="5.3 Test Oracle Coverage"></a>5.3 Test Oracle Coverage</h4><p><img src="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/image-20230723103826337.png" alt="image-20230723103826337"></p>
+<p>图2的主要目的是展示在测试数据库管理系统DuckDB时，不同的测试预言器（oracles）单独以及合并使用后的代码覆盖率。</p>
+<p>图中的每个柱状图代表一个预言器在运行每个配置10小时后所能达到的代码行覆盖率。红色的虚线，从左侧开始，表示到该点为止的所有预言器累积覆盖率；蓝色的虚线，从右侧开始，也表示了从该点至图的右端所有预言器的累积覆盖率。</p>
+<p>从这个图中可以得出几个结论：</p>
+<ol>
+<li>各个预言器的覆盖率都相似，都在55.3%至55.9%的范围内。</li>
+<li>使用所有预言器测试，可以达到最大的56.1%的覆盖率，证明预言器之间存在一定的覆盖重叠，但也有各自能检测出的独特错误。</li>
+<li>纵观整个图，可以看到累积覆盖率是逐渐增加的，无论预言器的使用顺序如何，结合使用预言器都会提升覆盖率，但提升幅度有限。</li>
+</ol>
+<p>这个图也表明，尽管代码覆盖率是一个有用的指标，但它对于数据库管理系统的测试仍然有一定的局限性。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/">http://example.com/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/07/22/go-randgen%E4%BD%BF%E7%94%A8/" title="go-randgen使用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">go-randgen使用</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Finding-Bugs-in-Database-Systems-via-Query-Partitioning"><span class="toc-number">1.</span> <span class="toc-text">Finding Bugs in Database Systems via Query Partitioning</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E7%AE%80%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">论文简要 :</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BF%A1%E6%81%AF"><span class="toc-number">1.3.</span> <span class="toc-text">背景信息:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text">方法:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">1.5.</span> <span class="toc-text">结果:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%91%98%E8%A6%81%EF%BC%9A"><span class="toc-number">1.6.</span> <span class="toc-text">摘要：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.7.</span> <span class="toc-text">Introduction:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Motivation-Example"><span class="toc-number">1.8.</span> <span class="toc-text">Motivation Example:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Background"><span class="toc-number">1.9.</span> <span class="toc-text">Background:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#APPROACH"><span class="toc-number">1.10.</span> <span class="toc-text">APPROACH:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Method"><span class="toc-number">1.10.1.</span> <span class="toc-text">Method</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Query-Partitioning"><span class="toc-number">1.10.1.1.</span> <span class="toc-text">Query Partitioning:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#TLP"><span class="toc-number">1.10.1.2.</span> <span class="toc-text">TLP:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Process"><span class="toc-number">1.10.1.3.</span> <span class="toc-text">Process:</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Intuition-on-the-partitions"><span class="toc-number">1.10.1.4.</span> <span class="toc-text">Intuition on the partitions.</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#oracles"><span class="toc-number">1.10.1.5.</span> <span class="toc-text">oracles</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Testing-WHERE-Clauses"><span class="toc-number">1.10.2.</span> <span class="toc-text">3.1 Testing WHERE Clauses</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-Testing-Grouping"><span class="toc-number">1.10.3.</span> <span class="toc-text">3.2 Testing Grouping</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-Aggregate-Functions"><span class="toc-number">1.10.4.</span> <span class="toc-text">3.3 Aggregate Functions</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EVALUATION"><span class="toc-number">1.11.</span> <span class="toc-text">EVALUATION</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Experiment-Setup"><span class="toc-number">1.11.1.</span> <span class="toc-text">Experiment Setup</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-Effectiveness"><span class="toc-number">1.11.2.</span> <span class="toc-text">5.1 Effectiveness</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-Comparison-with-NoREC"><span class="toc-number">1.11.3.</span> <span class="toc-text">5.2 Comparison with NoREC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-Test-Oracle-Coverage"><span class="toc-number">1.11.4.</span> <span class="toc-text">5.3 Test Oracle Coverage</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/" title="Finding Bugs in Database Systems via Query Partitioning">Finding Bugs in Database Systems via Query Partitioning</a><time datetime="2023-07-23T03:07:25.000Z" title="发表于 2023-07-23 11:07:25">2023-07-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/22/go-randgen%E4%BD%BF%E7%94%A8/" title="go-randgen使用">go-randgen使用</a><time datetime="2023-07-22T03:08:23.000Z" title="发表于 2023-07-22 11:08:23">2023-07-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/20/Detecting-Optimization-Bugs-in-Database-Engines-via-Non-optimizing-Reference-Engine-Construction/" title="Detecting Optimization Bugs in Database Engines via Non-optimizing Reference Engine Construction">Detecting Optimization Bugs in Database Engines via Non-optimizing Reference Engine Construction</a><time datetime="2023-07-20T02:40:56.000Z" title="发表于 2023-07-20 10:40:56">2023-07-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/18/%E4%BB%80%E4%B9%88%E6%98%AF%E8%9C%95%E5%8F%98%E6%B5%8B%E8%AF%95/" title="什么是蜕变测试?">什么是蜕变测试?</a><time datetime="2023-07-18T02:19:20.000Z" title="发表于 2023-07-18 10:19:20">2023-07-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/17/Testing-database-engines-via-pivoted-query-synthesis/" title="Testing database engines via pivoted query synthesis">Testing database engines via pivoted query synthesis</a><time datetime="2023-07-17T02:42:50.000Z" title="发表于 2023-07-17 10:42:50">2023-07-17</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
