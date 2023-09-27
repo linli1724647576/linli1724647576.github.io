@@ -1,0 +1,657 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>LearnedSQLGen Constraint-aware SQL Generation using Reinforcement Learning | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="LearnedSQLGen: Constraint-aware SQL Generation using Reinforcement LearningBasic Information: Title: LearnedSQLGen: Constraint-aware SQL Generation using Reinforcement Learning (LearnedSQLGen: 使用强化学习进">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LearnedSQLGen Constraint-aware SQL Generation using Reinforcement Learning">
+<meta property="og:url" content="http://example.com/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="LearnedSQLGen: Constraint-aware SQL Generation using Reinforcement LearningBasic Information: Title: LearnedSQLGen: Constraint-aware SQL Generation using Reinforcement Learning (LearnedSQLGen: 使用强化学习进">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2023-09-27T07:05:56.000Z">
+<meta property="article:modified_time" content="2023-09-27T07:07:17.353Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LearnedSQLGen Constraint-aware SQL Generation using Reinforcement Learning',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-09-27 15:07:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">71</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">LearnedSQLGen Constraint-aware SQL Generation using Reinforcement Learning</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-09-27T07:05:56.000Z" title="发表于 2023-09-27 15:05:56">2023-09-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-09-27T07:07:17.353Z" title="更新于 2023-09-27 15:07:17">2023-09-27</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="LearnedSQLGen Constraint-aware SQL Generation using Reinforcement Learning"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning"><a href="#LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning" class="headerlink" title="LearnedSQLGen: Constraint-aware SQL Generation using Reinforcement Learning"></a>LearnedSQLGen: Constraint-aware SQL Generation using Reinforcement Learning</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: LearnedSQLGen: Constraint-aware SQL Generation using Reinforcement Learning (LearnedSQLGen: 使用强化学习进行约束感知的SQL生成)</li>
+<li>Authors: Lixi Zhang, Chengliang Chai, Xuanhe Zhou, Guoliang Li</li>
+<li>Affiliation: Department of Computer Science, Tsinghua University (清华大学计算机科学系)</li>
+<li>Keywords: SQL generation, constraint-aware, reinforcement learning, database optimization (SQL生成, 约束感知, 强化学习, 数据库优化)</li>
+<li>URLs: <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3183713.3183743">Paper</a>, <a href="github:">GitHub</a></li>
+</ul>
+<h3 id="论文简要"><a href="#论文简要" class="headerlink" title="论文简要 :"></a>论文简要 :</h3><ul>
+<li>本文提出了一种基于强化学习的约束感知SQL生成框架LearnedSQLGen，用于生成满足约束条件的SQL查询。通过学习执行反馈，该框架采用探索-利用策略，准确地引导生成过程，并通过有限状态机确保生成的SQL查询的有效性。实验结果表明，LearnedSQLGen在准确性和效率方面显著优于基准方法。</li>
+</ul>
+<h3 id="背景信息"><a href="#背景信息" class="headerlink" title="背景信息:"></a>背景信息:</h3><ul>
+<li>论文背景: 数据库优化问题通常需要大量的SQL查询，例如慢速SQL诊断、数据库测试、优化器调优等。然而，由于隐私问题，很难获取真实的SQL查询，因此SQL生成是数据库优化中非常重要的任务。</li>
+<li>过去方案: 现有的SQL生成方法要么随机生成SQL查询，要么依赖于人工设计的SQL模板生成SQL查询，但它们无法满足各种用户特定要求，例如慢速SQL查询、结果集较大的SQL查询。</li>
+<li>论文的Motivation: 鉴于现有方法的局限性，本文研究了约束感知的SQL生成问题，即在给定约束条件（例如基数在[1k,2k]之间）的情况下生成满足约束条件的SQL查询。由于很难从查询约束（例如基数和成本）到SQL查询之间的关系，因此很难引导生成方法朝着满足约束的SQL生成方向探索。为了解决这个挑战，本文提出了一种基于强化学习的框架LearnedSQLGen，用于生成满足约束条件的查询。LearnedSQLGen采用探索-利用策略，根据查询执行反馈来利用查询约束，准确地引导生成过程。此外，本文还在模型中集成了有限状态机，以生成有效的SQL查询。实验结果表明，LearnedSQLGen在准确性和效率方面显著优于基准方法。</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 理论背景:<ul>
+<li>本文解决了约束感知的SQL生成问题，该问题对于数据库优化任务（如慢SQL诊断、数据库测试和优化器调优）非常重要。现有的SQL生成方法要么随机生成查询，要么依赖于人工设计的模板，但它们无法满足特定用户需求。为了解决这个问题，本文提出了一种基于强化学习的框架LearnedSQLGen，该框架可以生成满足给定约束的SQL查询。该框架采用了一种探索-利用策略，并使用奖励函数准确地引导生成过程。实验结果表明，LearnedSQLGen在准确性和效率方面优于现有方法。</li>
+</ul>
+</li>
+<li>b. 技术路线:<ul>
+<li>本文使用了强化学习模型来实现代理的策略。每个状态对应一个查询，即一个由令牌或动作组成的序列。为了支持复杂的查询，不同类型的令牌在相同的编码空间中表示。令牌类型包括SQL语法中的<strong>保留字</strong>（例如Select、From、Where、Groupby、Having、Order BY）、模式的元数据（例如T1、T2）、从数据库中的每个表中抽样的单元格值（例如95.5、100）、操作符（例如&gt;、&#x3D;）和查询的结束（EOF）。生成的动作空间包括MAX&#x2F;MIN、Sum、AVG、Count、Exist、In、and、or、not等令牌，这些令牌使用one-hot编码表示。模型还使用类似的方式对模式元数据、单元格值和操作符进行编码。状态表示是一个令牌表示的序列。奖励设计基于用户提供的约束类型，例如点约束和范围约束。奖励反映了数据库反馈与给定约束之间的差异。本文利用了演员-评论家方法来优化策略网络，并减少累积奖励的方差。此外，还引入了熵正则化来提高生成查询的多样性，通过将正则化项添加到损失函数中。整体训练算法的概述在算法3中给出，其中包括参数初始化、使用学习策略生成查询、计算每个轨迹的梯度以及更新演员-评论家网络。</li>
+</ul>
+</li>
+</ul>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果:"></a>结果:</h3><ul>
+<li>a. 详细的实验设置:<ul>
+<li>本文在Python上实现了实验，使用了一台Ubuntu服务器，配备了Intel Xeon Silver 4110 2.10GHz CPU、Nvidia Geforce 2080ti GPU和128GB DDR4主内存，没有使用SSD。</li>
+</ul>
+</li>
+<li>b. 详细的实验结果:<ul>
+<li>实验结果表明，LearnedSQLGen在准确性和效率方面优于基线方法。对于基数约束，LearnedSQLGen在TPC-H数据集上的准确率为54.33%，而SQLSmith和Template分别为0.02%和18.98%。对于范围约束，LearnedSQLGen也优于基线方法。在生成接近108的查询时，LearnedSQLGen只需要0.63小时，而SQLSmith和Template分别需要11小时和2.72小时。LearnedSQLGen的效率优势源于在强化学习模型的设计中考虑了约束和执行反馈。总体而言，LearnedSQLGen在生成满足各种约束的查询方面实现了高准确性和高效率。</li>
+</ul>
+</li>
+</ul>
+<h3 id="摘要："><a href="#摘要：" class="headerlink" title="摘要："></a>摘要：</h3><p>这篇论文探讨了在数据库优化中的一个重要任务——SQL生成，特别是在面对如慢速SQL诊断、数据库测试和优化器调整等问题时，需要大量的SQL查询。由于隐私问题，获取真实的SQL查询变得困难，因此SQL生成变得尤为重要。现有的SQL生成方法要么随机生成SQL查询，要么依赖人工编写的SQL模板，但这些方法无法满足各种特定的用户需求，例如生成慢速SQL查询或产生大结果集的SQL查询。</p>
+<p>为了解决这个问题，论文研究了一种基于约束的SQL生成问题，即在给定某种约束（例如，基数在[1k,2k]范围内）的情况下，生成满足该约束的SQL查询。这个问题具有一定的挑战性，因为很难捕捉查询约束（例如，基数和成本）与SQL查询之间的关系，从而很难指导生成方法探索满足约束的SQL生成方向。</p>
+<p>为了应对这个挑战，论文提出了一个基于强化学习（RL）的框架，名为LearnedSQLGen，用于生成满足约束的查询。LearnedSQLGen采用了一种探索-利用策略，该策略利用查询执行反馈来学习查询约束的生成方向。作者们精心设计了强化学习中的奖励函数，以准确地指导生成过程。同时，他们还在模型中集成了一个有限状态机，以生成有效的SQL查询。</p>
+<p>通过在三个基准测试上的实验结果显示，LearnedSQLGen在准确性（提高了30%）和效率（提高了10-35倍）方面显著优于基线方法。</p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction:"></a>Introduction:</h3><p><font color="red">背景</font>: 许多数据库优化问题需要大量的SQL查询，例如慢速SQL诊断、数据库测试、优化器调整和学习基数估计器。为了使数据库优化器更为强健或训练高质量的学习基数估计器，需要生成大量的SQL查询。由于隐私问题，获取大量真实的SQL查询变得困难，使得SQL生成成为数据库优化中的重要任务。尽管存在一些SQL生成工具，如SQLsmith和RAGs，但它们具有一些局限性，例如随机生成SQL查询可能产生无用的查询结果，且无法生成满足用户需求的SQL查询。</p>
+<p><font color="red">相关工作和局限性: </font>一些现有的工作试图生成满足特定约束的SQL查询，但它们需要数据库专家手工制作高质量的SQL查询模板，这既昂贵又难以为新数据库制作模板。此外，由于可能存在许多不同的约束和重要的SQL查询可能被遗漏，使用手工制作的模板可能无法找到满足约束的查询。</p>
+<p><font color="red">解决方法: </font>为了解决这些问题，本文提出了一个名为LearnedSQLGen的系统，利用强化学习（RL）来生成满足目标约束的查询。通过尝试不同的操作（例如查询中的保留字、元数据、操作数），并根据数据库系统（即环境）执行生成的查询返回的反馈，LearnedSQLGen可以找到导致目标约束的最优生成方向。此外，通过使用元评论网络和有限状态机，该框架能够应对不同的SQL生成任务和保证查询的有效性。</p>
+<p><font color="red">Insight: </font>通过强化学习和适当的奖励函数设计，可以有效地生成满足特定约束的SQL查询，同时保证查询的有效性和通用性。</p>
+<p><font color="red">评估: </font>作者在三个数据集上进行了实验，结果显示，他们的方法在准确性和效率方面分别提高了30%和10-35倍。</p>
+<p><font color="red">贡献:</font></p>
+<ol>
+<li>提出了一个基于强化学习的框架，用于生成满足目标约束的查询，这是第一个使用学习方法解决约束感知SQL生成问题的尝试。</li>
+<li>精心设计了强化学习中的奖励函数，以准确地指导生成过程，并使用演员-评论家网络实现了强化学习中的稳健训练。</li>
+<li>采用了一个包含SQL语法和语义规则的有限状态机，以保证查询的有效性，该机器可以扩展以支持各种类型的查询。</li>
+<li>设计了一个元评论策略，首先为不同的约束预训练模型，然后使用预训练模型支持在线查询生成需求。</li>
+<li>通过在三个数据集上的实验，证明了他们的方法在准确性和效率方面的显著改进。</li>
+</ol>
+<h3 id="PRELIMINARY"><a href="#PRELIMINARY" class="headerlink" title="PRELIMINARY:"></a>PRELIMINARY:</h3><h4 id="2-1-Problem-Formulation"><a href="#2-1-Problem-Formulation" class="headerlink" title="2.1 Problem Formulation"></a><strong>2.1 Problem Formulation</strong></h4><p>这段文字主要介绍了约束感知SQL生成问题的初步定义和形式化。</p>
+<ol>
+<li><strong>问题定义</strong>:<ul>
+<li>给定一个数据库和一个约束，用户希望生成一组满足该约束的SQL查询。</li>
+<li>两个常用的SQL查询度量是基数（cardinality）和成本（cost）。基数量化了SQL查询的结果数量，而成本量化了执行SQL查询的成本。</li>
+<li>约束可以通过基数或成本来形式化，并定义了约束感知SQL生成问题。</li>
+</ul>
+</li>
+<li><strong>具体定义</strong>:<ul>
+<li>考虑一个包含d个关系的数据库D，每个关系有多个属性。</li>
+<li>给定一个基数&#x2F;成本约束C（点或范围约束）和用户提供的生成查询的数量N，查询生成问题是生成一组SQL查询Q，使得对于所有Q ∈ Q，Q满足约束C且|Q| &#x3D; N。</li>
+</ul>
+</li>
+<li><strong>示例</strong>:<ul>
+<li>例如，一个数据库D有两个关系。用户提供了一个范围约束，即基数在[1K, 2K]之间，这意味着生成的查询的基数应该在1K和2K之间。</li>
+<li>用户还可以输入一个点约束，例如成本&#x3D;10，这表示用户希望生成的查询的成本尽可能接近10。</li>
+</ul>
+</li>
+<li><strong>复杂性分析</strong>:<ul>
+<li>该问题是NP-hard，可以通过从子集和问题的归约来证明，即给定m个数字，目标是选择总和恰好为s的数字子集。对于子集和实例中的每个给定数字，创建一个具有si元组的关系R，所有元组具有完全相同的属性值。如果查询选择了任何这样的元组，应该选择所有si元组。因此，生成输出基数恰好为s的SQL等价于找到总和为s的数字子集。</li>
+</ul>
+</li>
+<li><strong>备注</strong>:<ul>
+<li>在大多数情况下，只有与方案相关的数据库表在SQL查询生成之前可用，因此框架专注于没有可用SQL查询的情况。</li>
+<li>框架可以很好地支持基数和成本约束，不区分它们以简化表示。</li>
+<li>用户也可以指定延迟作为约束，但它对硬件环境敏感，所以使用成本代替。</li>
+<li>由于SQL生成是一个NP-hard问题，很难保证不会遗漏任何查询或模板。虽然该方法可能也会遗漏一些SQL查询，但通过探索-利用策略，该方法能够发现更多满足条件的SQL查询。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>基数（Cardinality）和成本（Cost）是评估和优化SQL查询的两个重要指标。下面是对这两个指标的解释和示例：</p>
+<ol>
+<li><strong>基数 (Cardinality)</strong>:<ul>
+<li>基数是指SQL查询结果中的行数。它是一个量化指标，用于衡量查询返回了多少数据。</li>
+<li>例如，如果你运行一个查询来找出一个数据库中所有的客户，而该查询返回了100行数据，那么这个查询的基数就是100。</li>
+</ul>
+</li>
+<li><strong>成本 (Cost)</strong>:<ul>
+<li>成本是执行SQL查询所需的资源量的度量，它可能包括CPU时间、内存使用、磁盘I&#x2F;O和网络I&#x2F;O等。成本通常用于评估和比较不同查询或查询计划的效率。</li>
+<li>例如，如果你有两个查询，一个查询的成本是10，另一个查询的成本是20，那么通常来说，成本为10的查询更为高效，因为它使用了较少的资源。</li>
+</ul>
+</li>
+</ol>
+<p>在数据库优化和查询计划选择中，基数和成本是非常重要的指标。通过理解和评估这些指标，数据库管理员和开发人员可以更好地优化查询，以提高数据库的性能和效率。</p>
+</blockquote>
+<blockquote>
+<p>基数&#x2F;成本约束（Cardinality&#x2F;Cost Constraint C）是指在生成或执行SQL查询时需要满足的特定条件，这些条件是关于查询结果的行数（基数）或查询执行的资源消耗（成本）的。这些约束可以帮助确保生成的查询符合特定的性能或结果大小标准。基数&#x2F;成本约束可以分为点约束和范围约束两种类型：</p>
+<ol>
+<li><strong>点约束 (Point Constraint)</strong>:<ul>
+<li>点约束是指明确的、具体的值，它要求查询的基数或成本必须等于这个特定的值。</li>
+<li>例如，如果有一个点约束，要求查询的成本必须等于10，那么只有成本等于10的查询才会被接受。</li>
+</ul>
+</li>
+<li><strong>范围约束 (Range Constraint)</strong>:<ul>
+<li>范围约束是指一个值的范围，它要求查询的基数或成本必须落在这个范围内。</li>
+<li>例如，如果有一个范围约束，要求查询的基数必须在1000到2000之间，那么所有基数在这个范围内的查询都会被接受。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h4 id="2-2-Related-Work"><a href="#2-2-Related-Work" class="headerlink" title="2.2 Related Work"></a><strong>2.2 Related Work</strong></h4><p>相关工作主要集中在SQL查询生成方面，现有的查询生成方法大致可以分为两大类：</p>
+<ol>
+<li><strong>基于查询的方法 (Query-driven method)</strong>:<ul>
+<li>这种方法依赖于大量给定的SQL查询来训练模型，然后使用模型来生成类似的SQL查询。</li>
+<li>Liu等人提出了一种基于GAN（生成对抗网络）的模型，从历史查询中随机生成新的SQL查询。但是，由于两个原因，该方法不能直接应用于我们的问题。首先，它需要大量的预备训练SQL，这在实际场景中是昂贵的。其次，它们纯粹生成随机SQL，不能满足用户指定的约束。</li>
+</ul>
+</li>
+<li><strong>无给定查询的查询生成 (Query generation without given queries)</strong>:<ul>
+<li>这类方法可以进一步分为两类：随机方法和基于模板的方法。</li>
+<li><strong>随机方法</strong>：例如，Slutz等人通过在解析树上随机行走并在多个数据库实例上执行它们来生成SQL查询，以便比较它们的结果以检测一致性。SQLsmith是一个典型的随机查询生成工具，它生成复杂的SQL查询，但可能产生空结果。然而，它们忽略了数据库测试的重要约束（例如，基数范围），因此在生成具有约束的期望查询方面效率较低。</li>
+<li><strong>基于模板的方法</strong>：它们依赖于一些给定的SQL模板，并更改模板中的谓词值以生成满足给定约束的查询。例如，Bruno等人提议通过调整给定查询模板中的谓词值来生成期望的查询。为了满足基数约束，他们使用了一种选择谓词值以最小化与目标约束的距离的爬山算法。然而，这类方法的生成性能严重依赖于模板的质量，而模板需要由专家手动设计；尽管专家可以提供一些高质量的模板，但这些模板很难全面覆盖各种约束。</li>
+</ul>
+</li>
+</ol>
+<p>此外，强化学习（Reinforcement Learning, RL）是一种机器学习范例，通过试错交互从环境中获取反馈。RL通常用于序列生成，这验证了RL自然适合于我们的问题，因为查询可以看作是令牌的序列。例如，机器翻译、文本生成和对话系统等应用可以通过RL解决。然而，它们的问题与我们的问题非常不同，因此解决方案不能直接应用。</p>
+<p>最近，机器学习在数据库社区得到了很大的发展，并得到了广泛的关注。数据库研究人员已经在许多主题中使用了它，如实体匹配、近似查询处理（AQP）。对于数据库系统，有基于学习的工作，如用于旋钮调整的强化学习、用于查询优化器的强化学习、用于物化视图选择的混合算法和用于学习数据布局的深度学习。这些工作专注于优化数据库组件。注意，许多基于查询的方法（例如，基数估计，索引&#x2F;视图顾问）依赖于大量查询来训练学习模型。在这里，我们尝试使用强化学习解决查询生成问题。</p>
+<h3 id="SYSTEM-FRAMEWORK"><a href="#SYSTEM-FRAMEWORK" class="headerlink" title="SYSTEM FRAMEWORK"></a><strong>SYSTEM FRAMEWORK</strong></h3><h4 id="3-1-Overview"><a href="#3-1-Overview" class="headerlink" title="3.1 Overview"></a>3.1 Overview</h4><ol>
+<li><strong>问题背景</strong>：<ul>
+<li>虽然存在许多成本估算方法来评估查询的基数和成本，但它们不能直接生成满足约束的查询，因为它们需要枚举许多查询来检查是否满足约束，这种解决方案显然是相当昂贵的，因为大多数生成的查询不能满足约束。</li>
+</ul>
+</li>
+<li><strong>LearnedSQLGen的基本思想</strong>：<ul>
+<li>提出使用强化学习（RL）框架来解决约束感知的SQL生成问题。RL是一种机器学习范例，通过试错交互使代理从反馈中学习。</li>
+<li>在当前状态（即当前生成的查询）下，代理预测下一个最优动作（即下一个令牌），希望能获得最高的奖励，即满足约束。RL机制无缝地适应了具有约束的SQL查询的生成过程，因此可以确定地用于解决我们的问题。</li>
+<li>RL的利用保证了生成查询的准确性（即满足约束），而探索则允许我们生成具有较大多样性的更多查询，而不是朝现有方向生成高度相似的查询。</li>
+</ul>
+</li>
+<li><strong>面临的挑战</strong>：<ul>
+<li>生成有效的SQL查询，保证语法和语义的正确性。</li>
+<li>通过计算SQL查询的期望来指导生成方向以满足约束。</li>
+<li>生成满足约束的多个不同的查询。</li>
+</ul>
+</li>
+<li><strong>LearnedSQLGen工作流程</strong>：<ul>
+<li>LearnedSQLGen首先基于数据库D和基数&#x2F;成本约束C训练RL模型。模型以查询（包括子查询）为输入，即状态，并计算要添加到查询中的最优令牌，即动作。</li>
+<li>然后，在推断步骤中，我们可以使用模型和数据库D生成满足约束的查询。</li>
+</ul>
+</li>
+</ol>
+<h4 id="3-2-Training"><a href="#3-2-Training" class="headerlink" title="3.2 Training"></a><strong>3.2 Training</strong></h4><p>本节主要讨论了将查询生成问题建模为一个可以通过强化学习（RL）模型解决的顺序决策过程，并定义了系统训练中的基本RL特征。以下是主要内容的概括：</p>
+<ol>
+<li><strong>状态（State）</strong>：<ul>
+<li>状态被表示为当前生成的SQL查询的令牌序列。在生成过程中有两种类型的查询：完整生成的查询和部分查询。完整的查询在遇到EOF（结束符）时完成，然后发送到环境执行，并使用反馈作为奖励来指导训练过程。部分查询需要通过令牌进一步扩展。</li>
+</ul>
+</li>
+<li><strong>动作（Action）</strong>：<ul>
+<li>动作是选择的下一个令牌，分为5种类型：SQL语法中的保留字、模式的元数据、从数据库中的每个表中采样的单元值、操作符和EOF（表示查询完全生成）。动作空间是固定的，但不是所有动作都可以选择，这取决于查询的有效性。</li>
+</ul>
+</li>
+<li><strong>环境（Environment）</strong>：<ul>
+<li>环境在LearnedSQLGen中有两个角色：一方面，它使用有限状态机（FSM）基于当前生成的查询来修剪动作空间以保证查询的有效性；另一方面，每执行一个动作后，会生成一个查询。如果它是可执行的，环境将返回估计的基数，基于此生成奖励以指导训练过程。</li>
+</ul>
+</li>
+<li><strong>奖励（Reward）</strong>：<ul>
+<li>奖励由环境返回，用于更新策略网络，以指导生成过程满足约束。高奖励表示生成的查询满足约束C。</li>
+</ul>
+</li>
+<li><strong>代理（Agent）</strong>：<ul>
+<li>代理考虑当前生成的SQL（即当前状态），并基于学习的策略选择动作。在LearnedSQLGen中，代理利用actor-critic方法，由一个actor网络和一个critic网络组成。前者用于基于策略选择动作，后者用于基于奖励更新策略。</li>
+</ul>
+</li>
+<li><strong>总体训练过程</strong>：<ul>
+<li>初始时，训练过程接受约束C和数据库D作为输入，基于此固定整个动作空间A。然后开始训练步骤。值得注意的是，我们不需要提前训练查询，而是同时生成训练查询并训练模型。我们提议使用RL模型生成查询，并利用这些查询及其估计的基数作为训练数据来改进模型。然后在训练后生成一些满足条件的查询。</li>
+</ul>
+</li>
+</ol>
+<p>通过这种方式，LearnedSQLGen能够通过强化学习的框架，从头开始，逐令牌生成训练查询，并通过环境反馈来优化模型，以生成满足用户约束的有效查询。</p>
+<p><img src="/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/image-20230927092937387.png" alt="image-20230927092937387"></p>
+<h4 id="3-3-Inference"><a href="#3-3-Inference" class="headerlink" title="3.3 Inference"></a><strong>3.3 Inference</strong></h4><p>本节主要讨论了推理过程，即如何使用训练好的模型来生成满足特定约束的查询。以下是主要内容的概括：</p>
+<ol>
+<li><strong>推理过程简介</strong>：<ul>
+<li>虽然训练过程已经能生成一些满足条件的查询，但如果用户需要更多的SQL查询，可以直接使用训练好的模型在不更新网络的情况下生成满足条件的查询，即推理步骤。推理步骤允许用户在任何时候调用训练好的模型来生成满足约束C的查询，无需重新训练模型。简而言之，推理是actor网络的前向传递。</li>
+</ul>
+</li>
+<li><strong>推理过程详解</strong>：<ul>
+<li>整个推理过程从头开始，逐令牌生成每个查询。最初从一个空查询开始，将其视为部分查询。给定部分查询，首先将其表示为新状态。然后，代理接收状态作为输入，使用学习到的策略为动作空间中的每个动作计算概率。同时，考虑到当前的查询，环境中的FSM（有限状态机）会屏蔽一些动作以保证查询的有效性。接着，根据策略和FSM选择下一个动作（即下一个令牌），并将其添加到部分查询中。这些步骤会重复，直到选择了带有EOF（结束符）的动作，然后生成并输出查询。如果用户想生成N个查询，这个过程会重复N次。</li>
+</ul>
+</li>
+<li><strong>示例</strong>：<ul>
+<li>举例说明，假设“From”子句是SQL的基本和不可或缺的组成部分，LearnedSQLGen从它开始生成SQL，即第一个动作。然后，代理根据学习到的策略逐个选择令牌。例如，在选择第二个动作时，当前状态为（‘From’），基于FSM，第二个动作可以从{‘Students’,‘Score’}中选择，以保证有效的查询，代理选择了‘Score’。在另一个实例中，对于第8个动作，当前状态是（‘From’,‘Score’,‘Select’,‘ID’,‘Where’,‘Grade’,‘&lt;’），下一个令牌可以从列score中采样的单元值中选择，而其他令牌被FSM屏蔽。根据策略，代理以高概率选择了令牌‘95’。接下来，选择EOF作为动作，从而完成查询。</li>
+</ul>
+</li>
+<li><strong>约束的泛化</strong>：<ul>
+<li>注意，推理步骤只能生成满足约束C的查询。在这种情况下，如果用户指定了另一个不同的约束，之前训练的模型不能直接工作。因此，在第6节中，作者提出了一个元评估网络，该网络利用历史训练经验使方法能有效地泛化到其他约束。</li>
+</ul>
+</li>
+</ol>
+<p>通过推理过程，LearnedSQLGen能够利用训练好的模型，按照用户的需求，生成满足特定约束的SQL查询，而无需每次都重新训练模型。</p>
+<p><font color="green">FSM（finite-state machine ）是需要用户输入吗？</font></p>
+<p><img src="/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/image-20230927101452806.png" alt="image-20230927101452806"></p>
+<p><font color="red">我的理解是FSM是根据查询生成的过程的实际需求来动态创建，有一个初始的FSM，当查询进行到某一个结点时，FSM会根据当前的状态或动作来动态调整。</font></p>
+<p><font color="red">（例如节点n1后，如果代理选择了”Score”而不是”Student”，则会产生节点n2，而节点n3不会出现，从而可以剪切许多分支。）</font></p>
+<p><font color="red">FSM是在training的过程中产生的。应用的过程则是在FSM中进行状态选择。</font></p>
+<h3 id="RL-IN-LEARNEDSQLGEN"><a href="#RL-IN-LEARNEDSQLGEN" class="headerlink" title="RL IN LEARNEDSQLGEN"></a><strong>RL IN</strong> <strong>LEARNEDSQLGEN</strong></h3><h4 id="4-1-State-Representation"><a href="#4-1-State-Representation" class="headerlink" title="4.1 State Representation"></a><strong>4.1 State Representation</strong></h4><ol>
+<li><strong>令牌（动作）表示</strong>:<ul>
+<li>文中首先介绍了五种令牌类型：SQL语法中的保留字、模式的元数据（包括表名和属性名）、数据中的单元值、运算符和EOF表示查询完全生成）。</li>
+<li>为了简化训练和推断，所有这些令牌都被映射到相同的编码空间，具体是通过一种独热编码（one-hot encoding）来实现的。例如，E(Select) → 00000, E(From) → 00001, …, E(Score) → 01000等。</li>
+</ul>
+</li>
+<li><strong>单元值的编码挑战</strong>:<ul>
+<li>文中指出，由于动作空间很大，对所有单元值进行编码有时是不切实际的。特别是对于数值数据，可能存在大量的不同值。</li>
+<li>为了解决这个问题，对于每个数值属性，文中提出了在训练前从该属性中随机抽样k个值，并将它们编码为一个独热向量。在生成此属性的值时，代理将从抽样的k个值中选择一个值。</li>
+<li>对于字符串数据，采用与数值数据相同的方法，随机抽样k个字符串，并支持{&#x3D;, &gt;, &lt;}这些运算符。</li>
+</ul>
+</li>
+<li><strong>状态（查询）表示</strong>:<ul>
+<li>状态自然地表示为令牌（查询）表示的序列。具体来说，使用st来表示状态，其中下标t表示序列中有t个令牌，即查询Qt。</li>
+<li>例如，查询Q4 &#x3D; “From Score Select ID”对应于状态s4&#x3D;{E(From), E(Score), E(Select), E(ID)}。</li>
+</ul>
+</li>
+</ol>
+<p>通过这种方式，文中描述了如何将SQL查询和令牌映射到编码空间，以便可以通过强化学习模型来处理它们。</p>
+<h4 id="4-2-Reward-Design"><a href="#4-2-Reward-Design" class="headerlink" title="4.2 Reward Design"></a><strong>4.2 Reward Design</strong></h4><p>这段文字介绍了基于用户输入的约束类型（点约束和范围约束）的奖励设计。以下是对这段文字的概括：</p>
+<ol>
+<li><strong>奖励的本质</strong>:<ul>
+<li>奖励的目的是反映数据库反馈与给定约束之间的差异。直观上，差异越小，应给予代理更高的奖励，反之亦然。</li>
+</ul>
+</li>
+<li><strong>点约束</strong>:<ul>
+<li>点约束的形式是 C : Card &#x3D; c 或 Cost &#x3D; c，其中 c 表示用户的需求。对于生成的查询 Qt，et &#x3D; 1(0) 表示查询是(不是)可执行的，cˆt 表示在数据库 D 下 Qt 的估计结果。奖励 δt 是通过公式 min(cˆ&#x2F;c, c&#x2F;cˆ) 计算的。如果 c 或 cˆ 是零，那么 δt 设为 0。总的奖励 rt 为 δt 当 et &#x3D; 1，为 0 当 et &#x3D; 0。</li>
+<li><img src="/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/image-20230927103224745.png" alt="image-20230927103224745"></li>
+</ul>
+</li>
+<li><strong>范围约束</strong>:<ul>
+<li>范围约束的形式是 C : Card &#x3D; [c.l,c.r] 或 Cost &#x3D; [c.l,c.r]，要求结果在 [c.l,c.r] 范围内。如果 cˆt 在 [c.l,c.r] 内，分配正奖励 1。否则，考虑 cˆt 是否接近范围，以分配适当的奖励。使用 δl_t 和 δt_r 来表示 cˆt 分别接近范围的左边界和右边界的程度。因此，max(δl_t, δt_r) 可用于衡量 cˆt 接近范围的程度。引入符号 nt &#x3D; 1 表示 cˆt ∈ [c.l,c.r]，nt &#x3D; 0 表示 cˆt &lt; c.l 或 cˆt &gt; c.r。总的奖励 rt 为 max(δl_t, δt_r) 当 et &#x3D; 1 &amp; nt &#x3D; 0，为 1 当 et &#x3D; 1 &amp; nt &#x3D; 1，为 0 当 et &#x3D; 0。</li>
+<li><img src="/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/image-20230927103431700.png" alt="image-20230927103431700"></li>
+</ul>
+</li>
+<li><strong>奖励设计的目的</strong>:<ul>
+<li>通过这种奖励设计，可以在训练过程中引导代理生成满足用户约束的查询。例如，如果生成的查询的估计结果接近用户指定的点或范围，代理将获得较高的奖励，从而增加将来生成类似查询的概率。</li>
+</ul>
+</li>
+<li><strong>长期奖励</strong>:<ul>
+<li>文中还提到了计算估计的长期奖励，这是通过评价网络完成的（详见第4.3节）。长期奖励不同于直接从环境中派生的 r。</li>
+</ul>
+</li>
+</ol>
+<p>通过这种方式，文中为强化学习代理设计了一个奖励系统，以帮助它生成满足用户约束的SQL查询。</p>
+<blockquote>
+<p>说人话：</p>
+<ol>
+<li><strong>点约束奖赏</strong>:<ul>
+<li>如果用户想要特定的结果（比如某个确切的数值），那就是点约束。系统会检查生成的查询结果是否符合用户的要求。如果符合，就给予奖赏，奖赏的大小取决于查询结果与用户要求的接近程度。比如，用户想要1000个结果，但查询只得到100个，奖赏就会很低。如果得到900个，奖赏就会更高。</li>
+</ul>
+</li>
+<li><strong>范围约束奖赏</strong>:<ul>
+<li>如果用户想要的结果在一个范围内（比如在1000到2000之间），那就是范围约束。系统会检查生成的查询结果是否在这个范围内。如果在范围内，奖赏是1（最高奖赏）。如果不在范围内，但接近范围，也会有一些奖赏，奖赏的大小取决于查询结果离范围有多近。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h4 id="4-3-LearnedSQLGen-via-Actor-Critic"><a href="#4-3-LearnedSQLGen-via-Actor-Critic" class="headerlink" title="4.3 LearnedSQLGen via Actor-Critic"></a><strong>4.3 LearnedSQLGen via Actor-Critic</strong></h4><p>这段文字描述了通过Actor-Critic方法来实现LearnedSQLGen的过程。以下是主要内容的简化概述：</p>
+<ol>
+<li><strong>问题背景</strong>:<ul>
+<li>在强化学习模型中，策略网络（Policy Network）的目标是根据当前状态选择最优的动作。但是，传统的策略网络可能会因为累积奖励的高方差而表现不佳。为了解决这个问题，作者采用了Actor-Critic方法，并引入了熵正则化技术来增加生成查询的多样性。</li>
+</ul>
+</li>
+<li><strong>Actor-Critic网络</strong>:<ul>
+<li><strong>Actor网络</strong>负责学习策略分布以选择动作。它接收当前状态作为输入，通过LSTM和Softmax层输出策略分布，然后基于这个分布采样动作。</li>
+<li><strong>Critic网络</strong>负责估算值函数，包括状态值（V值）和动作值（Q值）。它使用另一个LSTM网络来输出V值，即从当前状态开始使用策略π的长期奖励估计。同时，Q值可以通过公式 Qϕ(st,at)&#x3D;rt+Vϕ(st+1)Qϕ(st,at)&#x3D;rt+Vϕ(st+1) 计算。</li>
+</ul>
+</li>
+<li><strong>网络训练</strong>:<ul>
+<li>为了减少方差并提高训练的稳定性和效率，作者使用V值作为基线来调整奖励。具体地，他们使用 A(st,at)&#x3D;Q(st,at)−V(st)A(st,at)&#x3D;Q(st,at)−V(st) 来替换 RtRt，并通过这个调整的奖励来更新策略网络的参数。</li>
+<li>对于Critic网络，目标是准确估算V值，使得 rt+Vϕ(st+1)−Vϕ(st)rt+Vϕ(st+1)−Vϕ(st) 尽可能小。这个差值也被用来更新Critic网络。</li>
+</ul>
+</li>
+<li><strong>熵正则化</strong>:<ul>
+<li>为了提高生成查询的多样性，作者在损失函数中添加了一个熵正则化项。这个正则化项鼓励网络采样多样化的动作，而不是总是选择最可能的动作。</li>
+</ul>
+</li>
+<li><strong>总体训练算法</strong>:<ul>
+<li>文章最后简要描述了整个训练算法的流程。LearnedSQLGen首先初始化参数，然后在每次迭代中生成一批查询，计算梯度，更新参数，最终输出训练好的Actor-Critic网络。</li>
+</ul>
+</li>
+</ol>
+<p>这个部分主要介绍了如何通过Actor-Critic网络结构和一些优化技术来训练LearnedSQLGen，以实现更好的SQL查询生成。</p>
+<h3 id="FSM-IN-THE-ENVIRONMENT"><a href="#FSM-IN-THE-ENVIRONMENT" class="headerlink" title="FSM IN THE ENVIRONMENT"></a><strong>FSM IN THE ENVIRONMENT</strong></h3><p>这段文字介绍了在LearnedSQLGen环境中设计的有限状态机（FSM）及其应用。以下是主要内容的简化概述：</p>
+<ol>
+<li><strong>有限状态机（FSM）的引入</strong>:<ul>
+<li>为了确保查询的有效性，作者在环境中设计了一个基于典型SQL语法的有限状态机（FSM），并允许用户灵活扩展以生成各种类型的查询。</li>
+</ul>
+</li>
+<li><strong>FSM的定义和结构</strong>:<ul>
+<li>FSM被定义为一个有向无环图（DAG），用于描述每个查询令牌的生成范围，并保证查询的有效性。在这个图中，每个节点代表一个FSM状态，每个边代表一个FSM动作。</li>
+</ul>
+</li>
+<li><strong>SQL语法到FSM的映射</strong>:<ul>
+<li>通过SQL语法，作者可以轻松构建和扩展FSM。他们将SQL语法的不同部分映射到FSM，包括Select-Project-Join查询、嵌套查询、聚合查询以及插入、更新和删除查询。</li>
+</ul>
+</li>
+<li><strong>语法和语义检查</strong>:<ul>
+<li>通过将规则集成到FSM中，可以支持语法和语义正确性检查，以确保生成的SQL查询的有效性和正确性。</li>
+</ul>
+</li>
+<li><strong>有意义的检查</strong>:<ul>
+<li>当前版本支持基于规则的有意义的检查，例如，只有在具有主键-外键关系或用户指定的连接关系时，两个列才能连接。</li>
+</ul>
+</li>
+<li><strong>动态FSM构建</strong>:<ul>
+<li>为了解决FSM可能很大的问题，作者提出了在查询生成过程中动态构建FSM的方法。例如，当代理选择一个表而不是另一个表时，可以剪切许多分支，从而减少FSM的大小。</li>
+</ul>
+</li>
+<li><strong>支持和不支持的SQL语法</strong>:<ul>
+<li>当前版本支持多种SQL语法，包括插入、删除、更新、选择、选择、投影、连接、聚合、分组、嵌套查询等，但不支持“Like”关键字。为了支持“Like”，作者考虑将“Like”关键字集成到FSM中，并将支持“Like”的详细实现留作未来的工作。</li>
+</ul>
+</li>
+</ol>
+<p>通过这种方式，LearnedSQLGen能够通过FSM指导查询的生成，确保生成的查询的有效性和正确性，同时允许用户灵活地扩展和定制查询生成过程。</p>
+<p><img src="/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/image-20230927105246544.png" alt="image-20230927105246544"></p>
+<blockquote>
+<p>FSM是在training的过程中产生的。应用的过程则是在FSM中进行状态选择。</p>
+<p>在训练过程中，FSM（有限状态机）被构建和优化，以确保它能够准确地反映SQL语法规则和其他可能的约束。通过训练，FSM能够学习如何根据不同的输入和环境条件动态地调整其结构和转换规则。</p>
+<p>在应用阶段，FSM则用于指导查询生成过程。具体来说，根据FSM的当前状态和可能的转换（边），代理（agent）会在FSM中进行状态选择，以决定下一步的动作。每个动作都会导致FSM转移到一个新的状态，直到最终生成完整的查询。</p>
+</blockquote>
+<h3 id="PRE-TRAINING-FOR-DIFFERENT-CONSTRAINTS"><a href="#PRE-TRAINING-FOR-DIFFERENT-CONSTRAINTS" class="headerlink" title="PRE-TRAINING FOR DIFFERENT CONSTRAINTS"></a><strong>PRE-TRAINING FOR DIFFERENT CONSTRAINTS</strong></h3><p>这段文字主要讨论了如何通过训练一个模型来生成满足特定约束的查询，而不是为每个新约束重新训练新模型，这样做会非常耗时和昂贵。为了解决这个问题，作者提出了借鉴元评论网络（meta-critic network）的方法，只训练一个模型，然后通过微调来适应新的约束。</p>
+<ol>
+<li><strong>元评论网络的动机</strong>：<ul>
+<li>元评论是一种基于演员-评论家网络的元学习方法，它能够很好地泛化到新任务。</li>
+<li>与传统的演员-评论家模型不同，元评论的关键思想是学习一个状态值函数神经网络，它能够评估任何演员尝试解决任何指定任务的效果。</li>
+<li>通过多个演员共享一个元评论，可以学习到这些演员和任务之间的可转移知识，使得在新问题上的训练更为高效和有效。</li>
+</ul>
+</li>
+<li><strong>将元评论网络应用于我们的问题</strong>：<ul>
+<li>作者将元评论网络应用于他们的问题，以提高方法的泛化能力。</li>
+<li>尽管可能的范围&#x2F;点约束是无限的，但我们可以假设一个基数&#x2F;成本域，并将其均匀划分为K个子范围，每个子范围对应一个约束，即一个任务。</li>
+<li>通过这种方式，我们可以同时训练多个任务（演员），以获得一个元评论网络。当出现一个新任务时，我们可以利用之前K个任务的知识来更好地训练新任务。</li>
+</ul>
+</li>
+<li><strong>元评论训练</strong>：<ul>
+<li>在这部分，作者重点讨论了如何训练元评论网络，并揭示了它的内在特性，这有助于有效和高效地泛化到新任务。</li>
+<li>元评论网络包括多个演员，每个演员对应于约束集C中的一个约束（任务）。它还添加了一个约束编码器，可能会嵌入不同任务的信息。</li>
+<li>元评论网络的目标是使新任务能够在少量试验中准确估计长期奖励值V。</li>
+</ul>
+</li>
+<li><strong>元评论泛化</strong>：<ul>
+<li>对于一个新任务，如果元值网络能够准确和高效地估计V值，演员就可以快速调整其策略来生成满足新约束的查询。</li>
+<li>例如，对于一个新任务，我们可以利用从预训练的类似任务中学到的知识来快速训练新任务。完成新任务的训练后，该任务的知识也会被纳入元评论网络，使网络变得越来越强大。</li>
+</ul>
+</li>
+<li><strong>点约束的备注</strong>：<ul>
+<li>我们可以在域中采样一些点来预训练元评论网络。然后，对于一个新任务，元评论可以高效地学习任务，可能利用先前任务的知识。</li>
+</ul>
+</li>
+</ol>
+<p>通过这种方式，元评论网络提供了一种高效的方法来泛化到新任务，而无需为每个新约束从头开始训练新模型。</p>
+<h3 id="EXPERIMENTS"><a href="#EXPERIMENTS" class="headerlink" title="EXPERIMENTS"></a><strong>EXPERIMENTS</strong></h3><h4 id="7-1-Experiment-Setting"><a href="#7-1-Experiment-Setting" class="headerlink" title="7.1 Experiment Setting"></a><strong>7.1 Experiment Setting</strong></h4><ol>
+<li><strong>数据集</strong>：<ul>
+<li>TPC-H：包含8个关系表的流行基准测试，总数据大小为33GB。</li>
+<li>JOB：另一个广泛使用的基准测试，使用真实世界的IMDB数据集，包含21个表，总数据大小为14GB。</li>
+<li>XueTang：在线教育的真实世界OLTP基准测试，包含14个表，总数据大小为24GB。</li>
+</ul>
+</li>
+<li><strong>Baselines</strong>：<ul>
+<li>SQLSmith：基于解析树随机生成SQL，从中选择满足约束的查询。</li>
+<li>Template：通过贪婪地调整给定SQL模板中的谓词值来生成满足条件的SQL查询。</li>
+</ul>
+</li>
+<li><strong>超参数设置</strong>：<ul>
+<li>The actor network包括输入层，接着是2层LSTM网络和输出层。选择层数是为了平衡效率和准确性。输入&#x2F;输出层的维度等于每个数据集的动作空间大小，分别为1962（TPC-H）、3940（JOB）和4280（XueTang）。</li>
+<li>数值属性中的采样值数量设置为100，即k &#x3D; 100。2层LSTM网络各有20个单元。</li>
+<li>评论网络的结构类似于演员网络，但输出层维度为1，用于输出V值。为了避免过拟合，在演员和评论网络中都使用了Dropout（设置为0.3）。</li>
+</ul>
+</li>
+<li><strong>目标约束</strong>：<ul>
+<li>评估了两种类型的目标约束：成本（SQL的执行费用）和基数（SQL结果的大小）。使用数据库估计器提供的估计基数&#x2F;成本来计算奖励。</li>
+</ul>
+</li>
+<li><strong>评估指标</strong>：<ul>
+<li>生成准确性（acc）：满足条件的查询数（ns）与生成的查询总数（n）的比率。准确性越高，表示方法在生成满足条件的SQL方面越强大。</li>
+<li>生成时间：包括训练和推理阶段，生成固定数量（例如，1K）满足条件的SQL的时间。生成时间越低，表示生成方法越高效。</li>
+</ul>
+</li>
+<li><strong>实验环境</strong>：<ul>
+<li>所有实验都在Python中实现，并在配备有Intel(R) Xeon(R) Silver 4110 2.10GHz CPU（32核）、Nvidia Geforce 2080ti GPU和128GB DDR4主内存的Ubuntu服务器上执行，没有使用SSD。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>如何确定什么是满足条件的查询？准确率怎么算的？</p>
+</blockquote>
+<h4 id="7-2-Overall-Evaluation"><a href="#7-2-Overall-Evaluation" class="headerlink" title="7.2 Overall Evaluation"></a><strong>7.2 Overall Evaluation</strong></h4><p>主要对LearnedSQLGen方法在准确性和效率方面与随机方法（SQLSmith）和基于模板的启发式方法（Template）进行了比较。</p>
+<ol>
+<li><strong>生成查询的准确性</strong>：<ul>
+<li><strong>变化的基数</strong>：通过在三个数据集上生成1K查询，并测试了不同点和范围基数约束的准确性。结果显示，LearnedSQLGen在准确性上超过了基线方法。例如，在TPC-H数据集上，LearnedSQLGen达到了54.33%的准确性，而SQLSmith和Template分别只有0.02%和18.98%。</li>
+<li><strong>不同范围约束的准确性测试</strong>：例如，在基数范围为[1K, 2K]时，LearnedSQLGen的准确性为54.12%，而SQLSmith和Template的准确性分别为0.064%和17.16%。随着范围的扩大，所有三种方法的准确性通常会更高。</li>
+<li><strong>变化的成本</strong>：LearnedSQLGen框架也支持成本约束，其准确性仍然优于基线方法。例如，在XueTang数据集上，当Cost &#x3D; 106时，LearnedSQLGen的准确性为53.66%，而SQLSmith和Template的准确性分别为0.24%和18.11%。</li>
+</ul>
+</li>
+<li><strong>查询生成的效率</strong>：<ul>
+<li><strong>变化的基数</strong>：在三个数据集上评估了不同基数约束的效率。总体来看，LearnedSQLGen的效率超过了所有基线方法。例如，在TPC-H数据集上，为了生成接近108的查询，LearnedSQLGen只消耗了0.63小时，而SQLSmith和Template分别需要11小时和2.72小时。</li>
+<li><strong>变化的成本</strong>：测试了不同方法在成本约束方面的效率。结果显示，LearnedSQLGen在效率上也优于基线方法。例如，在TPC-H数据集上，当Cost &#x3D; 102时，LearnedSQLGen花费了0.8小时，而SQLSmith和Template分别花费了3.33小时和1.78小时。</li>
+<li><strong>变化的满意查询数量</strong>：改变了要生成的满意查询的数量，即10、100、1000。结果显示，对于生成不同数量的满意查询，LearnedSQLGen在三个数据集上的速度都比基线方法快。</li>
+</ul>
+</li>
+</ol>
+<p>通过这些实验，可以看出LearnedSQLGen在生成满意查询的准确性和效率方面都表现出了较好的性能，尤其是与随机方法和基于模板的方法相比。</p>
+<p><img src="/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/image-20230927111644097.png" alt="image-20230927111644097"></p>
+<h4 id="7-3-Evaluation-of-the-actor-critic-network"><a href="#7-3-Evaluation-of-the-actor-critic-network" class="headerlink" title="7.3 Evaluation of the actor-critic network"></a><strong>7.3 Evaluation of the actor-critic network</strong></h4><p>这段文字通过比较LearnedSQLGen中的actor-critic（AC）算法和简单的强化学习算法（REINFORCE）的效率，来评估AC算法在解决约束感知查询生成问题上的效果。作者得出了三个主要观察结果：</p>
+<ol>
+<li><strong>准确性提高</strong>：<ul>
+<li>通过利用actor-critic网络，可以在准确性上优于使用REINFORCE算法。具体来说，在JOB数据集上，给定约束Cardinality ∈ [1K, 4K]时，LearnedSQLGen达到了65.43%的准确性，比REINFORCE高出9.2%。这是因为LearnedSQLGen可以减少返回奖励的方差，并保持策略梯度更新稳定，从而在一定程度上防止网络收敛到局部最优解。</li>
+</ul>
+</li>
+<li><strong>效率提高</strong>：<ul>
+<li>LearnedSQLGen比REINFORCE算法更高效。例如，在Cardinality ∈ [1K, 4K]的约束下，LearnedSQLGen花费0.51小时来获得1K满意的查询，而REINFORCE花费了2.2小时。这是因为LearnedSQLGen收敛得更快，准确性更高，因此它花费更少的时间来获得相同数量的满意查询。</li>
+</ul>
+</li>
+<li><strong>训练过程的展示</strong>：<ul>
+<li>图10(c)展示了REINFORCE和LearnedSQLGen的训练过程。随着训练周期数的增加，LearnedSQLGen的返回奖励远高于REINFORCE。这表明LearnedSQLGen的方法收敛得更稳定，并且实现了更高的性能。</li>
+</ul>
+</li>
+</ol>
+<p>综上所述，通过这三个观察结果，作者展示了在约束感知查询生成问题上，利用actor-critic网络的LearnedSQLGen方法在准确性、效率和训练稳定性方面都优于简单的强化学习算法REINFORCE。</p>
+<h4 id="7-4-Meta-critic-Network-Evaluation"><a href="#7-4-Meta-critic-Network-Evaluation" class="headerlink" title="7.4 Meta-critic Network Evaluation"></a><strong>7.4 Meta-critic Network Evaluation</strong></h4><p>该段落评估了元评论网络（Meta-critic Network），该网络能够使模型泛化到不同的约束条件。作者与三种策略进行了比较：(1) 针对新的约束从头开始训练LearnedSQLGen（Scratch）；(2) 使用预训练的元评论网络快速泛化到新的约束（MetaCritic）；(3) 直接将多个约束编码到状态中，而不使用元评论网络，即AC-extend。特别是，他们测试了基于XueTang数据集的点约束，将域设置为[10K, 20K]，并将其分为10个部分，然后训练了元评论网络。接下来，给定此域内的新约束，他们利用之前学到的知识来高效地训练新任务。他们分别测试了新的约束[11.5K, 12.5K], [13.5K, 14.5K], [15.5K, 16.5K], [17.5K, 18.5K]，结果显示在图11中。</p>
+<p>作者得出了三个主要观察结果：</p>
+<ol>
+<li><strong>查询生成时间显著减少</strong>：<ul>
+<li>MetaCritic通过从历史训练经验中学习，提供相对准确的长期奖励，并有效地指导代理选择适当的令牌来生成SQL，从而显著减少了查询生成时间。相比之下，Scratch需要从头开始学习长期奖励的估计，因此耗时更长。与AC-extend相比，元评论方法也编码了约束，但方式更为细致。通过基于三元组（状态，动作，奖励）指定约束，捕获了不同任务之间更多的可转移知识，从而具有良好的泛化能力。然而，AC-extend由于纯粹地编码任务而难以很好地泛化。</li>
+</ul>
+</li>
+<li><strong>高准确性</strong>：<ul>
+<li>如图11(a)所示，所有三个基线都能实现高准确性，因为它们最终可以收敛到相对最优的生成策略。然而，MetaCritic的准确性略高于Scratch和AC-extend，因为它同时考虑了历史经验和新的约束，这些都是通过三元组（状态，动作，奖励）自动捕获的。而Scratch仅从新生成的查询样本中学习，AC-extend通过简单地将约束输入神经网络来捕获约束。</li>
+</ul>
+</li>
+<li><strong>快速生成满意的查询</strong>：<ul>
+<li>如图11(c)所示，尽管这些基线在初始时期的性能相似，但随着训练周期数的增加，由于更准确的长期奖励的指导，MetaCritic快速生成了满意的查询，而Scratch和AC-extend花费了更多时间来估计长期奖励。</li>
+</ul>
+</li>
+</ol>
+<p>综上所述，元评论网络通过从历史训练经验中学习，有效地减少了查询生成时间，提高了准确性，并能在增加训练周期时快速生成满意的查询，显示出其在不同任务和约束条件下的良好泛化能力。</p>
+<h4 id="7-5-Case-Study-of-Generated-Queries"><a href="#7-5-Case-Study-of-Generated-Queries" class="headerlink" title="7.5 Case Study of Generated Queries"></a><strong>7.5 Case Study of Generated Queries</strong></h4><p>该段落通过案例研究评估了生成查询的多样性和复杂性，并从不同的角度报告了查询分布，包括谓词数量、聚合关键词、嵌套查询、连接查询、SQL类型和SQL令牌数量。以下是主要观察和结论：</p>
+<ol>
+<li><strong>多表连接查询的占比较高</strong>：<ul>
+<li>在图12(a)中，满意的查询很可能与多表连接相关。图中显示，具有多表连接的查询的比例超过了生成查询总数的一半。</li>
+</ul>
+</li>
+<li><strong>能生成复杂结构的查询</strong>：<ul>
+<li>在图12(b)和(c)中，可以看到生成了许多复杂结构的查询，例如嵌套查询（47%）和聚合查询（34.9%）。</li>
+</ul>
+</li>
+<li><strong>查询的多样性</strong>：<ul>
+<li>在图12(d)-(e)中，显示了可以生成不同类型的查询。对于[1k, 8k]的低基数范围，满意的查询通常包含多个谓词（例如，许多“and”）以减少基数。因此，在图12(d)中，可以看到生成查询中有各种数量的谓词。此外，由于熵正则化技术和可扩展的FSM，如图12(e)所示，该方法可以支持各种查询类型。</li>
+</ul>
+</li>
+<li><strong>不同长度的查询</strong>：<ul>
+<li>最后，在图12(f)中显示了SQL长度分布，其中x轴表示令牌数量，y轴表示频率。可以观察到，LearnedSQLGen可以生成不同长度的查询，验证了可以生成多样和复杂的查询的能力。</li>
+</ul>
+</li>
+</ol>
+<p>综上所述，通过案例研究，作者展示了LearnedSQLGen能够生成具有多样性和复杂性的查询，包括多表连接、嵌套和聚合查询，以及不同谓词数量和查询类型的查询。同时，它还能生成不同长度的查询，证明了其生成多样和复杂查询的能力。</p>
+<p><img src="/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/image-20230927112139623.png" alt="image-20230927112139623"></p>
+<h4 id="7-6-Complicated-Queries-Generation"><a href="#7-6-Complicated-Queries-Generation" class="headerlink" title="7.6 Complicated Queries Generation"></a><strong>7.6 Complicated Queries Generation</strong></h4><p>该段落介绍了通过在图13中添加实验来评估生成复杂查询的性能，其中x轴表示生成的不同类型的复杂查询的数量（包括嵌套、插入、删除查询），y轴表示生成满足约束的这些嵌套查询所花费的时间（由图例指定，例如，Cost&#x3D;102）。以下是主要观察和结论：</p>
+<ol>
+<li><strong>复杂查询生成能力</strong>：<ul>
+<li>通过扩展FSM（有限状态机），LearnedSQLGen能够生成各种类型的查询，显示了该方法在生成各种复杂SQL查询方面的适用性。</li>
+</ul>
+</li>
+<li><strong>性能评估</strong>：<ul>
+<li>图13展示了随着生成的复杂查询类型数量的增加，生成满足特定约束的这些查询所需的时间。例如，在特定的成本约束（Cost&#x3D;102）下，展示了生成嵌套、插入和删除查询所需的时间。</li>
+</ul>
+</li>
+</ol>
+<p>综上所述，实验结果表明，通过扩展FSM，LearnedSQLGen能够生成不同类型的复杂查询，证明了该方法在生成复杂SQL查询方面的有效性和适用性。</p>
+<h4 id="7-7-Evaluation-on-Sample-Sizes"><a href="#7-7-Evaluation-on-Sample-Sizes" class="headerlink" title="7.7 Evaluation on Sample Sizes"></a><strong>7.7 Evaluation on Sample Sizes</strong></h4><p>该段落讨论了不同数值样本大小对性能的影响，并通过图14展示了实验结果。以下是主要的观察和结论：</p>
+<ol>
+<li><strong>样本大小与准确性</strong>：<ul>
+<li>随着样本大小的增加，准确性也随之提高，因为可以选择更多的操作。但是，在采样了一定数量的数据后，准确性保持稳定，因为一定数量的样本可以覆盖非常大的搜索空间，并且足以覆盖满足用户指定约束的查询。这表明该框架对样本大小不太敏感。</li>
+</ul>
+</li>
+<li><strong>样本大小与效率</strong>：<ul>
+<li>随着样本比率η的增加，开始时花费的时间减少，然后增加。这是因为SQL生成时间包括训练时间和推理时间，增加样本大小会使训练变慢（更大的搜索空间），但会加速推理（更高的SQL覆盖率）。因此，在开始时，它稍微增加了训练时间，但显著减少了推理时间，从而总时间较小；但是后来，它显著增加了训练时间，从而总时间变得更大。</li>
+</ul>
+</li>
+<li><strong>样本比率η</strong>：<ul>
+<li>样本比率η是样本大小与列中不同值总数的比率。实验评估了点约束和范围约束，并通过图14展示了样本比率η与准确性和效率之间的关系。</li>
+</ul>
+</li>
+</ol>
+<p>综上所述，实验结果表明，虽然增加样本大小可以提高准确性，但也会影响训练和推理的效率。在一定的样本大小后，准确性趋于稳定，而效率在初期提高，后期降低，显示了在选择样本大小时需要考虑的权衡。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/">http://example.com/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/08/18/Griffin-Grammar-Free-DBMS-Fuzzing/" title="Griffin Grammar-Free DBMS Fuzzing"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Griffin Grammar-Free DBMS Fuzzing</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">71</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning"><span class="toc-number">1.</span> <span class="toc-text">LearnedSQLGen: Constraint-aware SQL Generation using Reinforcement Learning</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E7%AE%80%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">论文简要 :</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BF%A1%E6%81%AF"><span class="toc-number">1.3.</span> <span class="toc-text">背景信息:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text">方法:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">1.5.</span> <span class="toc-text">结果:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%91%98%E8%A6%81%EF%BC%9A"><span class="toc-number">1.6.</span> <span class="toc-text">摘要：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction"><span class="toc-number">1.7.</span> <span class="toc-text">Introduction:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PRELIMINARY"><span class="toc-number">1.8.</span> <span class="toc-text">PRELIMINARY:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-Problem-Formulation"><span class="toc-number">1.8.1.</span> <span class="toc-text">2.1 Problem Formulation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-Related-Work"><span class="toc-number">1.8.2.</span> <span class="toc-text">2.2 Related Work</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SYSTEM-FRAMEWORK"><span class="toc-number">1.9.</span> <span class="toc-text">SYSTEM FRAMEWORK</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Overview"><span class="toc-number">1.9.1.</span> <span class="toc-text">3.1 Overview</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-Training"><span class="toc-number">1.9.2.</span> <span class="toc-text">3.2 Training</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-Inference"><span class="toc-number">1.9.3.</span> <span class="toc-text">3.3 Inference</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RL-IN-LEARNEDSQLGEN"><span class="toc-number">1.10.</span> <span class="toc-text">RL IN LEARNEDSQLGEN</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-State-Representation"><span class="toc-number">1.10.1.</span> <span class="toc-text">4.1 State Representation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-Reward-Design"><span class="toc-number">1.10.2.</span> <span class="toc-text">4.2 Reward Design</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-LearnedSQLGen-via-Actor-Critic"><span class="toc-number">1.10.3.</span> <span class="toc-text">4.3 LearnedSQLGen via Actor-Critic</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FSM-IN-THE-ENVIRONMENT"><span class="toc-number">1.11.</span> <span class="toc-text">FSM IN THE ENVIRONMENT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PRE-TRAINING-FOR-DIFFERENT-CONSTRAINTS"><span class="toc-number">1.12.</span> <span class="toc-text">PRE-TRAINING FOR DIFFERENT CONSTRAINTS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EXPERIMENTS"><span class="toc-number">1.13.</span> <span class="toc-text">EXPERIMENTS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-Experiment-Setting"><span class="toc-number">1.13.1.</span> <span class="toc-text">7.1 Experiment Setting</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-Overall-Evaluation"><span class="toc-number">1.13.2.</span> <span class="toc-text">7.2 Overall Evaluation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-Evaluation-of-the-actor-critic-network"><span class="toc-number">1.13.3.</span> <span class="toc-text">7.3 Evaluation of the actor-critic network</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-4-Meta-critic-Network-Evaluation"><span class="toc-number">1.13.4.</span> <span class="toc-text">7.4 Meta-critic Network Evaluation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-5-Case-Study-of-Generated-Queries"><span class="toc-number">1.13.5.</span> <span class="toc-text">7.5 Case Study of Generated Queries</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-6-Complicated-Queries-Generation"><span class="toc-number">1.13.6.</span> <span class="toc-text">7.6 Complicated Queries Generation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-7-Evaluation-on-Sample-Sizes"><span class="toc-number">1.13.7.</span> <span class="toc-text">7.7 Evaluation on Sample Sizes</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/" title="LearnedSQLGen Constraint-aware SQL Generation using Reinforcement Learning">LearnedSQLGen Constraint-aware SQL Generation using Reinforcement Learning</a><time datetime="2023-09-27T07:05:56.000Z" title="发表于 2023-09-27 15:05:56">2023-09-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/18/Griffin-Grammar-Free-DBMS-Fuzzing/" title="Griffin Grammar-Free DBMS Fuzzing">Griffin Grammar-Free DBMS Fuzzing</a><time datetime="2023-08-18T07:28:26.000Z" title="发表于 2023-08-18 15:28:26">2023-08-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/24/sql%E7%9A%84%E7%BC%96%E8%AF%91%E4%B8%8E%E6%89%A7%E8%A1%8C/" title="sql的编译与执行">sql的编译与执行</a><time datetime="2023-07-24T03:19:59.000Z" title="发表于 2023-07-24 11:19:59">2023-07-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/23/Finding-Bugs-in-Database-Systems-via-Query-Partitioning/" title="Finding Bugs in Database Systems via Query Partitioning">Finding Bugs in Database Systems via Query Partitioning</a><time datetime="2023-07-23T03:07:25.000Z" title="发表于 2023-07-23 11:07:25">2023-07-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/22/go-randgen%E4%BD%BF%E7%94%A8/" title="go-randgen使用">go-randgen使用</a><time datetime="2023-07-22T03:08:23.000Z" title="发表于 2023-07-22 11:08:23">2023-07-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
