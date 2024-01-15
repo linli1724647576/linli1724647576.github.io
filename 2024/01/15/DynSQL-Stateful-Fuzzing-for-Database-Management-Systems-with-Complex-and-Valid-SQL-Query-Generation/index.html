@@ -1,0 +1,462 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query GenerationBasic Information: Title: DynSQL: Stateful Fuzzing for Database Management Systems with Complex and">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation">
+<meta property="og:url" content="http://example.com/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query GenerationBasic Information: Title: DynSQL: Stateful Fuzzing for Database Management Systems with Complex and">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-01-15T12:34:42.000Z">
+<meta property="article:modified_time" content="2024-01-15T12:36:00.151Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-01-15 20:36:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">74</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-01-15T12:34:42.000Z" title="发表于 2024-01-15 20:34:42">2024-01-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-01-15T12:36:00.151Z" title="更新于 2024-01-15 20:36:00">2024-01-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation"><a href="#DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation" class="headerlink" title="DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation"></a>DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation (DynSQL: 基于状态的模糊测试用于具有复杂和有效SQL查询生成的数据库管理系统)</li>
+<li>Authors: Zu-Ming Jiang, Jia-Ju Bai, Zhendong Su</li>
+<li>Affiliation: ETH Zurich (Zu-Ming Jiang), Tsinghua University (Jia-Ju Bai), ETH Zurich (Zhendong Su)</li>
+<li>Keywords: database management systems, fuzzing, SQL query generation, stateful fuzzing</li>
+<li>URLs: <a target="_blank" rel="noopener" href="https://dl.acm.org/doi/10.1145/3427228.3427272">Paper</a>, <a target="_blank" rel="noopener" href="https://github.com/eth-sri/dynsql">GitHub</a></li>
+</ul>
+<h3 id="论文简要"><a href="#论文简要" class="headerlink" title="论文简要 :"></a>论文简要 :</h3><ul>
+<li>本文提出了一种新颖的基于状态的模糊测试方法，用于有效地测试数据库管理系统并发现深层次的漏洞。通过动态查询交互和捕获状态信息，该方法能够增量生成复杂且有效的SQL查询，并使用错误状态来过滤无效的测试用例。在实验评估中，该方法在6个广泛使用的数据库管理系统上找到了40个独特的漏洞，并且在代码覆盖率上超过了其他最先进的数据库管理系统模糊测试工具。</li>
+</ul>
+<h3 id="背景信息"><a href="#背景信息" class="headerlink" title="背景信息:"></a>背景信息:</h3><ul>
+<li>论文背景: 数据库管理系统(DBMSs)是现代软件的重要组成部分，但现有的DBMS模糊测试工具在生成复杂和有效的查询方面存在局限性，因为它们过于依赖预定义的语法模型和对DBMS的固定知识，无法捕获DBMS特定的状态信息，从而错过了许多深层次的漏洞。</li>
+<li>过去方案: 现有的DBMS模糊测试工具在生成复杂和有效的查询方面仍然存在局限性。它们要么忽略状态变化，要么静态推断相应的状态，但都存在准确性和完整性问题。这些工具往往在生成查询时建立不正确的语句依赖关系或错误使用SQL特性，导致生成许多无效的查询。</li>
+<li>论文的Motivation: 鉴于现有DBMS模糊测试工具的局限性，本文提出了一种新颖的基于状态的模糊测试方法，通过动态查询交互和捕获状态信息来解决这些问题。该方法能够有效地生成复杂和有效的SQL查询，并使用错误反馈来提高生成查询的有效性。通过这些改进，该方法在代码覆盖率上超过了其他最先进的DBMS模糊测试工具，并发现了许多其他工具所错过的漏洞。</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 理论背景:<ul>
+<li>本文介绍了数据库管理系统（DBMS）在现代软件中的重要性以及安全测试的需求。它强调了现有DBMS模糊测试工具在生成复杂和有效的SQL查询方面的局限性，导致在DBMS中遗漏了深层次的错误。本文提出了一种名为DynSQL的有状态模糊测试方法，以有效地测试DBMS并发现深层次的错误。DynSQL通过捕获状态信息执行动态查询交互，生成复杂和有效的SQL查询。它还使用错误反馈来过滤无效的测试用例并提高查询的有效性。DynSQL在6个广泛使用的DBMS上进行评估，并发现了40个独特的错误，从代码覆盖率和错误检测方面优于其他最先进的DBMS模糊测试工具。</li>
+</ul>
+</li>
+<li>b. 技术路线:<ul>
+<li>DynSQL使用有状态的DBMS模糊测试方法，通过与目标DBMS动态交互来捕获准确的状态信息。它将查询生成和查询执行合并为一个交互过程，不断捕获最新的DBMS状态以增量生成复杂和有效的查询。该方法利用错误反馈来过滤种子池中的无效测试用例，提高生成查询的有效性。动态查询交互包括两个部分：调度器和翻译器。调度器与目标DBMS交互，捕获最新的状态信息并管理交互过程。翻译器根据接收到的数据库模式将输入文件转换为SQL语句。该方法通过准确捕获执行语句引起的状态变化，有效地生成复杂和有效的查询。</li>
+</ul>
+</li>
+</ul>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果:"></a>结果:</h3><ul>
+<li>a. 详细的实验设置:<ul>
+<li>DynSQL在六个开源和广泛使用的DBMS上进行评估，包括SQLite、MySQL、MariaDB、PostgreSQL、MonetDB和ClickHouse。评估在一台普通PC上进行，配备八个Intel处理器和16GB物理内存，使用Ubuntu 18.04作为操作系统。</li>
+</ul>
+</li>
+<li>b. 详细的实验结果:<ul>
+<li>DynSQL生成了总共101K个SQL查询，其中79K个是有效的。有效查询的百分比为78%。这些查询包含了866K个SQL语句，其中838K个是有效的。有效语句的百分比为97%。每个有效查询中平均包含8.6个语句。DynSQL发现了总共40个独特的错误，其中31个是内存错误，9个是语义错误。这些错误已报告给开发人员，目前已确认38个错误并修复了21个错误。</li>
+</ul>
+</li>
+</ul>
+<h3 id="摘要："><a href="#摘要：" class="headerlink" title="摘要："></a>摘要：</h3><p>这篇论文讨论了数据库管理系统(DBMS)的安全性问题，并提出了一种新的基于状态的模糊测试方法，该方法能更有效地测试DBMS并发现更深层次的漏洞。现有的DBMS模糊测试工具在生成复杂且有效的SQL查询时存在局限性，因为它们主要依赖于预定义的语法模型和固定的DBMS知识，无法捕捉DBMS特定的状态信息。这些局限性导致了这些方法无法发现DBMS中的许多深层次漏洞。</p>
+<p>在本文中，作者提出了一个新颖的基于状态的模糊测试方法，该方法基于以下基本思想：在DBMS处理每个SQL语句后，可以动态收集有用的状态信息，以便于后续的查询生成。基于这个思想，该方法采用动态查询交互，利用捕获的状态信息逐步生成复杂且有效的SQL查询。为了进一步提高生成查询的有效性，该方法使用查询处理的错误状态来过滤无效的测试用例。</p>
+<p>作者将这种方法实现为一个全自动模糊测试框架，名为DynSQL。DynSQL在6个广泛使用的DBMS(包括SQLite、MySQL、MariaDB、PostgreSQL、MonetDB和ClickHouse)上进行了评估，并发现了40个独特的漏洞。在这些漏洞中，38个已被确认，21个已被修复，并且19个已被分配了CVE ID。在评估中，DynSQL在代码覆盖率方面超过了其他最先进的DBMS模糊测试工具，提高了41%，并发现了其他模糊测试工具遗漏的许多漏洞。</p>
+<h3 id="INTRODUCTION："><a href="#INTRODUCTION：" class="headerlink" title="INTRODUCTION："></a>INTRODUCTION：</h3><p>这篇论文探讨了数据库管理系统(DBMS)在现代数据密集型应用中的关键作用，以及在开发和维护过程中不可避免地引入漏洞的问题。攻击者可通过利用DBMS的漏洞，对系统造成瘫痪或窃取秘密数据的威胁。</p>
+<p><font color="red">背景: </font></p>
+<p>DBMS提供数据存储和管理的基本功能，由于DBMS的庞大代码量和复杂逻辑，开发和维护过程中不可避免地会引入漏洞。攻击者可以利用这些漏洞对系统进行破坏或窃取数据。</p>
+<p><font color="red">相关工作与局限性: </font></p>
+<p>模糊测试是一个有前途的漏洞检测技术，通过生成包含一系列SQL语句的SQL查询来测试DBMS。有些模糊测试工具使用预定义的规则随机生成SQL查询，将这些查询发送到目标DBMS，并检查是否触发了漏洞。为了提高DBMS中漏洞检测的效率，一些方法还引入了反馈机制。在每个测试用例执行后，它们会收集目标DBMS的运行时信息（如代码覆盖率），并检查是否发生了有趣的行为（如覆盖新的分支）。如果是这样，测试用例将被存储为后续测试用例生成的种子。</p>
+<blockquote>
+<p>说明反馈机制，Fuzzers的本质是用随机生成的sql语句送入DBMS执行。我们将观察DBMS的运行时信息，包括代码覆盖率、内存使用情况等。覆盖率越高越好。</p>
+<p>例如，假设我们有以下两个SQL查询：</p>
+<ol>
+<li><code>SELECT * FROM table1 WHERE column1 = 100;</code></li>
+<li><code>SELECT * FROM table1 INNER JOIN table2 ON table1.column2 = table2.column3 WHERE table1.column1 = 200;</code></li>
+</ol>
+<p>在第一个查询执行后，我们发现DBMS的代码覆盖率增加了2%。我们将这个查询标记为有趣的，并将其保存为种子。在第二个查询执行后，我们发现代码覆盖率没有变化。因此，我们不将这个查询保存为种子。</p>
+<p>随着模糊测试的进行，我们将使用保存的种子来生成更多的测试用例。我们会对这些新生成的测试用例应用相同的反馈机制，并继续寻找能触发DBMS新行为的查询。这个反馈循环将不断进行，直到我们满足于测试结果或达到预定的测试时间。</p>
+</blockquote>
+<p><strong>然而，现有的DBMS模糊测试工具在生成复杂且有效的查询方面仍然存在局限性</strong>，这使得它们难以发现DBMS中的深层漏洞。这是因<strong>为它们过度依赖于预定义的语法模型和固定的DBMS知识</strong>，而没有捕捉运行时状态信息。一般来说，一个<strong>复杂的查询</strong>包含多个SQL语句，涉及各种SQL特性（如多级嵌套子查询），而一个<strong>有效的查询</strong>满足其语句之间的依赖关系（例如，后续语句引用先前语句中定义的元素），并保证了语法和语义的正确性。现有的DBMS模糊测试工具常常在生成的查询的复杂性和有效性之间进行权衡。例如，<font color="cornflowerblue">SQLsmith</font>只在每个查询中生成一个语句，避免了对语句之间<strong>依赖关系</strong>的分析，这牺牲了复杂性来确保有效性；而<font color="cornflowerblue">SQUIRREL</font>使用中间表示（IR）模型来推断依赖关系，并生成包含多个语句的查询，但它产生了超过50%的无效查询，并倾向于生成简单的语句。</p>
+<ul>
+<li>复杂查询包含多个包含各种SQL特性的SQL语句（例如多级嵌套子查询）</li>
+<li>有效查询满足其语句之间的依赖关系（例如，后续语句引用前面语句中定义的元素），并保证语法和语义的正确性。</li>
+</ul>
+<p>查询复杂度和查询有效性之间存在矛盾，因为现有的DBMS模糊器严重依赖于其预定义的语法模型和固定的DBMS知识，但不捕获运行时状态信息。</p>
+<p><font color="red">insight: </font></p>
+<p>查询复杂度和查询有效性之间存在矛盾，因为现有的DBMS模糊器严重依赖于其预定义的语法模型和固定的DBMS知识，但不捕获运行时状态信息。作者认为在DBMS处理每个查询时，每个语句都会改变操作数据库的状态。在语句处理的间隔期间，包括最新数据库模式和语句处理状态在内的DBMS特定状态信息是可用的。然而，现有的DBMS模糊测试工具无法捕捉这些信息，因为它们在查询执行之前就完成了查询生成。</p>
+<p><font color="red">方法: </font></p>
+<p>作者提出了一个新的基于状态的模糊测试方法，该方法<strong>执行动态查询交互，将查询生成和查询执行合并在一起</strong>。此方法将每个生成的语句发送到目标DBMS，然后与DBMS动态交互，以收集语句执行后的最新状态信息。收集到的状态信息用于指导后续语句的生成。此外，为了进一步提高生成查询的有效性，该方法使用<strong>错误反馈来引导基于代码覆盖率的测试用例生成</strong>。</p>
+<p><font color="red">评估: </font></p>
+<p>作者实现了一个名为DynSQL的基于状态的DBMS模糊测试框架，并对6个广泛使用的DBMS进行了评估，包括SQLite、MySQL、MariaDB、PostgreSQL、MonetDB和ClickHouse。DynSQL发现了40个独特的漏洞，其中38个已被确认，21个已被修复，并且19个已被分配CVE ID。</p>
+<p><font color="red">贡献：</font></p>
+<ol>
+<li><strong>提出了一种新的状态感知模糊测试方法</strong>：为了解决现有数据库管理系统(DBMS)模糊测试工具的限制，作者提出了一种新的模糊测试方法。该方法采用动态查询交互，将查询生成和查询执行合并起来，有效地生成复杂且有效的SQL查询。此外，该方法还利用错误反馈来提高生成查询的有效性。</li>
+<li><strong>实现了DynSQL，一种实用的DBMS模糊测试框架</strong>：基于上述方法，作者实现了DynSQL，这是一个实用的DBMS模糊测试框架。DynSQL能够通过生成复杂和有效的查询来自动检测DBMS中的深层错误。</li>
+<li><strong>对DynSQL进行了广泛评估</strong>：作者对6个广泛使用的DBMS进行了评估，包括SQLite、MySQL、MariaDB、PostgreSQL、MonetDB和ClickHouse。DynSQL在这些DBMS中找到了40个独特的错误，其中38个已经得到确认，21个已经被修复，并且19个已经被分配了CVE ID。作者将DynSQL与包括SQLsmith和SQUIRREL在内的最先进的DBMS模糊测试工具进行了比较。由于其在生成复杂和有效的SQL查询方面的有效性，DynSQL实现了41%更高的代码覆盖率，并找到了其他模糊测试工具未能发现的许多错误。</li>
+</ol>
+<h3 id="Background-and-Motivation"><a href="#Background-and-Motivation" class="headerlink" title="Background and Motivation"></a><strong>Background and Motivation</strong></h3><p>在本节中，我们首先简要介绍DBMS如何处理SQL查询，然后说明了生成复杂和有效查询的困难，最后揭示了现有DBMS模糊器的局限性。</p>
+<p><strong>SQL processing in DBMS.</strong> </p>
+<p>SQL查询用于用户和DBMS之间的通信。用户通常将多个SQL语句（例如，SELECT语句）整合到一个查询中，然后发送给DBMS来操作数据库。DBMS接收到查询后，首先将其分解为几个语句，然后依次处理这些语句。</p>
+<p>DBMS通常分四个阶段处理每个语句：解析、优化、评估和执行。在解析阶段，DBMS首先根据预定义的语法规则检查语句的语法正确性，然后根据当前的数据库模式检查其语义正确性。如果任何语法或语义检查失败，该语句将被直接丢弃，整个查询过程可能终止。在后续阶段，DBMS优化语句的低级表达，并生成几个可能的执行计划。然后，DBMS评估每个执行计划的成本，并最终执行最高效的计划。执行语句后，DBMS更新包括数据库模式和执行状态在内的状态，然后处理查询中的下一个语句。</p>
+<ul>
+<li>数据库模式定义了数据库中的表格、字段、数据类型、约束（如主键、外键）、以及这些元素之间的关系。</li>
+<li>执行状态指的是数据库在执行SQL查询或命令时的当前状态。这包括了执行过程中的各种信息，如是否成功执行、执行过程中遇到的错误、执行的时间等。</li>
+</ul>
+<p><strong>Query generation.</strong> </p>
+<p>模糊测试器用于生成查询以测试DBMS，目的是发现深层次的错误或漏洞。这里面包含两方面的挑战：</p>
+<ol>
+<li><strong>保证语法和语义的正确性</strong>：生成的查询需要通过DBMS的验证检查，这就要求模糊测试器不仅遵循特定的SQL特性和语法规则，还需要分析生成的语句可能导致的DBMS状态变化。这是为了准确地构建语句依赖关系和正确引用属性。</li>
+<li><strong>生成复杂的SQL查询</strong>：为了探索不常见的状态，并触发DBMS中优化、评估和执行的深层逻辑，模糊测试器应该生成复杂的SQL查询。然而，查询的复杂性增加会显著提高保证查询有效性的难度。</li>
+</ol>
+<p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115163355760.png" alt="image-20240115163355760"></p>
+<p>事实上，在DBMS的模糊处理中，生成这个查询是很困难的。首先，此查询包含多个会导致DBMS状态更改的语句。模糊器需要捕获这些更改，以便后续的语句能够正确地引用由前面的语句构建的元素。其次，这些语句利用了各种SQL特性，如子选择语句、COMMON TABLE EXPRESSION (CTE)、CROSS JOIN等，这使得模糊器很难准确地推断出可能的状态变化。</p>
+<p><strong>Limitations of existing DBMS fuzzers.</strong> </p>
+<p>这段话讨论了现有数据库管理系统（DBMS）模糊测试器（fuzzers）在生成复杂和有效的SQL查询方面的局限性。这些局限性主要包括：</p>
+<ol>
+<li><strong>状态变化捕获不准确</strong>：现有的模糊测试器无法准确捕捉由生成的语句引起的DBMS状态变化。因此，它们要么在每个查询中只生成一个复杂的语句以避免分析状态变化，要么组合多个相对简单的语句，其中状态变化可以容易推断。</li>
+<li><strong>SQLsmith的局限性</strong>：SQLsmith是一个流行的基于语法的DBMS模糊测试器，能够利用其定义良好的抽象语法树（AST）规则生成复杂的SQL语句。但它是无状态的，不考虑其生成语句引起的状态变化，因此不能构建多个语句之间的依赖关系，导致每个查询只能生成一个语句。</li>
+<li><strong>SQUIRREL的复杂性和错误倾向</strong>：SQUIRREL使用中间表示（IR）来维护查询结构，并且意识到其生成的语句引起的状态变化。它考虑了各种SQL特性，并维护语句中多个变量的作用域和生命周期。但其IR机制在推断复杂语句引起的状态变化时复杂且容易出错。为了减轻这种影响，SQUIRREL倾向于在查询中生成简单的语句。即使如此，SQUIRREL仍然生成超过50％的无效查询。</li>
+</ol>
+<h3 id="Stateful-DBMS-Fuzzing"><a href="#Stateful-DBMS-Fuzzing" class="headerlink" title="Stateful DBMS Fuzzing"></a><strong>Stateful DBMS Fuzzing</strong></h3><p>状态信息对于指导查询的生成是很有价值的。但是，这些信息只有在每个语句执行后才可用，因此现有的DBMS模糊器无法捕获这些信息，因为它们在执行查询之前执行静态查询生成。DynSQL它的核心是动态查询交互，它将查询生成和查询执行合并到一个交互过程中。</p>
+<p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115164122935.png" alt="image-20240115164122935"></p>
+<h4 id="3-1-Dynamic-Query-Interaction"><a href="#3-1-Dynamic-Query-Interaction" class="headerlink" title="3.1 Dynamic Query Interaction"></a><strong>3.1 Dynamic Query Interaction</strong></h4><p>在生成每个语句之前，动态查询交互首先查询目标DBMS以捕获状态信息，包括数据库模式和语句处理的状态。然后，该技术使用这些信息生成一个语句，并将其提供给DBMS。执行语句后，该技术再次与DBMS交互以获取最新的状态信息，并使用它生成后续语句。这样，动态查询交互就可以准确地捕获由已执行的语句引起的状态变化，从而可以有效地生成复杂而有效的查询。</p>
+<p><strong>Overview</strong></p>
+<p>这段概述介绍了动态查询交互技术在生成数据库查询时的工作流程。这个过程主要包含以下几个步骤和组件：</p>
+<ol>
+<li><strong>状态信息捕获</strong>：在生成每个语句之前，动态查询交互首先向目标数据库管理系统（DBMS）查询，以捕获状态信息，包括数据库模式和语句处理的状态。</li>
+<li><strong>语句生成与执行</strong>：使用捕获到的状态信息生成一个语句，然后将其提供给DBMS执行。执行后，该技术再次与DBMS交互，获取最新的状态信息，并利用这些信息生成后续的语句。</li>
+<li><strong>精确捕获状态变化</strong>：通过这种方式，动态查询交互可以准确捕获执行语句引起的状态变化，从而有效地生成复杂且有效的查询。</li>
+<li><strong>主要组成部分</strong>：动态查询交互主要由两部分组成，调度器（Scheduler）和翻译器（Translator）。<ul>
+<li><strong>调度器</strong>：用于与目标DBMS交互以捕获最新的DBMS状态，将数据库模式转移到翻译器，并管理整个交互过程。</li>
+<li><strong>翻译器</strong>：基于接收到的数据库模式将输入文件转换为SQL语句。</li>
+</ul>
+</li>
+<li><strong>工作流程</strong>：动态查询交互的工作流程在算法1中描述。给定输入文件和目标DBMS，它输出生成的查询、目标DBMS的代码覆盖率以及查询处理的状态。</li>
+</ol>
+<p><font color="cornflowerblue">输入文件是指什么呢？</font></p>
+<p><strong>调度器（Scheduler）</strong>：</p>
+<ul>
+<li><strong>初始化变量</strong>：调度器首先初始化一些变量，包括输入文件的大小、目标DBMS、已读字节、查询和覆盖率。</li>
+<li><strong>循环处理</strong>：调度器进入一个循环，直到输入文件的所有字节被读取。在循环中，它首先查询目标DBMS以获取最新的数据库模式（例如表、列、视图、索引的属性），然后将查询到的模式、文件和已读字节发送给翻译器。</li>
+<li><strong>生成语句和执行</strong>：翻译器返回生成的语句和更新后的已读字节。调度器将这个语句存储到查询的末尾并发送给DBMS执行。执行后，调度器收集覆盖的分支到覆盖率中，并检查语句处理的状态。如果状态显示触发了崩溃或错误，调度器将退出循环。</li>
+<li><strong>返回结果</strong>：循环结束时，调度器返回生成的查询、DBMS执行的代码覆盖率和查询处理的最终状态。</li>
+</ul>
+<p><strong>翻译器（Translator）</strong>：</p>
+<ul>
+<li><strong>处理输入文件</strong>：接收到调度器的参数后，翻译器首先提取尚未读取的文件部分到临时文件中。</li>
+<li><strong>生成语句</strong>：使用内部的SQL语句生成器（StmtGenerator）根据提供的模式和临时文件生成语句。然后返回生成的语句和StmtGenerator读取的字节数。</li>
+<li><strong>AST模型应用</strong>：StmtGenerator采用抽象语法树（AST）模型来生成SQL语句。与基于随机种子生成随机SQL语句的其他工具不同，StmtGenerator使用临时文件作为其随机种子。这意味着在遍历AST树生成SQL语句时，它根据从临时文件读取的值来决定选择哪条路径。具体来说，它通过计算 v mod n 的结果来做出决策，其中 v 是从输入文件读取的值，n 是可用选择的数量。通过这种方式，StmtGenerator根据提供的输入文件和当前数据库模式确定性地生成SQL语句。</li>
+</ul>
+<p>A generation example: </p>
+<p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115191036071.png" alt="image-20240115191036071"></p>
+<blockquote>
+<ol>
+<li><strong>确定语句类型</strong>：StmtGenerator首先需要确定要生成的SQL语句的类型。它从输入文件中读取一个字节，得到的值用于指导这一决策。在例子中，读取的值是5，这表明应该生成一个包含公用表表达式（CTE）的SELECT语句。</li>
+<li><strong>构造CTE</strong>：接着，StmtGenerator再次读取文件以确定如何构造CTE。在这个例子中，它读取的值是1，表明应使用CROSS JOIN来构造CTE。</li>
+<li><strong>决定使用的表</strong>：StmtGenerator需要进一步确定CROSS JOIN中使用的左表和右表。它读取文件并获得值3，决定使用现有的表或视图作为右表。由于有两个可用候选（即表t1和视图v1），StmtGenerator再次读取文件并获得值9。</li>
+<li><strong>选择候选</strong>：根据计算结果9 mod 2，StmtGenerator选择第二个候选（即视图v1）作为右表。</li>
+<li><strong>后续过程</strong>：生成剩余部分的SQL语句遵循类似的程序，根据从输入文件中读取的值来决定具体的SQL结构和元素。</li>
+</ol>
+</blockquote>
+<p>在动态查询交互方法中，调度器（Scheduler）如何检查每个向目标数据库管理系统（DBMS）发送的语句的执行状态。主要内容包括：</p>
+<blockquote>
+<ol>
+<li><strong>检查崩溃</strong>：调度器检查目标DBMS或其操作的数据库是否触发了崩溃。如果发生崩溃，它会报告此崩溃，包括触发崩溃的语句和之前交互过程中生成的语句。</li>
+<li><strong>检查错误</strong>：类似于SQLancer工具，调度器还会检查目标DBMS是否报告了任何错误。如果报告了错误，它会进一步检查，并在错误不是语法或语义错误时报告异常错误。例如，MonetDB中的“子查询结果丢失”就是一种异常错误，表明DBMS丢失了计算结果的数据。</li>
+<li><strong>报告可疑错误</strong>：这些检查使得动态查询交互能够报告可能使目标DBMS发出警报但不直接导致崩溃的可疑错误。</li>
+<li><strong>处理崩溃和错误</strong>：注意，如果触发了任何崩溃或错误，调度器将终止交互循环，因为这表示目标DBMS已进入问题状态。</li>
+</ol>
+<p>总的来说，这个过程是调度器监控和响应DBMS执行状态的机制，旨在及时捕捉并报告可能指示DBMS存在问题的崩溃和错误。</p>
+</blockquote>
+<p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115192252371.png" alt="image-20240115192252371"></p>
+<blockquote>
+<p>动态查询交互过程可以通过以下步骤来概括，这些步骤展示了如何生成恶意查询并检测到漏洞：</p>
+<ol>
+<li><strong>获取数据库模式</strong>：测试开始时，调度器首先查询目标数据库管理系统（DBMS，例如MariaDB）以获取其数据库模式。由于还没有处理任何语句，所以此时的模式为空。</li>
+<li><strong>生成第一个语句</strong>：调度器将空模式发送给翻译器。翻译器遍历其抽象语法树（AST）模型，并根据从文件中读取的值生成一个<code>CREATE TABLE</code>语句。</li>
+<li><strong>处理第一个语句</strong>：调度器将这个语句发送给DBMS，并收集代码覆盖率和语句处理的状态。由于没有发生崩溃或错误，调度器进入下一轮交互。</li>
+<li><strong>第二轮交互</strong>：在第二轮中，调度器再次查询DBMS以获得最新的模式，并将其发送给翻译器。由于已经执行了<code>CREATE TABLE</code>语句，模式中包含了一个新创建的表t1。翻译器移除已读部分的文件，然后使用剩余的文件内容生成新的语句，这次是一个引用表t1的<code>CREATE VIEW</code>语句。</li>
+<li><strong>处理第二个语句</strong>：生成的语句再次被发送给DBMS处理，由于执行正常，调度器进入第三轮交互。</li>
+<li><strong>第三轮交互</strong>：在第三轮中，调度器查询DBMS，获取包含两个列c2和c4的视图v1的最新模式。翻译器根据这个模式生成一个引用视图v1的带有CTE的<code>SELECT</code>语句。</li>
+<li><strong>检测漏洞</strong>：当调度器将生成的<code>SELECT</code>语句发送给DBMS时，触发了一个崩溃，因此调度器终止交互并报告了包含这3个生成语句的引发错误的查询。</li>
+</ol>
+</blockquote>
+<h4 id="3-2-Error-Feedback"><a href="#3-2-Error-Feedback" class="headerlink" title="3.2 Error Feedback"></a><strong>3.2 Error Feedback</strong></h4><p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115192701874.png" alt="image-20240115192701874"></p>
+<p>在动态查询交互方法中，输入文件对查询生成过程的控制作用，以及如何提高生成的SQL查询的有效性。主要内容如下：</p>
+<ol>
+<li><strong>输入文件的作用</strong>：输入文件控制着查询生成的过程。合适的文件可以指导生成复杂且有效的SQL查询，而无效的文件可能导致重复和简单的查询。因此，有状态的DBMS模糊测试需要产生有效的输入文件。</li>
+<li><strong>覆盖率引导的模糊测试器</strong>：对于一般文件的覆盖率引导模糊测试器似乎有助于实现这一目标，它们利用代码覆盖的程序反馈。在DBMS模糊测试中，当无效查询触发新的语法或语义错误时，代码覆盖确实会增加。现有的覆盖率引导模糊测试器将这些无效查询保存到种子池中，并用作种子进行变异，以生成其他类似的查询。然而，这些生成的查询很可能触发与种子查询相同的语法或语义错误，而不增加代码覆盖。</li>
+<li><strong>错误反馈的提议</strong>：为了解决这个问题并进一步提高生成查询的有效性，提出了错误反馈来过滤掉种子池中无效查询的输入文件。对于每个SQL查询的输入文件，检查该查询在执行期间是否增加了代码覆盖率。如果查询使DBMS在运行时覆盖新的分支，这些分支将被合并到全局覆盖中。对于增加覆盖率的每个SQL查询的输入文件，进一步检查该查询是否使目标DBMS异常执行。如果DBMS报告任何错误，输入文件将被丢弃，不用于种子变异。这种方法保证了所有识别的种子在用作动态查询交互的输入文件时可以产生有效的SQL查询。使用这些有效的种子，种子变异在模糊测试过程中生成有效查询的可能性很高。</li>
+</ol>
+<h3 id="Framework-and-Implementation"><a href="#Framework-and-Implementation" class="headerlink" title="Framework and Implementation"></a><strong>Framework and Implementation</strong></h3><p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115194059637.png" alt="image-20240115194059637"></p>
+<p>基于有状态的DBMS模糊测试方法开发的新模糊测试框架DynSQL，其目的是通过生成复杂且有效的查询来检测数据库管理系统（DBMS）中的深层次错误。DynSQL的架构包括六个模块：</p>
+<ol>
+<li><strong>代码仪器器（Code Instrumentor）</strong>：编译并对目标DBMS的代码进行仪器化处理，生成一个可执行程序，用于接收和处理SQL查询。</li>
+<li><strong>查询交互器（Query Interactor）</strong>：从文件模糊器接收输入文件，并执行动态查询交互以生成复杂且有效的查询。它还收集目标DBMS的必要运行时信息以进行动态分析。</li>
+<li><strong>语句生成器（Statement Generator）</strong>：使用内部的抽象语法树（AST）模型来生成在给定数据库模式中仅引用声明数据的语法正确的SQL语句。</li>
+<li><strong>运行时分析器（Runtime Analyzer）</strong>：分析收集到的运行时信息，根据错误反馈识别种子，并选择下一轮模糊测试的种子。</li>
+<li><strong>文件模糊器（File Fuzzer）</strong>：根据给定的种子执行常规的文件模糊测试以生成文件。这个模块主要参考了AFL（American Fuzzy Lop）的实现。</li>
+<li><strong>错误检测器（Bug Checker）</strong>：基于收集到的运行时信息检测错误，并生成相应的错误报告。</li>
+</ol>
+<ul>
+<li><strong>DBMS支持</strong>：DBMS通常为外部程序提供接口，用于操作和查询数据库。DynSQL利用这些接口来设置测试过程，需要启动DBMS、连接到DBMS、停止DBMS、发送SQL语句、获取语句处理结果和查询数据库模式的接口。由于DBMS通常为这些操作提供了明确定义的接口，因此用户可以方便地在不同的DBMS中使用DynSQL。作者团队有经验在不到一小时内使DynSQL支持一个新的DBMS。</li>
+<li><strong>SQL语句生成</strong>：基于AST的语句生成器参考了SQLsmith，并支持了一些SQL特性，例如GROUP BY、UNION等。因为许多DBMS使用自己的SQL方言，且它们SQL特性的公共核心较小，因此难以使用一个语法模板来有效测试所有DBMS。为了解决这个问题，作者固定了根据SQL标准支持的SQL特性的通用部分，并使其他部分可选。在测试特定DBMS时，根据其官方文档启用该DBMS支持的可选SQL特性。</li>
+<li><strong>错误检测</strong>：DynSQL使用ASan作为默认检测器来检测关键内存错误。此外，DynSQL分析动态查询交互中收集的异常错误来检测导致DBMS报告奇怪错误消息的错误。</li>
+<li><strong>查询简化</strong>：为了更方便地复现和定位DBMS错误，对触发新错误的每个生成的查询执行简化。简化过程主要参考APOLLO和C-Reduce。在某些情况下，开发人员会利用他们的专业知识进一步简化触发错误的查询。</li>
+</ul>
+<h3 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a><strong>Evaluation</strong></h3><p>对DynSQL模糊测试框架的有效性评估，目的是在真实世界和生产级别的数据库管理系统（DBMS）上测试其性能。评估主要旨在回答以下四个问题：</p>
+<ol>
+<li><strong>Q1：DynSQL是否能通过生成复杂且有效的查询来发现真实世界DBMS中的错误？</strong> 这个问题将在第5.2节中探讨。</li>
+<li><strong>Q2：DynSQL发现的错误对安全性有何影响？</strong> 这个问题将在第5.3节中讨论。</li>
+<li><strong>Q3：动态查询交互和错误反馈如何对DynSQL在DBMS模糊测试中的贡献？</strong> 这个问题将在第5.4节中分析。</li>
+<li><strong>Q4：DynSQL是否能胜过其他最先进的DBMS模糊测试器？</strong> 这个问题将在第5.5节中评估。</li>
+</ol>
+<h4 id="5-1-Experimental-Setup"><a href="#5-1-Experimental-Setup" class="headerlink" title="5.1 Experimental Setup"></a><strong>5.1 Experimental Setup</strong></h4><ul>
+<li>DBMSs:    SQLite [42], MySQL [29], MariaDB [27], PostgreSQL [31],MonetDB [28], and ClickHouse [9].</li>
+</ul>
+<h4 id="5-2-Runtime-Testing"><a href="#5-2-Runtime-Testing" class="headerlink" title="5.2  Runtime Testing"></a>5.2  <strong>Runtime Testing</strong></h4><p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115195227843.png" alt="image-20240115195227843"></p>
+<ol>
+<li><p><strong>生成的查询和语句</strong>：</p>
+<ul>
+<li>DynSQL生成了101K个SQL查询，其中79K个有效，有效率为**78%**。</li>
+<li>这些查询包含866K个SQL语句，其中838K个有效，有效率为**97%**。</li>
+<li>每个有效查询平均包含8.6个语句。</li>
+<li>无效语句通常因为使用复杂表达式而未通过验证检查。</li>
+</ul>
+</li>
+<li><p><strong>发现的错误</strong>：</p>
+<ul>
+<li>DynSQL发现了40个独特的错误，包括SQLite的4个，MySQL的12个，MariaDB的13个，MonetDB的5个，以及ClickHouse的6个。</li>
+<li>这些错误中，31个是内存错误，9个是导致DBMS报告奇怪错误的语义错误。</li>
+<li>这些错误已报告给相关开发者，其中38个被确认，21个已修复，19个被分配了CVE ID。</li>
+</ul>
+</li>
+<li><p><strong>触发错误的查询中的语句</strong>：</p>
+<ul>
+<li>触发错误的查询经过简化，其中只有2个错误可以通过一个语句触发，大多数错误需要2个或更多的语句。</li>
+</ul>
+</li>
+<li><p><strong>触发错误的查询大小</strong>：</p>
+<ul>
+<li>触发40个错误中的35个错误的查询大小 小于1000字节。</li>
+<li>查询大小从0增加到600字节时，触发错误的数量几乎线性增加。</li>
+</ul>
+<p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115200804604.png" alt="image-20240115200804604"></p>
+</li>
+<li><p><strong>触发错误的查询的有效性</strong>：</p>
+<ul>
+<li>所有触发21个已修复错误的查询都是有效的，没有语法或语义错误。</li>
+</ul>
+</li>
+<li><p><strong>触发错误的查询中的语句分布</strong>：</p>
+<ul>
+<li><code>CREATE TABLE</code> 和 <code>SELECT</code> 语句是这些查询中最常见的。</li>
+<li>大多数生成的查询包含<code>CREATE TABLE</code>语句，<code>SELECT</code>语句常用作最后一个语句，触发了80%的错误。</li>
+</ul>
+</li>
+</ol>
+<p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115200959730.png" alt="image-20240115200959730"></p>
+<p><em>with cte_0 as ( select subq_0.c4 as c6 from ( select ll as c4 from v1 as ref_0 ) as subq_0 cross join v1 as ref_2 ) select 1; 125个byte，复杂度直观来看和论文中给出的例子差不多长。</em></p>
+<h4 id="5-3-Security-Impact"><a href="#5-3-Security-Impact" class="headerlink" title="5.3 Security Impact"></a><strong>5.3 Security Impact</strong></h4><p>这段话讨论了DynSQL在数据库管理系统（DBMS）测试中发现的40个漏洞的安全影响，并提供了三个具体案例研究。</p>
+<ol>
+<li><strong>漏洞分类</strong>：<ul>
+<li>18个漏洞是空指针解引用，可能被利用进行拒绝服务（DoS）攻击。</li>
+<li>7个严重的内存漏洞，包括2个使用后释放漏洞、2个栈缓冲区溢出、2个堆缓冲区溢出和1个整数溢出漏洞，这些漏洞可能导致严重的安全问题，如提权和信息泄露。</li>
+<li>6个断言失败，表明目标DBMS达到意外状态。</li>
+<li>9个语义错误，由DynSQL通过分析异常错误报告发现。</li>
+<li>其中19个漏洞被分配了CVE ID。</li>
+</ul>
+</li>
+<li><strong>案例研究</strong>：<ul>
+<li><strong>案例1：MariaDB中的整数溢出</strong>（CVE-2021-46667）：这个漏洞允许攻击者在内存空间中随意写入和读取数据，可能导致数据篡改、提权和远程代码执行。DynSQL通过一个超过300K字节的SELECT语句触发这个漏洞。开发者通过使用<code>size_t</code>类型并插入断言来防止整数溢出来修复这个漏洞。</li>
+<li><strong>案例2：MariaDB中的使用后释放</strong>（CVE-2021-46669）：这个漏洞由错误使用回滚机制引起。当处理特定的DynSQL生成的查询时，服务器释放了更改的内容但忘记在列表中删除这些更改，导致释放的更改被再次引用。这个漏洞可以被利用来覆盖任意地址的数据。</li>
+<li><strong>案例3：MonetDB中的子查询结果丢失</strong>：这个漏洞是由于捕获动态查询交互中收集的异常错误而发现的。当触发此漏洞时，MonetDB服务器报告“子查询结果丢失”的错误消息。MonetDB开发者确认这是由错误的优化引起的，并通过修改与优化相关的代码来修复它。</li>
+</ul>
+</li>
+</ol>
+<p>总的来说，DynSQL能够有效地检测出多种类型的DBMS漏洞，包括严重的内存漏洞和语义错误，这些漏洞可能导致拒绝服务攻击、数据篡改、提权和远程代码执行等安全问题。</p>
+<p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115201258501.png" alt="image-20240115201258501"></p>
+<h4 id="5-4-Sensitivity-Analysis"><a href="#5-4-Sensitivity-Analysis" class="headerlink" title="5.4 Sensitivity Analysis"></a><strong>5.4 Sensitivity Analysis</strong></h4><p>这段话描述了为了理解<strong>动态查询交互</strong>和<strong>错误反馈</strong>在DynSQL中的贡献，进行了敏感性分析，包括禁用这些技术的不同配置（DynSQL!DQI、DynSQL!EF 和 DynSQL!DQI!EF）。主要内容如下：</p>
+<ol>
+<li><strong>查询和语句的有效性</strong>：<ul>
+<li>DynSQL!DQI!EF 生成的语句和查询的有效率分别只有62%和36%。启用错误反馈（DynSQL!DQI）后，这些比例分别提高到71%和55%。启用动态查询交互（DynSQL!EF）后，有效率显著提高到95%和68%。同时启用这两项技术（DynSQL）后，有效率进一步提高到97%和78%。</li>
+</ul>
+</li>
+<li><strong>运行时开销</strong>：<ul>
+<li>错误反馈的开销较小，仅在种子识别过程中增加了一些检查。动态查询交互可能会引入开销，因为它需要从目标DBMS查询数据库模式。然而，这种开销通常较小。</li>
+</ul>
+</li>
+<li><strong>代码覆盖率</strong>：<ul>
+<li>平均而言，DynSQL!DQI、DynSQL!EF 和 DynSQL 比 DynSQL!DQI!EF 分别覆盖了更多5%、10%和13%的代码分支。这表明动态查询交互和错误反馈可以帮助模糊测试器覆盖更多代码分支。</li>
+</ul>
+</li>
+<li><strong>错误检测</strong>：<ul>
+<li>DynSQL!DQI 通过启用错误反馈发现了DynSQL!DQI!EF未能发现的4个错误。然而，错误反馈不能提高查询复杂性。相比之下，动态查询交互利用DBMS状态信息提高查询复杂性和有效性，因此DynSQL!EF 发现了DynSQL!DQI!EF 未能发现的20个错误。而DynSQL通过进一步启用错误反馈在DynSQL!EF的基础上又发现了7个错误。</li>
+</ul>
+</li>
+</ol>
+<p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115201720257.png" alt="image-20240115201720257"></p>
+<h4 id="5-5-Comparison-to-Existing-DBMS-Fuzzers"><a href="#5-5-Comparison-to-Existing-DBMS-Fuzzers" class="headerlink" title="5.5 Comparison to Existing DBMS Fuzzers"></a><strong>5.5 Comparison to Existing DBMS Fuzzers</strong></h4><p><img src="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/image-20240115201900421.png" alt="image-20240115201900421"></p>
+<p><font color="cornflowerblue">为什么不比较SQLancer呢？不将DynSQL与SQLancer进行比较是因为它们设计用途不同：DynSQL旨在生成复杂查询以检测常见漏洞，特别是内存错误，而SQLancer主要聚焦于使用特定模式的测试用例来发现逻辑错误。</font></p>
+<p>这段话描述了DynSQL与两个最先进的数据库管理系统（DBMS）模糊测试器SQLsmith和SQUIRREL的比较研究。</p>
+<ol>
+<li><strong>生成的查询和语句</strong>：<ul>
+<li>SQLsmith生成的每个查询只包含一个语句，其有效语句和查询的比率均为98%，但不能生成包含多个语句的查询。</li>
+<li>SQUIRREL能生成包含多个语句的查询，每个查询平均包含5.1个语句，但其有效语句和查询的比率只有71%和23%。</li>
+<li>DynSQL生成的语句和查询的有效率分别高达97%和78%，每个查询平均包含8.7个语句，表明DynSQL能生成更多包含多个有效语句的查询。</li>
+</ul>
+</li>
+<li><strong>代码覆盖率</strong>：<ul>
+<li>DynSQL比SQLsmith和SQUIRREL分别覆盖了更多41%和166%的代码分支，表明DynSQL能更深入地覆盖DBMS代码的逻辑。</li>
+</ul>
+</li>
+<li><strong>错误检测</strong>：<ul>
+<li>DynSQL发现了SQLsmith和SQUIRREL都发现的所有错误，并额外发现了20个错误。这些错误通常需要包含至少三个复杂语句的查询才能触发，这对SQLsmith和SQUIRREL来说是一个挑战。</li>
+</ul>
+</li>
+<li><strong>查询复杂性</strong>：<ul>
+<li>SQUIRREL生成的查询虽包含多个语句，但相对简单。SQLsmith能生成较大、含有更多关键字和引用数据的查询，但限于每个查询只能生成一个语句。</li>
+<li>DynSQL不仅能生成SQLsmith和SQUIRREL能生成的所有触发错误的查询，还能生成包含多个复杂语句的查询。</li>
+</ul>
+</li>
+</ol>
+<h3 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h3><p>本文开发了一款实用的数据库管理系统（DBMS）模糊测试框架DynSQL，它能有效地生成复杂且有效的SQL查询以检测DBMS中的深层次漏洞。DynSQL整合了一种新颖的技术——动态查询交互，以捕获准确的DBMS状态信息并促进查询生成。此外，DynSQL使用错误反馈来进一步提高生成查询的有效性。DynSQL在6个广泛使用的DBMS上进行了评估，发现了40个独特的漏洞。与最先进的DBMS模糊测试器进行比较的结果表明，DynSQL在更高代码覆盖率下发现了更多的DBMS漏洞。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/">http://example.com/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/10/21/Detecting-Logical-Bugs-of-DBMS-with-Coverage-based-Guidance/" title="Detecting Logical Bugs of DBMS with Coverage-based Guidance"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Detecting Logical Bugs of DBMS with Coverage-based Guidance</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">74</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation"><span class="toc-number">1.</span> <span class="toc-text">DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E7%AE%80%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">论文简要 :</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BF%A1%E6%81%AF"><span class="toc-number">1.3.</span> <span class="toc-text">背景信息:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text">方法:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">1.5.</span> <span class="toc-text">结果:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%91%98%E8%A6%81%EF%BC%9A"><span class="toc-number">1.6.</span> <span class="toc-text">摘要：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#INTRODUCTION%EF%BC%9A"><span class="toc-number">1.7.</span> <span class="toc-text">INTRODUCTION：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Background-and-Motivation"><span class="toc-number">1.8.</span> <span class="toc-text">Background and Motivation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Stateful-DBMS-Fuzzing"><span class="toc-number">1.9.</span> <span class="toc-text">Stateful DBMS Fuzzing</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Dynamic-Query-Interaction"><span class="toc-number">1.9.1.</span> <span class="toc-text">3.1 Dynamic Query Interaction</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-Error-Feedback"><span class="toc-number">1.9.2.</span> <span class="toc-text">3.2 Error Feedback</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Framework-and-Implementation"><span class="toc-number">1.10.</span> <span class="toc-text">Framework and Implementation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Evaluation"><span class="toc-number">1.11.</span> <span class="toc-text">Evaluation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-Experimental-Setup"><span class="toc-number">1.11.1.</span> <span class="toc-text">5.1 Experimental Setup</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-Runtime-Testing"><span class="toc-number">1.11.2.</span> <span class="toc-text">5.2  Runtime Testing</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-Security-Impact"><span class="toc-number">1.11.3.</span> <span class="toc-text">5.3 Security Impact</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-Sensitivity-Analysis"><span class="toc-number">1.11.4.</span> <span class="toc-text">5.4 Sensitivity Analysis</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-5-Comparison-to-Existing-DBMS-Fuzzers"><span class="toc-number">1.11.5.</span> <span class="toc-text">5.5 Comparison to Existing DBMS Fuzzers</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Conclusion"><span class="toc-number">1.12.</span> <span class="toc-text">Conclusion</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/" title="DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation">DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation</a><time datetime="2024-01-15T12:34:42.000Z" title="发表于 2024-01-15 20:34:42">2024-01-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/21/Detecting-Logical-Bugs-of-DBMS-with-Coverage-based-Guidance/" title="Detecting Logical Bugs of DBMS with Coverage-based Guidance">Detecting Logical Bugs of DBMS with Coverage-based Guidance</a><time datetime="2023-10-21T11:38:31.000Z" title="发表于 2023-10-21 19:38:31">2023-10-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/21/Squirrel-Testing-Database-Management-Systems-withLanguage-Validity-and-Coverage-Feedback-%E5%AF%B9%E4%BA%8EDBMS%E7%9A%84%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%8A%80%E6%9C%AF%E4%BB%8B%E7%BB%8D/" title="Squirrel Testing Database Management Systems withLanguage Validity and Coverage Feedback--对于DBMS的模糊测试技术介绍">Squirrel Testing Database Management Systems withLanguage Validity and Coverage Feedback--对于DBMS的模糊测试技术介绍</a><time datetime="2023-10-21T11:00:32.000Z" title="发表于 2023-10-21 19:00:32">2023-10-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/27/LearnedSQLGen-Constraint-aware-SQL-Generation-using-Reinforcement-Learning/" title="LearnedSQLGen Constraint-aware SQL Generation using Reinforcement Learning">LearnedSQLGen Constraint-aware SQL Generation using Reinforcement Learning</a><time datetime="2023-09-27T07:05:56.000Z" title="发表于 2023-09-27 15:05:56">2023-09-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/18/Griffin-Grammar-Free-DBMS-Fuzzing/" title="Griffin Grammar-Free DBMS Fuzzing">Griffin Grammar-Free DBMS Fuzzing</a><time datetime="2023-08-18T07:28:26.000Z" title="发表于 2023-08-18 15:28:26">2023-08-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
