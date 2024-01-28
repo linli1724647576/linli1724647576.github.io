@@ -1,0 +1,476 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Detecting Logic Bugs of Join Optimizations in DBMS | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Detecting Logic Bugs of Join Optimizations in DBMSBasic Information: Title: Detecting Logic Bugs of Join Optimizations in DBMS (在DBMS中检测连接优化的逻辑错误) Authors: XIU TANG, SAI WU, DONGXIANG ZHANG, FEIFEI LI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Detecting Logic Bugs of Join Optimizations in DBMS">
+<meta property="og:url" content="http://example.com/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Detecting Logic Bugs of Join Optimizations in DBMSBasic Information: Title: Detecting Logic Bugs of Join Optimizations in DBMS (在DBMS中检测连接优化的逻辑错误) Authors: XIU TANG, SAI WU, DONGXIANG ZHANG, FEIFEI LI">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-01-28T05:53:29.000Z">
+<meta property="article:modified_time" content="2024-01-28T05:55:16.505Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Detecting Logic Bugs of Join Optimizations in DBMS',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-01-28 13:55:16'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Detecting Logic Bugs of Join Optimizations in DBMS</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-01-28T05:53:29.000Z" title="发表于 2024-01-28 13:53:29">2024-01-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-01-28T05:55:16.505Z" title="更新于 2024-01-28 13:55:16">2024-01-28</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Detecting Logic Bugs of Join Optimizations in DBMS"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS"><a href="#Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS" class="headerlink" title="Detecting Logic Bugs of Join Optimizations in DBMS"></a>Detecting Logic Bugs of Join Optimizations in DBMS</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: Detecting Logic Bugs of Join Optimizations in DBMS (在DBMS中检测连接优化的逻辑错误)</li>
+<li>Authors: XIU TANG, SAI WU, DONGXIANG ZHANG, FEIFEI LI, GANG CHEN</li>
+<li>Affiliation: Zhejiang University, China (中国浙江大学)</li>
+<li>Keywords: Database, logic bug, join optimization</li>
+<li>URLs: <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3588909">Paper</a> , [GitHub: None]</li>
+</ul>
+<h3 id="论文简要"><a href="#论文简要" class="headerlink" title="论文简要 :"></a>论文简要 :</h3><ul>
+<li>本文提出了一种新的测试框架TQS，用于检测涉及多表连接的查询中的逻辑错误。通过数据引导的模式和查询生成以及知识引导的查询空间探索，TQS在四个流行的DBMS上成功检测到了115个连接优化的逻辑错误。</li>
+</ul>
+<h3 id="背景信息"><a href="#背景信息" class="headerlink" title="背景信息:"></a>背景信息:</h3><ul>
+<li>论文背景: 过去的研究表明，基于生成的测试技术在检测DBMS的逻辑错误方面具有有效性，而这些错误通常是由查询优化器的不当实现引起的。然而，现有的基于生成的调试工具仅限于单表查询，对于涉及连接操作符的多表查询存在重大的研究空白。</li>
+<li>过去方案: 过去的方法主要集中在单表查询的选择性查询上，而对于涉及不同连接算法和连接结构的多表查询，仍存在较大的研究空白。</li>
+<li>论文的Motivation: 本文的动机是填补多表连接查询中的逻辑错误检测的研究空白，提出了一种新的测试框架TQS，以解决这一问题。通过数据引导的模式和查询生成以及知识引导的查询空间探索，TQS能够有效地检测到数据库管理系统中连接优化的逻辑错误。</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 理论背景:<ul>
+<li>本文提出了一种名为TQS的新型测试框架，用于检测DBMS中连接优化中的逻辑错误。现有的基于生成的调试工具仅适用于单表查询，对于带有连接操作符的多表查询存在研究空白。作者提出的TQS框架由两个关键组件组成：数据引导的模式和查询生成（DSG）和知识引导的查询空间探索（KQE）。TQS在四个流行的DBMS上进行了评估，并成功检测到连接优化中的逻辑错误。</li>
+</ul>
+</li>
+<li>b. 技术路线:<ul>
+<li>DSG将输入数据集视为一个宽表，并使用容易出错的值合成元组。然后，它根据函数依赖关系将宽表拆分为具有正常形式保证的多个表的新模式。DSG将数据库模式建模为图，并通过对模式图上的随机游走生成逻辑&#x2F;概念查询。</li>
+<li>KQE将模式图扩展为计划迭代图，并为查询图的嵌入构建基于嵌入的图索引。它根据生成的查询图与现有查询图的结构相似性对其进行评分，并应用自适应随机游走方法进行生成。</li>
+<li>TQS通过使用不同的提示来转换查询，使DBMS能够执行多个物理计划。将转换后的查询的结果集与基准结果进行比较，以检测连接优化错误。</li>
+</ul>
+</li>
+</ul>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果:"></a>结果:</h3><ul>
+<li>a. 详细的实验设置:<ul>
+<li>本文未提供关于实验设置的具体信息。</li>
+</ul>
+</li>
+<li>b. 详细的实验结果:<ul>
+<li>本文未提供关于实验结果的具体信息。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Note"><a href="#Note" class="headerlink" title="Note:"></a>Note:</h3><ul>
+<li>本总结源自于LLM的总结，请注意数据判别. Power by ChatPaper. End.</li>
+</ul>
+<h3 id="Abstract："><a href="#Abstract：" class="headerlink" title="Abstract："></a>Abstract：</h3><p>本文中，我们提出了一种名为 TQS 的新型测试框架，专注于检测涉及多表连接查询的逻辑错误。针对目标数据库管理系统（DBMS），TQS  通过两个关键组件实现此目标：数据引导的架构与查询生成 Data-guided Schema and Query Generation（DSG）和知识引导的查询空间探索 Knowledge-guided Query Space Exploration（KQE）。DSG  解决了多表查询调试的主要挑战：如何生成用于验证的基准（查询，结果）对。它采用数据库规范化技术生成测试架构，并维护位图索引以跟踪结果。为提高调试效率，DSG 还人为地在生成的数据中插入一些噪声。为避免重复的查询空间搜索，KQE  将问题形式化为同构图集合的发现，并结合图嵌入和加权随机游走进行查询生成。我们在四个流行的数据库管理系统上评估了  TQS：MySQL、MariaDB、TiDB 和 PolarDB。实验结果显示，TQS 在检测数据库管理系统的连接优化逻辑错误方面是有效的。它在 24 小时内成功检测到 115 个错误，包括 MySQL 中的 31 个错误，MariaDB 中的 30 个，TiDB 中的 31 个，以及  PolarDB 中的 23 个错误。</p>
+<h3 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a><strong>INTRODUCTION</strong></h3><p><strong>背景</strong></p>
+<p>现代数据库管理系统（DBMS）的演变，特别强调了它们对于支持云平台和混合事务&#x2F;分析处理（HTAP）等新架构的能力。在这种背景下，查询优化器的作用变得尤为关键。查询优化器是 DBMS 中最复杂和重要的组件之一，它解析输入的 SQL 查询，并借助内置的成本模型生成高效的执行计划。然而，查询优化器的实现错误可能导致包括崩溃和逻辑错误在内的多种问题。崩溃相对容易检测，因为它会导致系统立即停止运行。相比之下，逻辑错误更容易被忽视，因为它们仅仅导致 DBMS 返回错误的结果集，这些错误结果集很难被察觉。本文的重点是检测这些不易察觉的逻辑错误。</p>
+<blockquote>
+<p>查询计划是数据库管理系统（DBMS）执行 SQL 查询时所采用的一系列操作步骤。当数据库接收到一个查询请求时，它不会直接执行这个查询。相反，数据库的查询优化器会首先分析这个查询，并创建一个或多个潜在的执行策略，这些策略被称为查询计划。</p>
+<p>查询计划包含了许多详细的信息，如：</p>
+<ol>
+<li><strong>使用哪些索引</strong>：确定是否使用索引来加快数据检索速度。</li>
+<li><strong>数据的检索顺序</strong>：决定访问表的顺序，特别是在涉及多个表的查询中。</li>
+<li><strong>连接的类型和顺序</strong>：在涉及多表的查询中，决定使用哪种类型的连接（如内连接、外连接等）以及连接的顺序。</li>
+<li><strong>数据处理方式</strong>：如何处理和聚合数据（例如，排序、分组）。</li>
+<li><strong>数据从一个操作到另一个操作的传递方式</strong>：例如，使用嵌套循环、哈希连接等。</li>
+</ol>
+<p>数据库通过比较不同查询计划的预计成本来选择最优的计划。这种成本基于多种因素，如数据大小、索引的存在、硬件能力等。最终的目标是以最小的资源消耗（如时间和内存）来执行查询。查询计划的选择可能会因数据库的不同、数据的改变、甚至是数据库版本的不同而有所变化。</p>
+</blockquote>
+<p><strong>相关工作以及局限性</strong></p>
+<p>Pivoted Query Synthesis (PQS)，这是一种用于检测数据库管理系统中逻辑错误的方法。PQS 的主要思想是从表中选择一个枢轴行，并生成查询以获取该行作为结果。如果任何合成查询没有返回枢轴行，则检测到逻辑错误。PQS 主要设计用于支持单表中的选择查询，其报告的错误中有 90% 涉及仅一个表的查询。然而，在涉及不同连接算法和连接结构的多表查询方面，仍存在相当大的研究空白，这些查询比单表查询更容易出错。</p>
+<p><font color="green">为什么相关工作只选择PQS呢？和其他逻辑错误的检测方法有什么本质区别？</font></p>
+<p><img src="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/image-20240126204939742.png" alt="image-20240126204939742"></p>
+<p>图 1 展示了 MySQL 对于连接查询的两个逻辑错误，这两个错误可以通过本文提出的工具检测到。图 1(a) 展示了 MySQL 8.0.18 版本中哈希连接的逻辑错误。在这个例子中，第一个查询使用块嵌套循环连接返回正确的结果集。然而，当发出第二个查询并使用内部哈希连接时，返回了错误的空结果集。这是因为底层的哈希连接算法断言“0”和“-0”不相等。在图 1(b) 中，逻辑错误是由 MySQL 最新版本（8.0.28）的半连接处理引起的。第一个查询中，嵌套循环内连接将数据类型 varchar 转换为 bigint 并产生正确的结果集。但当执行第二个查询并使用哈希半连接时，数据类型 varchar 被转换为 double，导致数据精度丢失和不正确的等价比较。</p>
+<p><strong>挑战</strong></p>
+<p>在采用查询合成技术来检测多表连接查询中的逻辑错误时，相较于单表选择查询，面临着两个独特的挑战：</p>
+<ol>
+<li><strong>结果验证</strong>：先前的方法采用差异性测试策略来验证查询结果的正确性。这种方法通过使用不同的物理计划来处理同一个查询。如果不同的计划返回了不一致的结果集，则可能检测到逻辑错误。然而，差异性测试的缺点是双重的：首先，一些逻辑错误影响多个物理计划，使它们都产生相同的错误结果<font color="red">（结果相同不一定都正确）</font>；其次，当观察到不一致的结果集时，我们需要手动检查哪个计划产生了正确的结果，这会带来高昂的开销<font color="red">（结果不同不能确定哪个不对）</font>。对于上述问题，一个可能的解决方案是获取任意测试查询的真实结果，但现有工具不支持这一点。</li>
+<li><strong>搜索空间</strong>：从给定的数据库架构生成的连接查询数量是指数级的，与表和列的数量成指数关系。由于我们无法枚举所有可能的查询进行验证，因此需要一个有效的查询空间探索机制，以尽可能高效地检测逻辑错误。</li>
+</ol>
+<p><font color="green">真的需要两两验证连接方面的逻辑错误吗？能找全吗？</font></p>
+<p><strong>方法</strong></p>
+<p>为了解决上述两个挑战，作者提出了一种名为 Transformed Query Synthesis (TQS) 的新工具。TQS 旨在检测数据库管理系统中连接优化的逻辑错误，它是一个新颖的、通用的、性价比高的工具。作者采取了以下两种方法来解决这些挑战：</p>
+<ol>
+<li><strong>应对结果验证的挑战：DSG 方法</strong><ul>
+<li>DSG（Data-guided Schema and query Generation）方法是为了解决结果验证的挑战而提出的。给定一个被认为是宽表的数据集，DSG 根据检测到的规范形式将数据集分割成多个表。</li>
+<li>为了加快发现错误的过程，DSG 在生成的数据库中插入一些人工噪声数据。</li>
+<li>DSG 将数据库架构转换为图，图中的节点代表表&#x2F;列，边代表节点之间的关系。</li>
+<li>DSG 采用在架构图上的随机游走来选择用于查询的表，并使用这些表来生成连接表达式。</li>
+<li>对于跨多个表的特定连接查询，我们可以从宽表中轻松识别其真实结果。通过这种方式，DSG 能够有效地生成用于数据库验证的（查询，结果）对。</li>
+</ul>
+</li>
+<li><strong>应对搜索空间挑战的 KQE 方法</strong><ul>
+<li>针对搜索空间的挑战，作者设计了 KQE（Knowledge-guided Query space Exploration）方法。</li>
+<li>KQE 首先将架构图扩展到计划迭代图，表示整个查询空间。每个连接查询随后被表示为一个子图。</li>
+<li>KQE 采用基于嵌入的图索引，通过搜索已探索空间中是否存在结构类似的查询图，来对生成的查询图进行评分。</li>
+<li>覆盖评分数指导随机游走生成器尽可能多地探索未知的查询空间。</li>
+</ul>
+</li>
+</ol>
+<p>通过这两种方法，TQS 框架能够有效地生成用于验证的查询和结果对，并且能够通过知识引导的方法高效地探索复杂的查询空间，以便发现可能存在的逻辑错误。</p>
+<p><strong>评估</strong></p>
+<p>为了证明其方法的普适性和有效性，研究者们在四种流行的数据库管理系统上评估了 TQS，这些系统包括 MySQL、MariaDB、TiDB 和 PolarDB。在持续运行了 24 小时后，TQS 成功地发现了 115 个错误，其中包括在 MySQL 中发现的 31 个错误，在 MariaDB 中的 30 个，在 TiDB 中的 31 个，以及在 PolarDB 中的 23 个。通过根本原因分析，分别在 MySQL 发现了 7 类错误，在 MariaDB 中发现了 5 类，在 TiDB 中发现了 5 类，在 PolarDB 中发现了 3 类。所有检测到的错误都已提交给各自的开发社区，并且收到了积极的反馈。</p>
+<h3 id="OVERVIEW"><a href="#OVERVIEW" class="headerlink" title="OVERVIEW"></a><strong>OVERVIEW</strong></h3><h4 id="2-1-Problem-Definition"><a href="#2-1-Problem-Definition" class="headerlink" title="2.1 Problem Definition"></a><strong>2.1 Problem Definition</strong></h4><p>本文聚焦于检测由查询优化器引入的多表连接查询中的逻辑错误，特别是称之为连接优化错误的那些错误。使用表 1 中列出的符号，连接优化错误检测被正式定义如下：</p>
+<p><strong>定义 2.1：</strong> 对于查询工作负载 Q 中的每个查询 q_i，我们让查询优化器执行 q_i 的多个物理计划的连接，并验证其结果集 S_qi 与其真实结果 GT_qi。如果 S_qi 不等于 GT_qi，我们就发现了一个连接优化错误。  </p>
+<h4 id="2-2-Scheme-Overview"><a href="#2-2-Scheme-Overview" class="headerlink" title="2.2 Scheme Overview"></a><strong>2.2 Scheme Overview</strong></h4><p><img src="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/image-20240127104801186.png" alt="image-20240127104801186"></p>
+<p>在给定一个基准数据集和目标数据库管理系统 (DBMS) 的情况下，TQS 通过对数据集发起查询来搜索 DBMS 可能存在的逻辑错误。TQS 依靠两个关键组件实现其目标：数据引导的架构与查询生成（DSG）和知识引导的查询空间探索（KQE）。</p>
+<ol>
+<li><strong>DSG</strong> 从将输入的数据集视为一个宽表开始，除了原始元组，DSG 还故意合成一些带有容易出错值的元组（如 null 值或非常长的字符串）。针对连接查询，DSG 通过基于功能依赖保证正常形式的拆分，为宽表制定了一个新的架构。DSG 将数据库架构建模为图，并通过在架构图上进行随机游走来生成逻辑&#x2F;概念查询。DSG 将逻辑查询具体化为物理计划，并转换查询，以便 DBMS 执行多个不同的物理计划以搜索错误。通过将连接图映射回宽表，可以识别连接的真实结果。</li>
+<li><strong>KQE</strong> 在架构和数据拆分完成后，KQE 将架构图扩展为计划迭代图。每个查询被表示为子图。KQE 构建了一个基于嵌入的图索引，用于索引历史中查询图的嵌入（即已探索的查询空间）。KQE 的直觉是确保新生成的查询图尽可能远离历史中的最近邻，换句话说，是为了探索新的查询图，而不是重复已有的。KQE 通过根据生成的查询图与历史查询图的结构相似性评分，并应用自适应随机游走方法进行生成来实现其效果。</li>
+</ol>
+<h3 id="DATA-GUIDED-SCHEMA-AND-QUERY-GENERATION-DSG"><a href="#DATA-GUIDED-SCHEMA-AND-QUERY-GENERATION-DSG" class="headerlink" title="DATA-GUIDED SCHEMA AND QUERY GENERATION (DSG)"></a><strong>DATA-GUIDED SCHEMA AND QUERY GENERATION (DSG)</strong></h3><p>SQLancer  是一个自动化工具，用于发现数据库管理系统（DBMS）实现中的逻辑错误。它首先创建一个包含随机生成表的填充数据库。然后，它随机选择 SQL  语句来创建、修改和删除数据。在基于随机生成的数据库上，它采用了如 Pivoted Query Synthesis (PQS)  等测试方法来检测逻辑错误。需要注意的是，SQLancer  主要设计用来检测单表查询的逻辑错误。虽然可以通过修改其数据和查询生成器直接将其扩展到多表查询，但在这种情况下会忽略许多错误。有关详细信息，请参阅实验部分。</p>
+<p>为了支持多表连接查询中的逻辑错误检测，执行了以下步骤：</p>
+<ol>
+<li><strong>生成测试数据库</strong>：创建一个宽表作为测试数据库的起点。</li>
+<li><strong>应用模式规范化</strong>：利用模式规范化技术将这个宽表拆分成多个遵循正规形式的表，从而构建出一组规范化的表。</li>
+<li><strong>注入噪声数据</strong>：提出并实施一种有效的噪声注入技术，这样做是为了增加数据库状态不一致，从而提高检测逻辑错误的可能性。</li>
+<li><strong>生成连接查询</strong>：通过在模式图上执行随机游走来生成连接查询，这些查询随后被构建为抽象语法树。</li>
+<li><strong>检索真实结果集</strong>：对于生成的每个查询，高效地获取其真实结果集，借助提出的位图索引来辅助这一过程。</li>
+</ol>
+<h4 id="3-1-Schema-Normalization"><a href="#3-1-Schema-Normalization" class="headerlink" title="3.1 Schema Normalization"></a><strong>3.1 Schema Normalization</strong></h4><p>模式规范化的过程可以概括为以下几个步骤：</p>
+<ol>
+<li><strong>生成测试数据库的宽表 𝑇𝑤</strong>：这可以通过使用真实数据集（如 UCI 机器学习仓库中的 KDD Cup 数据集）或随机数据库生成器（如 TPC-H 生成器）来完成。在后者的情况下，从事实表（如 lineitem）中选择无偏随机样本，并应用主-外键连接将其与维度表合并以产生宽表。</li>
+<li><strong>应用模式规范化技术</strong>：使用已有的函数依赖（FD）发现算法（例如 TANE 和 HYFD）和模式规范化方法，将宽表 𝑇𝑤 转换为第三范式（3NF）。这些方法是数据驱动的，用于生成测试数据库的模式。</li>
+<li><strong>维护主键和外键关系</strong>：在拆分宽表 𝑇𝑤 的过程中，为所有生成的表维护一个显式的主键 𝑅𝑜𝑤𝐼𝐷，以便恢复真实结果。同时，也维护隐含的主键和外键关系的元数据。</li>
+<li><strong>构建 RowID 映射表</strong>：创建一个 RowID 映射表 𝑇𝑅𝑜𝑤𝐼𝐷𝑀𝑎𝑝，定义了映射关系 [𝑅𝑜𝑤𝐼𝐷,𝑇𝑖, 𝑟𝑜𝑤𝑗]。这个映射关系是宽表 𝑇𝑤 中的行列表，它们被拆分以创建表 𝑇𝑖 的 𝑟𝑜𝑤𝑗th 行。</li>
+<li><strong>建立连接位图索引</strong>：基于 RowID 映射表，构建一个连接位图索引，用于加速检索真实结果。位图索引包含 𝑘 个大小为 𝑛 的位数组，其中 𝑘 和 𝑛 分别是模式表的数量和数据行的数量。每行被分配了一个独特的 𝑅𝑜𝑤𝐼𝐷。对于值为 𝑇𝑗 的位数组，如果宽表 𝑇𝑤 的第𝑖条记录产生了表 𝑇𝑗 中的某些行，则第𝑖位设置为“1”，否则设置为“0”。如果表太大并导致位图稀疏，将应用 RLE（游程编码）基技术，如 WAH 编码，来压缩连续的“0”或“1”序列。</li>
+</ol>
+<p><font color="blue"><em>Example 3.1.</em></font></p>
+<p><img src="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/image-20240128100150160.png" alt="image-20240128100150160"></p>
+<p>这个例子展示了如何使用函数依赖（FD）发现算法来对一个宽表进行规范化处理并分解成多个表：</p>
+<ol>
+<li><strong>FD 发现</strong>：算法识别了四个有效的函数依赖关系（FDs）：<ul>
+<li>{orderId, goodsId, userId} → {goodsName, userName, price}</li>
+<li>{goodsId} → {goodsName, price}</li>
+<li>{goodsName} → {price}</li>
+<li>{userId} → {userName}</li>
+</ul>
+</li>
+<li><strong>表分解</strong>：利用上述函数依赖关系，宽表 𝑇𝑤 被自动分解为四个表格结构，每个表格都包含了隐含的主键：<ul>
+<li><strong>表 T1</strong>：包含 RowID, orderId, goodsId, userId（隐含主键是 {orderId, goodsId, userId}）</li>
+<li><strong>表 T2</strong>：包含 RowID, userId, userName（隐含主键是 {userId}）</li>
+<li><strong>表 T3</strong>：包含 RowID, goodsId, goodsName（隐含主键是 {goodsId}）</li>
+<li><strong>表 T4</strong>：包含 RowID, goodsName, price（隐含主键是 {goodsName}）</li>
+</ul>
+</li>
+<li><strong>隐含的外键映射</strong>：确定了表格间的隐含外键关系，例如：<ul>
+<li>表 T1 的 userId 对应表 T2 的 userId</li>
+<li>表 T1 的 goodsId 对应表 T3 的 goodsId</li>
+<li>表 T3 的 goodsName 对应表 T4 的 goodsName</li>
+</ul>
+</li>
+</ol>
+<p>这些关系帮助维护了不同表格之间的数据一致性和关联性。</p>
+<ol>
+<li><strong>显式的 RowID</strong>：每个表中都创建了显式的 RowID 列，以便可以追踪回原始的宽表行。</li>
+<li><strong>噪声注入</strong>：在分解过程中，某些行被故意注入了噪声数据（如图中的红色箭头所示），这有助于在测试中揭示逻辑错误。例如，goodsId 从 ‘1111’ 变为 ‘1111→noise’，表明这个值被故意改变以测试系统的响应。</li>
+</ol>
+<p>通过这样的分解和噪声注入，可以构建一个用于测试数据库管理系统逻辑错误检测的环境，特别是在处理复杂的多表连接查询时。</p>
+<p><font color="blue"><em>Example 3.2.</em></font></p>
+<p>这个例子展示了如何使用 RowID 映射表和连接位图索引来跟踪和检索多表连接查询的真实结果：</p>
+<ol>
+<li>**RowID 映射表 (𝑇𝑅𝑜𝑤𝐼𝐷𝑀𝑎𝑝)**：这张表记录了如何从宽表 𝑇𝑤 的一行分割到多个规范化表中的对应行。例如，RowID 映射表中的 RowID 5 表示宽表 𝑇𝑤 中的 RowID 5 被分割成四个不同表（𝑇1, 𝑇2, 𝑇3, 𝑇4）中的 RowID 5, 1, 2 和 2。这样，就可以追溯原始宽表中的每行数据是如何分布在各个规范化表中的。</li>
+<li>**连接位图索引 (Join Bitmap Index)**：位图索引用来快速检索由宽表分割出来的行在各个规范化表中的存在性。例如，位图索引中的 RowID 0 表示宽表 𝑇𝑤 中的 RowID 0 分割到了表 𝑇1, 𝑇3 和 𝑇4，而在表 𝑇2 中没有对应的行。位图中的 “1” 表示存在性，”0” 表示不存在。</li>
+<li><strong>噪声注入的数据更新</strong>：颜色标记的数据表示在噪声注入后的数据更新。在 RowID 映射表中，红色标记的数据（如 0→null）表示原始数据在噪声注入过程中被修改或置为 null。在连接位图索引中，红色标记的 “1→0” 变更表示原始数据在噪声注入后不再对应于特定的表，即宽表中的这些记录不再产生在某个规范化表中的行。</li>
+</ol>
+<p>通过这种机制，可以在执行连接查询时快速准确地确定哪些行应该被检索，从而有效地验证查询结果的正确性。</p>
+<p><img src="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/image-20240128134714035.png" alt="image-20240128134714035"></p>
+<h4 id="3-2-Noise-Injection"><a href="#3-2-Noise-Injection" class="headerlink" title="3.2 Noise Injection"></a><strong>3.2 Noise Injection</strong></h4><p>噪声数据注入的过程包括以下步骤：</p>
+<ol>
+<li><strong>数据清理</strong>：首先对生成的数据库进行数据清理，移除可能导致无法追踪连接结果的噪声数据，例如在主键和外键上的 null 和边界值。</li>
+<li><strong>有目的的噪声注入</strong>：为了促进逻辑错误的检测，故意在数据库中插入噪声数据来违反函数依赖（FD）和主-外键关系。这些注入的噪声可以产生可追踪的连接结果。</li>
+<li><strong>选择噪声值</strong>：通过将原始值替换为边界值（例如，对于整数值使用 65535，对于 char(10) 类型使用 ‘ZZZZZZZZZZ’）和 NULL 值，来损坏一小部分（𝜖）的主-外键关系。</li>
+<li><strong>随机选择替换</strong>：对于每个主键和外键列，随机选择 𝜖 个元组执行值替换。</li>
+<li><strong>保持相同架构</strong>：注入噪声后的数据库 𝐷𝑠 保持与原始数据库相同的架构 𝑆。</li>
+<li><strong>维护独特性和结果准确性</strong>：注入噪声时保证噪声值是独特的，且不会违反正常数据的真实结果。</li>
+<li><strong>更新宽表 𝑇𝑤</strong>：由于噪声注入违反了生成表和原始宽表之间的一致性，所以需要根据注入的噪声更新宽表，使得宽表和带噪声的数据库保持一致。</li>
+<li><strong>处理 RowID 映射表</strong>：在宽表更新后，还需要调整 RowID 映射表，确保映射关系反映了带噪声的数据库状态。</li>
+<li><strong>对位图索引进行更新</strong>：最后，如果宽表中不能通过其 RowID 找到数据，则在连接位图索引中将相应的数据设置为 0。</li>
+</ol>
+<p>Example 3.1的例子说明是如何注入噪声的：</p>
+<ol>
+<li><strong>选择目标列</strong>：确定要在哪些主键或外键列注入噪声。</li>
+<li><strong>注入边界值和 NULL</strong>：在宽表 𝑇𝑤 中，选择了某些记录的 <code>goodsId</code> 和 <code>price</code> 字段，将它们的值替换为边界值或 NULL。例如，<code>goodsId</code> 的值从 ‘1111’ 改变为 ‘1111→noise’，表示这是一个边界值噪声；而某些记录的 <code>price</code> 被置为 NULL。</li>
+<li><strong>保持唯一性和追踪性</strong>：注入的噪声值是独特的，不会与宽表 𝑇𝑤 中的其他任何值冲突，确保可以追踪到哪些记录被注入了噪声。</li>
+<li><strong>更新规范化表</strong>：对应的规范化表也进行更新以反映噪声注入。例如，表 T1 的 <code>goodsId</code> 和 <code>price</code> 字段显示为 ‘1111→noise’ 和 ‘15→null’，表 T2 的 <code>userId</code> 字段显示为 ‘str1→noise’。</li>
+<li><strong>同步宽表</strong>：在注入噪声后，更新宽表 𝑇𝑤 以保持与注入噪声后的数据库状态一致。在宽表中，注入噪声的字段对应的行现在包含了噪声值和 NULL 值，确保这些变更与规范化表中的相应变更同步。</li>
+</ol>
+<h4 id="3-3-Join-Query-Generator"><a href="#3-3-Join-Query-Generator" class="headerlink" title="3.3 Join Query Generator"></a><strong>3.3 Join Query Generator</strong></h4><p>生成连接查询的过程包含以下几个步骤：</p>
+<ol>
+<li>**生成抽象语法树 (AST)**：DSG 生成抽象语法树（AST），直到指定的最大深度，以获取语法正确的 SQL 查询的框架。AST 是表示 select SQL 语句的对象树。</li>
+<li><strong>使用模式图</strong>：将生成的数据库模式表示为模式图 𝐺𝑠 &#x3D; (𝑉,𝐸)，其中节点𝑣𝑖 ∈ 𝑉，边 (𝑣𝑖, 𝑣𝑗) ∈ 𝐸。节点分为两种类型：表节点 𝑉𝑡 和列节点 𝑉𝑥。表-表之间的边表示两个表可以通过主-外键关系连接，而表-列之间的边表示特定的列属于某个表。</li>
+<li><strong>随机游走选择表</strong>：DSG 在模式图 𝐺𝑠 上进行随机游走来选择查询的表，并使用这些表生成连接表达式。这是一个随机过程，从一个表节点 𝑣𝑖 ∈ 𝑉𝑡 开始，通过随机变量 (𝑊𝑣1𝑖, 𝑊𝑣2𝑖, …, 𝑊𝑣𝑘𝑖) 在邻居中随机选择边。</li>
+<li><strong>生成连接关系和筛选条件</strong>：如果随机游走选择了表-表之间的边，将得到一个连接关系并移动到新的表节点；如果选择了表-列之间的边，将在该列上生成随机筛选条件（选择条件），然后从前一个表节点继续游走。</li>
+<li><strong>构建其他表达式</strong>：基于连接子句，随机生成其他表达式，这类似于 RAGS 和 SQLSmith 的实现。支持在 where 子句的 IN&#x2F;Exist 表达式中使用子查询。</li>
+<li><strong>从 AST 转换为 SQL 语句</strong>：最后，将 AST 转换回 SQL 语句完成查询生成。</li>
+</ol>
+<p><img src="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/image-20240128103403309.png" alt="image-20240128103403309"></p>
+<p><font color="blue"><em>Example 3.4.</em></font></p>
+<p>在这个例子中，我们可以看到如何生成连接查询的过程：</p>
+<ol>
+<li><strong>选择语句根节点</strong>：抽象语法树（AST）的根节点是 <code>selectstmt</code>（节点 1），代表了一个选择（SELECT）SQL 语句。</li>
+<li><strong>构建 SELECT 子句</strong>：<code>selectclause</code>（节点 2）定义了查询中需要选择的字段，例如 <code>T1.userId</code>。</li>
+<li><strong>构建 FROM 子句</strong>：<code>fromclause</code>（节点 3）包含了参与连接的表，即 <code>T1</code>，<code>T3</code>，和 <code>T4</code>。</li>
+<li><strong>定义 WHERE 子句</strong>：<code>whereclause</code>（节点 4）定义了查询中的条件，可能包括对列的约束和对其他表的连接条件。</li>
+<li><strong>生成连接表达式</strong>：<code>joinexpr</code>（节点 5）表示连接操作本身，这里使用了 <code>goodsId</code> 和 <code>goodsName</code> 列作为连接条件。</li>
+<li><strong>包含 EXISTS 表达式</strong>：<code>existsexpr</code>（节点 6）可能用于子查询，检查子查询中是否存在行。</li>
+<li><strong>随机化其他子句</strong>：<code>selectclause</code> 和 <code>whereclause</code>（节点 2 和 7）针对来自 <code>fromclause</code> 的表以及随机游走结果（即列及其类型）随机构造。</li>
+<li><strong>支持聚合操作</strong>：<code>groupbyclause</code>（节点 8）允许使用聚合函数，如 COUNT、SUM 等。</li>
+</ol>
+<p>最后，AST 被转换回 SQL 语句，形成完整的查询。这个过程通过随机游走在模式图上选择参与查询的表和列，并构建出逻辑上正确的查询结构。在这个过程中，可以选择不同类型的连接（如内连接、外连接、交叉连接、半连接和反连接），并在 WHERE 子句中包含多种条件和过滤器，以探索数据库查询的不同可能性。</p>
+<h4 id="3-4-Ground-truth-Result-Generation"><a href="#3-4-Ground-truth-Result-Generation" class="headerlink" title="3.4 Ground-truth Result Generation"></a><strong>3.4 Ground-truth Result Generation</strong></h4><p><img src="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/image-20240128103815519.png" alt="image-20240128103815519"></p>
+<p>生成 ground truth（即查询的正确结果集）的过程遵循以下步骤：</p>
+<ol>
+<li><strong>支持不同的连接操作</strong>：DSG 支持七种类型的连接操作：内连接、左&#x2F;右&#x2F;全外连接、交叉连接、半连接和反连接。</li>
+<li><strong>使用连接位图索引</strong>：每种连接类型的 ground truth 都在连接位图索引中得到总结。例如，对于内连接，ground truth 的 RowID 连接位图索引是两个表的 RowID 位图索引的逻辑与（AND）操作结果。</li>
+<li><strong>计算外连接的 ground truth</strong>：左外连接的 ground truth 位图是左表（𝑇𝑖）的位图索引，右外连接则是右表（𝑇𝑖+1）的位图索引，而全外连接是两个表的位图索引的逻辑或（OR）操作结果。</li>
+<li><strong>交叉连接的特殊处理</strong>：由于不能通过宽表 𝑇𝑤 恢复完整的交叉连接结果集，所以验证的是结果集的子集，即数据库系统必须返回包含所有来自 𝑇𝑤 的 ground truth 答案的结果集。</li>
+<li><strong>半连接和反连接的 ground truth</strong>：半连接的 ground truth 位图是两个表的位图索引的逻辑与操作，反连接则是第一个表的位图索引与第二个表位图索引的逻辑非（NOT）操作。</li>
+<li><strong>多重连接查询的位图索引计算</strong>：通过对应的 RowID 连接位图索引进行逻辑与操作，生成涉及多个连接的查询的完整连接位图索引。</li>
+<li><strong>使用跳跃交集算法</strong>：为了减少位图计算的开销，采用跳跃交集算法避免不必要的 RowID 列表交集，根据稀疏性对位图进行排名，并从最稀疏的位图开始进行交集操作。</li>
+<li><strong>应用 ground truth 位图检索宽表</strong>：利用得到的 ground truth 位图到宽表 𝑇𝑤 中检索参与连接查询的元组，基于元组的新主键去除重复元组。</li>
+<li><strong>执行生成的过滤器和投影</strong>：DSG 执行在 AST 中定义的生成的过滤器和投影，最终得到特定随机连接查询的 ground truth 结果。</li>
+</ol>
+<p>这个过程确保了生成的查询能够与宽表中的正确数据对应起来，为查询的正确性提供了一个可靠的验证方法。</p>
+<p><font color="blue"><em>Example 3.5.</em></font></p>
+<p>这个例子演示了如何为一个具体的 SQL 查询生成 ground truth 结果集：</p>
+<ol>
+<li><strong>查询定义</strong>：考虑 SQL 查询 “SELECT price FROM T3 INNER JOIN T4 WHERE T3.goodsName &#x3D; T4.goodsName AND T3.goodsName &#x3D; ‘flower’”。</li>
+<li><strong>生成连接位图索引</strong>：首先，根据表 2 中的规则，得到查询的连接位图：𝐵𝑖𝑡(𝑇3) ∧ 𝐵𝑖𝑡(𝑇4)，这表示我们只关注同时存在于表 T3 和 T4 中的记录。</li>
+<li><strong>检索重复数据</strong>：使用图 4(b) 中的连接位图索引从宽表 𝑇𝑤 中检索 RowID 为 {0-5, 7, 9} 的冗余数据。</li>
+<li><strong>基于主键去除重复</strong>：然后，基于主键 <code>goodsId</code> 删除重复项。</li>
+<li><strong>过滤最终结果</strong>：因此，查询的剩余结果包括宽表 𝑇𝑤 中具有 RowID {0, 1, 5} 的元组。</li>
+<li><strong>应用过滤器和投影</strong>：最后，应用过滤器和投影，得到查询的 ground truth 结果，即价格 “10”。</li>
+</ol>
+<h3 id="KNOWLEDGE-GUIDED-QUERY-SPACE-EXPLORATION-KQE"><a href="#KNOWLEDGE-GUIDED-QUERY-SPACE-EXPLORATION-KQE" class="headerlink" title="KNOWLEDGE-GUIDED QUERY SPACE EXPLORATION (KQE)"></a><strong>KNOWLEDGE-GUIDED QUERY SPACE EXPLORATION (KQE)</strong></h3><p>这段话描述了如何使用计划迭代图和知识引导的随机游走策略来高效地探索和生成数据库查询的方法：</p>
+<ol>
+<li><strong>计划迭代图</strong>：首先，扩展模式图到一个计划迭代图，其中顶点分为表顶点和列顶点，分别带有“表”和数据类型的标签。边分为两类，表与表之间的边代表连接类型，表与列之间的边代表列上应用的关系操作。</li>
+<li><strong>查询映射</strong>：每个生成的连接查询可以映射到计划迭代图的子图中。如果两个查询的子图是同构的，说明它们具有相同的查询结构，这在查询空间中会造成重复的检查开销。因此，生成查询时会加入约束，避免生成与已有查询图同构的新查询图。</li>
+<li><strong>子图同构</strong>：定义了子图同构的概念，即如果两个子图之间存在一一对应的关系，并且边的关系操作相同，则这两个子图是同构的。</li>
+<li><strong>知识引导的随机游走</strong>：受到基于学习的子图同构搜索方法的启发，通过调整基于探索历史的随机游走概率来避免重复探索相似的图结构。使用图嵌入和近似 KNN 搜索来支持子图同构的近似评估。</li>
+<li><strong>覆盖分数</strong>：定义了生成查询图相对于历史子图（已探索的查询图）的覆盖分数，该指标帮助避免重复生成相似查询。</li>
+<li><strong>自适应权重的随机游走</strong>：根据下一个可能边的自适应权重执行随机游走，以探索更多样化的搜索空间。</li>
+<li><strong>边的过渡概率</strong>：设置了边的过渡概率，根据新生成的查询图与已有查询图的相似性来调整。</li>
+<li><strong>查询生成和同步</strong>：当生成新查询时，服务器将其分发给客户端，客户端保持数据库的副本并托管单独的 DSG 过程。这种策略有效地提高了数据库调试的效率，其唯一瓶颈是服务器端 KQE 的同步成本。</li>
+</ol>
+<p>总的来说，这种方法利用图结构和随机游走算法来创新地探索查询空间，生成多样的查询以测试数据库系统对逻辑错误的检测能力，并通过嵌入和索引技术来优化查询的生成过程。</p>
+<p><img src="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/image-20240128114948364.png" alt="image-20240128114948364"></p>
+<p>图 6 展示了一个计划迭代图的例子，它用于表示查询生成过程中可以探索的搜索空间。这个图是由节点（代表表或列）和边（代表表之间的关系或表和列之间的操作）组成的。在这个例子中，我们可以看到：</p>
+<ol>
+<li><strong>表节点</strong>：圆形节点代表数据库中的表（如 T1 和 T3），用于表示查询中可能涉及的表。</li>
+<li><strong>列节点</strong>：椭圆形节点代表表的列（如 <code>goodsId</code> 和 <code>userId</code>），显示了列的数据类型（如 <code>bigint</code> 和 <code>char</code>），用于表示可能参与查询的字段。</li>
+<li><strong>连接类型</strong>：连接表节点的边表示不同的连接操作（如内连接、左外连接、右外连接等）。在 T1 和 T3 之间的连接操作包括所有可能的连接类型，这表示可以在这两个表之间应用多种类型的连接操作来生成查询。</li>
+<li><strong>操作标签</strong>：边的标签（如 “filter”、”group by”、”count” 等）表示可以应用于列的不同操作。例如，如果在 T1 的 <code>userId</code> 上选择了 “filter”，则在生成的查询中将创建一个对 <code>userId</code> 的谓词。</li>
+<li><strong>查询映射</strong>：查询可以映射到计划迭代图中的子图。通过选择节点和边，可以构造出具体的查询语句。例如，如果从 T1 开始，进行内连接到 T3，然后过滤 <code>userId</code>，这个序列的选择将构成查询的一部分。</li>
+</ol>
+<p><img src="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/image-20240128121130046.png" alt="image-20240128121130046"></p>
+<p>图 7 展示了一个知识引导的查询空间探索的运行示例。这个过程使用了以下步骤：</p>
+<ol>
+<li><strong>历史查询图</strong>：首先，已经探索过的查询被组织成历史查询图的集合。</li>
+<li><strong>嵌入模型</strong>：这些查询图通过一个嵌入模型转换成高维空间中的点，使得结构上相似或同构的查询图在高维空间中的位置接近。</li>
+<li><strong>图索引</strong>：生成的嵌入被用来构建一个图索引（Graph Index），它允许对查询图进行快速的近似搜索。</li>
+<li><strong>近邻搜索</strong>：当有新的查询图 𝐺𝑞 生成时，利用图索引进行最近邻（Nearest Neighbor）搜索，以查找与 𝐺𝑞 结构上相似的查询图。</li>
+<li><strong>自适应权重</strong>：为了避免重复探索相似的查询图，对随机游走的概率进行调整，基于先前的探索历史和已知的查询图之间的相似性。</li>
+<li><strong>查询图与计划迭代图的关联</strong>：查询图是计划迭代图的一部分，展示了一个具体查询的结构，包括选择的表、连接类型、投影列、过滤条件等。</li>
+</ol>
+<p>这个流程的目标是在保持查询多样性的同时，减少重复探索结构上相似的查询图，从而更有效率地覆盖整个查询空间，提高逻辑错误检测的效率。通过这种方式，查询生成不仅依赖于随机游走，还受历史数据和学习模型的指导，使其更加智能和高效。</p>
+<h3 id="EXPERIMENT"><a href="#EXPERIMENT" class="headerlink" title="EXPERIMENT"></a><strong>EXPERIMENT</strong></h3><p>实验设置的概括如下：</p>
+<ol>
+<li><strong>测试目标</strong>：评估 TQS 在多个开源数据库管理系统（DBMS）上的效果，特别是要回答以下问题：<ul>
+<li>TQS 能否检测出现实世界中生产级 DBMS 实现的多表查询逻辑错误？</li>
+<li>TQS 是否能胜过现有的最先进的测试工具？</li>
+<li>TQS 中的两个核心模块（即 DSG 和 KQE）的主要作用是什么？</li>
+</ul>
+</li>
+<li><strong>测试的 DBMS</strong>：<ul>
+<li>考虑了三个不同用途的开源 DBMS，以展示 TQS 的通用性。</li>
+<li>这些 DBMS 根据 DB-Engine 排名、Stack Overflow 年度开发者调查和 GitHub 数据，都是最受欢迎和广泛使用的 DBMS。</li>
+<li>还测试了自主开发的云原生数据库系统 PolarDB，该系统设计用于高扩展性和并发性的弹性计算和存储资源上。</li>
+<li>所有选定的 DBMS 都支持提示（hints），用于故意更改物理计划。</li>
+</ul>
+</li>
+<li><strong>测试数据</strong>：<ul>
+<li>使用随机生成的 TPC-H 数据和 UCI 机器学习仓库的数据集进行了 TQS 评估。</li>
+<li>由于 TPC-H 数据集遵循均匀分布且模式简单，因此所有在 TPC-H 数据集上报告的错误都被 UCI 数据集覆盖了。</li>
+<li>因此，只展示了在 UCI 数据集上的结果。</li>
+<li>TQS 运行时连续报告错误，为了确保所有 DBMS 公平对待，只报告了前24小时的结果。</li>
+<li>所有 DBMS 都以默认配置和编译选项运行。</li>
+</ul>
+</li>
+<li><strong>基线方法</strong>：<ul>
+<li>将 TQS 与 SQLancer 比较，后者是检测数据库逻辑错误的现有最先进方法。</li>
+<li>SQLancer 并未设计为测试多表查询，但可以通过人工生成查询和跨多个表的元组来调整用于多表查询。</li>
+<li>使用 SQLancer 中的三种方法作为基准：PQS、TLP 和 NoRec。</li>
+</ul>
+</li>
+<li><strong>DBMS 版本</strong>：<ul>
+<li>注意，一旦向社区报告 DBMS 错误，它们将被修复。</li>
+<li>实验报告了测试期间最新发布版本的结果，分别是 MySQL 8.0.28、MariaDB 10.8.2、TiDB 5.4.0 和 PolarDB beta 8.0.18。</li>
+</ul>
+</li>
+</ol>
+<p>这个实验设置旨在评估 TQS 在检测多表查询逻辑错误方面的有效性，并与当前最先进的工具进行比较。通过选择多种不同的 DBMS 和数据集，实验旨在证明 TQS 方法的通用性和有效性。</p>
+<h4 id="5-1-Overview-and-Showcase-of-Bug-Reports"><a href="#5-1-Overview-and-Showcase-of-Bug-Reports" class="headerlink" title="5.1 Overview and Showcase of Bug Reports"></a><strong>5.1 Overview and Showcase of Bug Reports</strong></h4><p> TQS 在不同 DBMS 上检测逻辑错误的概览和报告展示：</p>
+<ol>
+<li><strong>错误检测统计</strong>：TQS 在24小时内成功检测到115个错误，包括 MySQL 31个、MariaDB 30个、TiDB 31个和 PolarDB 23个。</li>
+<li><strong>错误报告处理</strong>：一些错误可能由相同的关系代数操作引起。因此，在报告错误之前，为了节省 DBMS 开发者的时间和精力，关键是使用 C-Reduce 生成一个最小化的测试用例。</li>
+<li><strong>错误报告提交和反馈</strong>：所有错误和相应的测试用例都提交给了开发者社区，并收到了积极的反馈。</li>
+<li><strong>错误类型统计</strong>：通过根本原因分析，MySQL、MariaDB、TiDB 和 PolarDB 分别有 7种、5种、5种和3种类型的错误。这些错误类型的详细信息由 DBMS 开发者提供。</li>
+<li><strong>错误解决和确认</strong>：在所有20种类型的错误中，一些导致了代码修复（8个报告）、文档修复（2个报告）或被<font color="red">开发者确认（10个报告）</font>。每个错误都是之前未知的，并且有一个独特的修复方法，或者被开发者确认为一个独特的错误。</li>
+<li><strong>错误严重级别</strong>：测试的 DBMS 由开发者分配错误的严重级别，有6个被分类为关键性错误，6个为严重错误，5个为主要错误，3个为高级错误。</li>
+</ol>
+<p>总体来说，这段描述强调了 TQS 在检测实际 DBMS 中的多表查询逻辑错误方面的有效性，以及通过详尽的错误报告和开发者社区的积极互动，验证了这些错误的重要性和影响。</p>
+<h4 id="5-2-Comparison-with-Existing-Tools"><a href="#5-2-Comparison-with-Existing-Tools" class="headerlink" title="5.2 Comparison with Existing Tools"></a><strong>5.2 Comparison with Existing Tools</strong></h4><p>我们将 TQS 与三种最先进的 DBMS 测试方法在不同方面进行比较，以展示其有效性和效率。需要注意的是，由于兼容性问题，SQLancer  在不同数据库上实现了不同的方法（在 MySQL 和 PolarDB 上实现了 PQS 和 TLP；在 MariaDB 上实现了 NoRec；在  TiDB 上实现了 TLP）。图 8  展示了我们的比较结果。我们采用了两个指标。图的多样性显示了测试的不同同构集的数量，而错误类型计数表示返回的逻辑错误类型的数量。</p>
+<p><img src="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/image-20240128131120841.png" alt="image-20240128131120841"></p>
+<p><font color="green">同构集是不是Query graph？</font></p>
+<p>在 MySQL、MariaDB、TiDB 和 PolarDB 上的查询图多样性指标显示，TQS 在测试多样性方面显著优于基线方法。这是因为  SQLancer 方法可能生成的随机连接返回空结果，这对测试没有用，而 TQS 采用了 KQE 来避免重复测试相同的查询结构。</p>
+<p>尽管 TQS 在48小时内继续为所有 DBMS 发现逻辑错误，但由于错误太多，尚未提交给开发者社区进行验证。因此，仅显示了前24小时的错误类型。这表明大多数错误是由少数实现不当的操作符引起的。</p>
+<h4 id="5-3-Ablation-Studies"><a href="#5-3-Ablation-Studies" class="headerlink" title="5.3 Ablation Studies"></a><strong>5.3 Ablation Studies</strong></h4><p><img src="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/image-20240128132140621.png" alt="image-20240128132140621"></p>
+<p>这段话描述了针对 TQS（Transformed Query Synthesis）的消融实验，旨在更好地理解其不同部分的作用：</p>
+<ol>
+<li>**Noise vs No-Noise.**：在测试中人为生成噪声数据。结果表明，如果移除噪声注入模块（标记为 𝑇𝑄𝑆!𝑁𝑜𝑖𝑠𝑒），发现的错误数量会显著减少。这证明了很大一部分逻辑错误是由离群值或意外值生成的，提醒 DBMS 开发者注意边界测试。</li>
+<li>**GT vs No-GT.**：首先展示了ground-truth verification（GT）的力量。没有 GT 的 TQS（标记为 𝑇𝑄𝑆!𝐺𝑇）是通过比较不同查询计划执行的结果来判断查询结果的正确性，即使用差异测试。发现在 PolarDB 上有7个错误无法通过差异测试检测到。例如，一个关于 PolarDB 8.0.18 中哈希连接的错误，不同计划的查询结果相同，但与该查询的地真值不同，表明这里存在逻辑错误。有些错误无法通过差异测试揭示，而使用地真值结果可以成功识别这些错误。</li>
+<li><strong>KQE 与无 KQE</strong>：KQE（知识引导的查询空间探索）允许我们避免探索相似的查询结构。观察到 TQS 比没有 KQE（标记为 𝑇𝑄𝑆!𝐾𝑄𝐸）的 TQS 在四个数据库上都表现出色，表明应用 KQE 生成查询的有效性。由于迭代图的所有可能同构集是 NP 完全问题，因此无法进行穷尽测试。KQE 的直觉是尽可能生成新的查询，而不是迭代所有同构集。</li>
+</ol>
+<h3 id="CONCLUSION"><a href="#CONCLUSION" class="headerlink" title="CONCLUSION"></a><strong>CONCLUSION</strong></h3><p>在这篇论文中，我们提出了一个框架，TQS（变换查询合成），用于检测数据库管理系统（DBMS）中多表连接查询实现的逻辑错误。TQS  采用两种新颖技术，DSG（数据引导的模式和查询生成）和 KQE（知识引导的查询空间探索），来生成有效的 SQL  查询及其用于测试的地真值结果。我们在四个 DBMS 上评估了 TQS：MySQL、MariaDB、TiDB 和  PolarDB。在24小时内，从测试的 DBMS 中发现了115个错误。基于开发者社区的根本原因分析，分别在  MySQL、MariaDB、TiDB 和 PolarDB 中共发现了7种、5种、5种和3种类型的错误。与现有的数据库调试工具相比，TQS  在检测不同连接操作生成的逻辑错误方面更高效、更有效。它可以被视为一个必不可少的 DBMS 开发工具。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/">http://example.com/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/01/22/Testing-Database-Systems-via-Differential-Query-Execution/" title="Testing Database Systems via Differential Query Execution"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Testing Database Systems via Differential Query Execution</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS"><span class="toc-number">1.</span> <span class="toc-text">Detecting Logic Bugs of Join Optimizations in DBMS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E7%AE%80%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">论文简要 :</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BF%A1%E6%81%AF"><span class="toc-number">1.3.</span> <span class="toc-text">背景信息:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text">方法:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">1.5.</span> <span class="toc-text">结果:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Note"><span class="toc-number">1.6.</span> <span class="toc-text">Note:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Abstract%EF%BC%9A"><span class="toc-number">1.7.</span> <span class="toc-text">Abstract：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.8.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OVERVIEW"><span class="toc-number">1.9.</span> <span class="toc-text">OVERVIEW</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-Problem-Definition"><span class="toc-number">1.9.1.</span> <span class="toc-text">2.1 Problem Definition</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-Scheme-Overview"><span class="toc-number">1.9.2.</span> <span class="toc-text">2.2 Scheme Overview</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DATA-GUIDED-SCHEMA-AND-QUERY-GENERATION-DSG"><span class="toc-number">1.10.</span> <span class="toc-text">DATA-GUIDED SCHEMA AND QUERY GENERATION (DSG)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Schema-Normalization"><span class="toc-number">1.10.1.</span> <span class="toc-text">3.1 Schema Normalization</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-Noise-Injection"><span class="toc-number">1.10.2.</span> <span class="toc-text">3.2 Noise Injection</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-Join-Query-Generator"><span class="toc-number">1.10.3.</span> <span class="toc-text">3.3 Join Query Generator</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-Ground-truth-Result-Generation"><span class="toc-number">1.10.4.</span> <span class="toc-text">3.4 Ground-truth Result Generation</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KNOWLEDGE-GUIDED-QUERY-SPACE-EXPLORATION-KQE"><span class="toc-number">1.11.</span> <span class="toc-text">KNOWLEDGE-GUIDED QUERY SPACE EXPLORATION (KQE)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EXPERIMENT"><span class="toc-number">1.12.</span> <span class="toc-text">EXPERIMENT</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-Overview-and-Showcase-of-Bug-Reports"><span class="toc-number">1.12.1.</span> <span class="toc-text">5.1 Overview and Showcase of Bug Reports</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-Comparison-with-Existing-Tools"><span class="toc-number">1.12.2.</span> <span class="toc-text">5.2 Comparison with Existing Tools</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-Ablation-Studies"><span class="toc-number">1.12.3.</span> <span class="toc-text">5.3 Ablation Studies</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CONCLUSION"><span class="toc-number">1.13.</span> <span class="toc-text">CONCLUSION</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/" title="Detecting Logic Bugs of Join Optimizations in DBMS">Detecting Logic Bugs of Join Optimizations in DBMS</a><time datetime="2024-01-28T05:53:29.000Z" title="发表于 2024-01-28 13:53:29">2024-01-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/22/Testing-Database-Systems-via-Differential-Query-Execution/" title="Testing Database Systems via Differential Query Execution">Testing Database Systems via Differential Query Execution</a><time datetime="2024-01-22T13:12:54.000Z" title="发表于 2024-01-22 21:12:54">2024-01-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/" title="DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation">DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation</a><time datetime="2024-01-15T12:34:42.000Z" title="发表于 2024-01-15 20:34:42">2024-01-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/21/Detecting-Logical-Bugs-of-DBMS-with-Coverage-based-Guidance/" title="Detecting Logical Bugs of DBMS with Coverage-based Guidance">Detecting Logical Bugs of DBMS with Coverage-based Guidance</a><time datetime="2023-10-21T11:38:31.000Z" title="发表于 2023-10-21 19:38:31">2023-10-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/21/Squirrel-Testing-Database-Management-Systems-withLanguage-Validity-and-Coverage-Feedback-%E5%AF%B9%E4%BA%8EDBMS%E7%9A%84%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E6%8A%80%E6%9C%AF%E4%BB%8B%E7%BB%8D/" title="Squirrel Testing Database Management Systems withLanguage Validity and Coverage Feedback--对于DBMS的模糊测试技术介绍">Squirrel Testing Database Management Systems withLanguage Validity and Coverage Feedback--对于DBMS的模糊测试技术介绍</a><time datetime="2023-10-21T11:00:32.000Z" title="发表于 2023-10-21 19:00:32">2023-10-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
