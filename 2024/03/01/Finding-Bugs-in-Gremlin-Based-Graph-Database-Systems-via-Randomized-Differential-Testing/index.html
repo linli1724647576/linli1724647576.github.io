@@ -1,0 +1,356 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential TestingBasic Information: Title: Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing">
+<meta property="og:url" content="http://example.com/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential TestingBasic Information: Title: Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-03-01T03:26:47.000Z">
+<meta property="article:modified_time" content="2024-03-01T03:27:56.208Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-01 11:27:56'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">77</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-03-01T03:26:47.000Z" title="发表于 2024-03-01 11:26:47">2024-03-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-01T03:27:56.208Z" title="更新于 2024-03-01 11:27:56">2024-03-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing"><a href="#Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing" class="headerlink" title="Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing"></a>Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing</h2><h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title: Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing (通过随机差异测试在基于Gremlin的图数据库系统中发现错误)</li>
+<li>Authors: Yingying Zheng, Wensheng Dou, Yicheng Wang, Zheng Qin, Lei Tang, Yu Gao, Dong Wang, Wei Wang, and Jun Wei</li>
+<li>Affiliation: State Key Lab of Computer Science at ISCAS, University of CAS, China (中国科学院计算技术研究所)</li>
+<li>Keywords: Graph database systems, differential testing, Gremlin</li>
+<li>URLs: <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3533767.3534409">Paper</a>, [GitHub: None]</li>
+</ul>
+<h3 id="论文简要"><a href="#论文简要" class="headerlink" title="论文简要 :"></a>论文简要 :</h3><ul>
+<li>本研究提出了Grand，一种用于自动发现采用Gremlin检索图数据的图数据库系统中逻辑错误的随机差异测试方法，并在六种广泛使用的图数据库系统中发现了21个先前未知的逻辑错误。</li>
+</ul>
+<h3 id="背景信息"><a href="#背景信息" class="headerlink" title="背景信息:"></a>背景信息:</h3><ul>
+<li>论文背景: 图数据库系统在许多应用中发挥着重要作用，但逻辑错误在这些系统中却受到较少关注。</li>
+<li>过去方案: 与关系数据库系统不同，图数据库系统的逻辑错误难以自动检测，因为它们通常使用自己的查询语言，语法和查询模式与SQL完全不同。</li>
+<li>论文的Motivation: 本研究的动机在于解决图数据库系统中逻辑错误难以自动检测的问题，通过提出Grand方法，利用随机差异测试发现逻辑错误，并在六种广泛使用的图数据库系统中取得了显著成果。</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 理论背景:  <ul>
+<li>Grand旨在通过比较多个基于Gremlin的图数据库系统（GDBs）上的Gremlin查询结果，自动发现逻辑错误。该方法包括基于模型的查询生成和数据映射方法，以创建有效的Gremlin查询并统一查询结果格式。</li>
+</ul>
+</li>
+<li>b. 技术路线:  <ul>
+<li><ol>
+<li>为多个GDBs构建语义等价数据库。</li>
+</ol>
+</li>
+<li><ol>
+<li>使用基于模型的查询生成方法生成有效的Gremlin查询。</li>
+</ol>
+</li>
+<li><ol>
+<li>使用数据映射方法统一不同GDBs的查询结果格式。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果:"></a>结果:</h3><ul>
+<li>a. 详细的实验设置:  <ul>
+<li>Grand在六个广泛使用的GDBs上进行了评估，检测到了21个先前未知的错误。</li>
+</ul>
+</li>
+<li>b. 详细的实验结果:   <ul>
+<li>Grand总共发现了21个逻辑错误，其中18个已确认，7个已被开发人员修复。</li>
+</ul>
+</li>
+</ul>
+<h3 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT:"></a>ABSTRACT:</h3><p>这篇文章介绍了一种名为Grand的方法，旨在自动发现采用Gremlin查询语言的图数据库系统（GDBs）中的逻辑错误。Grand的核心思想是为多个GDB构建语义等价的数据库，然后比较在这些数据库上执行相同Gremlin查询的结果。如果在多个GDB上的查询结果不一致，很可能是这些GDBs中存在逻辑错误。为了有效测试GDBs，文章提出了一种基于模型的查询生成方法来生成可能返回非空结果的有效Gremlin查询，以及一种数据映射方法来统一不同GDBs的查询结果格式。通过在六个广泛使用的GDBs（例如Neo4j和HugeGraph）上评估Grand，共发现了21个之前未知的逻辑错误。其中18个错误已被开发者确认，且已修复7个错误。这项工作强调了GDBs在正确操作中的重要性，并针对在复杂的图和查询中可能被开发者忽视的逻辑错误，提供了一种有效的自动发现方法。</p>
+<h3 id="INTRODUCTION："><a href="#INTRODUCTION：" class="headerlink" title="INTRODUCTION："></a>INTRODUCTION：</h3><p><font color="red"><strong>背景：</strong></font></p>
+<p>图数据库系统（GDBs）基于标签属性图模型或资源描述框架（RDF）图模型构建，支持高效的图数据存储和查询，图数据由顶点和边组成。近年来，GDBs的普及度显著增加，在许多应用中发挥了重要作用，例如知识图谱、社交网络和欺诈检测等。一些最受欢迎的GDBs包括Neo4j、OrientDB、JanusGraph（从Titan扩展而来）、Nebula、HugeGraph、TinkerGraph、ArcadeDB等。这些系统的流行和应用强调了GDBs在处理复杂关系和网络分析中的关键作用。</p>
+<p><font color="red"><strong>Logical bugs in graph db and  a  Motivation Example:</strong></font></p>
+<p>在图数据库系统（GDBs）中，逻辑错误是指查询返回意外结果的情况，这种结果可能是错误的查询结果（例如，在图中遗漏一个顶点），或者是意外的错误，而不会导致GDBs崩溃。举一个例子，如果在HugeGraph中发现了一个逻辑错误的测试案例，首先创建一个带有顶点标签和属性的图模式，并在该属性上创建索引。然后，基于这个图模式，创建三个具有不同属性值的顶点并将它们添加到图中。当计算属性值在某个范围内的顶点数量时，应该返回满足条件的顶点数。然而，由于HugeGraph在执行OR操作时忘记了去重重叠值，因此返回了错误的结果。这说明逻辑错误可以导致查询结果不准确，例如返回额外的不应该出现的结果。</p>
+<p><img src="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/image-20240301100306358.png" alt="image-20240301100306358"></p>
+<p><font color="red"><strong>Related work:</strong></font></p>
+<ol>
+<li><strong>RAGS</strong><ul>
+<li>使用差异测试来检测关系数据库系统中的错误。</li>
+</ul>
+</li>
+<li><strong>SQLancer</strong><ul>
+<li>提供三种方法来发现逻辑错误：<ol>
+<li>Pivoted Query Synthesis (PQS)<ul>
+<li>通过生成和执行查询来检测数据不一致性。</li>
+</ul>
+</li>
+<li>Ternary Logic Partitioning (TLP)<ul>
+<li>利用三元逻辑分割来发现错误。</li>
+</ul>
+</li>
+<li>Non-Optimizing Reference Engine Construction (NoREC)<ul>
+<li>通过构建非优化引擎来比较查询结果，以发现错误。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<p>当前没有可用的工具能够直接应用于图数据库系统（GDBs）来检测逻辑错误，突显了在GDBs逻辑错误检测方面的研究和工具开发需求。</p>
+<p><font color="red"><strong>Challenges:</strong></font></p>
+<p>自动检测图数据库系统（GDBs）中的逻辑错误面临的挑战主要包括：</p>
+<ol>
+<li><strong>缺乏标准化查询方式</strong>：与关系数据库系统不同，图数据库没有统一的查询数据方式。大多数GDBs通常使用它们自己的查询语言，如Neo4j的Cypher和TigerGraph的GSQL。尽管大约66%的GDBs支持一个通用查询语言Gremlin，这为统一查询提供了一线希望，但语言的多样性仍旧是一个挑战。</li>
+<li><strong>与SQL语法和查询模式的巨大差异</strong>：例如，Gremlin是一种功能性语言，它通过一系列的遍历步骤来遍历图，这些步骤可以组合来表达复杂的查询。这种差异意味着不能直接将关系数据库系统的现有测试方法应用于GDBs。</li>
+<li><strong>不同的存储和查询结果格式</strong>：GDBs在顶点和边的查询结果上可能因为不同的ID生成策略而有所不同。自动构建有效的图查询及其对应的预言机（oracles）以适应不同GDBs的这一需求构成了一个关键挑战。</li>
+</ol>
+<p><font color="red"><strong>Approach:</strong></font></p>
+<p>本文提出了一种名为Grand的随机差异测试方法，用于自动发现采用Gremlin查询语言检索图数据的图数据库系统（GDBs）中的逻辑错误。具体来说，通过生成随机Gremlin查询，该方法寻找不同Gremlin-based GDBs返回结果之间的差异，并将这些差异识别为潜在的逻辑错误。为了有效地在基于Gremlin的GDBs中发现逻辑错误，本方法解决了两个特定的挑战：</p>
+<ol>
+<li><strong>生成语法正确且有效的Gremlin查询</strong>：采用基于模型的查询生成方法，总结Gremlin遍历API到不同的遍历类型，然后提出一个Gremlin遍历模型，表达不同遍历API之间的转换，以生成正确和有效的Gremlin查询。这样做可以高概率地返回非空的查询结果。</li>
+<li><strong>获取不同GDBs中格式统一的查询结果</strong>：利用数据映射方法，在不同GDBs中获取统一的查询结果。这使得该方法能够比较不同GDBs返回的不同格式的查询结果。</li>
+</ol>
+<p>总体而言，Grand通过这两个策略有效地发现了基于Gremlin的GDBs中的逻辑错误，提高了在复杂图数据库环境中自动化测试的能力。</p>
+<p><font color="red"><strong>Evaluation and contributions:</strong></font></p>
+<p>本文提出了Grand，这是一种自动化的差异测试方法，专门用于检测基于Gremlin的图数据库系统（GDBs）中的逻辑错误。Grand通过随机生成Gremlin查询来探索不同GDBs返回结果之间的差异，以此识别潜在的逻辑错误。为了评估Grand的有效性，作者将其应用于六个广泛使用的GDBs：Neo4j、OrientDB、JanusGraph、HugeGraph、TinkerGraph和ArcadeDB。实验结果显示，Grand在检测GDBs中的逻辑错误方面非常有效，到目前为止已经检测到21个之前未知的逻辑错误，其中18个已被确认，7个已被修复。</p>
+<p>本文的贡献包括：</p>
+<ul>
+<li>提出了Grand，一个自动化的差异测试方法，用于发现Gremlin-based GDBs中的逻辑错误，并引入了基于模型的查询生成方法来有效生成语法正确且有效的Gremlin查询。</li>
+<li>在六个广泛使用的GDBs上实施并评估Grand，发现了21个先前未知的错误。</li>
+</ul>
+<h3 id="PRELIMINARIES"><a href="#PRELIMINARIES" class="headerlink" title="PRELIMINARIES"></a><strong>PRELIMINARIES</strong></h3><h4 id="2-1-Graph-Models-in-Graph-Database-Systems"><a href="#2-1-Graph-Models-in-Graph-Database-Systems" class="headerlink" title="2.1 Graph Models in Graph Database Systems"></a><strong>2.1 Graph Models in Graph Database Systems</strong></h4><p>图数据库系统（GDBs）采用图数据结构来存储和查询数据，主要使用两种图模型：标签属性图模型和资源描述框架（RDF）图模型。</p>
+<p><strong>标签属性图模型</strong>通过顶点、边、标签（顶点或边的分组）和属性（特性）来描述实体间的关系。每个顶点或边都关联有一组属性，并可以通过其标签划分为不同的组。边在这个模型中是有方向的，用来表示顶点之间的关系，例如表示人与书之间的“写”和“读”关系。</p>
+<p><img src="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/image-20240301103250653.png" alt="image-20240301103250653"></p>
+<p><strong>RDF图模型</strong>是一种W3C标准，使用三元组（主体、宾语和谓词）来表示网络中的资源。与标签属性图模型不同，RDF模型中的顶点和边具有相同的角色，三元组结构中的主体可以是顶点或边，宾语可以是另一个顶点、边或文字值，谓词描述它们之间的关系。</p>
+<p>这两种图模型以不同的方式描述连接的数据，并可以根据它们各自的优势在不同的应用中使用。例如，在知识图谱中广泛使用RDF模型，因为它具有高度结构化的信息。然而，在图数据库系统中，标签属性图模型更受欢迎。几乎所有GDBs都支持标签属性图模型（如Neo4j、JanusGraph和TigerGraph），而支持RDF图模型的GDBs不到一半（如Virtuoso）。因此，本研究聚焦于标签属性图模型。</p>
+<blockquote>
+<p>01</p>
+<p><strong>属性图(Property Graphs)</strong></p>
+<p>虽然属性图的实现中有一些核心的共性，但是没有真正标准的属性图数据模型，因此属性图的每个实现都有些不同。在下面，我们将重点讨论任何属性图数据库都常见的特征。</p>
+<ul>
+<li>节点(Nodes)：是图中的实体，用表示其类型的0到多个文本标签进行标记，相当于实体。</li>
+<li>边(Edges)：是节点之间的定向链接，也称为关系。其中对应的“from node”称为源节点，“to node”称为目标节点。边是定向的且每条边都有一个类型，它们可以在任何方向上导航和查询。相当于实体之间的关系。</li>
+<li>属性(Properties)：是一个键值对，顶点和边都具有属性。</li>
+</ul>
+<p>图1显示了一个属性图的部分，其中包含有关演员、导演和他们参与的电影或电视节目的数据。其中节点用椭圆表示。例如，ID为123的节点(从其属性中看出)表示Tom  Hanks。节点标签以深蓝色显示。节点123的标签是人物、演员和导演。关系用灰色箭头表示，从一个节点指向另一个节点，每个关系都有一个红色显示的类型。属性显示在带有金色的圆角矩形中，并使用红色箭头连接到它们所属的节点和关系。</p>
+<p><img src="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/image-20240301103800762.png" alt="image-20240301103800762"></p>
+</blockquote>
+<blockquote>
+<p>02</p>
+<p><strong>资源描述框架图(RDF Graphs)</strong></p>
+<p>RDF图使用标准的图数据模型，其技术栈的标准是由万维网联盟(W3C)管理的，这个组织也同时管理HTML、XML和许多其他网络标准。因此每个支持RDF的数据库都应该以同样的方式支持该模型。除此之外，RDF有一个标准的查询语言称为SPARQL。它既是一种功能齐全的查询语言，又是一种HTTP协议，可以通过HTTP将查询请求发送到端点。RDF图数据模型主要是由以下两个部分组成的：</p>
+<ul>
+<li>节点(Nodes)：对应图中的顶点，可以是具有唯一标识符的资源，也可以是字符串、整数等有值的内容。</li>
+<li>边(Edges)：是节点之间的定向链接，也称为谓词或属性。边的入节点称为主语，出节点称为宾语，由一条边连接的两个节点形成一个主语-谓词-宾语的陈述，也称为三元组。边是定向的，它们可以在任何方向上导航和查询。</li>
+</ul>
+<p>RDF的英文全称为Resource Description  Framework，因为在RDF图中，一切都称为源。边和节点只是给定语句中资源所扮演的角色。基本上在RDF中，扮演边角色的资源和扮演节点角色的资源没有区别，因此一条语句中的边也可以是另一条语句中的节点。RDF数据模型相较于属性图更加丰富，也在语义上保持一致性。图2展示了如何将上面的图1由属性图表示为RDF：</p>
+<p><img src="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/image-20240301104055975.png" alt="image-20240301104055975"></p>
+<p>图2中的图看起来比图1中的属性图大，因为图中的所有文字都被描述为节点。而在可视化RDF图数据时，通常不会这样做，以便使图看起来更干净和更简单。所有节点都用带有浅黄色背景的圆角矩形表示。也就是说，从数据结构的角度来看，它们是图形的一部分，就像任何其他节点一样，唯一的区别是它们不能作为源节点，只能是目标节点或宾语。RDF图中的文字值可以有数据类型，数据类型取自XML模式(如xsd:string、xsd:integer等)，文本值也可以有语言标记来支持数据国际化。例如，对于纽约市的rdfs:label，我们可以有多个值，例如：“New York City” xsd:string @en 或 “NuevaYork” xsd:string  @sp。标识符也是RDF图的一个非常重要的概念。每个非文字节点都被分配一个标识符——通常是一个URI(Uniform Resource  Identifier，统一资源标识符)或IRI(Internationalized Resource  Identifiers，国际化资源标识符)。本地非URI标识符因为不能互操作而很少使用。而全局唯一标识符为图数据模型带来了许多好处，同时基于RDFbased的解决方案可以根据选定的URI构造规则自动生成URI。另外，在添加数据(例如加载序列化的文件)时，用户也可以提供他们想要使用的URI。标识节点的URI使用限定名(通常称为Qname表示法)显示在图中，如图2中的 rdf 就表示着：<a href="https://link.zhihu.com/?target=http://w3.org/1999/02/22-rdf-syntax-ns%23">http://w3.org/1999/02/22-rdf-syntax-ns#</a>，而对应的也可以使用命名空间中的内置资源定义的语义，如rdf:type. 而使用URI最大的好处之一便是可以如果不同的节点具有同样的URI，就会自动地合并，这也就使得RDF图更加简洁清晰。</p>
+</blockquote>
+<p>reference from :  <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/260430189">https://zhuanlan.zhihu.com/p/260430189</a></p>
+<h4 id="2-2-Graph-Query-Languages"><a href="#2-2-Graph-Query-Languages" class="headerlink" title="2.2 Graph Query Languages"></a><strong>2.2 Graph Query Languages</strong></h4><p>图数据库系统（GDBs）与使用SQL作为标准查询方式的关系数据库系统不同，没有统一的标准方法来查询标签属性图。为了高效且方便地访问标签属性图中的数据，开发了一些图查询语言。根据它们的设计原则，这些查询语言可以分为两大类：</p>
+<ol>
+<li><p><strong>SQL-like图查询语言</strong>：为不同的GDBs开发了不同的SQL-like图查询语言，这些语言关注于各自GDBs的特定需求。例如：</p>
+<ul>
+<li>Cypher是为Neo4j设计的，使用MATCH、WHERE和RETURN作为其查询语法。</li>
+<li>Nebula使用nGQL进行查询。</li>
+<li>TigerGraph提出了GSQL，使用SELECT、FROM和WHERE来获取数据。</li>
+</ul>
+<p>这些SQL-like声明式查询语言通常为特定GDBs实现，不能被其他GDBs支持。</p>
+</li>
+<li><p><strong>函数式图查询语言</strong>：Gremlin是一个函数式、数据流查询语言，用于遍历标签属性图，使用户能够通过组合一系列Gremlin步骤（即Gremlin API调用）来表达复杂的遍历。Gremlin由Apache TinkerPop框架引入，已在大多数流行的GDBs中被广泛使用，例如Neo4j、JanusGraph、TinkerGraph和HugeGraph。</p>
+<p>Gremlin不仅提供查询API，还提供了一组更新API来构建图数据库，例如添加顶点（addV()）、添加边（addE()）和移除元素或属性（drop()）。</p>
+</li>
+</ol>
+<p>SQL-like声明式图查询语言通常为特定GDBs设计，而Gremlin查询语言在大多数流行的GDBs中得到了广泛使用。在Graph DBMSs的DB-Engine排名中，66%的GDBs支持Gremlin API。因此，本文主要关注Gremlin查询语言及使用Gremlin检索图数据的GDBs（也称为基于Gremlin的GDBs），并将在文中讨论如何将Grand扩展到其他图查询语言。</p>
+<h3 id="APPROACH"><a href="#APPROACH" class="headerlink" title="APPROACH"></a><strong>APPROACH</strong></h3><p><img src="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/image-20240301104858560.png" alt="image-20240301104858560"></p>
+<p>Overview</p>
+<p>Grand是一个提出的随机差异测试方法，用于自动发现基于Gremlin的图数据库系统（GDBs）中的逻辑错误。Grand的过程包括三个主要阶段：</p>
+<ol>
+<li><strong>图数据库生成</strong>：Grand首先随机生成图模式，定义顶点和边的类型、标签和属性（步骤1）。接着，根据生成的图模式随机生成详细的顶点和边（步骤2）。然后，生成的数据库将被写入目标GDBs（步骤3）。</li>
+<li><strong>Gremlin查询生成</strong>：使用基于模型的查询生成方法来生成语法正确且有效的Gremlin查询。具体来说，首先为Gremlin API构建一个遍历模型（步骤4），然后基于构建的遍历模型和生成的图数据库生成Gremlin查询（步骤5）。</li>
+<li><strong>GDBs的差异测试</strong>：执行生成的Gremlin查询（步骤6），通过差异测试验证查询结果。具体而言，对于每个目标GDB，记录每个查询的结果，并借助映射信息将其转换为统一的查询结果（步骤7）。然后，Grand检查这些统一结果以识别是否存在差异（步骤8）。如果某些GDBs显示不同的输出，则发现潜在的错误。</li>
+</ol>
+<p>Grand通过这三个阶段的综合应用，有效地自动化检测基于Gremlin的图数据库系统中的逻辑错误，提高了在复杂图数据库环境中自动化测试的能力和准确性。</p>
+<h4 id="3-1-Graph-Database-Generation"><a href="#3-1-Graph-Database-Generation" class="headerlink" title="3.1 Graph Database Generation"></a><strong>3.1 Graph Database Generation</strong></h4><p>在图数据库生成阶段，Grand采用了以下步骤来为目标GDBs随机生成数据库状态，包括图模式和图数据，用于构建Gremlin查询：</p>
+<ol>
+<li><p><strong>图模式生成</strong>：</p>
+<ul>
+<li><strong>顶点类型</strong>：定义为一对标签名和一组属性类型，每个顶点包含一个标签和一组属性。</li>
+<li><strong>边类型</strong>：定义为一个输入顶点类型、一个输出顶点类型、一个标签名和一组属性类型，每条边包含一个输入顶点、一个输出顶点、一个标签和一组属性。</li>
+<li><strong>属性</strong>：每个属性包含一个属性名和其数据类型。数据类型可以是Integer、String、Double、Boolean、Float和Long等。</li>
+</ul>
+<p>通过算法随机生成顶点类型和边类型的集合，确保每种类型具有唯一的标签名，并且同一类型内的所有属性具有不同的属性名。不同的顶点类型可以包含相同的属性类型。</p>
+</li>
+<li><p><strong>图数据生成</strong>：</p>
+<ul>
+<li>根据生成的图模式，Grand随机生成符合图模式的顶点和边，并将这些生成的顶点和边写入GDBs。</li>
+<li>顶点生成过程中，随机选择一个顶点类型并生成一个顶点，随机选择该顶点类型的一部分属性类型并为其生成属性值。</li>
+<li>边生成过程中，随机选择一个边类型并生成一条边，为边生成属性值，并随机选择符合边类型要求的输入&#x2F;输出顶点。</li>
+</ul>
+</li>
+</ol>
+<p>Grand允许GDB测试者指定图数据库中顶点类型、边类型、属性类型、顶点和边的最大数量。在实验中，最多生成10种顶点类型、20种边类型、20种属性类型、100个顶点和200条边，以构建图数据库。</p>
+<h4 id="3-2-Model-Based-Query-Generation"><a href="#3-2-Model-Based-Query-Generation" class="headerlink" title="3.2 Model-Based Query Generation"></a><strong>3.2 Model-Based Query Generation</strong></h4><p>文章通过构建一个遍历模型来生成语法正确且有意义的Gremlin查询。这个遍历模型精确地理解了Gremlin API及其语义，使得Grand能够正确地链接Gremlin API，并生成语法正确且具有实际意义的查询。具体方法包括以下几个步骤：</p>
+<ol>
+<li><strong>遍历模型的构建</strong>：首先定义了一个遍历模型，它包括三种类型的实体（顶点、边、值）、三种类型的操作（过滤、谓词、聚合）以及常量。这个模型代表了Gremlin API之间合法转换的规则，确保了查询的语法正确性和逻辑连贯性。<img src="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/image-20240301110342569.png" alt="image-20240301110342569"></li>
+<li><strong>理解Gremlin API及其语义</strong>：通过深入研究Gremlin API，遍历模型精确地捕捉了API之间的转换规则和参数的语义。例如，API的输入输出类型必须匹配，这样的规则被编码在模型中，确保了生成的查询不仅语法正确，而且逻辑上有意义。</li>
+<li><strong>查询语句的构建</strong>：遵循遍历模型的指导，Grand迭代地、步骤化地生成查询语句。它从图的遍历源<code>g</code>开始，随机选择下一个符合模型规则的Gremlin步骤，直到达到最大查询长度或满足退出条件。这种方法确保了每一步的选择都是基于对前一步骤输出类型的理解，从而生成连贯且有意义的查询序列。</li>
+<li><strong>参数值的生成</strong>：为了确保查询返回非空结果并具有探测潜在错误的能力，Grand在生成Gremlin API的参数值时，采取了基于图数据库内容选择值以及使用随机函数生成参数值的策略。这样既增加了查询返回有意义结果的概率，也避免了生成大量无效查询。</li>
+</ol>
+<p>以下是一个Gremlin查询生成的例子，以查询 <code>g.V().where(values(&#39;name&#39;).is(eq(&#39;Nancy&#39;))).values(&#39;gender&#39;)</code> 为例，对应于图2。如图7所示，通过算法2随机生成了三个遍历步骤，例如一个Map步骤（<code>V()</code> 在步骤1），一个Filter步骤（<code>where()</code> 在步骤2），和一个Property步骤（<code>values()</code> 在步骤6）。特别地，Filter步骤包含了一个嵌套子查询，这个子查询由一个Property API（<code>values()</code> 在步骤3）和一个Filter API（<code>is()</code> 在步骤4）组成。由于Map步骤（步骤1）的输出是Vertex，因此在Filter步骤（步骤2）的嵌套子查询中的属性名（即name）是从生成的顶点属性中随机选择的，或者使用我们的随机函数随机创建的。此外，Predicate API（<code>eq()</code> 在步骤5）的属性值和Property API（<code>values()</code> 在步骤6）的属性名可以以相同的方式生成。</p>
+<p><img src="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/image-20240301111124841.png" alt="image-20240301111124841"></p>
+<p><img src="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/image-20240301111154788.png" alt="image-20240301111154788"></p>
+<h4 id="3-3-Differential-Testing-for-GDBs"><a href="#3-3-Differential-Testing-for-GDBs" class="headerlink" title="3.3 Differential Testing for GDBs"></a><strong>3.3 Differential Testing for GDBs</strong></h4><p>文章通过差异测试来检测图数据库系统（GDBs）中的逻辑错误。具体步骤包括：</p>
+<ol>
+<li><strong>数据写入</strong>：首先将相同的图数据写入一组目标GDBs中。</li>
+<li><strong>执行查询</strong>：然后在这些GDBs上执行相同的Gremlin查询。</li>
+<li><strong>比较结果</strong>：通过比较不同GDBs返回的查询结果，来识别潜在的逻辑错误。如果返回结果在不同的GDBs之间存在差异，则将这种差异视为这些GDBs中的潜在错误。</li>
+<li><strong>结果格式的统一</strong>：返回结果可能是值、顶点列表、边列表或属性列表。当查询结果为顶点或边的列表时，不同GDBs可能会因为使用不同的ID生成策略而返回不同格式的结果。为了使比较成为可能，需要将它们转换为统一格式。</li>
+<li><strong>映射表的使用</strong>：通过生成每个顶点和边的唯一ID（𝑢𝐼𝐷）并在写入目标GDB后检索其实际ID（𝑎𝑐𝑡𝑢𝑎𝑙𝐼𝐷），使用映射表记录𝑢𝐼𝐷和𝑎𝑐𝑡𝑢𝑎𝑙𝐼𝐷之间的映射关系，从而便于将不同GDBs返回的顶点或边列表转换为统一格式。</li>
+<li><strong>差异测试的五个步骤</strong>：对于生成的Gremlin查询，首先在目标GDBs中执行它并获取查询结果；然后，对于每个GDB，提取查询结果中每个顶点或边的ID以获得实际的顶点ID或边ID列表；接着，根据映射表将实际查询结果转换为统一查询结果；最后，检查目标GDBs的统一查询结果是否相同。如果所有结果都相同，则返回真值（True），表示没有发现潜在错误；否则，返回假值（False），表示存在潜在错误。</li>
+</ol>
+<p><img src="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/image-20240301112754686.png" alt="image-20240301112754686"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/">http://example.com/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/" title="Detecting Logic Bugs of Join Optimizations in DBMS"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Detecting Logic Bugs of Join Optimizations in DBMS</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">77</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing"><span class="toc-number">1.</span> <span class="toc-text">Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E7%AE%80%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">论文简要 :</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BF%A1%E6%81%AF"><span class="toc-number">1.3.</span> <span class="toc-text">背景信息:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text">方法:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">1.5.</span> <span class="toc-text">结果:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ABSTRACT"><span class="toc-number">1.6.</span> <span class="toc-text">ABSTRACT:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#INTRODUCTION%EF%BC%9A"><span class="toc-number">1.7.</span> <span class="toc-text">INTRODUCTION：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PRELIMINARIES"><span class="toc-number">1.8.</span> <span class="toc-text">PRELIMINARIES</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-Graph-Models-in-Graph-Database-Systems"><span class="toc-number">1.8.1.</span> <span class="toc-text">2.1 Graph Models in Graph Database Systems</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-Graph-Query-Languages"><span class="toc-number">1.8.2.</span> <span class="toc-text">2.2 Graph Query Languages</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#APPROACH"><span class="toc-number">1.9.</span> <span class="toc-text">APPROACH</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Graph-Database-Generation"><span class="toc-number">1.9.1.</span> <span class="toc-text">3.1 Graph Database Generation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-Model-Based-Query-Generation"><span class="toc-number">1.9.2.</span> <span class="toc-text">3.2 Model-Based Query Generation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-Differential-Testing-for-GDBs"><span class="toc-number">1.9.3.</span> <span class="toc-text">3.3 Differential Testing for GDBs</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/" title="Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing">Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing</a><time datetime="2024-03-01T03:26:47.000Z" title="发表于 2024-03-01 11:26:47">2024-03-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/" title="Detecting Logic Bugs of Join Optimizations in DBMS">Detecting Logic Bugs of Join Optimizations in DBMS</a><time datetime="2024-01-28T05:53:29.000Z" title="发表于 2024-01-28 13:53:29">2024-01-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/22/Testing-Database-Systems-via-Differential-Query-Execution/" title="Testing Database Systems via Differential Query Execution">Testing Database Systems via Differential Query Execution</a><time datetime="2024-01-22T13:12:54.000Z" title="发表于 2024-01-22 21:12:54">2024-01-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/" title="DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation">DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation</a><time datetime="2024-01-15T12:34:42.000Z" title="发表于 2024-01-15 20:34:42">2024-01-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/10/21/Detecting-Logical-Bugs-of-DBMS-with-Coverage-based-Guidance/" title="Detecting Logical Bugs of DBMS with Coverage-based Guidance">Detecting Logical Bugs of DBMS with Coverage-based Guidance</a><time datetime="2023-10-21T11:38:31.000Z" title="发表于 2023-10-21 19:38:31">2023-10-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
