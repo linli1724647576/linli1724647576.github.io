@@ -1,0 +1,337 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation开源代码： https:&#x2F;&#x2F;github.com&#x2F;YuanchengJiang&#x2F;GraphGenie Basic Information: Title:  Detecting">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation">
+<meta property="og:url" content="http://example.com/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation开源代码： https:&#x2F;&#x2F;github.com&#x2F;YuanchengJiang&#x2F;GraphGenie Basic Information: Title:  Detecting">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-03-01T10:34:41.000Z">
+<meta property="article:modified_time" content="2024-03-01T10:42:17.590Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-01 18:42:17'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-03-01T10:34:41.000Z" title="发表于 2024-03-01 18:34:41">2024-03-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-01T10:42:17.590Z" title="更新于 2024-03-01 18:42:17">2024-03-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation"><a href="#Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation" class="headerlink" title="Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation"></a><strong>Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation</strong></h2><p>开源代码： <a target="_blank" rel="noopener" href="https://github.com/YuanchengJiang/GraphGenie">https://github.com/YuanchengJiang/GraphGenie</a></p>
+<h3 id="Basic-Information"><a href="#Basic-Information" class="headerlink" title="Basic Information:"></a>Basic Information:</h3><ul>
+<li>Title:  Detecting Logic Bugs in Graph Database Management Systems via Injective  and Surjective Graph Query Transformation (通过单射和满射图查询转换检测图数据库管理系统中的逻辑错误)</li>
+<li>Authors: Yuancheng Jiang, Jiahao Liu, Jinsheng Ba, Roland H.C. Yap, Zhenkai Liang, and Manuel Rigger</li>
+<li>Affiliation: National University of Singapore (新加坡国立大学)</li>
+<li>Keywords: Graph Databases, Logic Bugs, Metamorphic Testing</li>
+<li>URLs: <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3597503.3623307">Paper</a>, <a href="GitHub:">GitHub</a></li>
+</ul>
+<h3 id="论文简要"><a href="#论文简要" class="headerlink" title="论文简要 :"></a>论文简要 :</h3><ul>
+<li>通过单射和满射图查询转换，该研究提出了一种检测图数据库管理系统中逻辑错误的方法，通过生成变异查询来验证其结果与原始查询的预期关系，从而发现了25个未知的错误，包括16个逻辑错误、3个内部错误和6个性能问题。</li>
+</ul>
+<h3 id="背景信息"><a href="#背景信息" class="headerlink" title="背景信息:"></a>背景信息:</h3><ul>
+<li>论文背景: 图数据库管理系统（GDBMSs）是用于存储和查询图数据的系统，但是它们容易受到逻辑错误的影响，导致计算出错误的结果，进而影响依赖于它们的应用程序。</li>
+<li>过去方案: 过去的方法主要是基于差异测试和变异测试，但是在图查询中存在一些困难，如建立有效的测试预期和生成变异查询。</li>
+<li>论文的Motivation: 为了解决图数据库管理系统中逻辑错误的检测问题，本研究提出了一种基于图查询转换的方法，通过生成变异查询并验证其结果与原始查询的预期关系，从而有效地检测逻辑错误。</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法:"></a>方法:</h3><ul>
+<li>a. 理论背景:<ul>
+<li>本文提出了一种称为注射和满射图查询转换（GQT）的方法，用于检测图数据库管理系统（GDBMS）中的逻辑错误。该方法涉及从基本查询派生出一个突变查询，然后比较两个查询的结果以检测GDBMS中的逻辑错误。关键的洞察力在于图查询中的图模式使得可以从基本查询和突变查询之间的注射和满射映射导出系统化的查询转换。</li>
+</ul>
+</li>
+<li>b. 技术路线:<ul>
+<li>本文实现了注射和满射图查询转换（GQT）作为一个名为GraphGenie的工具，并在6个流行且成熟的GDBMS上进行了评估。使用GraphGenie，他们发现了25个未知的错误，包括16个逻辑错误，3个内部错误和6个性能问题。这证明了GraphGenie在检测GDBMS中的逻辑错误方面的实用性和有效性，有潜力提高依赖于这些GDBMS的应用程序的可靠性。</li>
+</ul>
+</li>
+</ul>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果:"></a>结果:</h3><ul>
+<li>a. 详细的实验设置:<ul>
+<li>本文将注射和满射图查询转换（GQT）作为GraphGenie工具实现，并在6个流行且成熟的GDBMS上进行了评估。评估持续了三个月，并在一台个人电脑上进行了实验，该电脑具有特定的硬件和软件规格，包括Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz，16GB RAM和Ubuntu 20.04.2 LTS作为操作系统。</li>
+</ul>
+</li>
+<li>b. 详细的实验结果:<ul>
+<li>GraphGenie成功地在成熟的GDBMS中发现了25个以前未知的错误，包括16个逻辑错误，3个内部错误和6个性能问题。与两种最先进的方法进行比较，GraphGenie没有产生虚警，而另一种比较的工具产生了虚警。此外，GraphGenie还发现了另一种工具无法发现的6个逻辑错误。作者认为这些结果是令人鼓舞的，并且表明GraphGenie可能成为测试GDBMS的实用工具。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Abstract："><a href="#Abstract：" class="headerlink" title="Abstract："></a>Abstract：</h3><p>这项工作提出了一种用于检测图数据库管理系统（GDBMSs）中逻辑错误的方法，称为注入式和满射式图查询转换（GQT）。通过对给定查询𝑄进行变异，生成一个新的查询𝑄′，这两个查询的结果集要么语义等价，要么基于变异是彼此的子集或超集。如果结果之间预期的关系不成立，则表明GDBMS中存在逻辑错误。这种方法的关键洞察是，图查询中的图模式允许基于𝑄和𝑄′之间有向边集的注入式和满射式映射来系统地进行查询转换。研究者们实现了这一方法，并将其命名为GraphGenie工具，用于评估6个流行且成熟的GDBMSs。GraphGenie成功发现了25个未知错误，包括16个逻辑错误、3个内部错误和6个性能问题。这些结果证明了GraphGenie在检测GDBMSs中的逻辑错误方面的实用性和有效性，这对于提高依赖这些GDBMSs的应用程序的可靠性具有潜在价值。</p>
+<h3 id="Introduction："><a href="#Introduction：" class="headerlink" title="Introduction："></a>Introduction：</h3><p><font color="red"><strong>背景：</strong></font></p>
+<p>图数据库管理系统（GDBMSs）专为存储和查询图形数据而设计，近年来迅速获得了广泛的流行，并在各个领域中变得越来越普遍。GDBMSs通过操作顶点和边来支持图形数据的存储和匹配，这大大提高了社交网络、推荐系统和程序分析等多种应用的可用性和效率。根据市场统计数据，2023年全球图数据库市场的价值为29亿美元，预计到2028年将增长到73亿美元，复合年增长率为20.2%。这一增长趋势主要由在线模式环境的需求增加和实时大数据挖掘的需求推动。</p>
+<p><font color="red"><strong>Logical bugs in graph db and  a  Motivation Example:</strong></font></p>
+<p>图数据库管理系统（GDBMSs）是复杂的软件系统，使用复杂的算法，因此容易受到逻辑错误的影响，这会导致对给定查询产生错误的结果。与崩溃错误不同，GDBMS中的逻辑错误可能会悄无声息地计算出错误的结果，这通常既不被用户也不被开发者注意到，从而使得修复这类错误变得困难。例如，AgensGraph GDBMS就存在一个逻辑错误，当计算具有循环路径的节点数量时（例如，match (n)-[]-(n) return count(n)），会产生错误的结果。这个错误是由之前一个旨在移除不必要连接的补丁引入的，但该补丁忘记了考虑自连接的情况。</p>
+<p><font color="red"><strong>Related work and challenges:</strong></font></p>
+<p>一种方法是使用差异测试[27,55]来比较来自不同gdbms的结果，结果中的任何差异都表明存在潜在的错误。即使基本查询在不同GDBMS（如Neo4j和MemGraph）中也可能产生不同结果，这些差异可能是由于设计上的不一致性，导致误报。</p>
+<p>[27] Wei Lin, Ziyue Hua, Luyao Ren, Zongyang Li, Lu Zhang, and Tao Xie. 2022. GDsmith: Detecting Bugs in Graph Database Engines. <em>arXiv preprint arXiv:2206.08530</em>(2022).</p>
+<p>[55] Yingying Zheng, Wensheng Dou, Yicheng Wang, Zheng Qin, Lei Tang, Yu Gao,Dong Wang, Wei Wang, and Jun Wei. 2022. Finding bugs in Gremlin-based graph database systems via Randomized differential testing. In <em>Proceedings of</em> the 31st ACM SIGSOFT International Symposium on Software Testing and Analysis 302–313.</p>
+<p>另一种方法是利用蜕变测试来生成突变的图查询，并验证它们的结果是否符合先前的期望。在图数据库中，唯一现有的工作[22]是基于谓词划分[42]，它旨在通过三元逻辑划分[43]生成三个不相交的子集查询。</p>
+<p>[22] Matteo Kamm. 2022. <em>Testing Graph Databases using Predicate Partitioning</em>. Master’s thesis. ETH Zurich.</p>
+<p><font color="red"><strong>Approach:</strong></font></p>
+<p>在这项工作中，我们提出了一种新的测试方法，称为注入式和满射式图查询转换（GQT），以有效地检测GDBMS中的逻辑错误。我们方法的核心思想是利用图查询中的图模式（G-Pattern），通过基于有向边集的注入式和满射式映射，系统地生成后续查询。这些后续查询旨在计算与初始查询结果以特定方式相关的结果，任何差异都表明存在逻辑错误。我们的方法考虑了两类有向边集的G-Pattern映射：（1）双射映射和（2）仅注入式或仅满射式映射。</p>
+<ul>
+<li>使用双射边映射，我们基于查询𝑄生成一个后续查询𝑄′，使得𝑄′的结果集与𝑄的结果集相等（𝑅𝑆(𝑄′)&#x3D;𝑅𝑆(𝑄)）。为了导出后续查询𝑄′，我们引入了一个操作符&#x3D;○，该操作符随机应用一个查询等价转换。</li>
+<li>同样地，使用仅注入式或仅满射式边映射，我们基于查询𝑄生成一个后续查询𝑄′，使得𝑄′的结果集要么是𝑄的结果集的超集（𝑅𝑆(𝑄′)⊇𝑅𝑆(𝑄)），要么是子集（𝑅𝑆(𝑄′)⊆𝑅𝑆(𝑄)），这意味着后续查询的结果集比基础查询的结果集大或小（至少相等）。为了导出这种比较关系，我们引入了变异操作符&gt;○和&lt;○，这些操作符随机应用一个查询泛化或限制转换。</li>
+</ul>
+<p>我们的方法基于注入式和满射式有向边映射创建图查询转换，涉及三个操作符（即&#x3D;○, &gt;○, 和&lt;○），我们使用这些操作符从基础查询生成测试用例。</p>
+<p><font color="red"><strong>An motivation example:</strong></font></p>
+<p>在这个例子中，使用图查询转换（GQT）方法在RedisGraph中发现了一个逻辑错误。测试案例包括一个基础查询𝑄和一个通过变异图模式构造的等价查询𝑄&#x3D;○。在变异的查询中，图模式的顺序被反向表示，同时保持有向边集之间的双射映射，这允许生成一个应该与原始查询给出相同结果的替代查询。然而，这对语义上等价的查询意外地输出了不一致的结果，因此确定RedisGraph存在逻辑错误。该错误后来被开发者确认并修复。</p>
+<p><img src="/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/image-20240301160422273.png" alt="image-20240301160422273"></p>
+<blockquote>
+<p>这条语句是使用Cypher查询语言编写的，Cypher是Neo4j图数据库的查询语言，但也被其他图数据库系统采用或支持。这条具体的查询语句的目的是在图数据库中执行一个特定的图模式匹配。</p>
+<ul>
+<li><code>MATCH (s1:B)-[*1..2]-(s3:A)</code>：这部分是一个图模式匹配表达式。<code>MATCH</code>是Cypher中用于指定图模式匹配的关键字。这个表达式寻找图中的两个节点<code>s1</code>和<code>s3</code>，其中<code>s1</code>标记为<code>B</code>类型，<code>s3</code>标记为<code>A</code>类型。<code>-[*1..2]-</code>表示<code>s1</code>和<code>s3</code>之间的路径，可以是直接相连的（即边的数量为1），或者通过一个中间节点相连（即边的数量为2）。这个路径不分方向，意味着<code>s1</code>到<code>s3</code>或<code>s3</code>到<code>s1</code>的路径都是有效的。</li>
+<li><code>RETURN count(s1);</code>：这部分指定了查询的返回值。<code>RETURN</code>是Cypher中用于指定返回什么数据的关键字。<code>count(s1)</code>是一个聚合函数，用于计算满足匹配条件的<code>s1</code>节点的数量。</li>
+</ul>
+<p>在图数据库中查找所有标记为<code>B</code>的节点<code>s1</code>，这些节点通过一条长度为1到2的路径与标记为<code>A</code>的节点<code>s3</code>相连，然后返回这样的<code>s1</code>节点的总数。</p>
+</blockquote>
+<p><font color="red"><strong>Evaluation and Contributions:</strong></font></p>
+<p>在这项工作中，研究团队开发了一个名为GraphGenie的工具，以评估他们提出的注入式和满射式图查询转换（GQT）技术的有效性。GraphGenie支持两种流行的图查询语言：Cypher和Gremlin，并在六个成熟的图数据库管理系统（GDBMS）上进行了测试，包括Neo4j、RedisGraph、AgensGraph、TinkerPop、JanusGraph和HugeGraph。通过这些测试，研究团队发现了总共25个之前未知的错误，包括16个逻辑错误（其中6个已修复，3个已确认）、3个内部错误（全部已修复）和6个性能问题（全部收到了积极反馈）。</p>
+<p>此外，研究团队将GraphGenie与两种基于差异测试和查询分割的最新技术进行了比较，这两种技术分别由工具Grand和GDBMeter实现。与Grand相比，GraphGenie没有产生任何误报（Grand的误报率超过80%）。与GDBMeter相比，GraphGenie能够识别出GDBMeter未能发现的6个逻辑错误。这些结果表明GraphGenie是一个有前景的GDBMS测试工具。</p>
+<p>总结其贡献，可以归纳为以下几点：</p>
+<ol>
+<li><strong>提出了一种新颖有效的方法</strong>：注入式和满射式图查询转换（GQT），这是一种用于识别GDBMS中逻辑错误的新方法。该方法通过在常见查询元素上创建可扩展的图转换，基于有向边映射生成后续查询，并使用三个操作符（即&#x3D;○, &gt;○, &lt;○）创建测试神谕来揭示逻辑错误。</li>
+<li><strong>开发了一个实用工具GraphGenie</strong>：基于上述方法，GraphGenie能够生成有效的基础查询，结合规则生成变异查询，并且能够在没有任何误报的情况下识别逻辑错误。该工具支持两种主要的图查询语言。</li>
+<li><strong>在成熟的GDBMS中发现了多种逻辑错误</strong>：GraphGenie发现了包括16个逻辑错误、几个内部错误和严重性能问题在内的总共25个之前未知的错误。GraphGenie提交的错误报告得到了开发者的积极接收和认可。</li>
+</ol>
+<h3 id="Background："><a href="#Background：" class="headerlink" title="Background："></a><strong>Background：</strong></h3><p>本文的背景部分提供了对图数据库管理系统（GDBMSs）、图查询语言以及映射类型（注入、满射和双射）的基础介绍，这些都是理解和评估GDBMSs中逻辑错误检测方法的关键概念。</p>
+<p><strong>图数据库管理系统（GDBMSs）</strong></p>
+<ul>
+<li>GDBMSs使用各种图模型来表示数据，本文特别关注标签属性图模型，这是在如Neo4j、RedisGraph和TinkerPop等先进GDBMS中最广泛使用的模型。</li>
+<li>这些系统大而复杂，例如，Neo4j最新版本的代码行数超过一百万行。</li>
+</ul>
+<p><strong>图查询语言</strong></p>
+<ul>
+<li>图查询语言（如Cypher和Gremlin）用于与GDBMSs交互。本文主要以Cypher查询语言来阐述方法。</li>
+<li>Cypher查询包含几个元素：匹配（Match）指定需要匹配的图模式；图模式（G-Pattern）指定节点和边的匹配模式；谓词（Predicate）指定匹配查询边的过滤条件；返回（Return）指定结果，可以包括聚合函数如count()；其他（Others）指定结果集的额外约束，如排序（order by）、限制（limit）和跳过（skip）。</li>
+<li>节点和边通过连字符（-）和箭头（&gt; 或 &lt;）连接，表示边的方向。Cypher还允许表示变长的复杂图模式（如[*1..2]表示边长从1到2的图模式）。</li>
+</ul>
+<p><strong>注入、满射和双射</strong></p>
+<ul>
+<li>注入（Injection）、满射（Surjection）和双射（Bijection）描述了函数如何将其域（函数参数）映射到陪域（函数结果）。<ul>
+<li><strong>注入</strong>表示一对一映射，即陪域中的每个元素最多由域中的一个元素映射。</li>
+<li><strong>满射</strong>表示“到上”的映射，如果陪域中的每个元素至少由域中的一个元素映射。</li>
+<li><strong>双射</strong>是同时具有注入性和满射性的函数。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注入（Injection）- 一对一映射</p>
+<p>假设我们有两个集合：A &#x3D; {1, 2, 3} 和 B &#x3D; {a, b, c, d}。一个函数f从A到B是注入的，如果A中的每个元素都映射到B中的一个唯一元素，而且不同的元素映射到不同的元素。</p>
+<ul>
+<li>f(1) &#x3D; a</li>
+<li>f(2) &#x3D; b</li>
+<li>f(3) &#x3D; c</li>
+</ul>
+<p>在图数据库中，注入映射可以用来描述一个场景，其中每个查询模式（或子图模式）在目标图中找到的匹配是唯一的。例如，考虑一个社交网络图，节点代表人，边代表人与人之间的朋友关系。如果我们执行一个查询来找到具有特定属性的人（比如，名字为”John”），并且在图中只有一个”John”，那么这个查询就可以被视为是注入的，因为我们查询的每个实例（在这个例子中只有一个）都映射到图中的一个唯一节点。</p>
+<p>满射（Surjection）- 到上映射</p>
+<p>继续使用集合A &#x3D; {1, 2, 3} 和 B &#x3D; {a, b, c}。一个函数f从A到B是满射的，如果B中的每个元素至少由A中的一个元素映射。</p>
+<ul>
+<li>f(1) &#x3D; a</li>
+<li>f(2) &#x3D; b</li>
+<li>f(3) &#x3D; b</li>
+</ul>
+<p>满射在图数据库中可以用来描述一个查询，它能够覆盖图中的所有目标节点或边。例如，如果我们的查询是找到图中所有的人节点，不管它们的属性如何，只要每个人节点至少被查询匹配一次，这个查询就是满射的。在实际应用中，满射可能不那么常见，因为大多数查询都是为了找到满足特定条件的一部分节点或边，而不是全部。</p>
+<p>双射（Bijection）- 一一对应映射</p>
+<p>如果集合A &#x3D; {1, 2, 3} 和集合B &#x3D; {a, b, c}，一个函数f从A到B是双射的，如果它既是注入也是满射。这意味着A中的每个元素都唯一地映射到B中的一个元素，反之亦然。</p>
+<ul>
+<li>f(1) &#x3D; a</li>
+<li>f(2) &#x3D; b</li>
+<li>f(3) &#x3D; c</li>
+</ul>
+<p>例如，如果我们有一个图，其中包含特定类型的节点，比如所有的”人”节点都有一个唯一的ID作为属性，那么一个查询，它根据ID查找这些”人”节点，将形成一个双射，因为每个ID都唯一对应一个节点，每个节点也都有一个唯一的ID。</p>
+</blockquote>
+<h3 id="Graph-Pattern-Mapping"><a href="#Graph-Pattern-Mapping" class="headerlink" title="Graph Pattern Mapping"></a><strong>Graph Pattern Mapping</strong></h3><p>本文通过引入注入（Injection）、满射（Surjection）和双射（Bijection）的概念，来指导图查询中图模式（G-Pattern）的变异，以便系统地测试图数据库管理系统（GDBMSs）。在这个上下文中，基础查询𝑄被视为域，而变异查询𝑄′被视为陪域。以下是如何利用这些概念来指导G-Pattern的变异：</p>
+<p><img src="/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/image-20240301165629266.png" alt="image-20240301165629266"></p>
+<p>G-Pattern等价（&#x3D;）</p>
+<ul>
+<li><strong>双射映射</strong>：两个G-Pattern之间的双射映射意味着𝐺𝑃1中的每条边都与𝐺𝑃2中的一条唯一且匹配的边对应，没有任何边被遗漏，使得两个G-Pattern等价。例如，对称G-Pattern、循环G-Pattern和分裂G-Pattern。</li>
+</ul>
+<p>G-Pattern限制（≤）</p>
+<ul>
+<li><strong>满射但非注入</strong>：G-Pattern 𝐺𝑃1中的某些边可能不映射到G-Pattern 𝐺𝑃2中。这种映射的例子包括有向G-Pattern和子图G-Pattern，其中通过删除边或节点来生成子图，从而改变了有向边集合成为子集，失去了注入性但保留了满射性。</li>
+<li>G-Pattern限制的例子包括有向G-Pattern和子图G-Pattern，如图4所示。具体来说，G-Pattern的有向性通过删除一个方向来改变无向G-Pattern（例如，𝐺𝑃1&#x3D;{→𝐴𝐵, →𝐵𝐴, →𝐵𝐶, →𝐶𝐵} 和𝐺𝑃2&#x3D;{→𝐴𝐵,  →𝐵𝐶}）；G-Pattern子图可以通过删除边来生成跨度子图，或者通过删除节点及其子集有向边集来生成诱导子图（例如，𝐺𝑃1&#x3D;{→𝐴𝐵, →𝐵𝐶, →𝐶𝐷, →𝐴𝐶, →𝐷𝐵} 和 𝐺𝑃2&#x3D;{→𝐴𝐵, →𝐵𝐶,  →𝐶𝐷}）。G-Pattern限制将有向边集改变为子集，失去了注入性但保留了满射映射。</li>
+</ul>
+<p>G-Pattern泛化（≥）</p>
+<ul>
+<li><strong>注入但非满射</strong>：这种映射类型的例子是G-Pattern限制的逆操作，如扩展G-Pattern，它将有向边集合改变为超集，失去了满射性但保留了注入性。</li>
+<li>超集</li>
+</ul>
+<p><img src="/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/image-20240301170102302.png" alt="image-20240301170102302"></p>
+<h3 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a><strong>Approach</strong></h3><p>本方法通过对基础查询应用查询转换来生成等价或变异的变异查询，并进一步检查其结果的预期一致性。直观上，我们的测试神谕是，语义上等价的查询应该获取相同的结果，而变异查询则应该返回更多或更少（至少相等）的结果。图5提供了使用注入式和满射式图查询转换（GQT）的查询转换概览和示例。给定基础查询𝑄，我们利用受注入式和满射式G-Pattern映射启发的查询转换来生成变异查询（例如，𝑄&#x3D;○1, 𝑄&lt;2○, 𝑄&lt;○&#x3D;○3）。通过这些操作符，我们可以推断出它们的结果关系，从而通过检查基础查询与变异查询之间的一致性来反映逻辑错误。</p>
+<p><img src="/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/image-20240301170801303.png" alt="image-20240301170801303"></p>
+<p>本文将图查询转换（Graph Query Transformation,  GQT）规则分为三个主要类别，根据它们的策略和作用于图模式（G-Pattern）的不同方式进行分类：结构GQT（G#）规则、属性GQT（H#）规则和非GQT（#）规则。下面是这些规则的详细介绍：</p>
+<p><strong>结构GQT（G#）规则（等价）</strong></p>
+<ul>
+<li>这组规则基于第3节提到的注入式和满射式路径映射，改变图模式同时保留有向边集映射上的注入或满射，或两者。</li>
+<li>例如，通过应用基于对称G-Pattern映射的转换，从基础查询𝑄变异出等价查询𝑄&#x3D;○1，这显示了如何在保持结构映射的同时改变图模式。</li>
+<li>这类规则包括对称模式、展开循环模式、模式分割、添加边方向、生成跨度子图、生成诱导子图和扩展模式等转换。</li>
+</ul>
+<p><strong>属性GQT（H#）规则（&lt;&#x3D;)</strong></p>
+<ul>
+<li>源于标签属性图模型，这组规则利用节点标签、边类型及其属性来生成注入式和满射式G-Pattern映射，扩大查询转换的空间。</li>
+<li>一个属性GQT规则的例子是通过添加边类型（例如，[:rated]）从基础查询𝑄变异出查询限制𝑄&lt;○2，这考虑到边类型的满射式映射，将有向边集分为两个不相交的子集。</li>
+<li>这类规则包括添加节点标签、添加边类型、移动标签谓词、计数ID属性和计数其他名称等转换。</li>
+</ul>
+<p><strong>非GQT（#）规则（&gt;&#x3D;)</strong></p>
+<ul>
+<li>这组规则来源于查询语法或除G-Pattern外的其他查询元素，不显式变异G-Pattern也不使用G-Pattern映射。</li>
+<li>包括将谓词分为两部分的DisjointPredicate、添加总是为真的条件的RedundantPredicate、更改变量名的RenameVariables和以调用函数方式执行图查询的AddCallWrapper等规则。</li>
+<li>通过规则组合，这组规则有助于生成多样化的变异查询。</li>
+</ul>
+<p><strong>变异算子</strong></p>
+<p><img src="/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/image-20240301180912981.png" alt="image-20240301180912981"></p>
+<h3 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h3><p>在本节中，我们通过回答以下研究问题来评估GraphGenie在各个重要方面的表现：</p>
+<ul>
+<li><strong>Q1 未知错误的发现</strong>：GraphGenie在发现成熟GDBMS中的未知错误方面有多有效？</li>
+<li><strong>Q2 与现有技术的比较</strong>：GraphGenie在GDBMS测试方面的有效性与最新技术（如Grand和GDBMeter）相比如何？</li>
+<li><strong>Q3 GQT贡献分析</strong>：各个规则类别对GraphGenie性能的贡献程度如何？</li>
+<li><strong>Q4 检测性能问题的适用性</strong>：GraphGenie是否也适用于发现GDBMS中的性能问题？</li>
+</ul>
+<p><strong>目标GDBMS</strong></p>
+<p>我们主要测试了使用Cypher的GDBMS，因此在评估中我们专注于它们。我们首先选取了三个排名靠前的Cypher GDBMS来评估GraphGenie的有效性，包括Neo4j、RedisGraph和AgensGraph。表2显示了这些GDBMS的DB-Engine排名、GitHub星标、初始发布日期和代码行数（LoC）。我们还将我们的方法应用于三个使用Gremlin的GDBMS，包括TinkerPop、JanusGraph和HugeGraph，与现有工作进行比较，以展示该方法对其他图查询语言的通用性。</p>
+<p><strong>测试数据集</strong></p>
+<p>我们使用了Neo4j创建的两个标准数据集，即CyberSecurity和Recommendation。CyberSecurity包含来自活动目录环境审计的数据以及使用图分析可能的攻击路径，包括953个节点和4,858个关系。Recommendation是电影评论的数据集，包含28,863个节点和166,261个关系。</p>
+<p>这个评估部分旨在全面检验GraphGenie工具在实际应用中的有效性和适用性，通过对成熟的GDBMS进行测试，以及与现有技术的比较，来展示其在发现未知错误和性能问题方面的能力。同时，通过分析不同规则类别的贡献，进一步理解GraphGenie性能的关键因素。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/">http://example.com/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/" title="Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation"><span class="toc-number">1.</span> <span class="toc-text">Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Information"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Information:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E7%AE%80%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">论文简要 :</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%BF%A1%E6%81%AF"><span class="toc-number">1.3.</span> <span class="toc-text">背景信息:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text">方法:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">1.5.</span> <span class="toc-text">结果:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Abstract%EF%BC%9A"><span class="toc-number">1.6.</span> <span class="toc-text">Abstract：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Introduction%EF%BC%9A"><span class="toc-number">1.7.</span> <span class="toc-text">Introduction：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Background%EF%BC%9A"><span class="toc-number">1.8.</span> <span class="toc-text">Background：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Graph-Pattern-Mapping"><span class="toc-number">1.9.</span> <span class="toc-text">Graph Pattern Mapping</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Approach"><span class="toc-number">1.10.</span> <span class="toc-text">Approach</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Evaluation"><span class="toc-number">1.11.</span> <span class="toc-text">Evaluation</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/" title="Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation">Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation</a><time datetime="2024-03-01T10:34:41.000Z" title="发表于 2024-03-01 18:34:41">2024-03-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/" title="Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing">Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing</a><time datetime="2024-03-01T03:26:47.000Z" title="发表于 2024-03-01 11:26:47">2024-03-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/" title="Detecting Logic Bugs of Join Optimizations in DBMS">Detecting Logic Bugs of Join Optimizations in DBMS</a><time datetime="2024-01-28T05:53:29.000Z" title="发表于 2024-01-28 13:53:29">2024-01-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/22/Testing-Database-Systems-via-Differential-Query-Execution/" title="Testing Database Systems via Differential Query Execution">Testing Database Systems via Differential Query Execution</a><time datetime="2024-01-22T13:12:54.000Z" title="发表于 2024-01-22 21:12:54">2024-01-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/15/DynSQL-Stateful-Fuzzing-for-Database-Management-Systems-with-Complex-and-Valid-SQL-Query-Generation/" title="DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation">DynSQL: Stateful Fuzzing for Database Management Systems with Complex and Valid SQL Query Generation</a><time datetime="2024-01-15T12:34:42.000Z" title="发表于 2024-01-15 20:34:42">2024-01-15</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
