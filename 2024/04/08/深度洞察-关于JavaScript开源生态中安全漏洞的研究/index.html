@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>深度洞察 |关于JavaScript开源生态中安全漏洞的研究 | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="深度洞察 |关于JavaScript开源生态中安全漏洞的研究NPMNpm模块安装机制如何？   NPM模块安装 官方的一些漏洞修复工具： npm audit 和 Dependabot  [1] PLUMBER: Boosting the Propagation of Vulnerability Fixes in the npm Ecosystem  2023 TSE 论文详解：https:&#x2F;&#x2F;li">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度洞察 |关于JavaScript开源生态中安全漏洞的研究">
+<meta property="og:url" content="http://example.com/2024/04/08/%E6%B7%B1%E5%BA%A6%E6%B4%9E%E5%AF%9F-%E5%85%B3%E4%BA%8EJavaScript%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%AD%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%A0%94%E7%A9%B6/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="深度洞察 |关于JavaScript开源生态中安全漏洞的研究NPMNpm模块安装机制如何？   NPM模块安装 官方的一些漏洞修复工具： npm audit 和 Dependabot  [1] PLUMBER: Boosting the Propagation of Vulnerability Fixes in the npm Ecosystem  2023 TSE 论文详解：https:&#x2F;&#x2F;li">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-04-08T10:31:29.000Z">
+<meta property="article:modified_time" content="2024-04-08T10:33:14.900Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="文献综述">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/04/08/%E6%B7%B1%E5%BA%A6%E6%B4%9E%E5%AF%9F-%E5%85%B3%E4%BA%8EJavaScript%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%AD%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%A0%94%E7%A9%B6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '深度洞察 |关于JavaScript开源生态中安全漏洞的研究',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-04-08 18:33:14'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">79</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">深度洞察 |关于JavaScript开源生态中安全漏洞的研究</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-08T10:31:29.000Z" title="发表于 2024-04-08 18:31:29">2024-04-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-08T10:33:14.900Z" title="更新于 2024-04-08 18:33:14">2024-04-08</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="深度洞察 |关于JavaScript开源生态中安全漏洞的研究"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="深度洞察-关于JavaScript开源生态中安全漏洞的研究"><a href="#深度洞察-关于JavaScript开源生态中安全漏洞的研究" class="headerlink" title="深度洞察 |关于JavaScript开源生态中安全漏洞的研究"></a>深度洞察 |关于JavaScript开源生态中安全漏洞的研究</h1><p><font color="green">NPMNpm模块安装机制如何？</font>  </p>
+<p><a href="/asserts/npm-vulnerability-study.ppt" target="_blank">NPM模块安装</a></p>
+<p><font color="red"><strong>官方的一些漏洞修复工具： npm audit 和 Dependabot</strong> </font></p>
+<p><font color="red"><strong>[1] PLUMBER: Boosting the Propagation of Vulnerability Fixes in the <em>npm</em> Ecosystem  2023 TSE</strong></font></p>
+<p>论文详解：<a target="_blank" rel="noopener" href="https://linli1724647576.github.io/2023/03/04/PLUMBER/">https://linli1724647576.github.io/2023/03/04/PLUMBER/</a></p>
+<p>Keyinsight：文章解决的主要问题是npm生态系统中漏洞修复传播的延迟。尽管60.6%的包在发现漏洞后及时发布了修复版本，工具如<code>npm audit</code>和<code>Dependabot</code>被推出以提醒依赖于有漏洞包版本的项目，但在漏洞修复在npm生态系统中的传播仍然存在严重滞后。通过调查，发现20%的活跃npm包通过依赖关系引入了漏洞，尽管涉及的有漏洞包已经发布了修复版本超过一年。</p>
+<p>keyinsight： 1、识别阻塞包以及总结了一些修复模式  （生态系统端的检测和修复）</p>
+<p><font color="red"><strong>[2] Demystifying the vulnerability propagation and its evolution via dependency trees in the npm ecosystem  2022 ICSE</strong> </font></p>
+<p>论文详解：<a target="_blank" rel="noopener" href="https://linli1724647576.github.io/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/">https://linli1724647576.github.io/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/</a></p>
+<p>keyinsight： 1、考虑NPM特殊的安装机制   2、考虑时间维度     3、也有考虑DTReme修复  （客户端：侧重检测）</p>
+<p><font color="red"><strong>[3] What the Fork Finding Hidden Code Clones in npm  2022 ICSE</strong> </font></p>
+<p>论文详解： <a target="_blank" rel="noopener" href="https://linli1724647576.github.io/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/">https://linli1724647576.github.io/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/</a></p>
+<p>这篇论文主要识别npm生态系统中的克隆包，由于npm生态系统的开放性，任何人都可以fork一个新的包作为原始包的分叉，所以导致了克隆包的出现，更有甚者，npm允许自动升级依赖包，这更加重了克隆包的安全隐患。</p>
+<ol>
+<li><p><strong>为什么npm生态系统中会存在克隆包？其他包管理器如Maven, pip, NuGet也有这种情况吗？</strong></p>
+<p>npm生态系统中存在克隆包的原因主要包括缺乏官方的分叉（forking）机制和npm生态系统的开放性和灵活性。在npm中，任何人都可以轻松地复制一个包并将其作为一个新的包发布，而没有明确的机制来标记这种行为或将新包与原始包明确关联。这导致了“shrinkwrapped clones”的出现，即包含与现有包相同或几乎相同代码的包。而Maven, pip, NuGet等其他包管理器虽然也可能出现克隆包的情况，但由于它们的社区规范、依赖管理机制和使用场景的不同，出现这种情况的频率和背景可能有所不同。例如，GitHub等平台对于软件的分叉有明确的可视化和跟踪机制，这在一定程度上减少了克隆包的潜在风险。</p>
+</li>
+<li><p><strong>出现克隆包会存在哪些安全隐患？这和npm特殊的依赖管理机制有关系吗？</strong></p>
+<p>克隆包的存在可能导致多种安全隐患，包括但不限于：</p>
+<ul>
+<li><strong>误导用户</strong>：开发者可能无意中依赖了一个克隆包，而不是他们原本打算使用的原始包。这可能因为克隆包包含恶意代码而导致安全漏洞。</li>
+<li><strong>潜在的恶意代码</strong>：克隆包可能被用作传播恶意代码的载体，包括钓鱼、数据窃取、远程控制等。</li>
+<li><strong>依赖混乱</strong>：克隆包可能引起项目依赖的混乱，特别是当克隆包和原始包在功能上略有差异，但足以引起运行时错误时。</li>
+</ul>
+<p>这些安全隐患与npm的依赖管理机制密切相关。npm的灵活性允许包以多种版本并存，缺乏有效的机制来阻止或警告克隆包的存在。此外，npm允许自动升级依赖包，如果自动升级选择了一个有安全问题的克隆包，可能会无意中引入安全漏洞。</p>
+</li>
+<li><p><strong>这篇论文的Key insight是什么？解决了什么问题？是怎么解决这个问题的？</strong></p>
+<p><strong>Key Insight</strong>：</p>
+<ul>
+<li>文章的关键洞察是识别并解决了npm生态系统中隐藏的代码克隆问题，特别是“shrinkwrapped clones”，这些克隆包可能引入安全漏洞并对依赖管理造成混乱。</li>
+</ul>
+<p><strong>解决的问题</strong>：</p>
+<ul>
+<li>解决了如何在大规模的npm生态系统中有效地识别和匹配克隆包的问题，包括完全相同的克隆和接近的克隆。这对于提高包的安全性、合规性和整体健康至关重要。</li>
+</ul>
+<p><strong>解决方法</strong>：</p>
+<ul>
+<li>文章提出了一种名为“unwrapper”的技术，该技术通过分析包的文件结构和内容，自动检测和匹配克隆包。它包括了一个软件包爬虫、一个预过滤器和一个克隆探测器，这三个模块共同工作以高效地识别克隆包。特别是，通过使用可参数化的启发式方法和基于文件哈希值的比较，这个方法可以在不需要复杂代码分析的情况下，快速地对整个npm仓库进行克隆检测。</li>
+</ul>
+</li>
+</ol>
+<p><font color="red"><strong>[4] Flexible and optimal dependency management via max-smt</strong></font></p>
+<p>论文详解：<a target="_blank" rel="noopener" href="https://linli1724647576.github.io/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/">https://linli1724647576.github.io/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/</a></p>
+<p>综合了用户体验，其中优化目标和约束的选择决定了哪些目标被优先考虑。论文提出了提出了MAXNPM：一个完整的、可以直接替代NPM的系统，它赋予开发者结合多个目标的能力。核心是使用DSL（领域特定语言），用于指定包版本、版本约束、优化目标等的语法和语义。在底层，PACSOLVE使用一个辅助解决器的语言产生一个为Max-SMT解决器准备的问题，这确保其解决方案是最优的，不同于NPM的贪心方法。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/04/08/%E6%B7%B1%E5%BA%A6%E6%B4%9E%E5%AF%9F-%E5%85%B3%E4%BA%8EJavaScript%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%AD%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%A0%94%E7%A9%B6/">http://example.com/2024/04/08/%E6%B7%B1%E5%BA%A6%E6%B4%9E%E5%AF%9F-%E5%85%B3%E4%BA%8EJavaScript%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%AD%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%A0%94%E7%A9%B6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%96%87%E7%8C%AE%E7%BB%BC%E8%BF%B0/">文献综述</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/" title="Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/05/24/Type-Infer%E6%96%87%E7%8C%AE%E7%BB%BC%E8%BF%B0/" title="Type Infer文献综述"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-24</div><div class="title">Type Infer文献综述</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">79</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E6%B4%9E%E5%AF%9F-%E5%85%B3%E4%BA%8EJavaScript%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%AD%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%A0%94%E7%A9%B6"><span class="toc-number">1.</span> <span class="toc-text">深度洞察 |关于JavaScript开源生态中安全漏洞的研究</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/04/08/%E6%B7%B1%E5%BA%A6%E6%B4%9E%E5%AF%9F-%E5%85%B3%E4%BA%8EJavaScript%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%AD%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%A0%94%E7%A9%B6/" title="深度洞察 |关于JavaScript开源生态中安全漏洞的研究">深度洞察 |关于JavaScript开源生态中安全漏洞的研究</a><time datetime="2024-04-08T10:31:29.000Z" title="发表于 2024-04-08 18:31:29">2024-04-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/" title="Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation">Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation</a><time datetime="2024-03-01T10:34:41.000Z" title="发表于 2024-03-01 18:34:41">2024-03-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/01/Finding-Bugs-in-Gremlin-Based-Graph-Database-Systems-via-Randomized-Differential-Testing/" title="Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing">Finding Bugs in Gremlin-Based Graph Database Systems via Randomized Differential Testing</a><time datetime="2024-03-01T03:26:47.000Z" title="发表于 2024-03-01 11:26:47">2024-03-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/28/Detecting-Logic-Bugs-of-Join-Optimizations-in-DBMS/" title="Detecting Logic Bugs of Join Optimizations in DBMS">Detecting Logic Bugs of Join Optimizations in DBMS</a><time datetime="2024-01-28T05:53:29.000Z" title="发表于 2024-01-28 13:53:29">2024-01-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/22/Testing-Database-Systems-via-Differential-Query-Execution/" title="Testing Database Systems via Differential Query Execution">Testing Database Systems via Differential Query Execution</a><time datetime="2024-01-22T13:12:54.000Z" title="发表于 2024-01-22 21:12:54">2024-01-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
