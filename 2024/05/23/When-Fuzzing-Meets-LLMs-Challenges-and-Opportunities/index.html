@@ -1,0 +1,316 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>When Fuzzing Meets LLMs: Challenges and Opportunities | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="When Fuzzing Meets LLMs: Challenges and OpportunitiesABSTRACT这篇论文的摘要介绍了模糊测试（Fuzzing）和大型语言模型（LLMs）的结合。模糊测试是一种广泛使用的发现软件缺陷的技术，通过结合大型语言模型，这种技术得到了发展。尽管有潜力，但在模糊测试中应用大型语言模型还面临特定的挑战。本文确定了LLM辅助模糊测试的五大主要挑战，并通过回">
+<meta property="og:type" content="article">
+<meta property="og:title" content="When Fuzzing Meets LLMs: Challenges and Opportunities">
+<meta property="og:url" content="http://example.com/2024/05/23/When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="When Fuzzing Meets LLMs: Challenges and OpportunitiesABSTRACT这篇论文的摘要介绍了模糊测试（Fuzzing）和大型语言模型（LLMs）的结合。模糊测试是一种广泛使用的发现软件缺陷的技术，通过结合大型语言模型，这种技术得到了发展。尽管有潜力，但在模糊测试中应用大型语言模型还面临特定的挑战。本文确定了LLM辅助模糊测试的五大主要挑战，并通过回">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-05-23T05:04:34.000Z">
+<meta property="article:modified_time" content="2024-05-23T05:05:48.186Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/05/23/When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'When Fuzzing Meets LLMs: Challenges and Opportunities',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-23 13:05:48'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">82</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">When Fuzzing Meets LLMs: Challenges and Opportunities</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-23T05:04:34.000Z" title="发表于 2024-05-23 13:04:34">2024-05-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-23T05:05:48.186Z" title="更新于 2024-05-23 13:05:48">2024-05-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="When Fuzzing Meets LLMs: Challenges and Opportunities"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities"><a href="#When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities" class="headerlink" title="When Fuzzing Meets LLMs: Challenges and Opportunities"></a><strong>When Fuzzing Meets LLMs: Challenges and Opportunities</strong></h1><h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><p>这篇论文的摘要介绍了模糊测试（Fuzzing）和大型语言模型（LLMs）的结合。模糊测试是一种广泛使用的发现软件缺陷的技术，通过结合大型语言模型，这种技术得到了发展。尽管有潜力，但在模糊测试中应用大型语言模型还面临特定的挑战。本文确定了LLM辅助模糊测试的五大主要挑战，并通过回顾顶级会议的最新论文来支持我们的发现，确认这些挑战是普遍存在的。作为解决方案，我们提出了一些可行的建议，以帮助改进LLM在模糊测试中的应用，并对数据库管理系统的模糊测试进行了初步评估。结果表明，我们的建议有效地解决了这些已识别的挑战。</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h2><p>这个章节介绍了模糊测试和大型语言模型（LLM）的结合如何被用于提高软件缺陷检测的有效性。具体内容概括如下：</p>
+<ol>
+<li><p><strong>模糊测试与LLM的结合</strong>: 描述了模糊测试作为软件缺陷检测的有前途的技术，以及LLM因其多功能性和能力在各种应用中迅速流行的情况。LLM在从自然语言处理到代码生成等多个领域的广泛应用，使其成为一个突出且受欢迎的解决方案。</p>
+</li>
+<li><p><strong>LLM在模糊测试中的应用</strong>: LLM已经成为支持模糊测试核心过程的关键技术之一，包括<font color="red">驱动程序合成、输入生成和缺陷检测</font>。</p>
+<ul>
+<li><p>驱动程序合成</p>
+</li>
+<li><p><strong>[28] Yunlong Lyu, Yuxuan Xie, Peng Chen, and Hao Chen. 2023. Prompt Fuzzing for Fuzz Driver Generation. <em>arXiv preprint arXiv:2312.17677</em> (2023).</strong></p>
+</li>
+<li><p>[39] Cen Zhang, Mingqiang Bai, Yaowen Zheng, Yeting Li, Xiaofei Xie, Yuekang Li, Wei Ma, Limin Sun, and Yang Liu. 2023. Understanding large language model based fuzz driver generation. <em>arXiv preprint arXiv:2307.12469</em> (2023).</p>
+</li>
+<li><p>输入生成</p>
+</li>
+<li><p><strong>[9] Arghavan Moradi Dakhel, Amin Nikanjam, Vahid Majdinasab, Foutse Khomh, and Michel C Desmarais. 2023. Effective test generation using pre-trained large language models and mutation testing. <em>arXiv preprint arXiv:2308.16557</em> (2023).</strong></p>
+</li>
+<li><p>[10] Victor Dantas. 2023. Large Language Model Powered Test Case Generation for Software Applications. (2023).</p>
+</li>
+<li><p>缺陷检测</p>
+</li>
+<li><p><strong>[11] Yinlin Deng, Chunqiu Steven Xia, Haoran Peng, Chenyuan Yang, and Lingming Zhang. 2023. Large language models are zero-shot fuzzers: Fuzzing deep-learning libraries via large language models. In <em>Proceedings of the 32nd ACM SIGSOFT</em> <em>international symposium on software testing and analysis</em>. 423–435.</strong></p>
+</li>
+<li><p>[17] Ali Reza Ibrahimzada, Yang Chen, Ryan Rong, and Reyhaneh Jabbarvand. 2023. Automated Bug Generation in the era of Large Language Models. <em>arXiv preprint arXiv:2310.02407</em> (2023).</p>
+</li>
+</ul>
+</li>
+<li><p><strong>LLM面临的挑战</strong>: 尽管LLM在自然语言分析方面表现出色，但在复杂程序分析中显示出一些常见的缺点，如有限的上下文长度和幻觉问题，这些问题影响了模糊测试的有效性，导致测试性能下降，表现为高假阳性、低测试覆盖率和有限的可扩展性。</p>
+</li>
+<li><p><strong>使用LLM进行模糊测试的五个常见挑战</strong>:</p>
+<ul>
+<li>输出质量低下，缺乏有效缺陷检测所需的精确度。</li>
+<li>模型在理解和处理能力上的局限性。</li>
+<li><font color="red">在模糊测试过程中生成足够多样化输入的困难。</font></li>
+<li><font color="red">维持生成输入的有效性的挑战。</font></li>
+<li>LLM对缺陷检测机制的理解不准确，限制了它们在识别和解决复杂软件漏洞方面的有效性。</li>
+</ul>
+</li>
+<li><p><strong>实证调查与初步评估</strong>: 通过回顾依赖LLM处理模糊测试问题的最新工作，发现这些工作中每一个都至少遇到了上述挑战之一。此外，还进行了一些初步评估，通过在模糊测试数据库管理系统中应用LLM，展示了合理实施这些建议能够克服在LLM辅助的DBMS模糊测试中的挑战。</p>
+</li>
+</ol>
+<p>整体来看，这部分强调了LLM在模糊测试中的潜力和挑战，并提出了一些改善建议和初步的成功应用案例。</p>
+<h2 id="CHALLENGES-AND-OPPORTUNITIES"><a href="#CHALLENGES-AND-OPPORTUNITIES" class="headerlink" title="CHALLENGES AND OPPORTUNITIES"></a><strong>CHALLENGES AND OPPORTUNITIES</strong></h2><p>尽管LLM取得了巨大的成功，但LLM在模糊化中的应用往往容易出现几个问题，从演绎精度到适应可伸缩性。忽略这些问题可能会导致种子质量差或忽略关键的缺陷，从而导致有限的模糊性能。在本节中，我们总结了在模糊过程中应用LLM时通常发生的五个挑战。虽然这些挑战一开始可能看起来很简单，但它们通常源于模糊过程中常见的小缺点。</p>
+<p><img src="/2024/05/23/When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities/image-20240523111624055.png" alt="image-20240523111624055"></p>
+<h3 id="Driver-Synthesis"><a href="#Driver-Synthesis" class="headerlink" title="Driver Synthesis"></a>Driver Synthesis</h3><p>这个章节讨论了使用大型语言模型（LLM）来增强驱动程序合成的方法、面临的挑战和建议的解决策略。以下是详细概括：</p>
+<ol>
+<li><strong>驱动程序合成的描述</strong>:<ul>
+<li>利用LLM使用API文档作为上下文提示，生成API调用序列，用作模糊测试的驱动程序。</li>
+<li>提到了一些特定的工具，如TitanFuzz和PromptFuzz，它们设计了定制的提示模板来引导LLM生成符合编程语法和语义的代码。</li>
+</ul>
+</li>
+<li><strong>面临的挑战</strong>:<ul>
+<li>直接使用LLM进行驱动合成可能会导致效率不高，因为LLM容易产生幻觉并且在未包括在其训练语料库中的程序上表现不佳。</li>
+<li>这些限制导致两个主要挑战：合成的驱动程序易出错，导致模糊测试期间的假阳性数量显著；LLM对未见过的程序知识有限，有时会生成错误的API调用序列。</li>
+</ul>
+</li>
+<li><strong>建议</strong>:<ul>
+<li><strong>REC 1.1</strong>: 对于已包含在训练语料库中的目标代码或用例，使用LLM自动合成模糊驱动程序，并通过<strong>错误引导的纠正措施来补充</strong>，这是一种实用的方法。例如，对于libpng库，可以直接让GPT-4根据给定的提示生成模糊测试驱动程序，但可能还需要通过提交错误消息进行多次迭代查询来纠正错误。</li>
+<li><strong>REC 1.2</strong>: 对于没有专门语料库的目标，可以收集如<strong>函数原型、示例程序或函数间的连接规则等宝贵资料</strong>。通过嵌入这些资料进行提示工程，可以提高生成函数调用逻辑序列的准确性。</li>
+<li><strong>REC 1.3</strong>: 即使有足够的文档和示例，LLM有时也可能在生成有效驱动程序方面遇到挑战，特别是对于如Linux内核这样极其复杂的目标。对于这些目标，建议不依赖LLM，而是探索传统方法。例如，KSG通过动态推断内核的系统调用参数类型和值约束，与基于内核手册页和源代码的静态推断方法相比，生成的Syzlang数量显著多于KernelGPT。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>SQL语法较为简单，大模型应该不会遇到这些问题</p>
+</blockquote>
+<h3 id="Input-Generation"><a href="#Input-Generation" class="headerlink" title="Input Generation"></a><strong>Input Generation</strong></h3><p>这个章节讨论了利用大型语言模型（LLM）增强输入生成的方法、面临的挑战和提出的解决策略。以下是详细概括：</p>
+<ol>
+<li><strong>输入生成的描述</strong>:<ul>
+<li>介绍了使用LLM根据输入规范和示例来生成新输入的先导工作，例如LLMFuzzer使用输入规范让LLM生成变异型模糊器的初始种子。</li>
+</ul>
+</li>
+<li><strong>面临的挑战</strong>:<ul>
+<li>直接使用LLM进行输入生成可能会导致效率低下，因为LLM严重依赖训练语料库并且对长文本理解有限。这导致生成的输入缺乏多样性和有效性。</li>
+<li>LLM通常不能生成足够多样化的输入，难以充分探索输入空间，举例说明了在RTPS协议模糊测试中的限制。</li>
+<li>生成的输入往往有效性有限，可能导致目标程序在执行这些输入时提前终止，如在处理复杂的Border Gateway Protocol（BGP）时的限制。</li>
+</ul>
+</li>
+<li><strong>建议</strong>:<ul>
+<li><strong>REC 2.1</strong>: 对于在网络上有大量示例并且已包含在LLM训练语料库中的测试输入，可以直接使用LLM生成测试用例，并结合多样化方法。这些方法包括精心设计的提示和覆盖引导的遗传算法等，以增加输入的多样性。例如，在测试常见的文本协议如HTTP和FTP时，可以使用多种HTTP方法、不同的头部、查询参数和URL结构来增加多样性。</li>
+<li><strong>REC 2.2</strong>:  <font color="red">在很多情况下，LLM没有针对测试对象专门训练的语料库。建议使用LLM将已知的知识转换为输入规范或构建初步的测试用例。例如，对于缺乏机器可读语法的协议实现，利用LLM已经训练过的协议，转移这些协议的语法来增强生成测试用例的有效性，并可以使用传统的基于语法的模糊器来生成更多测试用例。还可以将流行数据库系统的SQL查询转换为测试数据库系统的初步种子，增强生成测试用例的多样性。</font></li>
+</ul>
+</li>
+</ol>
+<p><img src="/2024/05/23/When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities/image-20240523114040311.png" alt="image-20240523114040311"></p>
+<h3 id="Bug-Detection"><a href="#Bug-Detection" class="headerlink" title="Bug Detection"></a><strong>Bug Detection</strong></h3><p>这个章节探讨了使用大型语言模型（LLM）增强缺陷检测的方法、面临的挑战和提出的解决策略。以下是详细概括：</p>
+<ol>
+<li><strong>缺陷检测的描述</strong>:<ul>
+<li><font color="red">描述了一种通过使用目标程序的功能描述作为提示上下文，请求LLM生成与目标程序实现相同功能的代码的方法。通过比较两个功能等效程序的执行结果，可以检测目标程序中的逻辑错误。</font></li>
+<li>例如，Differential Prompting通过询问LLM提供的代码的意图，然后使用获取的意图作为新的提示上下文，让LLM生成具有相同意图的代码。</li>
+<li>[21] Siva Kesava Reddy Kakarla and Ryan Beckett. 2023. Oracle-based Protocol Testing with Eywa. <em>arXiv preprint arXiv:2312.06875</em> (2023).</li>
+<li><strong>[25] Tsz-On Li, Wenxi Zong, Yibo Wang, Haoye Tian, Ying Wang, Shing-Chi Cheung, and Jeff Kramer. 2023. Nuances are the Key: Unlocking ChatGPT to Find Failure Inducing Tests with Differential Prompting. In <em>2023 38th IEEE&#x2F;ACM International</em> Conference on Automated Software Engineering (ASE)*. IEEE, 14–26.</strong></li>
+</ul>
+</li>
+<li><strong>面临的挑战</strong>:<ul>
+<li>直接使用LLM进行缺陷检测可能会因为LLM对长文本理解有限而导致效果不佳，可能会误解目标程序的语义。例如，研究发现LLM可能会将寻找最长公共子串的代码误解为寻找最长公共子序列，这种误解会导致生成的代码功能与目标程序偏离，从而导致测试标准不准确。</li>
+<li>Differential Prompting在生成编程比赛网站Codeforces程序的参考实现时，成功率为66.7%，但误报率为33.3%，这对实际使用来说还不够。</li>
+</ul>
+</li>
+<li><strong>建议</strong>:<ul>
+<li><strong>REC 3.1</strong>: 对于复杂的目标，建议避免直接用LLM分析结果。相反，可以考虑使用LLM提取与特定错误类型相关的特征或模式，并利用领域知识。然后，使用这些模式监控系统，帮助解决理解不准确的挑战。例如，在分析时间序列数据库（如IoTDB）的日志时，可以利用LLM识别错误模式，进而检测逻辑错误。</li>
+<li><strong>REC 3.2</strong>: 对于文档定义明确、预期行为清晰描述的目标或项目，建议利用LLM的自然语言理解能力从文档中提取预期行为来定义测试标准。这有助于LLM理解目标程序的意图和设计，从而解决理解不准确的问题。例如，使用Telnet协议的RFC 854作为测试标准，可以进一步用来揭示CVE-2021-40523等问题。</li>
+</ul>
+</li>
+</ol>
+<h2 id="POTENTIAL-SOLUTIONS"><a href="#POTENTIAL-SOLUTIONS" class="headerlink" title="POTENTIAL SOLUTIONS"></a><strong>POTENTIAL SOLUTIONS</strong></h2><p>为了证明我们的建议的实用性，我们使用数据库管理系统（DBMS）作为llm辅助模糊化的目标。为了解决驱动程序合成、输入生成和bug检测方面的挑战，我们提出了三种潜在的解决方案：状态感知的驱动程序合成、跨dbms SQL传输和基于日志的Oracle定义。这些解决方案被实现，并与直接使用LLM的基本使用进行了比较。实验是在一台256核（AMD EPYC 7742处理器@ 2.25 GHz）和512 GiB的机器上进行的，证明了我们推荐的方法在增强基于llm的模糊处理，如DBMSs等复杂系统方面的有效性。</p>
+<h3 id="LLM-Enhanced-Connector-Synthesis"><a href="#LLM-Enhanced-Connector-Synthesis" class="headerlink" title="LLM-Enhanced Connector Synthesis"></a><strong>LLM-Enhanced Connector Synthesis</strong></h3><p>这个章节探讨了如何使用大型语言模型（LLM）来增强数据库连接器的驱动程序合成，其面临的挑战以及提出的解决方案。以下是详细概括：</p>
+<ol>
+<li><strong>挑战</strong>:<ul>
+<li>使用LLM直接生成数据库连接器的驱动程序会面临两个主要挑战：容易出错和范围有限。API序列包含嵌入在数据库连接器状态中的语义信息，直接生成序列可能会引入错误。此外，由于缺乏相关的训练语料库，LLM缺乏连接器的状态转换知识。</li>
+</ul>
+</li>
+<li><strong>解决方案</strong>:<ul>
+<li>根据建议REC 1.2，提出了一种LLM增强的状态感知数据库连接器合成方法。首先收集JDBC函数原型和使用JDBC的示例程序，然后建模JDBC函数之间的连接关系作为状态转换规则。接着，将函数原型、示例程序和连接规则作为LLM的输入。给定的提示是：“基于状态转换规则和函数的状态描述，请生成一个长度为15的API序列，要求覆盖以前不同的状态转换组合。”</li>
+</ul>
+</li>
+<li><strong>结果</strong>:<ul>
+<li>实现了LLM增强的连接器合成在Wingfuzz𝑐𝑜𝑛𝑛中，并与直接使用LLM生成驱动程序的LLM𝑐𝑜𝑛𝑛进行比较，比较对象包括MySQL Connector&#x2F;J、MariaDB Connector&#x2F;J和AWS JDBC Driver for MySQL。在对ClickHouse进行模糊测试后，结果显示Wingfuzz𝑐𝑜𝑛𝑛在驱动程序正确率和分支覆盖率方面均优于LLM𝑐𝑜𝑛𝑛。具体来说，Wingfuzz𝑐𝑜𝑛𝑛在驱动合成的正确率提高了94%，生成的驱动程序平均覆盖了更多56%的分支。这主要是因为状态转换规则嵌入了语义信息，帮助LLM生成考虑到数据库连接器多样状态的API序列。</li>
+</ul>
+</li>
+</ol>
+<p><img src="/2024/05/23/When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities/image-20240523114915272.png" alt="image-20240523114915272"></p>
+<h3 id="Cross-DBMS-SQL-Transfer"><a href="#Cross-DBMS-SQL-Transfer" class="headerlink" title="Cross-DBMS SQL Transfer"></a><strong>Cross-DBMS SQL Transfer</strong></h3><p>这个章节探讨了使用大型语言模型（LLM）进行跨数据库管理系统（DBMS）的SQL传递的方法、面临的挑战以及提出的解决策略。以下是详细概括：</p>
+<ol>
+<li><strong>挑战</strong>:<ul>
+<li>使用LLM直接生成SQL查询会面临两个主要挑战：确保语义正确性和提升查询多样性。语义正确的SQL查询对于触发复杂的DBMS行为至关重要，而SQL的复杂语法对LLM实现语义正确性构成挑战。此外，由于缺乏DBMS反馈，LLM在探索多样化查询结构方面受到限制。</li>
+</ul>
+</li>
+<li><strong>解决方案</strong>:<ul>
+<li>为了克服这些挑战，介绍了一种与建议REC 2.2相符的跨DBMS SQL传递方法。与直接生成SQL查询相比，该方法使用LLM将其他DBMS的测试用例转移作为目标DBMS模糊测试的初始种子。这些初始种子在模糊测试循环期间用于突变新的SQL测试用例。此过程包括三个关键步骤：首先，在其原生DBMS中执行现有的SQL测试用例以捕获执行期间的模式信息；其次，利用LLM和捕获的模式信息引导新测试用例的生成；最后，为了确保适当的解析，临时注释掉无法解析的部分，并在突变后取消注释。</li>
+</ul>
+</li>
+<li><strong>结果</strong>:<ul>
+<li>实施了名为Wingfuzz𝑖𝑛𝑝𝑢𝑡的解决方案，并与直接使用LLM生成SQL查询的LLM𝑖𝑛𝑝𝑢𝑡进行比较。在三个DBMS（MonetDB、DuckDB和ClickHouse）上运行这两个工具。结果显示，Wingfuzz𝑖𝑛𝑝𝑢𝑡在DBMS模糊测试方面的表现优于LLM𝑖𝑛𝑝𝑢𝑡。具体来说，Wingfuzz𝑖𝑛𝑝𝑢𝑡生成的测试用例包含更多的语义正确的SQL语句，并覆盖了更多的代码分支。这表明LLM不能直接生成高质量的SQL查询作为DBMS模糊测试的输入，转移种子提高了突变测试用例的多样性，并且模糊器的突变器保证了SQL查询的语义正确性。</li>
+</ul>
+</li>
+</ol>
+<h3 id="Monitor-Based-DBMS-Bug-Detection"><a href="#Monitor-Based-DBMS-Bug-Detection" class="headerlink" title="Monitor-Based DBMS Bug Detection"></a><strong>Monitor-Based DBMS Bug Detection</strong></h3><p>这个章节探讨了使用基于运行时监控的DBMS缺陷检测方法、面临的挑战以及提出的解决策略。以下是详细概括：</p>
+<ol>
+<li><strong>挑战</strong>:<ul>
+<li>DBMS缺陷检测中最关键的步骤是构建测试标准（test oracle）来识别DBMS中的逻辑或性能缺陷。直接使用LLM构建测试标准面临挑战，因为LLM缺乏关于DBMS复杂工作和行为的具体知识，并且无法访问内部逻辑，难以准确预测或模拟DBMS行为。</li>
+</ul>
+</li>
+<li><strong>解决方案</strong>:<ul>
+<li>为了应对这些挑战，提出了基于运行时监控的DBMS缺陷检测方法，该方法通过实时分析DBMS的运行时信息来检测异常。该方法不是直接使用LLM通过检查SQL查询的执行结果来构建测试标准，而是收集DBMS的运行时信息，并使用LLM分析这些信息以检测缺陷。该过程包含两个主要步骤：首先，部署一个代理来提取DBMS的运行时信息；然后，收集这些信息并使用LLM预定义一些错误模式来检测异常。</li>
+</ul>
+</li>
+<li><strong>结果</strong>:<ul>
+<li>为了评估我们的建议的有效性，实施了名为Wingfuzz𝑏𝑢𝑔的解决方案，并将其与直接使用LLM在模糊测试循环中判断SQL查询执行是否正确的LLM𝑏𝑢𝑔进行比较。结果显示，Wingfuzz𝑏𝑢𝑔可以检测到更多异常，并且比LLM𝑏𝑢𝑔有更少的误报。具体来说，LLM𝑏𝑢𝑔共报告了182个缺陷，但只有1个是真实的缺陷。相比之下，Wingfuzz𝑏𝑢𝑔报告了14个缺陷，其中9个被确认为真实的缺陷。主要原因是收集到的运行时信息包含了DBMS的错误消息，这有助于LLM分析和检测缺陷。</li>
+</ul>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/05/23/When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities/">http://example.com/2024/05/23/When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/05/08/Recommending-Analogical-APIs-via-Knowledge-Graph-Embedding/" title="Recommending Analogical APIs via Knowledge Graph Embedding"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Recommending Analogical APIs via Knowledge Graph Embedding</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">82</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities"><span class="toc-number">1.</span> <span class="toc-text">When Fuzzing Meets LLMs: Challenges and Opportunities</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ABSTRACT"><span class="toc-number">1.1.</span> <span class="toc-text">ABSTRACT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.2.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CHALLENGES-AND-OPPORTUNITIES"><span class="toc-number">1.3.</span> <span class="toc-text">CHALLENGES AND OPPORTUNITIES</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Driver-Synthesis"><span class="toc-number">1.3.1.</span> <span class="toc-text">Driver Synthesis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Input-Generation"><span class="toc-number">1.3.2.</span> <span class="toc-text">Input Generation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bug-Detection"><span class="toc-number">1.3.3.</span> <span class="toc-text">Bug Detection</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#POTENTIAL-SOLUTIONS"><span class="toc-number">1.4.</span> <span class="toc-text">POTENTIAL SOLUTIONS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LLM-Enhanced-Connector-Synthesis"><span class="toc-number">1.4.1.</span> <span class="toc-text">LLM-Enhanced Connector Synthesis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cross-DBMS-SQL-Transfer"><span class="toc-number">1.4.2.</span> <span class="toc-text">Cross-DBMS SQL Transfer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Monitor-Based-DBMS-Bug-Detection"><span class="toc-number">1.4.3.</span> <span class="toc-text">Monitor-Based DBMS Bug Detection</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/23/When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities/" title="When Fuzzing Meets LLMs: Challenges and Opportunities">When Fuzzing Meets LLMs: Challenges and Opportunities</a><time datetime="2024-05-23T05:04:34.000Z" title="发表于 2024-05-23 13:04:34">2024-05-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/08/Recommending-Analogical-APIs-via-Knowledge-Graph-Embedding/" title="Recommending Analogical APIs via Knowledge Graph Embedding">Recommending Analogical APIs via Knowledge Graph Embedding</a><time datetime="2024-05-08T08:26:56.000Z" title="发表于 2024-05-08 16:26:56">2024-05-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/01/No-More-Manual-Tests-Evaluating-and-Improving-ChatGPT-for-Unit-Test-Generation/" title="No More Manual Tests Evaluating and Improving ChatGPT for Unit Test Generation">No More Manual Tests Evaluating and Improving ChatGPT for Unit Test Generation</a><time datetime="2024-05-01T03:13:48.000Z" title="发表于 2024-05-01 11:13:48">2024-05-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/04/08/%E6%B7%B1%E5%BA%A6%E6%B4%9E%E5%AF%9F-%E5%85%B3%E4%BA%8EJavaScript%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%AD%E5%AE%89%E5%85%A8%E6%BC%8F%E6%B4%9E%E7%9A%84%E7%A0%94%E7%A9%B6/" title="深度洞察 |关于JavaScript开源生态中安全漏洞的研究">深度洞察 |关于JavaScript开源生态中安全漏洞的研究</a><time datetime="2024-04-08T10:31:29.000Z" title="发表于 2024-04-08 18:31:29">2024-04-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/01/Detecting-Logic-Bugs-in-Graph-Database-Management-Systems-via-Injective-and-Surjective-Graph-Query-Transformation/" title="Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation">Detecting Logic Bugs in Graph Database Management Systems via Injective and Surjective Graph Query Transformation</a><time datetime="2024-03-01T10:34:41.000Z" title="发表于 2024-03-01 18:34:41">2024-03-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
