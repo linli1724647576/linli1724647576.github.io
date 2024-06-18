@@ -1,0 +1,329 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Detecting Logic Bugs in Database Engines via Equivalent Expression TransformationABSTRACT数据库管理系统（DBMS）对于存储和获取数据至关重要。为了提高这些系统的可靠性，已提出了各种方法来检测导致DBMS处理数据错误的逻辑错误。这些方法通过操作查询并检查DBMS生成的查询结果是否符合预期来发现错误。然而，这种查">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation">
+<meta property="og:url" content="http://example.com/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Detecting Logic Bugs in Database Engines via Equivalent Expression TransformationABSTRACT数据库管理系统（DBMS）对于存储和获取数据至关重要。为了提高这些系统的可靠性，已提出了各种方法来检测导致DBMS处理数据错误的逻辑错误。这些方法通过操作查询并检查DBMS生成的查询结果是否符合预期来发现错误。然而，这种查">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-06-18T07:48:17.000Z">
+<meta property="article:modified_time" content="2024-06-18T07:49:38.829Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-18 15:49:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-18T07:48:17.000Z" title="发表于 2024-06-18 15:48:17">2024-06-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-18T07:49:38.829Z" title="更新于 2024-06-18 15:49:38">2024-06-18</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation"><a href="#Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation" class="headerlink" title="Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation"></a><strong>Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation</strong></h1><h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><p>数据库管理系统（DBMS）对于存储和获取数据至关重要。为了提高这些系统的可靠性，已提出了各种方法来检测导致DBMS处理数据错误的逻辑错误。这些方法通过操作查询并检查DBMS生成的查询结果是否符合预期来发现错误。<strong>然而，这种查询级别的操作无法处理复杂的查询语义，因此需要限制生成的查询模式，这降低了测试的有效性。</strong></p>
+<p>在本文中，我们采用了一种细粒度的方法——表达式级别的操作，这种方法使得所提出的方法能够适用于任意查询。为了在DBMS中找到逻辑错误，我们设计了一种新颖且通用的方法，即等价表达式转换（EET）。<strong>我们的核心思想是，以保持语义的方式操作查询的表达式，也可以保持整个查询的语义，并且与查询模式无关。</strong>EET通过检查转换后的查询是否仍然产生与原始查询相同的结果来验证DBMS。我们实现了这种方法，并在五种广泛使用且经过广泛测试的DBMS上进行了评估：MySQL、PostgreSQL、SQLite、ClickHouse 和 TiDB。总共，EET发现了66个独特的错误，其中35个是逻辑错误。我们期望EET的通用性和有效性能激励后续研究并提高许多DBMS的可靠性。</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a><strong>Introduction</strong></h2><p><font color="red">Background：</font></p>
+<p>数据库管理系统（DBMS）是关键的系统软件，对于现代数据驱动的应用程序至关重要，提供了诸如数据存储和获取等基本功能。与其他大型系统一样，DBMS在其开发和维护过程中由于复杂的代码逻辑和多样的功能，很容易引入错误。其中最严重的错误类型之一是逻辑错误——这种错误会导致DBMS悄无声息地产生错误的查询结果。为了检测逻辑错误，现有的方法生成SQL查询来测试DBMS，并检查生成的结果是否符合预期。这些方法要么构造定制查询并验证这些查询获取的行数据，要么转换给定查询并检查转换后的查询的执行结果是否与原始查询一致。这些测试方法旨在确保数据库系统在处理各种查询时的准确性和可靠性。</p>
+<p><font color="red">Related work:</font></p>
+<p><strong>PQS</strong>：这个方法生成的查询结果必须能够被其手工实现的解释器预测，因此难以支持涉及复杂计算的高级SQL功能，如窗口函数。</p>
+<p><strong>TLP</strong>：此方法要求查询必须在WHERE或HAVING子句中包含用于分区的谓词，但某些可能触发错误的查询并不包含这些子句。此外，TLP不支持窗口函数和子查询等高级特性。</p>
+<p><strong>DQE</strong>：这种方法仅限于使用SELECT、UPDATE和DELETE语句支持的常见SQL功能，而不支持仅由一种语句支持的功能（如JOIN操作和聚合函数）。</p>
+<img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618134903369.png" alt="image-20240618134903369" style="zoom:50%;">
+
+<p><font color="red">Limitations：</font></p>
+<p>现有SQL查询生成方法的局限性，主要源自其粗粒度的方法学，即基于查询级别的操作。核心问题和局限性包括：</p>
+<ol>
+<li><strong>语义理解的挑战</strong>：现有方法需要理解被操作查询的语义，以确保这些查询产生的结果符合预期。然而，SQL查询被设计为具有高度的灵活性，并可以包含由数据库管理系统支持的丰富和复杂的语义。这使得完全理解这些复杂语义变得困难。</li>
+<li><strong>复杂查询的适用性问题</strong>：由于难以完全理解包含复杂语义的查询，现有方法无法适用于复杂的查询形式。这直接影响了方法的普适性和效能。</li>
+<li><strong>查询模式的限制</strong>：为了应对理解复杂查询语义的挑战，现有方法通常限制其生成查询的模式，仅生成符合特定预期模式的查询。这种限制使得这些方法无法利用那些不符合预期查询模式的通用查询。</li>
+</ol>
+<p>因此，这些方法的应用受限于其方法学的内在局限性，导致它们无法广泛地支持各种复杂的SQL查询功能。</p>
+<p><font color="red">Key insights:</font></p>
+<p>通过表达式级别的操作来处理逻辑错误检测问题。关键洞察点包括：</p>
+<ol>
+<li><strong>细粒度方法学</strong>：采用<strong>表达式级</strong>操作代替<strong>传统的查询级</strong>操作，允许更细致地探讨和操作SQL查询中的核心单元—表达式。表达式可以是函数、操作、列变量、常数值或子查询等。</li>
+<li><strong>专注于表达式语义</strong>：通过操作单个表达式，可以专注于查询的细粒度语义，即表达式的语义，而无需理解整个查询的复杂语义。这种方法提高了处理复杂查询的灵活性和精确性。</li>
+<li><strong>避免查询模式限制</strong>：通过细粒度操作，可以轻松地构建或修改查询，而不必将查询模式限制于具有简单语义的那些。这允许生成和检测更广泛的SQL特性，不受传统方法的限制。</li>
+</ol>
+<p><font color="red">appoach：</font></p>
+<p>这段描述提出了一个新颖且通用的方法——等价表达式转换（EET），它基于更细粒度的方法学，适用于任意SQL查询并能有效发现数据库管理系统中的逻辑错误。该方法的核心步骤和特点包括：</p>
+<ol>
+<li><strong>遍历抽象语法树（AST）</strong>：EET方法首先遍历给定查询的抽象语法树，以迭代查询中使用的各个表达式。</li>
+<li><strong>表达式的等价转换</strong>：对于每个表达式，EET根据逻辑等价性和SQL分支结构，将其转换为另一个语义上等价的表达式。</li>
+<li><strong>执行结果对比</strong>：转换后的查询（即表达式已被转换的查询）与原始查询的执行结果进行比较。任何观察到的差异都指示存在逻辑错误。</li>
+<li><strong>实际应用示例</strong>：例如，EET将原始查询中的表达式t2.c2和t2.c3转换为转换查询中两个语义等价的CASE WHEN表达式，并通过检查这两个查询的结果是否相同来验证测试的数据库管理系统。</li>
+</ol>
+<img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618135951009.png" alt="image-20240618135951009" style="zoom:67%;">
+
+<p><font color="red">Contributions：</font></p>
+<p>本研究实现了一种称为等价表达式转换（EET）的方法，并将其作为实用的数据库管理系统（DBMS）测试工具进行了评估。该工具在五种广泛使用且经过深入测试的DBMS上进行了评估，包括MySQL、SQLite、PostgreSQL、ClickHouse和TiDB。通过这种方法，共发现了66个独特的错误，其中包括MySQL中的16个、SQLite的10个、PostgreSQL的9个、ClickHouse的21个和TiDB的10个。在这些错误中，65个得到了确认，37个已经被修复，其中35个是逻辑错误，许多是长时间隐藏的错误。这些结果证明了EET在发现DBMS中的逻辑错误方面的有效性。</p>
+<p>总体而言，本研究的主要贡献包括：</p>
+<ol>
+<li><strong>提出了一种细粒度的方法学</strong>：表达式级操作，它可以在不限制查询模式的情况下操作任意查询。</li>
+<li><strong>提出了一种新颖且通用的方法</strong>：等价表达式转换（EET），它可以有效地通过基于逻辑等价性和SQL分支结构的转换规则找到DBMS中的逻辑错误。</li>
+<li><strong>实现并评估了该方法</strong>：作为一个自动DBMS测试工具，并在五种广泛使用的DBMS上进行评估。总共发现了66个错误，其中35个是逻辑错误。为了进一步促进DBMS测试的研究，该工具已经在GitHub上开源，链接为：<a target="_blank" rel="noopener" href="https://github.com/JZuming/EET%E3%80%82">https://github.com/JZuming/EET。</a></li>
+</ol>
+<p>这些贡献显示了EET方法在实际应用中的潜力和效果，特别是在提高DBMS可靠性和稳定性方面。</p>
+<h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a><strong>Motivation</strong></h2><h3 id="2-1-Illustrative-Example"><a href="#2-1-Illustrative-Example" class="headerlink" title="2.1 Illustrative Example"></a><strong>2.1 Illustrative Example</strong></h3><p>Fiigure 2提供了一个说明性例子，展示了一个通过等价表达式转换（EET）方法发现的古老逻辑错误。这个错误由于PostgreSQL中错误的哈希连接机制存在了20年，直到被EET发现并触发。触发错误的查询分为三个部分：</p>
+<ol>
+<li><strong>数据库设置</strong>：第一部分包括几个语句（例如CREATE和INSERT），用于设置后续查询的数据库环境。</li>
+<li><strong>原始查询</strong>：第二部分是一个随机生成的查询，称为原始查询。</li>
+<li><strong>转换查询</strong>：第三部分是由我们的方法从原始查询转换得到的查询，称为转换查询。在转换查询中，原始查询的表达式t2.c3和t2.c2被转换为两个语义等价的CASE WHEN表达式。</li>
+</ol>
+<p>这两个查询应当产生相同的结果，因为转换查询保留了原始查询的语义。然而，实际结果显示两者不同，表明触发了一个逻辑错误。具体来说，转换查询在其WHERE子句中包含一个相关子查询，该子查询引用外部查询的表t2的列值，并在其FROM子句中使用INNER JOIN，并通过ORDER BY和LIMIT约束其返回值。预期PostgreSQL应返回一行{0}，但因为子查询中的谓词触发了逻辑错误，实际返回了一个空集。这个错误的详细原因将在第5.3节讨论。</p>
+<h3 id="2-2-Limitations-of-Existing-Approaches"><a href="#2-2-Limitations-of-Existing-Approaches" class="headerlink" title="2.2 Limitations of Existing Approaches"></a><strong>2.2 Limitations of Existing Approaches</strong></h3><p>这段文字讨论了几种现有的数据库管理系统（DBMS）中逻辑错误检测方法，并指出了它们的局限性。具体提到的方法包括：</p>
+<ol>
+<li><strong>PQS</strong>：通过合成一个查询来获取特定行，如果未获取到该行，则触发逻辑错误。</li>
+<li><strong>TLP</strong>：将给定查询通过分解WHERE或HAVING子句中的谓词分为三个独立的查询，这三个查询的结果的并集应与原始查询一致，否则发现逻辑错误。</li>
+<li><strong>Pinolo</strong>：操作WHERE子句中的查询谓词，构造一个新查询，其结果是原始查询结果的超集或子集。</li>
+</ol>
+<p>所有这些方法都采用查询级别的操作，这是一种粗粒度的方法学，存在以下主要问题：</p>
+<ul>
+<li><strong>语义理解限制</strong>：为了保证正确的操作，这些方法需要理解被操作查询的语义。例如，PQS需要解释其合成的查询以预测预期结果。</li>
+<li><strong>复杂查询的处理困难</strong>：SQL是一个灵活的查询语言，支持各种特性（例如子查询、连接等），使得在特定需求下，SQL查询（如分析查询）可能非常复杂。在这些情况下，查询级别的操作因无法处理这些复杂的语义而无法有效工作。</li>
+<li>为避免生成的查询中出现不适用的情况，现有方法限制查询模式来约束生成查询的语义。结果是，许多重要的SQL特性无法得到支持，例如，PQS和Pinolo仅支持部分连接操作，而所有现有方法都不支持相关子查询，因为它们的语义复杂。</li>
+</ul>
+<p>这些方法因其限制的查询模式而错过许多逻辑错误，例如文章中提到的PostgreSQL的20年老错误。这些局限表明，需要更细粒度和灵活的方法来有效地处理和检测DBMS中的逻辑错误。</p>
+<h3 id="2-3-Our-Solution"><a href="#2-3-Our-Solution" class="headerlink" title="2.3 Our Solution"></a><strong>2.3 Our Solution</strong></h3><p>这段描述提出了一种应用于任意查询的通用方法，以解决逻辑错误检测问题。该方法采用了一种细粒度的方法学——表达式级操作，将关注点从整个查询的语义转移到查询中单个表达式的语义上，从而增强了操作的潜力和灵活性。通过处理查询中的细粒度元素，即表达式，而无需分析整个查询的语义，从而避免了限制查询模式以简化查询语义的需求。</p>
+<p>基于这种方法学，提出了等价表达式转换（EET），它适用于任意查询以发现DBMS中的逻辑错误。EET通过迭代查询中的所有表达式并将它们转换为语义等价的表达式来工作。通过检查转换后的表达式的查询是否产生与原始查询相同的结果来验证DBMS的正确性。例如，在图2中，EET将原始查询中的表达式t2.c3和t2.c2转换为转换查询中的两个CASE WHEN表达式。这些CASE WHEN表达式是SQL中的条件分支结构，其返回值取决于条件表达式的结果。两个CASE WHEN的分支条件都无法满足，只能评估为FALSE。因此，这两个CASE WHEN在语义上等同于原始查询中使用的表达式t2.c3和t2.c2。然而，原始查询输出1行{0}，而转换后的查询输出为空，暴露了一个逻辑错误。</p>
+<p>EET之所以有效，是因为转换后的表达式可以导致被测试的DBMS执行不同的执行逻辑。在图2的示例中，转换后的表达式（即两个CASE WHEN）导致PostgreSQL服务器调用其有错误的哈希连接机制，而原始查询则不会。这种执行差异使得PostgreSQL为这两个查询产生不同的结果，并表明至少其中一个查询触发了错误。</p>
+<h2 id="Equivalent-Expression-Transformation"><a href="#Equivalent-Expression-Transformation" class="headerlink" title="Equivalent Expression Transformation"></a><strong>Equivalent Expression Transformation</strong></h2><img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618141224639.png" alt="image-20240618141224639" style="zoom:67%;">
+
+<h3 id="3-1-Overview"><a href="#3-1-Overview" class="headerlink" title="3.1 Overview"></a><strong>3.1 Overview</strong></h3><p>本节概述了等价表达式转换（EET）的核心概念，并通过一个公式形式化这一思想。在这个公式中，Q代表任意查询，E代表Q中包含的表达式，而DB(Q)是被测试的数据库管理系统（DBMS）为Q生成的结果。公式定义如下：</p>
+<p><img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618141400586.png" alt="image-20240618141400586"></p>
+<p>其中 Q′&#x3D;Q[E′&#x2F;E] 表示通过将Q中所有出现的E替换为语义上等价的表达式 E′ 来构造的查询。根据构造， Q′和 Q在语义上是等价的，因此DBMS应该对它们产生相同的结果。</p>
+<p>图3展示了EET的概览。EET遍历查询的抽象语法树（AST）来迭代表达式，并将这些表达式转换为语义等价的表达式。在所有表达式都被转换后，EET构建一个语义等价的查询，并通过比较转换后的查询和原始查询的结果来验证被测试的DBMS。在本文中，我们提出了确定的布尔表达式（第3.2.1节）和冗余分支结构（第3.2.2节）来实例化满足公式1中的 E≡E′ 的表达式转换。这些工具和方法使得EET能有效地检测和揭示DBMS中的潜在逻辑错误。</p>
+<h3 id="3-2-Expression-Transformation"><a href="#3-2-Expression-Transformation" class="headerlink" title="3.2 Expression Transformation"></a><strong>3.2 Expression Transformation</strong></h3><p>SQL查询包含各种类型的表达式，这些表达式可以分为两大类：布尔表达式和非布尔表达式。对于布尔表达式，我们可以利用数学逻辑中已经广泛研究并普遍认可的逻辑等价性[5,19]进行转换。而对于非布尔表达式，提出一般的转换较为困难，因为这些SQL表达式可以是数字（例如整数、浮点数）、字符串或时间戳等。它们的执行规则各不相同。为了广泛支持这些类型，我们利用SQL分支结构[34]，这种结构可以操作各种类型的表达式并为转换提供灵活性。</p>
+<p>为此，我们提出了两种表达式转换方法：确定的布尔表达式和冗余分支结构。表2展示了每种转换的细节，包括它们适用的表达式和转换规则。EET具有扩展性，可用于额外的表达式转换，并且我们预期未来可以提出更多有效的转换方法，如第3.3节所讨论的。</p>
+<h4 id="3-2-1-Determined-Boolean-Expressions"><a href="#3-2-1-Determined-Boolean-Expressions" class="headerlink" title="3.2.1 Determined Boolean Expressions"></a><strong>3.2.1 Determined Boolean Expressions</strong></h4><p>在这一节中，我们讨论了如何利用逻辑运算和逻辑等价性法则来转换布尔表达式。使用了五个基本的逻辑等价规则来处理任意布尔表达式p：</p>
+<img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618142148675.png" alt="image-20240618142148675" style="zoom:67%;">
+
+<p>这些等价规则在SQL中的对应表达式是：</p>
+<img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618142212299.png" alt="image-20240618142212299" style="zoom:67%;">
+
+<p>考虑到SQL布尔表达式的结果只能是TRUE、FALSE或NULL，我们定义了两个特殊的表达式：</p>
+<img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618142254231.png" alt="image-20240618142254231" style="zoom:67%;">
+
+<p>我们利用这些表达式来形成确定的布尔表达式（称为 <code>true_expr</code> 和 <code>false_expr</code>），它们分别保证返回TRUE和FALSE。这些表达式可以被用来在保持原始表达式语义的前提下，通过添加随机生成的布尔表达式 p′ 来转换任意布尔表达式 p。</p>
+<img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618142331932.png" alt="image-20240618142331932" style="zoom:67%;">
+
+<img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618142348270.png" alt="image-20240618142348270" style="zoom:67%;">
+
+<p>这种方法不仅增强了表达式的变换灵活性，而且确保了原始表达式的语义被保留。我们据此提出了两种转换规则，并在文中的表2展示。这些规则被用于生成的查询，如第5.3节所讨论的图6和图7中的查询示例。这些转换规则保证了原始表达式的语义完整性，并在逻辑错误检测中发挥关键作用。</p>
+<h4 id="3-2-2-Redundant-Branch-Structures"><a href="#3-2-2-Redundant-Branch-Structures" class="headerlink" title="3.2.2 Redundant Branch Structures"></a><strong>3.2.2 Redundant Branch Structures</strong></h4><p>本节介绍了如何转换非布尔表达式，特别是利用SQL中的CASE WHEN表达式——一种条件分支结构，支持多种SQL数据类型。通过设置CASE WHEN表达式中的谓词p为TRUE或FALSE，可以确定其执行逻辑。</p>
+<img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618142943944.png" alt="image-20240618142943944" style="zoom:67%;">
+
+<p>此外，还可以使用先前定义的确定布尔表达式（<code>true_expr</code> 和 <code>false_expr</code>）来替代TRUE和FALSE值，使得转换后的表达式更加复杂。基于此，我们得到以下等价关系：</p>
+<img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618143014851.png" alt="image-20240618143014851" style="zoom:67%;">
+
+<p>这些等价关系允许我们将任何表达式转换为设计好的CASE WHEN表达式，即使涉及随机生成的表达式p和expr’，也能保留原始表达式expr的语义。我们据此提出了表2中第3行和第4行的两种转换规则。需要注意的是，expr’的类型应与expr的类型相同，以避免在某些DBMS中触发不明确的行为。</p>
+<p>此外，通过使CASE WHEN表达式中TRUE和FALSE分支中的表达式在语义上等价，我们可以确定无论谓词p如何评估，CASE WHEN表达式的结果始终是TRUE&#x2F;FALSE分支中的表达式。基于这个原则，我们提出了表2中第5行和第6行的两种转换规则，其中原始表达式expr被复制到另一个语义上等价的表达式copy_expr中，并分布在CASE WHEN表达式的TRUE和FALSE分支中。这样，CASE WHEN表达式就保证与原始表达式语义等价。</p>
+<img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618143322895.png" alt="image-20240618143322895" style="zoom:67%;">
+
+<p>通过这些方法，我们能够灵活地转换和保护原始表达式的语义，同时在数据库中揭示和测试潜在的逻辑错误。这种转换策略的一个实际应用示例在第5.3节讨论的图8中展示了如何被这些规则转换。</p>
+<h4 id="3-2-3-Choosing-Transformation-Rules"><a href="#3-2-3-Choosing-Transformation-Rules" class="headerlink" title="3.2.3 Choosing Transformation Rules"></a><strong>3.2.3 Choosing Transformation Rules</strong></h4><p>本节讨论了在等价表达式转换（EET）框架中选择转换规则的策略。CASE WHEN表达式适用于SQL中的大多数表达式类型，包括数值类型、字符串类型和时间戳类型等。对于这些类型的表达式，EET会随机选择表2中第3到第6号的规则进行转换。布尔类型的表达式也支持CASE WHEN结构，因此对于每个布尔表达式，EET将随机应用第1到第6号规则之一。</p>
+<p>然而，对于某些类型的表达式，CASE WHEN结构可能不适用，这时表2中第1到第6号的规则都无法使用。例如，图2中的表达式t0和t1就是这种情况。当尝试用CASE WHEN表达式替换这些表达式时，查询将触发语法错误。为了解决这个问题，EET采取了保守的策略，即将这些表达式转换为它们本身，这一策略在表2的第7号规则中展示。</p>
+<p>通过这种策略，EET确保即使在CASE WHEN不适用的情况下，也能保持表达式的稳定和一致性，避免引入语法错误或其他潜在问题。这样的方法使EET能够灵活地处理各种数据类型，同时确保转换过程的鲁棒性。</p>
+<h3 id="3-3-Properties"><a href="#3-3-Properties" class="headerlink" title="3.3 Properties"></a><strong>3.3 Properties</strong></h3><p>本节讨论了等价表达式转换（EET）的四个主要属性：健全性、通用性、可扩展性和黑盒测试。</p>
+<ol>
+<li><strong>健全性</strong>：EET遵循第3.2节中形式化证明的方程，保证了原始查询的语义不变。如果原始查询的执行结果是确定的（即不涉及随机性的SQL特性），则变换后的查询必须产生与原始查询相同的执行结果，否则表示触发了逻辑错误。因此，EET在逻辑错误检测中不会产生误报。</li>
+<li><strong>通用性</strong>：与仅在查询级别工作且需要生成的查询遵循特定查询模式的现有方法不同，EET在表达式级别工作，可以广泛应用于各种SQL查询。这使得EET能够处理任意查询，因为它通过转换查询中的表达式来验证查询结果，从而在验证任意SQL查询方面具有广泛性。</li>
+<li><strong>可扩展性</strong>：本文提出了两种表达式转换方法来展示EET的有效性，并预期可以提出更多的转换方法来增强这种方法。例如，可以提出新的转换方法来处理表达式，通过将原始表与其他表连接，同时保持连接结果与原始表一致。EET易于扩展新的转换，因为只需要指定转换规则和适用的表达式类型。</li>
+<li><strong>黑盒测试</strong>：EET是一种纯粹的黑盒技术，不依赖于被测试DBMS的内部实现。这种属性使得我们的方法具有可移植性，并可以轻松部署于测试各种DBMS，即使是那些源代码不可用的DBMS也可以。</li>
+</ol>
+<p>这些属性体现了EET在设计和实现上的强大灵活性，使其能够在多种环境中有效地发现和验证逻辑错误。</p>
+<h2 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a><strong>Implementation</strong></h2><img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618144717908.png" alt="image-20240618144717908" style="zoom:67%;">
+
+<p>本节描述了等价表达式转换（EET）工具的实现细节，该工具是基于SQLsmith构建的全自动工具，主要用于生成数据库和复杂查询。整个代码库包括14,000行C&#x2F;C++代码，其中2,000行用于实现EET方法。下面是实现的重要细节：</p>
+<ol>
+<li><p><strong>测试用例生成</strong>：EET随机生成数据库和查询。工具根据SQL语法逐步构建抽象语法树（AST）。在构建AST的每个节点时，EET会更新并记录可用的变量（例如关系和列），并用随机生成的表达式填充节点，这些表达式引用可用的变量。AST树完成后，生成新的查询，可供测试的DBMS使用。</p>
+</li>
+<li><p><strong>表达式转换</strong>：EET利用查询的AST表示来迭代每个表达式。对于每个表达式，EET检查其类型并随机选择一个适当的转换规则（如3.2.3节所讨论）。在转换过程中，EET可能需要生成额外的表达式（例如，在表2的规则No.1至6中需要额外的布尔表达式）。在这种情况下，EET复用测试用例生成中使用的信息（例如，相应AST节点中的可用变量）来随机生成具有特定类型的额外表达式。</p>
+</li>
+<li><p><strong>结果比较</strong>：EET比较转换后的查询和原始查询的执行结果，包括它们的查询输出和这些查询引起的数据库变化。任何差异表明触发了逻辑错误。</p>
+</li>
+<li><p><strong>SQL精简：</strong></p>
+<p><strong>第一阶段：减简原始查询和转换后的查询</strong>。在此阶段，EET尝试减简原始查询和相应的转换后查询中的各个部分（如表达式）。例如，如果原始查询中的表达式t2.c3被减简为常数值NULL，则转换后查询中相应的CASE WHEN表达式也应被替换为NULL。EET随后检查这两个查询是否仍产生不同的结果。如果是，说明逻辑错误仍存在，且减简有效；否则，EET会恢复被减简的部分并尝试减简这两个查询的其他部分。当没有更多部分可以减简时，进入第二阶段。</p>
+<p><strong>第二阶段：逐步禁用转换后查询中每个表达式的转换</strong>。在这一阶段，EET尝试逐个禁用转换后查询中各个表达式的转换。如果禁用某个表达式的转换后，转换后的查询结果仍与原始查询不同，EET将保持该表达式未转换。否则，EET会将表达式恢复到转换版本。当转换后的查询中没有更多的转换可以被禁用时，此阶段结束。</p>
+</li>
+</ol>
+<h2 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a><strong>Evaluation</strong></h2><p>我们的评估旨在回答以下问题，以证明等价表达式转换（EET）的有效性：</p>
+<ul>
+<li>Q1：EET能否在广泛使用且经过深入测试的数据库管理系统（DBMS）中发现真实的逻辑错误？（第5.2节）</li>
+<li>Q2：EET发现的逻辑错误有多么多样化？（第5.3节）</li>
+<li>Q3：EET能否发现现有方法遗漏的逻辑错误？（第5.4节）</li>
+</ul>
+<h3 id="5-1-Experimental-Setup"><a href="#5-1-Experimental-Setup" class="headerlink" title="5.1 Experimental Setup"></a><strong>5.1 Experimental Setup</strong></h3><p>选择的DBMS包括MySQL、PostgreSQL、SQLite、ClickHouse和TiDB，这些系统因其流行度和广泛的测试而被选中。MySQL、PostgreSQL和SQLite在DB-Engines排名中分别排名第一、第二和第六。ClickHouse和TiDB虽然相对较新，但在GitHub上非常受欢迎，分别获得了超过31,000和35,000的星标，显示出它们的受欢迎程度。</p>
+<p>这些DBMS都经过了广泛的逻辑错误和崩溃错误的测试。在这些已经被广泛测试的系统中找到新的错误非常具有挑战性，但能够证明EET的有效性。实验中使用EET测试每个DBMS的最新版本。当DBMS的代码更新时，会针对更新后的版本启动新的测试。具体来说，测试的版本包括MySQL的8.0.34版，PostgreSQL的3f1aaaa提交，SQLite的20e09ba提交，ClickHouse的30464b9提交和TiDB的f5ca27e提交。所有DBMS代码都是从官方GitHub仓库克隆的。EET的部署是间歇性的，当在EET中实现新功能时，会停止并重新启动测试。总的测试持续时间为三个月。评估是在配备64核AMD Epyc 7742 CPU（2.25GHz）和256GB RAM的Ubuntu 20.04系统上进行的。</p>
+<h3 id="5-2-Bug-Detection"><a href="#5-2-Bug-Detection" class="headerlink" title="5.2 Bug Detection"></a><strong>5.2 Bug Detection</strong></h3><img src="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/image-20240618145340641.png" alt="image-20240618145340641" style="zoom:67%;">
+
+<p>本节介绍了等价表达式转换（EET）在数据库管理系统（DBMS）中检测错误的成果和细节。EET共发现了66个独特的DBMS错误，分布在MySQL（16个）、PostgreSQL（9个）、SQLite（10个）、ClickHouse（21个）和TiDB（10个）中。其中65个错误已经得到确认，37个已经修复，没有一个错误被标记为重复错误。</p>
+<p><strong>错误分类</strong>：</p>
+<ol>
+<li><strong>逻辑错误</strong>：测试的DBMS执行SQL查询不正确，产生错误结果（例如选择或更新错误的行）。这些错误之所以被揭示，是因为原始查询和EET生成的转换查询结果之间存在差异。</li>
+<li><strong>崩溃错误</strong>：特定查询处理时导致测试的DBMS崩溃或出现紧急错误，其根源可能包括内存损坏（如空指针解引用）、断言失败和意外的内存耗尽。</li>
+<li><strong>异常错误</strong>：在处理语法和语义上有效的查询时，测试的DBMS报告意外的错误（例如SQLite中的“数据库磁盘映像格式错误”）。</li>
+</ol>
+<p>EET发现的35个逻辑错误（占总发现错误的52%）是最有趣和最难发现的错误类型。PostgreSQL中的三个逻辑错误尤其引人注目，因为它被认为是DBMS测试中的一个难题。</p>
+<p><strong>错误重要性</strong>：在向MySQL和TiDB报告的错误中，收集了错误的严重性信息。其中，报告给MySQL的所有崩溃错误被标记为机密，其中2个已被分配CVE。MySQL的10个逻辑错误中，7个被认为是严重错误，3个是非关键性错误。TiDB的10个错误中，开发者标记了6个为主要错误，1个为次要错误，3个为中等错误。</p>
+<p>开发者对于在他们的DBMS中发现真实错误表示赞赏，尤其是PostgreSQL的开发者认可了我们对PostgreSQL可靠性的贡献，并发送了纪念币。ClickHouse和PostgreSQL的开发者提供了他们的证词，表达了对EET的认可和想要将其整合到持续集成中的意愿。</p>
+<p><strong>吞吐量</strong>：在测试5个DBMS期间，EET每秒可以执行的测试数（每个测试包括一个原始查询和一个转换查询）平均为3.39次（每天约293k次测试），这一数字低于现有方法。这是合理的，因为EET支持复杂查询，DBMS执行复杂查询所需的时间远超简单查询，导致大部分CPU时间都花在了查询执行上（我们的统计结果中为94.18%）。考虑到DBMS测试通常持续数月，因此可以执行足够多的测试，以及设置多个测试实例可以显著提高EET的测试效率，我们认为这种吞吐量是实际可行的。</p>
+<h3 id="5-3-Bug-Diversity"><a href="#5-3-Bug-Diversity" class="headerlink" title="5.3 Bug Diversity"></a><strong>5.3 Bug Diversity</strong></h3><p>本节探讨了由等价表达式转换（EET）发现的35个逻辑错误的多样性，从三个方面进行分析：(1) 触发错误的查询涉及的多种SQL特性，(2) DBMS产生错误结果的根本原因的多样性，(3) 在测试DBMS期间错误表现的多样性。</p>
+<p><strong>SQL特性</strong>：</p>
+<ul>
+<li><strong>子查询</strong>：在35个触发逻辑错误的查询中，18个包含子查询，其中8个涉及相关子查询。</li>
+<li><strong>连接操作</strong>：18个使用各种连接操作（如内连接、外连接和交叉连接）。</li>
+<li><strong>窗口函数</strong>：4个调用窗口函数（如DENSE_RANK, FIRST_VALUE）。</li>
+<li><strong>GROUP BY子句</strong>：3个涉及GROUP BY子句。</li>
+<li><strong>DML语句</strong>：2个是DML语句（如UPDATE和DELETE），而不是DQL（如SELECT）。</li>
+</ul>
+<p>此外，探索了未涉及上述5个特性的10个错误，发现它们都使用SQL函数（如ACOS、HEX、UNIX_TIMESTAMP）执行复杂的值计算、字符串操作和时间戳控制。</p>
+<p>这些结果表明EET能够发现由各种SQL查询触发的逻辑错误。表1和表5的综合结果显示，EET能够发现现有方法错过的许多逻辑错误，因为EET支持更多的SQL特性。例如，PQS、TLP和NoREC无法找到与子查询相关的18个逻辑错误，因为这些方法不支持子查询。由于缺乏对连接操作的支持，DQE无法发现与连接相关的18个逻辑错误。值得注意的是，由于现有方法不能支持语义上复杂的特性，它们无法发现与相关子查询相关的8个逻辑错误。EET利用表达式级别的操作，不受特定查询模式的限制，能够广泛支持所有列出的特性，因此能发现现有方法无法发现的许多错误。</p>
+<p><strong>Root Cause Analysis</strong>.</p>
+<p>本节对EET发现的19个已修复的逻辑错误进行了根本原因分析。这些错误涉及SQLite的9个、PostgreSQL的3个和ClickHouse的7个。分析发现，12个错误由不正确的优化引起，这主要是因为EET支持复杂查询的逻辑错误检测，这些查询具有巨大的优化潜力，从而可以覆盖测试DBMS中的许多优化机制。11个错误与JOIN操作有关，这表明现有方法在TQS提出之前无法系统地测试与JOIN操作相关的DBMS组件，因此许多错误未被曝光。</p>
+<h3 id="5-4-Comparative-Study"><a href="#5-4-Comparative-Study" class="headerlink" title="5.4 Comparative Study"></a><strong>5.4 Comparative Study</strong></h3><p>本节对等价表达式转换（EET）进行了与现有方法的比较研究，以验证EET是否能发现现有方法遗漏的逻辑错误。通过研究EET发现的35个逻辑错误的最早引入版本，并检查这些版本是否早于现有方法的发布时间，从而评估EET的有效性。</p>
+<p>研究结果显示，EET发现的35个逻辑错误中，有13个存在于2020年之前，表明所有在2020年或之后提出的现有方法（如PQS、TLP、NoREC）均未在其广泛的评估中发现这些错误。此外，有11个逻辑错误在2020年到2022年间可以被触发，而2023年发布的三种方法（TQS、Pinolo、DQE）也未发现这些错误。这些结果表明现有方法确实错过了许多长期潜在的逻辑错误。这些方法由于其查询级别的操作限制，无法应用于复杂的查询，而EET通过表达式级别的操作，能够轻松应用于复杂查询，因此成功发现了许多现有方法错过的逻辑错误。</p>
+<p>此外，研究还调查了EET发现的每个测试DBMS中逻辑错误的最长潜伏期。结果显示，EET能够在每个测试的DBMS中找到至少一个潜伏期超过3年的错误，其中最长的潜伏期为20年，出现在PostgreSQL中，如图2所示。这些结果表明EET能有效地发现长期潜在的错误。</p>
+<p>尽管EET能发现许多现有方法遗漏的逻辑错误，它也可能固有地错过一些现有方法能发现的错误。例如，如果一个逻辑错误导致原始查询和转换后的查询产生相同的错误结果，EET将会错过这个错误。然而，像PQS这样的方法可以通过推断预期的查询结果来帮助检测这些遗漏的错误。未来的一个有趣工作是将EET和现有方法整合到一个测试框架中，该框架可以在测试DBMS时有效地调度这些方法。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/">http://example.com/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/05/24/Mozi-Discovering-DBMS-Bugs-via-Configuration-Based-Equivalent-Transformation/" title="Mozi: Discovering DBMS Bugs via Configuration-Based Equivalent Transformation"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Mozi: Discovering DBMS Bugs via Configuration-Based Equivalent Transformation</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">86</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation"><span class="toc-number">1.</span> <span class="toc-text">Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ABSTRACT"><span class="toc-number">1.1.</span> <span class="toc-text">ABSTRACT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.2.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Motivation"><span class="toc-number">1.3.</span> <span class="toc-text">Motivation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Illustrative-Example"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 Illustrative Example</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Limitations-of-Existing-Approaches"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 Limitations of Existing Approaches</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Our-Solution"><span class="toc-number">1.3.3.</span> <span class="toc-text">2.3 Our Solution</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Equivalent-Expression-Transformation"><span class="toc-number">1.4.</span> <span class="toc-text">Equivalent Expression Transformation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Overview"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Expression-Transformation"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 Expression Transformation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-Determined-Boolean-Expressions"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">3.2.1 Determined Boolean Expressions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-2-Redundant-Branch-Structures"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">3.2.2 Redundant Branch Structures</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-3-Choosing-Transformation-Rules"><span class="toc-number">1.4.2.3.</span> <span class="toc-text">3.2.3 Choosing Transformation Rules</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-Properties"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.3 Properties</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Implementation"><span class="toc-number">1.5.</span> <span class="toc-text">Implementation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Evaluation"><span class="toc-number">1.6.</span> <span class="toc-text">Evaluation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-Experimental-Setup"><span class="toc-number">1.6.1.</span> <span class="toc-text">5.1 Experimental Setup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-Bug-Detection"><span class="toc-number">1.6.2.</span> <span class="toc-text">5.2 Bug Detection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-Bug-Diversity"><span class="toc-number">1.6.3.</span> <span class="toc-text">5.3 Bug Diversity</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-Comparative-Study"><span class="toc-number">1.6.4.</span> <span class="toc-text">5.4 Comparative Study</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/" title="Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation">Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation</a><time datetime="2024-06-18T07:48:17.000Z" title="发表于 2024-06-18 15:48:17">2024-06-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/24/Mozi-Discovering-DBMS-Bugs-via-Configuration-Based-Equivalent-Transformation/" title="Mozi: Discovering DBMS Bugs via Configuration-Based Equivalent Transformation">Mozi: Discovering DBMS Bugs via Configuration-Based Equivalent Transformation</a><time datetime="2024-05-24T09:07:56.000Z" title="发表于 2024-05-24 17:07:56">2024-05-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/24/Testing-Graph-Database-Systems-via-Equivalent-Query-Rewriting/" title="Testing Graph Database Systems via Equivalent Query Rewriting">Testing Graph Database Systems via Equivalent Query Rewriting</a><time datetime="2024-05-24T02:53:06.000Z" title="发表于 2024-05-24 10:53:06">2024-05-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/23/Towards-Generic-Database-Management-System-Fuzzing/" title="Towards Generic Database Management System Fuzzing">Towards Generic Database Management System Fuzzing</a><time datetime="2024-05-23T09:51:00.000Z" title="发表于 2024-05-23 17:51:00">2024-05-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/23/When-Fuzzing-Meets-LLMs-Challenges-and-Opportunities/" title="When Fuzzing Meets LLMs: Challenges and Opportunities">When Fuzzing Meets LLMs: Challenges and Opportunities</a><time datetime="2024-05-23T05:04:34.000Z" title="发表于 2024-05-23 13:04:34">2024-05-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
