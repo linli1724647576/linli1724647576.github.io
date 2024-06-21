@@ -1,0 +1,286 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Fuzz4All Universal Fuzzing with Large Language Models | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Fuzz4All: Universal Fuzzing with Large Language ModelsAbstractFuzzing技术在发现各种软件系统中的漏洞和缺陷方面取得了巨大的成功。作为软件开发的基础构件，接受编程语言或形式语言输入的测试系统（SUTs），如编译器、运行时引擎、约束求解器和具有可访问API的软件库，尤为重要。然而，现有的针对这些系统的fuzzers通常针对特定语言，因">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fuzz4All Universal Fuzzing with Large Language Models">
+<meta property="og:url" content="http://example.com/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Fuzz4All: Universal Fuzzing with Large Language ModelsAbstractFuzzing技术在发现各种软件系统中的漏洞和缺陷方面取得了巨大的成功。作为软件开发的基础构件，接受编程语言或形式语言输入的测试系统（SUTs），如编译器、运行时引擎、约束求解器和具有可访问API的软件库，尤为重要。然而，现有的针对这些系统的fuzzers通常针对特定语言，因">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-06-21T06:10:36.000Z">
+<meta property="article:modified_time" content="2024-06-21T06:12:20.043Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Fuzz4All Universal Fuzzing with Large Language Models',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-21 14:12:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">87</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Fuzz4All Universal Fuzzing with Large Language Models</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-21T06:10:36.000Z" title="发表于 2024-06-21 14:10:36">2024-06-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-21T06:12:20.043Z" title="更新于 2024-06-21 14:12:20">2024-06-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Fuzz4All Universal Fuzzing with Large Language Models"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Fuzz4All-Universal-Fuzzing-with-Large-Language-Models"><a href="#Fuzz4All-Universal-Fuzzing-with-Large-Language-Models" class="headerlink" title="Fuzz4All: Universal Fuzzing with Large Language Models"></a><strong>Fuzz4All: Universal Fuzzing with Large Language Models</strong></h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>Fuzzing技术在发现各种软件系统中的漏洞和缺陷方面取得了巨大的成功。作为软件开发的基础构件，接受编程语言或形式语言输入的测试系统（SUTs），如编译器、运行时引擎、约束求解器和具有可访问API的软件库，尤为重要。然而，现有的针对这些系统的fuzzers通常针对特定语言，因此无法轻易应用于其他语言甚至同一语言的不同版本。此外，现有fuzzers生成的输入通常局限于输入语言的特定特性，难以发现与其他或新特性相关的漏洞。本文提出了Fuzz4All，这是首个在多个不同输入语言和这些语言的多个特性方面通用的fuzzer。Fuzz4All的核心思想是利用大型语言模型（LLMs）作为输入生成和变异引擎，从而使该方法能够为任何实际相关的语言生成多样且逼真的输入。为了实现这一潜力，我们提出了一种新颖的自动提示技术，该技术创建了适合fuzzing的LLM提示，并提出了一种新颖的LLM驱动的fuzzing循环，该循环迭代更新提示以创建新的fuzzing输入。我们在九个接受六种不同语言（C、C++、Go、SMT2、Java和Python）作为输入的测试系统上评估了Fuzz4All。评估结果显示，在所有六种语言中，通用fuzzing均比现有的特定语言fuzzers实现了更高的覆盖率。此外，Fuzz4All在广泛使用的系统中发现了98个漏洞，如GCC、Clang、Z3、CVC5、OpenJDK和Qiskit量子计算平台，其中64个漏洞已被开发者确认是以前未知的。</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a><strong>INTRODUCTION</strong></h2><p><font color="red">背景</font></p>
+<p>Fuzz测试（又称fuzzing）是一种自动化测试方法，旨在生成输入以暴露系统在测试中的意外行为，例如崩溃。研究人员和从业者已经成功构建了实用的fuzzing工具，并在发现真实世界系统中的大量漏洞和缺陷方面取得了巨大成功。特别重要的一类测试系统（SUTs）是那些接受编程语言或形式语言输入的系统，如编译器、运行时引擎和约束求解器。由于这些系统是软件开发的基础构件，许多针对这些系统的fuzzers被提议。例如，找到编译器和运行时引擎中的漏洞至关重要，因为这些漏洞可能影响所有相关的下游应用程序。</p>
+<p><font color="red">传统Fuzzing的局限性</font></p>
+<p>传统fuzzing方法分为生成式和变异式两类。生成式fuzzers通过预定义的语言语法直接合成完整的代码片段，而变异式fuzzers则对一组高质量的fuzzing种子应用变异操作或转换规则。然而，这两种传统方法都面临以下挑战：</p>
+<ol>
+<li><strong>与目标系统和语言紧密耦合</strong>：传统fuzzers通常针对特定语言或特定系统设计和实现，这非常耗时且难以在其他语言或系统中重复使用。例如，Csmith和Syzcaller分别用于C&#x2F;C++编译器和Linux系统调用，需要大量手工编写的规则。不同语言的实现难以复用，一个系统有效的fuzzing策略可能对另一个系统无效。</li>
+<li><strong>缺乏对系统演变的支持</strong>：实际系统不断演变，加入新特性。传统fuzzers设计用于特定版本的语言或系统，可能在新版本上失效，无法测试新特性。例如，Csmith仅支持C++11的一些特性，无法发现最新编译器版本中的新漏洞。</li>
+<li><strong>生成能力受限</strong>：即使在特定语言范围内，生成式和变异式fuzzing也难以覆盖大部分输入空间。生成式fuzzers依赖输入语法生成有效代码，通常使用简化语法，限制了测试语言特性的范围。变异式fuzzers受限于变异操作，需要高质量的种子，且这些种子难以获得。</li>
+</ol>
+<p><font color="red">Our work</font></p>
+<p>我们提出了Fuzz4All，这是首个通用fuzzer，能够针对多种不同输入语言及其特性。与现有的一般用途fuzzers（如AFL和libFuzzer）不同，这些fuzzers使用极其简单的变异方式，对目标语言不了解，因此难以生成有意义的编程语言fuzzing输入。我们的核心思路是利用大型语言模型（LLM）作为输入生成和变异引擎。由于LLMs在各种编程语言和其他形式语言上预训练，具备这些语言的语法和语义的隐式理解。Fuzz4All利用这一能力，使用LLM作为通用输入生成和变异引擎。</p>
+<p>Fuzz4All的输入是用户提供的描述SUT的文档，以及可选的SUT特定特性的描述（如文档、示例代码或正式规范）。这些用户输入可能过于冗长，无法直接用作LLM的提示。我们提出了自动提示步骤，将用户提供的所有输入提炼成简洁有效的fuzzing提示。这一提示是LLM生成fuzzing输入的初始输入。由于持续使用相同提示会生成许多相似的fuzzing输入，<strong>我们提出了LLM驱动的fuzzing循环，迭代更新提示以生成多样化的fuzzing输入。</strong>Fuzz4All结合前几次迭代生成的fuzzing输入和自然语言指令，例如请求变异这些输入。生成的fuzzing输入传递给SUT，并根据用户提供的测试Oracle（如检查系统崩溃）进行验证。</p>
+<p>Fuzz4All解决了传统fuzzers的限制和挑战。通过使用LLM作为生成引擎，Fuzz4All可以应用于广泛的SUTs和输入语言，避免了设计单一用途fuzzer的复杂性（C1）。与针对特定版本SUT或输入语言的fuzzers相比，Fuzz4All可以轻松随目标演进（C2），例如用户可以提供与新特性相关的文档或示例代码。为了应对传统fuzzers的生成能力限制（C3），Fuzz4All利用LLMs在数十亿代码片段上的预训练，生成遵循输入语言语法和语义约束的多种示例。最后，Fuzz4All不需要对SUT进行任何仪器化，使其易于在实践中应用。</p>
+<p><font color="red">实验： </font></p>
+<p>我们在六种输入语言（C、C++、SMT、Go、Java和Python）和九个测试系统（SUTs）上进行了广泛评估。对于每个SUT，我们将Fuzz4All与最先进的生成式和变异式fuzzers进行了比较。结果显示，Fuzz4All在所有语言中都实现了最高的代码覆盖率，平均提高了36.8%。此外，我们证明了Fuzz4All支持一般fuzzing和针对特定特性的fuzzing，这取决于用户提供的输入文档。最后，Fuzz4All在所研究的SUTs中检测到了98个漏洞，其中64个已被开发者确认是以前未知的。</p>
+<p><font color="red">贡献：</font></p>
+<ol>
+<li><strong>通用fuzzing</strong>：我们引入了一种新的fuzzing维度，直接利用LLMs的多语言能力，对许多SUTs进行fuzz测试，并生成各种有意义的输入。</li>
+<li><strong>自动提示fuzzing</strong>：我们提出了一种新颖的自动提示阶段，通过自动提炼用户输入生成有效的SUT输入提示，支持一般和针对特定特性的fuzzing。</li>
+<li><strong>LLM驱动的fuzzing循环</strong>：我们提出了一种算法，通过选择示例和生成策略迭代修改提示，持续生成新的fuzzing输入。</li>
+<li><strong>真实世界有效性的证据</strong>：我们展示了在六种流行语言和九个真实世界SUTs（如GCC、CVC5、Go、javac和Qiskit）中的实验结果，显示我们的方法相比最先进的fuzzers显著提高了覆盖率（平均36.8%），并检测到98个漏洞，其中64个已被确认是以前未知的。</li>
+</ol>
+<h2 id="BACKGROUND-AND-RELATED-WORK"><a href="#BACKGROUND-AND-RELATED-WORK" class="headerlink" title="BACKGROUND AND RELATED WORK"></a><strong>BACKGROUND AND RELATED WORK</strong></h2><h3 id="2-1-Large-Language-Models"><a href="#2-1-Large-Language-Models" class="headerlink" title="2.1 Large Language Models"></a><strong>2.1 Large Language Models</strong></h3><p>这段话讨论了大型语言模型（LLMs）在自然语言处理（NLP）和代码任务中的广泛应用。LLMs主要基于transformer架构，可以分为仅解码器模型（如GPT-3和StarCoder）、仅编码器模型（如BERT和CodeBERT）和编码器-解码器模型（如BART和CodeT5）。最近，基于指令的LLMs（如ChatGPT和GPT-4）和使用人类反馈强化学习（RLHF）微调的LLMs被证明能够理解和执行复杂指令。</p>
+<p>LLMs通常通过微调或提示来执行特定任务。微调需要在特定任务数据集上进一步训练模型权重，但数据集可能不可用，且随着LLMs规模的增长，微调变得昂贵。提示则无需更新模型权重，通过提供任务描述和示例来指导模型执行任务。选择输入提示的过程称为提示工程，最近研究者提出了自动提示，这是一种利用LLM梯度选择软提示或硬提示的自动化过程。</p>
+<p>本文利用LLMs解决模糊测试（fuzzing）问题，与传统自动提示和基于代理的方法不同，<strong>本文的方法直接使用GPT-4合成提示，并根据模糊测试的特定目标评分。</strong></p>
+<h3 id="2-2-Fuzzing-and-Testing"><a href="#2-2-Fuzzing-and-Testing" class="headerlink" title="2.2 Fuzzing and Testing"></a><strong>2.2 Fuzzing and Testing</strong></h3><p>这段文字介绍了模糊测试（fuzzing）及其相关技术。模糊测试旨在生成引发被测系统（SUT）异常行为的输入。<strong>传统模糊测试工具分为生成式和变异式。</strong>生成式模糊测试工具使用预定义的语法和内置的语言语义知识生成完整的代码片段，而变异式模糊测试工具通过对种子进行变换生成新的模糊测试输入。为利用这两种方法的优点，许多模糊测试工具结合了两者的方法。</p>
+<p>此外，还有<strong>通用模糊测试工具</strong>，如AFL和libFuzzer，它们使用遗传算法来优先考虑进一步变异的新覆盖输入。这些变异不关心SUT，仅关注字节级变换，因此在处理编程语言输入时很难生成有效输入。最近的研究添加了基于正则表达式的变异操作符来匹配常见的编程语句，但其简单性限制了覆盖新代码的能力。</p>
+<p>为了补充传统模糊测试技术并应用于新兴领域，提出了<strong>基于学习的模糊测试工具</strong>，这些工具主要训练神经网络生成模糊测试输入。最近，研究人员直接利用大型语言模型（LLMs）进行模糊测试，如TitanFuzz使用Codex生成种子程序，并使用InCoder进行模板化变异。</p>
+<p>与以往的基于学习和LLM的模糊测试工具不同，Fuzz4All能够适用于多种编程语言。以往的工具需要特定语言的模型或解析，而Fuzz4All不需要特定语言的解析，且支持针对特定特征的模糊测试。此外，Fuzz4All还应用于单元测试生成问题，通过自动提示阶段，可以接受任意格式的输入进行模糊测试。相比之下，以往的单元测试生成器通常需要手动检查或完成测试，而Fuzz4All则完全自动化，利用广泛使用的模糊测试判据（如崩溃）进行测试。<font color="red">仅能处理崩溃错误！</font></p>
+<h2 id="FUZZ4ALL-APPROACH"><a href="#FUZZ4ALL-APPROACH" class="headerlink" title="FUZZ4ALL APPROACH"></a><strong>FUZZ4ALL APPROACH</strong></h2><p>我们提出了Fuzz4All，一个通用模糊测试工具，利用大型语言模型（LLMs）支持对任何接受编程语言输入的被测系统（SUT）进行通用和针对性的模糊测试。Fuzz4All首先接受描述模糊测试输入的用户输入，并将其提炼为简洁但信息丰富的提示。这个过程中，Fuzz4All进行自动提示步骤，使用大规模的蒸馏LLM生成多个候选提示，并选择生成最高质量模糊测试输入的提示。</p>
+<p>Fuzz4All结合蒸馏LLM和生成LLM，以平衡不同LLMs提供的成本和收益。使用<strong>高端的基础模型（如GPT-4）</strong>进行蒸馏，用<strong>较小的模型（如StarCoder）</strong>进行输入生成，以提高效率。选定最佳提示后，Fuzz4All进入模糊测试循环，不断生成模糊测试输入。在每次迭代中，Fuzz4All更新输入提示，选择之前生成的输入作为示例，并附加生成指令，引导模型生成新的模糊测试输入。生成的模糊测试输入不断传递到SUT，并根据用户定义的判据（如崩溃）检查其行为。</p>
+<p><font color="red">User inputs是一次性输入</font></p>
+<p><img src="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/image-20240621103832805.png" alt="image-20240621103832805"></p>
+<h3 id="3-1-Autoprompting"><a href="#3-1-Autoprompting" class="headerlink" title="3.1 Autoprompting"></a><strong>3.1 Autoprompting</strong></h3><p>这部分详细介绍了Fuzz4All的第一个主要步骤，即通过自动提示将给定的用户输入提炼为适合模糊测试的提示。用户输入可能是对SUT的整体描述，或需要测试的特定功能。这些输入可以是技术文档、示例代码、规范，甚至是不同形式的组合。与传统模糊测试工具需要特定格式的输入不同，Fuzz4All能够直接理解用户输入中的自然语言描述或代码示例。然而，用户输入中可能包含冗余或不相关的信息，因此直接将这些输入用作生成LLM的提示可能效果不佳。因此，自动提示的目标是生成一个提炼后的输入提示，从而实现有效的基于LLM的模糊测试。</p>
+<h4 id="3-1-1-Autoprompting-Algorithm"><a href="#3-1-1-Autoprompting-Algorithm" class="headerlink" title="3.1.1  Autoprompting Algorithm."></a>3.1.1  <em>Autoprompting Algorithm.</em></h4><p>算法1详细介绍了Fuzz4All的自动提示步骤。输入为用户输入和需要生成的候选提示数量，最终输出为用于模糊测试的输入提示。自动提示的目标是使用蒸馏LLM生成提炼用户信息的提示。我们给蒸馏LLM的自动提示指令是：“请简要总结上述信息，以描述目标的用法和功能。”<font color="red"> “Please summarize the above information in a concise manner to describe the usage and functionality of the target”.</font>具体步骤如下：</p>
+<ol>
+<li>使用蒸馏LLM（MD）和用户输入（userInput），通过贪婪采样（温度为0）生成第一个候选提示。这种低温度采样方法能以较高置信度生成一个合理的初始提示。</li>
+<li>然后，算法通过高温度采样生成更多样化的候选提示，增加提示的多样性。</li>
+<li>每个生成的提示被加入候选提示列表，直到达到所需数量。</li>
+<li>为选择最佳输入提示，算法通过小规模模糊测试实验评估每个候选提示。具体方法是使用生成LLM（MG）将每个提示生成多个代码片段。</li>
+<li>根据评分函数对每个提示生成的代码片段进行评分。评分函数可以基于覆盖率、发现bug的能力或生成模糊测试输入的复杂性。为简化和通用性，默认评分函数是生成的有效代码片段数量。</li>
+<li>选择得分最高的输入提示作为用于模糊测试的初始输入提示。</li>
+</ol>
+<p>总结来说，自动提示步骤结合了提示生成和评分，使Fuzz4All能够自动生成并选择适合模糊测试目标的提示。</p>
+<h4 id="3-1-2-Example-Autoprompting"><a href="#3-1-2-Example-Autoprompting" class="headerlink" title="3.1.2 Example: Autoprompting."></a><em>3.1.2 Example: Autoprompting.</em></h4><p>图2展示了自动提示算法生成的输入提示示例。该示例针对C++编译器的模糊测试，特别关注C++23引入的新特性std::expected。我们将cppreference文档作为用户输入传递给Fuzz4All，原始文档包含498个单词和3262个字符，内容繁杂且冗长。而自动提示算法生成的提炼后的输入提示则提供了更简洁的自然语言描述，包含214个单词和1410个字符。</p>
+<p>提炼后的输入提示包括std::expected的高层次使用描述。例如，其中包含一句简洁的句子（用橙色突出显示）总结了该特性适用的情况。此外，输入提示还描述了该特性的输入以及不同用法（如成员函数）。在原始文档中，函数and_then、transform、or_else和transform_error的描述非常相似，并为每个函数重复。而在提炼后的输入提示中，这些函数被简洁地组合在一起，仍能展示其用法。</p>
+<p>通过使用提炼后的输入提示，Fuzz4All能够生成有效针对C++编译器std::expected特性的模糊测试输入。</p>
+<img src="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/image-20240621105032422.png" alt="image-20240621105032422" style="zoom:67%;">
+
+<h4 id="3-1-3-Comparison-with-Existing-Autoprompting-Techniques"><a href="#3-1-3-Comparison-with-Existing-Autoprompting-Techniques" class="headerlink" title="3.1.3 Comparison with Existing Autoprompting Techniques."></a><em>3.1.3 Comparison with Existing Autoprompting Techniques.</em></h4><p>据我们所知，我们是首个使用黑箱自动提示技术从任意用户输入中提炼知识用于软件工程任务的。与之前在NLP和软件工程领域的自动提示工作相比，这些工作通过访问模型梯度优化提示，而我们的自动提示仅需对蒸馏LLM进行黑箱采样访问。尽管使用评分函数评估每个提示的方式与最近的NLP工作相似，我们的评分函数直接在生成有效代码片段的下游任务上评估提示，而不是使用近似的代理评分函数。</p>
+<h3 id="3-2-Fuzzing-Loop"><a href="#3-2-Fuzzing-Loop" class="headerlink" title="3.2 Fuzzing Loop"></a><strong>3.2 Fuzzing Loop</strong></h3><p>在Fuzz4All的第一步创建了输入提示后，模糊测试循环的目标是使用生成LLM生成多样化的模糊测试输入。<strong>然而，由于LLMs的概率性特征，使用相同输入多次采样会产生相同或相似的代码片段。</strong>为了模糊测试的目的，我们希望避免重复的输入，生成覆盖新代码并发现新漏洞的多样化输入。</p>
+<p><strong>模糊测试循环的核心思路是通过选择前几次迭代的示例输入并指定生成策略，持续扩展原始输入提示。使用示例的目的是展示我们希望生成LLM生成的代码片段类型。</strong>生成策略则作为指导如何处理所提供代码示例的指令。这些策略受到传统模糊测试工具的启发，模仿其生成新模糊测试输入（如生成式模糊测试工具）和生成已有输入变体（如变异式模糊测试工具）的能力。在每次新的模糊测试循环迭代之前，Fuzz4All将示例和生成策略附加到输入提示中，使生成LLM能够持续创建新的模糊测试输入。</p>
+<p><img src="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/image-20240621105623205.png" alt="image-20240621105623205"></p>
+<h4 id="3-2-1-Fuzzing-Loop-Algorithm"><a href="#3-2-1-Fuzzing-Loop-Algorithm" class="headerlink" title="3.2.1 Fuzzing Loop Algorithm."></a><em>3.2.1 Fuzzing Loop Algorithm.</em></h4><img src="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/image-20240621105900269.png" alt="image-20240621105900269" style="zoom:50%;">
+
+<p>循环算法的步骤如下：</p>
+<ol>
+<li><strong>初始化</strong>：设置初始输入提示和模糊测试预算。初始化生成策略（生成新输入、变异已有输入和语义等价）。</li>
+<li><strong>第一次调用生成LLM</strong>：<ul>
+<li>在没有示例的情况下，在输入提示中添加“生成新输入”的指令。</li>
+<li>使用该提示生成第一批模糊测试输入。</li>
+</ul>
+</li>
+<li><strong>进入主模糊测试循环</strong>：<ul>
+<li><strong>选择示例</strong>：从前一批生成的有效模糊测试输入中随机选择一个作为示例。</li>
+<li><strong>选择生成策略</strong>：随机选择一个生成策略（生成新输入、变异已有输入或语义等价）。</li>
+<li><strong>构建新提示</strong>：将初始输入提示、选定的示例和生成策略连接成一个新提示。</li>
+<li><strong>生成新输入</strong>：使用新提示查询生成LLM，以生成新一批模糊测试输入。</li>
+<li><strong>检查行为</strong>：将每个创建的模糊测试输入传递给SUT，如果用户定义的判据识别出异常行为（如崩溃），则记录检测到的漏洞。</li>
+</ul>
+</li>
+<li><strong>重复循环</strong>：重复主模糊测试循环，直到耗尽模糊测试预算。</li>
+<li><strong>输出结果</strong>：输出用户定义的判据识别出的漏洞集合。</li>
+</ol>
+<h4 id="3-2-2-Example-Fuzzing-Loop"><a href="#3-2-2-Example-Fuzzing-Loop" class="headerlink" title="3.2.2 Example: Fuzzing Loop."></a><em>3.2.2 Example: Fuzzing Loop.</em></h4><p>图3展示了模糊测试循环如何使用输入示例和生成策略创建不同的模糊测试输入。示例中，我们对一个SMT求解器进行模糊测试，输入为SMT2语言编写的逻辑公式。</p>
+<ol>
+<li><strong>初始阶段</strong>：没有示例，算法使用“生成新输入”策略合成新的模糊测试输入。</li>
+<li><strong>第二阶段</strong>：选取一个生成的有效模糊测试输入作为示例，算法使用“变异已有输入”策略创建新输入，观察到新输入通过交换变量类型和添加一些计算对之前的输入进行细微修改。</li>
+<li><strong>第三阶段</strong>：选取之前生成的模糊测试输入作为示例，使用“语义等价”策略创建新输入，这次新输入仅添加了一个语法标签。</li>
+</ol>
+<p>通过组合这些生成策略，Fuzz4All生成了导致SMT求解器意外崩溃的模糊测试输入，暴露了一个真实存在的漏洞，该漏洞在评估期间被Fuzz4All检测到，并已被开发人员确认和修复。</p>
+<h4 id="3-2-3-Oracle"><a href="#3-2-3-Oracle" class="headerlink" title="3.2.3 Oracle."></a><em>3.2.3 Oracle.</em></h4><p>Fuzz4All在模糊测试循环中生成的输入可用于检查SUT的行为，以检测漏洞。判据是针对每个SUT自定义的，可以由用户完全定义和定制。例如，在对C编译器进行模糊测试时，用户可以定义一个差分测试判据，比较编译器在不同优化级别下的行为。本文重点讨论简单且易于定义的判据，如因分段错误和内部断言失败引起的崩溃。更多细节在第4.2节中讨论。</p>
+<h2 id="EXPERIMENTAL-DESIGN"><a href="#EXPERIMENTAL-DESIGN" class="headerlink" title="EXPERIMENTAL DESIGN"></a><strong>EXPERIMENTAL DESIGN</strong></h2><p>我们通过以下研究问题评估Fuzz4All：</p>
+<ul>
+<li>RQ1：Fuzz4All与现有模糊测试工具相比如何？</li>
+<li>RQ2：Fuzz4All在执行针对性模糊测试方面的效果如何？</li>
+<li>RQ3：不同组件对Fuzz4All的有效性有何贡献？</li>
+<li>RQ4：Fuzz4All发现了哪些现实中的漏洞？</li>
+</ul>
+<h3 id="4-1-Implementation"><a href="#4-1-Implementation" class="headerlink" title="4.1 Implementation"></a><strong>4.1 Implementation</strong></h3><p>Fuzz4All主要用Python实现。其自动提示和模糊测试循环组件仅包含<strong>872</strong>行代码（LoC）。相比于需要大量手动工作实现生成器的传统模糊测试工具（如Csmith，超过80K LoC），Fuzz4All的实现非常轻量。Fuzz4All使用GPT-4作为蒸馏LLM进行自动提示，因为该模型在广泛的基于NLP的推理任务中表现出色。具体来说，我们使用OpenAI API提供的gpt-4-0613检查点，最大token数为500，以确保提示始终适合生成LLM的上下文窗口。</p>
+<p>在自动提示过程中，我们采样四个候选提示，每个提示生成30个模糊测试输入，并使用基于有效率的评分函数进行评估。在模糊测试循环中，我们使用Hugging Face实现的StarCoder模型作为生成LLM，该模型在超过80种语言的一万亿代码tokens上进行了训练。默认设置下，生成模糊测试输入时使用的温度为1，批量大小为30，最大输出长度为1024，采用核采样（top-p为1）。</p>
+<h3 id="4-2-Systems-Under-Test-and-Baselines"><a href="#4-2-Systems-Under-Test-and-Baselines" class="headerlink" title="4.2 Systems Under Test and Baselines"></a><strong>4.2 Systems Under Test and Baselines</strong></h3><img src="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/image-20240621113148423.png" alt="image-20240621113148423" style="zoom:67%;">
+
+<h3 id="4-3-Experimental-Setup-and-Metrics"><a href="#4-3-Experimental-Setup-and-Metrics" class="headerlink" title="4.3 Experimental Setup and Metrics"></a><strong>4.3 Experimental Setup and Metrics</strong></h3><p><strong>模糊测试活动</strong>：针对RQ1，我们使用24小时的模糊测试预算（包括自动提示），这在以往工作中常用。为了考虑变化性，我们对Fuzz4All和基线进行五次实验。由于实验成本较高，后续研究问题使用10,000个生成的模糊测试输入的预算，并进行四次消融研究实验。</p>
+<p><strong>环境</strong>：实验在一台运行Ubuntu 20.04.5 LTS的64核工作站上进行，配备256 GB RAM和4个NVIDIA RTX A6000 GPU（每次模糊测试运行仅使用一个GPU）。</p>
+<p><strong>指标</strong>：我们使用广泛采用的代码覆盖率作为评估模糊测试工具的标准。为了统一，我们报告评估中每个目标的行覆盖率。根据以往工作，我们使用Mann-Whitney U检验计算统计显著性，并在适用的表格中标注显著结果（p &lt; 0.05）。此外，我们测量输入的有效率，即生成的模糊测试输入中有效且唯一的百分比。为了评估针对性模糊测试的效果，我们报告命中率，即使用特定目标特征的模糊测试输入的百分比（通过简单的正则表达式检查）。最后，我们报告模糊测试的最重要指标和目标：Fuzz4All在每个九个SUT中检测到的漏洞数量。</p>
+<h2 id="RESULTS"><a href="#RESULTS" class="headerlink" title="RESULTS"></a><strong>RESULTS</strong></h2><h3 id="5-1-RQ1-Comparison-against-Existing-Fuzzers"><a href="#5-1-RQ1-Comparison-against-Existing-Fuzzers" class="headerlink" title="5.1 RQ1: Comparison against Existing Fuzzers"></a><strong>5.1 RQ1: Comparison against Existing Fuzzers</strong></h3><h4 id="5-1-1-Coverage-over-Time"><a href="#5-1-1-Coverage-over-Time" class="headerlink" title="5.1.1 Coverage over Time"></a><em>5.1.1 Coverage over Time</em></h4><p>图4展示了Fuzz4All与基线工具在24小时内的覆盖率趋势，实线表示平均覆盖率，阴影区域表示五次运行的最小值和最大值。我们观察到，在所有目标上，Fuzz4All在模糊测试活动结束时实现了最高的覆盖率，平均比表现最好的基线工具提高了36.8%。与基于生成的模糊测试工具（如YARPGen和MorphQ）相比，Fuzz4All几乎立即实现更高的覆盖率，展示了LLMs在生成多样化代码片段方面的强大能力。虽然基于变异的模糊测试工具（如go-fuzz和GrayC）在开始时由于高质量的种子能够实现较高的覆盖率，但其通过变异获得的覆盖率迅速下降，而Fuzz4All则能够逐渐覆盖更多代码。</p>
+<p>值得注意的是，为了公平比较，我们将自动提示时间包含在模糊测试预算内，但其开销可忽略不计（每次模糊测试活动平均为2.3分钟）。与基线工具在24小时内覆盖率达到平台期不同，Fuzz4All即使在模糊测试活动接近尾声时仍能找到覆盖新代码的输入。我们认为，这是因为在Fuzz4All的每次模糊测试循环迭代中，原始输入提示都会更新新的示例和生成策略，从而引导LLM生成新的模糊测试输入。这使得Fuzz4All即使在长时间的模糊测试后，仍能有效生成新的多样化输入，持续增加覆盖率。</p>
+<p><img src="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/image-20240621113637868.png" alt="image-20240621113637868"></p>
+<h4 id="5-1-2-Generation-Validity-Number-and-Coverage"><a href="#5-1-2-Generation-Validity-Number-and-Coverage" class="headerlink" title="5.1.2 Generation Validity, Number, and Coverage."></a><em>5.1.2 Generation Validity, Number, and Coverage.</em></h4><p>我们检查了生成的模糊测试输入数量及其在不同SUT上的有效率。表2中，“# programs”表示生成的唯一输入数量，“% valid”表示有效模糊测试输入的百分比，“Coverage”显示每个模糊测试工具获得的最终覆盖率及相对于最佳基线工具的相对改进。</p>
+<p>首先观察到，除Hephaestus外，几乎所有传统模糊测试工具都能实现很高的有效率。Hephaestus故意生成无效代码以检查错误编译漏洞。<strong>相比之下，Fuzz4All生成的有效模糊测试输入百分比较低，平均比基线工具减少56.0%。</strong>此外，基线工具生成的模糊测试输入数量也更高。<strong>由于使用LLM作为生成引擎，Fuzz4All受到GPU推理的限制，生成的模糊测试输入比传统模糊测试工具少43.0%。</strong></p>
+<p>尽管有效率和输入数量较低，Fuzz4All生成的程序更加多样化，获得的覆盖率更高（平均提高36.8%）。即使是接近有效的无效代码片段也对模糊测试有用，因为它们有助于发现SUT的验证逻辑中的漏洞。<strong>第5.4节进一步描述了Fuzz4All通过有效和无效代码片段检测到的各种类型的漏洞，展示了生成多样化模糊测试输入的好处。</strong></p>
+<p>Fuzz4All在不同SUT上的有效率和输入数量差异较大。不同目标的模糊测试输入数量因每次模糊测试迭代后调用SUT进行漏洞检测的成本不同而异。关于有效率，通用编程语言（如C）的有效率相对较低，而领域特定语言（如用于SMT求解器的SMT2语言）有效率较高。严格的语言（如不允许任何声明但未使用变量的Go语言）有效率更低。量子计算平台的模糊测试也表现出较低的有效率。由于量子计算是一个新兴领域，生成LLM在训练过程中可能没有看到过多的量子程序示例。尽管如此，Fuzz4All仍能够利用用户提供的文档生成有趣的模糊测试输入，使用量子库API，并相比最先进的模糊测试工具实现显著的覆盖率提升（+75.6%）。</p>
+<h3 id="5-2-RQ2-Effectiveness-of-Targeted-Fuzzing"><a href="#5-2-RQ2-Effectiveness-of-Targeted-Fuzzing" class="headerlink" title="5.2 RQ2: Effectiveness of Targeted Fuzzing"></a><strong>5.2 RQ2: Effectiveness of Targeted Fuzzing</strong></h3><p>我们现在评估Fuzz4All执行针对性模糊测试的能力，即生成聚焦于特定特性的模糊测试输入。对于每个目标SUT和语言，我们针对三个不同的特性进行测试，并将其与RQ1中使用的一般用户输入进行比较。目标特性包括内置库或函数&#x2F;API（Go、C++和Qiskit）、语言关键词（C和Java）以及理论（SMT）。针对性模糊测试的用户输入是我们关注的特性的文档。</p>
+<p>表3显示了针对性模糊测试和RQ1中默认的一般模糊测试的结果。每列表示一次针对性模糊测试，聚焦于一个特性。每个单元格的值表示该特性的命中率，以及获得的覆盖率。</p>
+<p>我们观察到，**针对特定特性生成的模糊测试输入的命中率很高，平均命中率为83.0%**。这一结果表明，通过使用描述特定特性的输入提示，Fuzz4All确实能够执行针对性模糊测试。此外，相关特性的模糊测试也会导致较高的交叉特性命中率。例如，C语言中的typedef和union都与类型操作相关，因此它们的交叉特性命中率较高，而与goto等不相关特性相比则较低。</p>
+<p>表3显示，一般模糊测试方法虽然在总体代码覆盖率上最高，但在针对特定特性时效率极低，命中率平均减少了96.0%。例如，在Qiskit中，一般模糊测试对三个目标特性的命中率为0%。这可以解释为这些特性是最近添加到Qiskit中的，在LLM训练数据中出现频率极低。然而，通过在针对性模糊测试活动中提供合适的用户输入，Fuzz4All能够成功生成使用这些新特性的模糊测试输入。Fuzz4All这种能力对于开发者测试新特性或SUT组件非常有价值。</p>
+<img src="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/image-20240621114524798.png" alt="image-20240621114524798" style="zoom:67%;">
+
+<h3 id="5-3-RQ3-Ablation-Study"><a href="#5-3-RQ3-Ablation-Study" class="headerlink" title="5.3 RQ3: Ablation Study"></a><strong>5.3 RQ3: Ablation Study</strong></h3><h4 id="5-3-1-Autoprompting"><a href="#5-3-1-Autoprompting" class="headerlink" title="5.3.1 Autoprompting."></a><em>5.3.1 Autoprompting.</em></h4><p>首先，我们研究了提供给生成LLM的不同初始输入的效果。为减少其他因素的影响，我们将生成策略固定为只使用“生成新输入”，并研究三种变体：1) 无输入（no input），即不使用任何初始提示，2) 原始提示（raw prompt），直接使用原始用户输入作为初始提示，3) 自动提示（autoprompt），通过自动提示生成初始提示。</p>
+<p>在所有研究的语言中，无输入变体的覆盖率最低。无输入情况下，我们没有提供任何初始提示，这使得LLM只能生成简单的代码片段，虽然有效率高，但在覆盖SUT方面效果较差。使用原始提示变体时，我们提供原始文档作为初始提示，覆盖率有所提升。</p>
+<p>然而，通过使用自动提示阶段将用户输入提炼成简洁但信息丰富的提示（autoprompt），我们可以进一步提高代码覆盖率和有效率。直接使用用户提供的输入可能包含与模糊测试无关的信息，导致较低的有效率（因为生成LLM可能难以理解原始文档）和较低的覆盖率（因为原始文档并非为LLM生成而设计）。</p>
+<h4 id="5-3-2-Fuzzing-loop"><a href="#5-3-2-Fuzzing-loop" class="headerlink" title="5.3.2  Fuzzing loop."></a>5.3.2  <em>Fuzzing loop.</em></h4><p>接下来，我们研究了不同变体的模糊测试循环设置，同时保持初始提示相同（使用默认自动提示）：</p>
+<ol>
+<li><strong>无示例（w&#x2F;o example）</strong>：在模糊测试循环中不选择示例，即不断从相同的初始提示中采样。</li>
+<li><strong>有示例（w&#x2F; example）</strong>：选择一个示例，但仅使用“生成新输入”的指令。</li>
+<li><strong>Fuzz4All</strong>：使用全部生成策略的完整方法。</li>
+</ol>
+<p>首先观察到，仅从相同输入中采样（无示例）时，LLM往往会重复生成相同或相似的模糊测试输入。平均而言，无示例情况下生成的模糊测试输入有8.0%是重复的，而使用完整的Fuzz4All方法时仅为4.7%。在输入提示中添加示例（有示例）可以避免从相同分布中采样，改善覆盖率和有效率。最终，完整的Fuzz4All方法在所有SUT中实现了最高覆盖率。与有示例变体（第二好的变体）相比，完整的Fuzz4All增加了“语义等价”和“变异已有输入”生成策略，为生成LLM提供了有用的指令。</p>
+<p><img src="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/image-20240621114805471.png" alt="image-20240621114805471"></p>
+<h3 id="5-4-RQ4-Bug-Finding"><a href="#5-4-RQ4-Bug-Finding" class="headerlink" title="5.4 RQ4: Bug Finding"></a><strong>5.4 RQ4: Bug Finding</strong></h3><p><img src="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/image-20240621141202964.png" alt="image-20240621141202964"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/">http://example.com/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/" title="Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">87</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fuzz4All-Universal-Fuzzing-with-Large-Language-Models"><span class="toc-number">1.</span> <span class="toc-text">Fuzz4All: Universal Fuzzing with Large Language Models</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.2.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BACKGROUND-AND-RELATED-WORK"><span class="toc-number">1.3.</span> <span class="toc-text">BACKGROUND AND RELATED WORK</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Large-Language-Models"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 Large Language Models</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Fuzzing-and-Testing"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 Fuzzing and Testing</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FUZZ4ALL-APPROACH"><span class="toc-number">1.4.</span> <span class="toc-text">FUZZ4ALL APPROACH</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Autoprompting"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 Autoprompting</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-Autoprompting-Algorithm"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">3.1.1  Autoprompting Algorithm.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-Example-Autoprompting"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">3.1.2 Example: Autoprompting.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-3-Comparison-with-Existing-Autoprompting-Techniques"><span class="toc-number">1.4.1.3.</span> <span class="toc-text">3.1.3 Comparison with Existing Autoprompting Techniques.</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Fuzzing-Loop"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 Fuzzing Loop</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-Fuzzing-Loop-Algorithm"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">3.2.1 Fuzzing Loop Algorithm.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-2-Example-Fuzzing-Loop"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">3.2.2 Example: Fuzzing Loop.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-3-Oracle"><span class="toc-number">1.4.2.3.</span> <span class="toc-text">3.2.3 Oracle.</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXPERIMENTAL-DESIGN"><span class="toc-number">1.5.</span> <span class="toc-text">EXPERIMENTAL DESIGN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Implementation"><span class="toc-number">1.5.1.</span> <span class="toc-text">4.1 Implementation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Systems-Under-Test-and-Baselines"><span class="toc-number">1.5.2.</span> <span class="toc-text">4.2 Systems Under Test and Baselines</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-Experimental-Setup-and-Metrics"><span class="toc-number">1.5.3.</span> <span class="toc-text">4.3 Experimental Setup and Metrics</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RESULTS"><span class="toc-number">1.6.</span> <span class="toc-text">RESULTS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-RQ1-Comparison-against-Existing-Fuzzers"><span class="toc-number">1.6.1.</span> <span class="toc-text">5.1 RQ1: Comparison against Existing Fuzzers</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-1-Coverage-over-Time"><span class="toc-number">1.6.1.1.</span> <span class="toc-text">5.1.1 Coverage over Time</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-2-Generation-Validity-Number-and-Coverage"><span class="toc-number">1.6.1.2.</span> <span class="toc-text">5.1.2 Generation Validity, Number, and Coverage.</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-RQ2-Effectiveness-of-Targeted-Fuzzing"><span class="toc-number">1.6.2.</span> <span class="toc-text">5.2 RQ2: Effectiveness of Targeted Fuzzing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-RQ3-Ablation-Study"><span class="toc-number">1.6.3.</span> <span class="toc-text">5.3 RQ3: Ablation Study</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-1-Autoprompting"><span class="toc-number">1.6.3.1.</span> <span class="toc-text">5.3.1 Autoprompting.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-2-Fuzzing-loop"><span class="toc-number">1.6.3.2.</span> <span class="toc-text">5.3.2  Fuzzing loop.</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-RQ4-Bug-Finding"><span class="toc-number">1.6.4.</span> <span class="toc-text">5.4 RQ4: Bug Finding</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/" title="Fuzz4All Universal Fuzzing with Large Language Models">Fuzz4All Universal Fuzzing with Large Language Models</a><time datetime="2024-06-21T06:10:36.000Z" title="发表于 2024-06-21 14:10:36">2024-06-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/" title="Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation">Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation</a><time datetime="2024-06-18T07:48:17.000Z" title="发表于 2024-06-18 15:48:17">2024-06-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/24/Mozi-Discovering-DBMS-Bugs-via-Configuration-Based-Equivalent-Transformation/" title="Mozi: Discovering DBMS Bugs via Configuration-Based Equivalent Transformation">Mozi: Discovering DBMS Bugs via Configuration-Based Equivalent Transformation</a><time datetime="2024-05-24T09:07:56.000Z" title="发表于 2024-05-24 17:07:56">2024-05-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/24/Testing-Graph-Database-Systems-via-Equivalent-Query-Rewriting/" title="Testing Graph Database Systems via Equivalent Query Rewriting">Testing Graph Database Systems via Equivalent Query Rewriting</a><time datetime="2024-05-24T02:53:06.000Z" title="发表于 2024-05-24 10:53:06">2024-05-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/23/Towards-Generic-Database-Management-System-Fuzzing/" title="Towards Generic Database Management System Fuzzing">Towards Generic Database Management System Fuzzing</a><time datetime="2024-05-23T09:51:00.000Z" title="发表于 2024-05-23 17:51:00">2024-05-23</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
