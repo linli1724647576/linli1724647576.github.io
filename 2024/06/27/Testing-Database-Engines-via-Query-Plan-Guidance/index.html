@@ -1,0 +1,705 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Testing Database Engines via Query Plan Guidance | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Testing Database Engines via Query Plan GuidanceABSTRACT摘要——数据库系统被广泛用于存储和查询数据。测试预言机（test oracles）已被提议用于发现这些系统中的逻辑错误，即导致数据库系统计算出错误结果的错误。为了实现完全自动化的测试方法，这些测试预言机与测试用例生成技术相结合；测试用例指的是数据库状态和可应用测试预言机的查询。在这项工作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Testing Database Engines via Query Plan Guidance">
+<meta property="og:url" content="http://example.com/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Testing Database Engines via Query Plan GuidanceABSTRACT摘要——数据库系统被广泛用于存储和查询数据。测试预言机（test oracles）已被提议用于发现这些系统中的逻辑错误，即导致数据库系统计算出错误结果的错误。为了实现完全自动化的测试方法，这些测试预言机与测试用例生成技术相结合；测试用例指的是数据库状态和可应用测试预言机的查询。在这项工作">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-06-27T07:34:27.000Z">
+<meta property="article:modified_time" content="2024-06-27T07:36:04.420Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Testing Database Engines via Query Plan Guidance',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-27 15:36:04'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">89</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Testing Database Engines via Query Plan Guidance</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-27T07:34:27.000Z" title="发表于 2024-06-27 15:34:27">2024-06-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-27T07:36:04.420Z" title="更新于 2024-06-27 15:36:04">2024-06-27</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Testing Database Engines via Query Plan Guidance"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Testing-Database-Engines-via-Query-Plan-Guidance"><a href="#Testing-Database-Engines-via-Query-Plan-Guidance" class="headerlink" title="Testing Database Engines via Query Plan Guidance"></a>Testing Database Engines via Query Plan Guidance</h1><h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><p>摘要——数据库系统被广泛用于存储和查询数据。测试预言机（test oracles）已被提议用于发现这些系统中的逻辑错误，即导致数据库系统计算出错误结果的错误。为了实现完全自动化的测试方法，这些测试预言机与测试用例生成技术相结合；测试用例指的是数据库状态和可应用测试预言机的查询。在这项工作中，我们提出了<strong>查询计划引导（QPG）</strong>的概念，用于引导自动化测试朝向“有趣”的测试用例。SQL和其他查询语言是声明式的。因此，为了执行查询，数据库系统将源语言中的每个操作符翻译为一个或多个可以执行的所谓物理操作符；物理操作符的树被称为查询计划。我们的直觉是，通过引导测试去探索各种独特的查询计划，我们也会探索更多有趣的行为——其中一些可能是错误的。为此，我们提出了一种变异技术，逐步将有希望的变异应用于数据库状态，从而导致数据库管理系统（DBMS）为后续查询创建潜在的未见过的查询计划。我们将我们的方法应用于三个成熟的、广泛使用且经过广泛测试的数据库系统——SQLite、TiDB和CockroachDB——并发现了53个独特的、以前未知的错误。我们的方法比简单的随机生成方法多行使了4.85至408.48倍的独特查询计划，比代码覆盖引导方法多行使了7.46倍的独特查询计划。由于大多数数据库系统（包括商业数据库）都向用户公开查询计划，我们认为QPG是一种普遍适用的黑箱方法，并相信这一核心理念也可以应用于其他情境（例如，衡量测试套件的质量）。 关键词——自动化测试，测试用例生成</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h2><p><font color="red">背景</font></p>
+<p><strong>数据库管理系统的重要性</strong>：数据库管理系统（DBMSs）广泛用于存储、检索和运行数据查询，几乎在每一个计算设备中都能找到它们的身影。</p>
+<p><strong>逻辑错误的挑战</strong>：逻辑错误是指数据库系统返回错误结果的情况，这类错误特别难以发现，因为它们会悄无声息地计算出错误结果。</p>
+<p><strong>测试预言机的作用</strong>：找到逻辑错误需要测试预言机（test oracle），用来验证数据库管理系统的结果。近年来，已经提出了一些有效的测试预言机，使得验证此类查询结果成为可能。</p>
+<p><strong>测试用例生成方法的需求</strong>：自动发现逻辑错误需要测试用例生成方法，测试用例指的是一个数据库状态和一个可以应用测试预言机的查询。</p>
+<p>测试用例生成面临的挑战：</p>
+<ul>
+<li>生成“有趣的”测试用例，以增加发现错误的机会。</li>
+<li>测试用例在语法和语义上都应当是有效的，同时要符合测试预言机施加的结构约束。</li>
+</ul>
+<p><font color="red">相关工作</font></p>
+<ol>
+<li>基于生成的方法：<ul>
+<li>SQLancer：采用基于生成的方法，生成的测试用例遵循各自SQL方言的语法以及测试预言机施加的约束。有效查询率约为90%。</li>
+<li>缺点：没有引导生成有趣的测试用例。</li>
+</ul>
+</li>
+<li>基于变异的方法：<ul>
+<li>SQLRight：通过变异测试用例，旨在最大化DBMS的代码覆盖率。改进了SQLancer的多个指标，但有效查询率仅为40%。</li>
+<li>缺点：仅凭代码覆盖率作为代理指标对于DBMS和有状态系统来说是不完美的。</li>
+</ul>
+</li>
+<li>其他测试用例生成方法：一些方法旨在发现崩溃错误，忽略了测试预言机的约束，包括：<ul>
+<li>基于变异的方法：如Squirrel和DynSQL。</li>
+<li>基于生成的方法：如SQLsmith和RAGS。</li>
+</ul>
+</li>
+</ol>
+<p><font color="red">Motivation Example:</font></p>
+<ul>
+<li>查询计划是描述DBMS如何执行SQL语句的操作树，通常通过EXPLAIN语句获得。查询计划提供了查询执行的高层次概述，覆盖更多独特的查询计划可以增加发现逻辑错误的可能性。</li>
+</ul>
+<p><img src="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/image-20240627141041764.png" alt="image-20240627141041764"></p>
+<p><font color="red">Key insight：</font></p>
+<ul>
+<li>提出了一种利用查询计划引导测试用例生成过程的技术，称为查询计划引导（QPG）。通过改变数据库状态而非查询来生成有效的查询，从而满足测试预言机的约束。</li>
+<li>使用SQLancer的随机语法生成方法生成查询，并记录所有查询计划。当观察不到新的查询计划时，通过<strong>变异数据库状态</strong>来生成新的查询计划。</li>
+</ul>
+<p><font color="red">具体实现：</font></p>
+<ul>
+<li>将选择最有希望的变异操作（修改数据库状态的SQL语句）的决策过程建模为多臂赌博机问题（multi-armed bandit problem），优先选择能生成最多新查询计划的SQL语句。</li>
+<li>在SQLancer中实现QPG，并在SQLite、TiDB和CockroachDB上进行了评估。</li>
+</ul>
+<p><font color="red">研究结果：</font></p>
+<ul>
+<li>发现了53个独特的、以前未知的错误，其中35个已被修复。</li>
+<li>其中三个错误在SQLite中隐藏了超过六年，尽管SQLancer和SQLRight已经进行了广泛的测试。</li>
+<li>触发许多错误需要复杂的查询计划，新发现错误的平均查询计划长度是之前错误的2.47倍。</li>
+<li>QPG方法在24小时内覆盖的独特查询计划比SQLancer和SQLRight多4.85至408.48倍。</li>
+</ul>
+<p><font color="red">贡献：</font></p>
+<ul>
+<li>研究了之前发现错误的查询计划，以评估该思想的潜力。</li>
+<li>提出了一种利用查询计划进行测试的普遍方法。</li>
+<li>提出了一种变异数据库状态而非查询的具体测试方法，以兼容现有的测试预言机。</li>
+<li>实现并评估了该方法，发现了53个独特的、以前未知的错误。</li>
+</ul>
+<h2 id="BACKGROUND"><a href="#BACKGROUND" class="headerlink" title="BACKGROUND"></a>BACKGROUND</h2><p><strong>数据库管理系统</strong>：</p>
+<ul>
+<li>数据库管理系统（DBMSs）在应用程序和后台数据之间充当接口，帮助用户存储、操作和查询数据。</li>
+<li>关系数据模型是最常见的模型，本文重点测试此类关系型数据库管理系统。</li>
+</ul>
+<p><strong>结构化查询语言（SQL）</strong>：</p>
+<ul>
+<li>SQL是与关系型数据库管理系统交互的最常用语言，已被ISO&#x2F;IEC 9075标准化。</li>
+<li>SQL包含多种类型的语句，可分为三个主要子语言：<ul>
+<li>数据查询语言（DQL）：提供SELECT语句用于查询数据。</li>
+<li>数据定义语言（DDL）：用于创建和修改数据对象的模式，例如CREATE、DROP和ALTER语句。</li>
+<li>数据操作语言（DML）：用于修改数据对象的内容，例如INSERT和UPDATE语句。</li>
+</ul>
+</li>
+<li>虽然DDL和DML语句会影响数据库状态，但查询（即DQL语句）通常不会。本文的测试用例包括DQL、DDL和DML语句。</li>
+</ul>
+<p><strong>查询计划</strong>：</p>
+<ul>
+<li>查询计划是一棵描述SQL语句如何由特定DBMS执行的操作树。</li>
+<li>大多数成熟的关系型DBMSs（包括DB-Engines排名前10的数据库）允许用户通过在查询前添加EXPLAIN来查询查询计划的文本表示。</li>
+<li>查询计划可能包括额外信息，如估计成本或WHERE子句中使用的谓词表达式。</li>
+<li>数据库文献区分了逻辑查询计划和物理查询计划。逻辑查询计划与原始声明性查询紧密对应，而物理查询计划则将每个逻辑操作符映射到DBMS可以执行的物理操作符。</li>
+</ul>
+<p><strong>逻辑错误</strong>：</p>
+<ul>
+<li>逻辑错误是指导致系统计算错误结果的错误。</li>
+<li>最近，有效的测试预言机被提出，用于发现广泛使用的DBMSs中的大量独特错误。</li>
+<li>本文使用了最新的测试预言机，包括三值逻辑分区（TLP）和非最优参考引擎构建（NoREC）。</li>
+</ul>
+<p><strong>研究方法</strong>：</p>
+<ul>
+<li>使用查询计划以黑箱方式引导测试，而不考虑操作符的语义。</li>
+<li>TLP通过将查询分成多个更复杂的查询来检查其结果是否相同。</li>
+<li>NoREC检查DBMS可能优化的查询中使用的谓词的结果是否一致。</li>
+</ul>
+<h2 id="QUERY-PLAN-STUDY"><a href="#QUERY-PLAN-STUDY" class="headerlink" title="QUERY PLAN STUDY"></a>QUERY PLAN STUDY</h2><p>调查使用查询计划作为测试引导的潜力，研究之前发现的错误中查询的独特性和复杂性。</p>
+<p><img src="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/image-20240627142241580.png" alt="image-20240627142241580"></p>
+<p><strong>研究方法</strong>：</p>
+<ul>
+<li>使用SQLancer提供的公开错误报告，对这些报告中的499个错误进行分析。</li>
+<li>从这些报告中排除了4个未公开查询计划的DBMS（如TDEngine）。</li>
+<li>获取查询计划：为所有495个引发错误的测试用例，使用EXPLAIN语句获取查询计划。不同的DBMS可能包括各种附加辅助信息（如估计成本、WHERE子句中的表达式、随机标识符等），这些信息在处理时被排除。</li>
+</ul>
+<p><strong>独特性分析</strong>：</p>
+<ul>
+<li>获得316个查询计划，其中57.28%是独特的。</li>
+<li>不同DBMS中的独特查询计划比例不同，最小为DuckDB（30.51%），最大为MariaDB（100.00%）。</li>
+<li>结果表明，覆盖更多不同查询计划可能增加发现错误的可能性。</li>
+</ul>
+<p><strong>复杂性分析</strong>：</p>
+<ul>
+<li>复杂查询计划通常对应复杂的数据库状态或查询。例如，在SQLite中，从两个表中检索数据的查询计划至少需要三个操作（SCAN、MERGE）。</li>
+<li>表II中的数据显示，平均每个查询计划的操作数为2.59，表明大多数错误相关的查询计划是紧凑的。</li>
+<li>发现跨八个DBMS最频繁的查询计划是SCAN table t0，表示在单个表上进行顺序扫描，不使用索引。</li>
+</ul>
+<p><strong>研究结论</strong>：</p>
+<ul>
+<li>之前发现的错误中的查询计划通常是紧凑和简单的，平均操作数为2.59。</li>
+<li>虽然这可能表明简单的查询计划足以触发这些错误，但也可能是现有方法集中在简单查询和数据库状态上的结果。</li>
+<li>推测覆盖更复杂的查询计划可能增加发现错误的可能性。</li>
+</ul>
+<h2 id="APPROACH"><a href="#APPROACH" class="headerlink" title="APPROACH"></a>APPROACH</h2><p>提出使用查询计划引导（QPG）来变异数据库，生成更多独特且复杂的数据库状态，以高效检测数据库管理系统（DBMSs）中的逻辑错误。</p>
+<p><strong>方法原理</strong>：</p>
+<ul>
+<li>查询计划反映了DBMS对给定查询的内部执行逻辑。</li>
+<li>覆盖更多独特的查询计划可以增加发现逻辑错误的可能性。</li>
+<li>与简单的随机生成方法相比，QPG逐步变异数据库状态，使后续查询能够覆盖更多独特且复杂的查询计划。</li>
+</ul>
+<p><strong>选择变异数据库状态的原因</strong>：</p>
+<ul>
+<li>测试预言机对查询有各种约束，使用变异方法难以满足这些约束。</li>
+<li>QPG变异数据库状态，而不是直接变异查询。</li>
+</ul>
+<p><strong>方法优势</strong>：</p>
+<ul>
+<li>与其他基于覆盖率的灰盒测试工具（如Squirrel和SQLRight）相比，QPG是黑盒测试方法，不需要访问DBMS的源代码。</li>
+<li>使用成熟DBMSs提供的信息，可以应用于商业闭源DBMSs。</li>
+</ul>
+<p><img src="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/image-20240627142745716.png" alt="image-20240627142745716"></p>
+<h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>图1展示了基于列表1的QPG实现概述。在给定初始数据库状态（标记为1）的情况下，QPG在步骤2生成一个随机SQL查询，并在数据库上执行，以使用测试预言机验证查询的结果。如果预言机指示存在错误，QPG输出错误报告并重新启动测试过程。否则，它记录查询计划并将其添加到查询计划池中（标记为3）。通常情况下，执行会在相同的数据库状态下继续进行。然而，如果在固定次数的迭代后没有观察到新的独特查询计划，QPG将在步骤4通过对当前数据库状态应用变异操作符来变异数据库状态以创建新的数据库状态，假设这个新的状态将随后导致探索新的独特查询计划。</p>
+<h3 id="A-Database-States"><a href="#A-Database-States" class="headerlink" title="A. Database States."></a><em>A. Database States.</em></h3><p><strong>初始数据库状态生成</strong>：</p>
+<ul>
+<li>初始数据库状态可以随机生成或手动给定。</li>
+<li>在实现中，通过随机执行DDL和DML语句生成初始数据库状态。</li>
+</ul>
+<p><strong>避免空数据库状态</strong>：</p>
+<ul>
+<li>为了避免生成空的数据库状态，首先执行CREATE TABLE语句。</li>
+<li>例如，为了创建图1中的初始数据库状态，执行List 1中的第1至5行。</li>
+</ul>
+<p><strong>不直接操作数据库文件</strong>：</p>
+<ul>
+<li>由于数据库文件结构高度复杂，不直接操作数据库文件。</li>
+<li>任何意外字节可能导致错误，从而妨碍测试过程。</li>
+</ul>
+<h3 id="B-Query-Generation-and-Validation"><a href="#B-Query-Generation-and-Validation" class="headerlink" title="B. Query Generation and Validation."></a><em>B. Query Generation and Validation.</em></h3><p><strong>查询生成</strong>：</p>
+<ul>
+<li>生成的查询用于自动验证结果以发现错误。</li>
+<li>生成的查询必须符合两个主要约束：<ol>
+<li><strong>语义有效性</strong>：查询必须在语义上对数据库状态有效，例如，只能引用存在的表和视图。</li>
+<li><strong>预言机约束</strong>：必须符合测试预言机施加的约束，例如NoREC预言机要求查询包含WHERE子句，但禁止HAVING或GROUP BY等其他子句。</li>
+</ol>
+</li>
+<li>为了满足这些约束，采用SQLancer的基于规则的随机生成方法，根据SQL方言的语法生成查询。</li>
+</ul>
+<p><strong>验证</strong>：</p>
+<ul>
+<li>使用最先进的逻辑错误预言机<strong>NoREC</strong>和<strong>TLP</strong>来验证查询结果。</li>
+<li>这些预言机使用变形测试方法，根据给定查询导出另一个查询，并用其结果集来验证原始查询的结果。</li>
+<li>例如，在图1中，给定三个表和测试预言机，生成查询并验证返回的结果是否正确。如果预言机表明结果正确，执行继续；如果预言机表明存在错误，输出错误报告并重新启动测试过程。</li>
+</ul>
+<h3 id="C-Query-Plan-Collection"><a href="#C-Query-Plan-Collection" class="headerlink" title="C. Query Plan Collection."></a><em>C. Query Plan Collection.</em></h3><p><strong>查询计划的获取</strong>：</p>
+<ul>
+<li>通过使用EXPLAIN语句对查询进行检测来收集查询计划。</li>
+<li>示例中，使用<code>EXPLAIN QUERY PLAN SELECT * FROM t2 RIGHT JOIN t3 ON d&lt;&gt;0 LEFT JOIN t1 ON c=3 WHERE t1.a&lt;&gt;0</code>获取查询计划，并移除表和索引的名称。</li>
+</ul>
+<p><strong>查询计划池</strong>：</p>
+<ul>
+<li>查询计划池存储独特的查询计划，使用哈希表实现，键是查询计划，值是对应的查询字符串。</li>
+<li>给定一个查询计划，检查其是否已存在于池中，如果不存在则插入。</li>
+</ul>
+<p><strong>操作逻辑</strong>：</p>
+<ul>
+<li>初始时，查询计划池为空，首次获取的查询计划会被插入池中。</li>
+<li>如果在固定数量的查询后没有新的查询计划插入池中，则对数据库状态进行变异，以促使DBMS探索更多独特的查询计划。</li>
+<li>否则，继续使用相同的数据库状态测试DBMS。</li>
+<li>默认情况下，这个固定数量设定为1000，这是基于经验确定的。</li>
+</ul>
+<h3 id="D-Database-State-Mutation"><a href="#D-Database-State-Mutation" class="headerlink" title="D. Database State Mutation."></a><em>D. Database State Mutation.</em></h3><p><strong>变异触发条件</strong>：</p>
+<ul>
+<li>如果在固定数量的查询后没有新的查询计划插入池中，则触发数据库状态变异。</li>
+<li>目的是通过操纵数据库状态，使DBMS探索更多独特的查询计划。</li>
+</ul>
+<p><strong>变异操作符</strong>：</p>
+<ul>
+<li>采用与生成初始数据库状态相同的DDL和DML语句，如CREATE TABLE、CREATE INDEX和ANALYZE。</li>
+<li>关键挑战是应用有希望的变异，以触发新的查询计划。</li>
+</ul>
+<p><strong>决策建模</strong>：</p>
+<ul>
+<li>变异操作符的选择被建模为多臂赌博机（MAB）问题，目标是最大化覆盖的独特查询计划数。</li>
+<li>使用已知增益（exploitation）和探索增益（exploration）来优化决策。</li>
+<li>采用经典的贪婪算法，选择预期增益最高的操作符，并以一定概率随机选择其他操作符。</li>
+</ul>
+<p><strong>增益计算</strong>：</p>
+<ul>
+<li><strong>已知增益</strong>：基于每个操作符在所有迭代中的加权平均增益计算。</li>
+<li><strong>即时增益</strong>：测量最新数据库状态下查询探索新查询计划的比例。</li>
+</ul>
+<p><strong>过程示例</strong>：</p>
+<ul>
+<li>例如，应用变异操作符CREATE INDEX t0 ON t2(c)。</li>
+<li>生成新的查询并观察到新的查询计划，然后将其插入查询计划池并进行验证。</li>
+<li>如果发现错误，则输出错误报告；否则，继续测试或变异。</li>
+</ul>
+<p><strong>数据库状态清理</strong>：</p>
+<ul>
+<li>在测试了一定数量的查询后，清理数据库状态并重启测试过程，以探索更多独特的查询计划。</li>
+</ul>
+<p>通过这些步骤，QPG通过变异数据库状态有效地引导DBMS探索和验证更多复杂和独特的查询计划，从而提高发现逻辑错误的可能性。</p>
+<blockquote>
+<p>变异数据库状态的过程举例：</p>
+<p>假设我们有一个初始数据库状态，其中包含两个表<code>t1</code>和<code>t2</code>，表结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE t1 (a INT, b INT);</span><br><span class="line">CREATE TABLE t2 (c INT, d INT);</span><br><span class="line">// 初始数据库状态已经填充了一些数据：</span><br><span class="line">INSERT INTO t1 VALUES (1, 2), (3, 4);</span><br><span class="line">INSERT INTO t2 VALUES (5, 6), (7, 8);</span><br></pre></td></tr></table></figure>
+
+<p>QPG生成一个查询：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM t1 JOIN t2 ON t1.a = t2.c;</span><br></pre></td></tr></table></figure>
+
+<p>执行这个查询并验证结果。如果没有发现错误，QPG记录查询计划，并将其添加到查询计划池中。</p>
+<p>经过多次查询后，如果没有新的查询计划被发现，QPG决定变异数据库状态。假设变异操作符是<code>CREATE INDEX</code>，那么可以执行以下变异操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE INDEX idx_t1_a ON t1(a);</span><br></pre></td></tr></table></figure>
+
+<p>这个操作创建了一个索引，可以改变DBMS执行查询的方式，从而生成新的查询计划。</p>
+<p>在变异操作后，QPG重新生成一个查询：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM t1 JOIN t2 ON t1.a = t2.c;</span><br></pre></td></tr></table></figure>
+
+<p>由于索引的存在，DBMS可能使用新的查询计划来执行这个查询，例如，利用索引来加速连接操作。QPG再次验证查询结果。如果没有发现错误，则记录新的查询计划并将其添加到查询计划池中。如果发现错误，则输出错误报告。</p>
+<p>如果再次触发变异操作，QPG可能会选择其他DDL或DML语句。例如，添加新列：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE t2 ADD COLUMN e INT;</span><br></pre></td></tr></table></figure>
+
+<p>或是插入新的数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO t1 VALUES (9, 10);</span><br></pre></td></tr></table></figure>
+
+<p>通过这些变异操作，QPG不断改变数据库状态，生成新的查询计划，从而提高发现逻辑错误的机会。</p>
+</blockquote>
+<blockquote>
+<p>查询计划池的作用是？</p>
+<p><strong>唯一性检测</strong>：查询计划池存储所有已生成的查询计划，并用于检测新生成的查询计划是否独特。通过检查新查询计划是否已存在于池中，确保测试过程探索新的数据库行为。</p>
+<p><strong>变异触发</strong>：如果在一定数量的查询后，查询计划池中没有新增的独特查询计划，QPG会触发数据库状态的变异操作。这样可以促使DBMS生成新的查询计划，从而提高发现错误的可能性。</p>
+</blockquote>
+<blockquote>
+<p>如何选择变异操作符？</p>
+<p>变异操作符的选择被建模为一个多臂赌博机（Multi-Armed Bandit，MAB）问题。在这个模型中，每个变异操作符被视为一个臂，选择一个操作符的过程类似于选择一个臂进行赌博。目的是通过选择适当的操作符，使得探索到更多独特的查询计划，从而最大化测试覆盖率和错误发现的概率。</p>
+<p>增益选择：选择变异操作符时，使用一种贪婪算法来平衡已知增益和即时增益。</p>
+<p><strong>已知增益（Exploitation）</strong>：这是基于历史数据计算的每个操作符的加权平均增益，反映了过去该操作符的效果。</p>
+<p><strong>即时增益（Exploration）</strong>：这是当前选择操作符后立即观察到的新查询计划数目，用于衡量当前操作符的即时效果。</p>
+<p>一个例子：</p>
+<p>假设有三个变异操作符：</p>
+<ol>
+<li><code>CREATE INDEX</code></li>
+<li><code>INSERT INTO</code></li>
+<li><code>ALTER TABLE</code></li>
+</ol>
+<p>初始状态：</p>
+<ul>
+<li>已知增益初始值：<ul>
+<li>μ^1(0)&#x3D;0.0\hat{\mu}_1(0) &#x3D; 0.0μ^1(0)&#x3D;0.0</li>
+<li>μ^2(0)&#x3D;0.0\hat{\mu}_2(0) &#x3D; 0.0μ^2(0)&#x3D;0.0</li>
+<li>μ^3(0)&#x3D;0.0\hat{\mu}_3(0) &#x3D; 0.0μ^3(0)&#x3D;0.0</li>
+</ul>
+</li>
+<li>探索概率 eee &#x3D; 0.1</li>
+</ul>
+<p>执行步骤：</p>
+<ol>
+<li><strong>选择操作符</strong>：<ul>
+<li>使用决策函数选择操作符，初始选择是随机的，因为已知增益都为0。</li>
+<li>假设随机选择了操作符 <code>CREATE INDEX</code>。</li>
+</ul>
+</li>
+<li><strong>应用操作符</strong>：<ul>
+<li>执行变异操作：<code>CREATE INDEX idx_t1_a ON t1(a)</code></li>
+<li>生成新查询并记录即时增益 QQQ，假设发现2个新查询计划。</li>
+</ul>
+</li>
+<li><strong>更新已知增益</strong>：<ul>
+<li>使用即时增益更新已知增益，公式为：μ^i(t+1)&#x3D;μ^i(t)+(Q−μ^i(t))⋅w\hat{\mu}_i(t+1) &#x3D; \hat{\mu}_i(t) + (Q - \hat{\mu}_i(t)) \cdot wμ^i(t+1)&#x3D;μ^i(t)+(Q−μ^i(t))⋅w</li>
+<li>假设权重 w&#x3D;0.1w &#x3D; 0.1w&#x3D;0.1，则更新后的已知增益为： μ^1(1)&#x3D;0.0+(2−0.0)⋅0.1&#x3D;0.2\hat{\mu}_1(1) &#x3D; 0.0 + (2 - 0.0) \cdot 0.1 &#x3D; 0.2μ^1(1)&#x3D;0.0+(2−0.0)⋅0.1&#x3D;0.2</li>
+</ul>
+</li>
+<li><strong>继续选择操作符</strong>：<ul>
+<li>在下一轮中，使用决策函数选择操作符，这次选择可能会偏向于 <code>CREATE INDEX</code>，因为其已知增益较高。</li>
+<li>再次执行变异操作，记录即时增益并更新已知增益。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h3 id="E-Implementation"><a href="#E-Implementation" class="headerlink" title="E. Implementation"></a><em>E. Implementation</em></h3><p><strong>实现平台</strong>：</p>
+<ul>
+<li>在SQLancer中实现了描述的QPG方法，并将其原型称为SQLancer+QPG。</li>
+<li>更新了SQLancer以支持SQLite的最新版本，该版本具有三个新特性：RIGHT JOIN、FULL OUTER JOIN和STRICT。</li>
+</ul>
+<p><strong>代码实现</strong>：</p>
+<ul>
+<li>实现方法使用大约1000行Java代码。</li>
+<li>针对每个DBMS的特定组件进行了额外100行Java代码的适配，例如定义收集查询计划的具体语句。</li>
+</ul>
+<p><strong>兼容性设计</strong>：</p>
+<ul>
+<li>设计该方法以兼容现有测试工具。</li>
+<li>对于数据库状态生成和查询生成与验证步骤，重用了SQLancer的实现。</li>
+<li>在数据库状态变异步骤中，作为一个独立模块实现了算法，可在不同DBMS中重用。</li>
+</ul>
+<p><strong>变异操作符</strong>：</p>
+<ul>
+<li>使用SQLancer支持的DDL和DML语句作为变异操作符。</li>
+<li><font color="red"><strong>SQLite使用了23种变异操作，TiDB使用了13种，CockroachDB使用了17种。</strong></font></li>
+<li>这些变异操作有助于覆盖更多独特的查询计划。</li>
+</ul>
+<p><strong>限制和优化</strong>：</p>
+<ul>
+<li>为避免大量表和索引导致的测试吞吐量下降，限制了表和索引的最大数量：最多10个表和20个索引。</li>
+</ul>
+<h2 id="EVALUATION"><a href="#EVALUATION" class="headerlink" title="EVALUATION"></a>EVALUATION</h2><p>为了评估QPG在发现DBMS错误方面的有效性和效率，我们提出并回答以下问题：</p>
+<ol>
+<li><strong>新错误</strong>：QPG是否能帮助发现新错误？发现这些错误是否需要复杂的查询计划？</li>
+<li><strong>覆盖独特查询计划</strong>：QPG能否比简单随机生成和代码覆盖引导方法覆盖更多独特的查询计划？</li>
+<li><strong>错误发现效率</strong>：QPG能否比简单随机生成和代码覆盖引导方法更高效地发现错误？</li>
+<li><strong>敏感性分析</strong>：QPG的每个组成部分对结果的贡献是什么？在不同配置下，QPG的表现如何？</li>
+</ol>
+<p>Test DBMS:</p>
+<ul>
+<li><strong>SQLite</strong>：最流行的嵌入式DBMS，用于所有iOS和Android智能手机。</li>
+<li><strong>TiDB和CockroachDB</strong>：流行的企业级DBMS，在GitHub上有较多的关注和使用。</li>
+</ul>
+<p>Baselines:</p>
+<ul>
+<li><strong>SQLancer</strong>：使用简单随机生成方法，是SQLancer+QPG的基准。</li>
+<li><strong>SQLRight</strong>：使用代码覆盖引导方法的最先进工具。</li>
+</ul>
+<p>DBMS Version</p>
+<ul>
+<li><strong>最新开发版本</strong>：用于Q1、Q2和Q4。<ul>
+<li>SQLite：3.39.0</li>
+<li>TiDB：6.3.0</li>
+<li>CockroachDB：23.1</li>
+</ul>
+</li>
+<li><strong>历史版本</strong>：用于Q3，确保所有工具都已测试并能发现错误的版本。<ul>
+<li>SQLite：3.36.0</li>
+<li>TiDB：4.0.15</li>
+<li>CockroachDB：21.2.2</li>
+</ul>
+</li>
+</ul>
+<h3 id="Q-1-New-Bugs"><a href="#Q-1-New-Bugs" class="headerlink" title="Q.1 New Bugs"></a><em>Q.1 New Bugs</em></h3><p><strong>总体结果</strong></p>
+<ul>
+<li>使用SQLancer+QPG共发现了53个新错误，其中35个已被修复。</li>
+<li>错误分布：<ul>
+<li><strong>SQLite</strong>：28个逻辑错误，5个崩溃错误。</li>
+<li><strong>TiDB</strong>：9个逻辑错误，4个崩溃错误。</li>
+<li><strong>CockroachDB</strong>：16个逻辑错误，2个崩溃错误。</li>
+</ul>
+</li>
+</ul>
+<p><strong>查询计划分析</strong></p>
+<ul>
+<li>查询计划数量：<ul>
+<li><strong>SQLite</strong>：51个查询计划，其中29个是独特的，平均长度为5.55。</li>
+<li><strong>TiDB</strong>：12个查询计划，其中9个是独特的，平均长度为5.67。</li>
+<li><strong>CockroachDB</strong>：6个查询计划，全部是独特的，平均长度为7.83。</li>
+<li>平均查询计划长度为6.35。</li>
+</ul>
+</li>
+</ul>
+<p><strong>发现的复杂性</strong></p>
+<ul>
+<li>QPG成功生成了更复杂的查询计划，暴露了之前隐藏的错误。</li>
+<li>与表II中查询计划的平均操作数2.59相比，新的错误查询计划的平均长度为6.35，显示了更高的复杂性。</li>
+</ul>
+<p><img src="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/image-20240627145856104.png" alt="image-20240627145856104"></p>
+<p><strong>RIGHT JOIN example</strong></p>
+<ul>
+<li>查询语句的SELECT部分因RIGHT JOIN功能中的不正确优化而返回错误结果。</li>
+<li>执行逻辑：<ul>
+<li>该查询语句首先执行LEFT OUTER JOIN，将<code>t4</code>和<code>t3</code>连接，条件为<code>TRUE</code>，这意味着每个<code>t4</code>中的行都会与<code>t3</code>中的所有行连接。</li>
+<li>然后，结果与<code>t1</code>进行INNER JOIN，连接条件是<code>t3.c=t</code>。</li>
+<li>最后，通过WHERE子句过滤结果，条件是<code>t3.c ISNULL</code>。</li>
+</ul>
+</li>
+<li>错误根源：<ul>
+<li>错误出现在RIGHT JOIN的优化中，特别是对<code>ISNULL</code>操作的处理。</li>
+<li>RIGHT JOIN操作应正确处理<code>t3.c ISNULL</code>的情况，但由于优化问题，返回了不正确的结果。</li>
+</ul>
+</li>
+<li>影响：<ul>
+<li>由于优化错误，查询返回了包含意外记录的结果集，而正确的结果应当是空的。</li>
+</ul>
+</li>
+</ul>
+<p><strong>JSON example</strong></p>
+<ul>
+<li><strong>问题</strong>：由于对JSON功能中的<code>json_quote</code>函数的不正确优化，SELECT语句返回空结果。</li>
+<li>执行逻辑：<ul>
+<li>该查询从视图<code>v1</code>和表<code>t1</code>中选择数据，并通过WHERE子句过滤结果。</li>
+<li><code>json_quote(b)</code>是一个JSON函数，返回字符串<code>b</code>的JSON表示。</li>
+<li>WHERE子句中，条件为<code>NOT json_quote(b)</code>，意味着过滤条件为<code>json_quote(b)</code>返回<code>false</code>的记录。</li>
+</ul>
+</li>
+<li>错误根源：<ul>
+<li>错误出现在<code>json_quote</code>函数的优化过程中。</li>
+<li>优化器未能正确处理<code>json_quote</code>函数的结果，导致返回空结果集。</li>
+</ul>
+</li>
+<li>影响：<ul>
+<li>本应返回符合条件的记录，但由于优化错误，查询结果为空。</li>
+</ul>
+</li>
+</ul>
+<img src="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/image-20240627150234051.png" alt="image-20240627150234051" style="zoom:67%;">
+
+<h3 id="Q-2-Covering-Unique-Query-Plans"><a href="#Q-2-Covering-Unique-Query-Plans" class="headerlink" title="Q.2 Covering Unique Query Plans"></a><em>Q.2 Covering Unique Query Plans</em></h3><p><strong>研究目标</strong></p>
+<ul>
+<li>评估SQLancer+QPG是否能比简单随机生成和代码覆盖引导方法覆盖更多的独特查询计划。</li>
+</ul>
+<p><strong>方法</strong></p>
+<ul>
+<li>使用TLP预言机，它是唯一支持所有DBMS的测试预言机。</li>
+<li>每15分钟记录一次查询计划，移除表、视图和索引名称以确保唯一性。</li>
+<li>对TiDB和CockroachDB，由于系统崩溃，只能运行SQLancer+QPG最多6小时。</li>
+</ul>
+<p><strong>结果</strong></p>
+<ul>
+<li>图3显示了10次运行中每24小时内所有工具覆盖的独特查询计划的平均数量。</li>
+<li>SQLancer+QPG明显优于SQLancer和SQLRight。<ul>
+<li>SQLancer+QPG的独特查询计划覆盖率是SQLancer的4.85到408.48倍，是SQLRight的7.46倍。</li>
+</ul>
+</li>
+<li>表IV显示了新发现错误的查询计划的平均长度：<ul>
+<li>SQLite：5.55</li>
+<li>TiDB：5.67</li>
+<li>CockroachDB：7.83</li>
+<li>平均：6.35</li>
+</ul>
+</li>
+</ul>
+<p><strong>统计分析</strong></p>
+<ul>
+<li><p>使用Vargha-Delaney </p>
+<p>和Wilcoxon秩和检验比较SQLancer+QPG与SQLancer的随机测试结果。</p>
+<ul>
+<li>对于两种度量，A^12&#x3D;1\hat{A}_{12} &#x3D; 1A^12&#x3D;1且 U&lt;0.05U &lt; 0.05U&lt;0.05 表明SQLancer+QPG显著优于SQLancer。</li>
+<li>结果表明SQLancer+QPG在所有DBMS中连续生成显著更多的独特查询计划和复杂数据库状态。</li>
+</ul>
+</li>
+</ul>
+<p><strong>结论</strong></p>
+<ul>
+<li>SQLancer+QPG能够有效覆盖更多独特和复杂的查询计划，显著提高了发现数据库管理系统中逻辑错误的可能性和效率。</li>
+<li>尽管SQLancer+QPG不以最大化代码覆盖率为目标，但由于覆盖了更多独特查询计划，仍在代码覆盖率上优于SQLancer。</li>
+</ul>
+<img src="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/image-20240627150752280.png" alt="image-20240627150752280" style="zoom:67%;">
+
+<img src="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/image-20240627150805574.png" alt="image-20240627150805574" style="zoom:67%;">
+
+<h3 id="Q-3-Bug-Finding-Efficiency"><a href="#Q-3-Bug-Finding-Efficiency" class="headerlink" title="Q.3 Bug Finding Efficiency"></a><em>Q.3 Bug Finding Efficiency</em></h3><p><strong>研究目标</strong></p>
+<p>评估SQLancer+QPG在发现错误方面是否比SQLancer和SQLRight更高效。</p>
+<p><strong>实验方法</strong></p>
+<ul>
+<li>使用TLP预言机运行SQLancer+QPG、SQLancer和SQLRight各24小时。</li>
+<li>使用基于堆栈跟踪的工具区分唯一错误：<ol>
+<li><strong>崩溃错误</strong>：堆栈跟踪相同的认为是重复的崩溃错误。</li>
+<li><strong>错误消息</strong>：错误消息相同的认为是重复的错误。</li>
+<li><strong>SQL结构</strong>：仅包含RIGHT JOIN和GROUP BY子句的SQL结构相同的认为是重复的错误。</li>
+</ol>
+</li>
+<li>未重新启动测试过程，以避免不公平地影响SQLancer+QPG的数据库状态变异策略。</li>
+</ul>
+<p><strong>结果</strong></p>
+<ul>
+<li>表VII显示了10次运行中发现的所有错误和唯一错误的总数。</li>
+<li><img src="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/image-20240627151118639.png" alt="image-20240627151118639" style="zoom:50%;">
+- **SQLancer**：发现了62个错误，其中13个是唯一的。
+- **SQLRight**：发现了13个错误，其中2个是唯一的。
+- **SQLancer+QPG**：发现了130个错误，其中17个是唯一的。</li>
+<li><strong>对比分析</strong>：<ul>
+<li>SQLancer+QPG发现错误的效率比SQLancer高1.4倍，比SQLRight高17倍。</li>
+<li>SQLancer+QPG发现的唯一错误数是SQLancer的1.3倍，是SQLRight的8.5倍。</li>
+</ul>
+</li>
+</ul>
+<p><strong>分析</strong></p>
+<ul>
+<li><strong>SQLancer</strong>：使用随机生成方法，发现错误的效率较低。</li>
+<li><strong>SQLRight</strong>：使用代码覆盖引导方法，尽管其覆盖率高，但在发现逻辑错误方面不如SQLancer+QPG有效。</li>
+<li>SQLancer+QPG：<ul>
+<li>通过生成更多独特的查询计划和变异数据库状态，提高了错误发现的概率和效率。</li>
+<li>能够发现更复杂和隐藏更深的错误。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Q-4-Sensitivity-Analysis"><a href="#Q-4-Sensitivity-Analysis" class="headerlink" title="Q.4 Sensitivity Analysis"></a><em>Q.4 Sensitivity Analysis</em></h3><p><strong>目标</strong></p>
+<p>评估SQLancer+QPG各组件的贡献，通过敏感性分析确定其对整体效果的影响。</p>
+<p><strong>算法组件的贡献</strong></p>
+<ul>
+<li><strong>主要组件</strong>：查询计划收集（③）和数据库状态变异（④）。</li>
+<li><strong>配置</strong>：为评估各组件的贡献，设计了新配置SQLancer + QPG_r，只启用查询计划收集（③），并随机应用变异（④）。</li>
+</ul>
+<p><strong>结果</strong></p>
+<ul>
+<li>图4：显示了10次运行中24小时内TLP预言机覆盖的独特查询计划数量的平均值。<ul>
+<li><strong>SQLancer + QPG</strong>：优于SQLancer + QPG_r，证明了数据库状态变异（④）的贡献。</li>
+<li><strong>SQLancer + QPG_r</strong>：优于SQLancer，证明了查询计划收集（③）的贡献。</li>
+<li><strong>SQLancer + QPG</strong>：比SQLancer + QPG_r增长率更高，因为④逐渐学习哪些变异操作符是有效的。</li>
+</ul>
+</li>
+</ul>
+<p><strong>预言机敏感性</strong></p>
+<ul>
+<li>NoREC预言机：评估了SQLancer+QPG与NoREC预言机的组合效果。<ul>
+<li>图5显示了10次运行中24小时内覆盖的独特查询计划数量的平均值。</li>
+<li>与TLP预言机类似，SQLancer+QPG在NoREC预言机下显著优于SQLancer和SQLRight。</li>
+</ul>
+</li>
+</ul>
+<p><strong>每个数据库状态的最大查询数</strong></p>
+<ul>
+<li>配置：调整了每个数据库状态的最大查询数，评估SQLancer+QPG在不同配置下的表现。<ul>
+<li>图6显示了在不同最大查询数下覆盖的独特查询计划数量的平均值。</li>
+<li>结果表明，无论最大查询数设置如何，SQLancer+QPG均显著优于SQLancer。</li>
+</ul>
+</li>
+</ul>
+<p><strong>变异的敏感性</strong></p>
+<ul>
+<li>变异频率：评估每种变异（SQL语句）在10次运行中24小时内的执行频率。</li>
+<li><img src="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/image-20240627151531089.png" alt="image-20240627151531089" style="zoom:50%;">
+- 图7显示了SQLite、TiDB和CockroachDB中执行频率最高的五种变异的频率。
+- **SQLite**：最频繁的变异是`CREATE TABLE`。
+- **TiDB**：最频繁的变异是`CREATE INDEX`。
+- **CockroachDB**：最频繁的变异是`SET SESSION`。</li>
+</ul>
+<p><img src="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/image-20240627151444287.png" alt="image-20240627151444287"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/">http://example.com/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/06/26/Detecting-Metadata-Related-Logical-Bugs-in-Database-Systems-via-Raw-Database-Construction/" title="Detecting Metadata-Related Logical Bugs in Database Systems via Raw Database Construction"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Detecting Metadata-Related Logical Bugs in Database Systems via Raw Database Construction</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">89</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Testing-Database-Engines-via-Query-Plan-Guidance"><span class="toc-number">1.</span> <span class="toc-text">Testing Database Engines via Query Plan Guidance</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ABSTRACT"><span class="toc-number">1.1.</span> <span class="toc-text">ABSTRACT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.2.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BACKGROUND"><span class="toc-number">1.3.</span> <span class="toc-text">BACKGROUND</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#QUERY-PLAN-STUDY"><span class="toc-number">1.4.</span> <span class="toc-text">QUERY PLAN STUDY</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#APPROACH"><span class="toc-number">1.5.</span> <span class="toc-text">APPROACH</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview"><span class="toc-number">1.5.1.</span> <span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Database-States"><span class="toc-number">1.5.2.</span> <span class="toc-text">A. Database States.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Query-Generation-and-Validation"><span class="toc-number">1.5.3.</span> <span class="toc-text">B. Query Generation and Validation.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Query-Plan-Collection"><span class="toc-number">1.5.4.</span> <span class="toc-text">C. Query Plan Collection.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-Database-State-Mutation"><span class="toc-number">1.5.5.</span> <span class="toc-text">D. Database State Mutation.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#E-Implementation"><span class="toc-number">1.5.6.</span> <span class="toc-text">E. Implementation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EVALUATION"><span class="toc-number">1.6.</span> <span class="toc-text">EVALUATION</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Q-1-New-Bugs"><span class="toc-number">1.6.1.</span> <span class="toc-text">Q.1 New Bugs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q-2-Covering-Unique-Query-Plans"><span class="toc-number">1.6.2.</span> <span class="toc-text">Q.2 Covering Unique Query Plans</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q-3-Bug-Finding-Efficiency"><span class="toc-number">1.6.3.</span> <span class="toc-text">Q.3 Bug Finding Efficiency</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q-4-Sensitivity-Analysis"><span class="toc-number">1.6.4.</span> <span class="toc-text">Q.4 Sensitivity Analysis</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/27/Testing-Database-Engines-via-Query-Plan-Guidance/" title="Testing Database Engines via Query Plan Guidance">Testing Database Engines via Query Plan Guidance</a><time datetime="2024-06-27T07:34:27.000Z" title="发表于 2024-06-27 15:34:27">2024-06-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/26/Detecting-Metadata-Related-Logical-Bugs-in-Database-Systems-via-Raw-Database-Construction/" title="Detecting Metadata-Related Logical Bugs in Database Systems via Raw Database Construction">Detecting Metadata-Related Logical Bugs in Database Systems via Raw Database Construction</a><time datetime="2024-06-26T02:41:32.000Z" title="发表于 2024-06-26 10:41:32">2024-06-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/21/Fuzz4All-Universal-Fuzzing-with-Large-Language-Models/" title="Fuzz4All Universal Fuzzing with Large Language Models">Fuzz4All Universal Fuzzing with Large Language Models</a><time datetime="2024-06-21T06:10:36.000Z" title="发表于 2024-06-21 14:10:36">2024-06-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/18/Detecting-Logic-Bugs-in-Database-Engines-via-Equivalent-Expression-Transformation/" title="Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation">Detecting Logic Bugs in Database Engines via Equivalent Expression Transformation</a><time datetime="2024-06-18T07:48:17.000Z" title="发表于 2024-06-18 15:48:17">2024-06-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/24/Mozi-Discovering-DBMS-Bugs-via-Configuration-Based-Equivalent-Transformation/" title="Mozi: Discovering DBMS Bugs via Configuration-Based Equivalent Transformation">Mozi: Discovering DBMS Bugs via Configuration-Based Equivalent Transformation</a><time datetime="2024-05-24T09:07:56.000Z" title="发表于 2024-05-24 17:07:56">2024-05-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
