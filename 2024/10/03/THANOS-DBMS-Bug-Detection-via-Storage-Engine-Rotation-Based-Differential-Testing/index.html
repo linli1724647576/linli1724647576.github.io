@@ -1,0 +1,339 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential TestingABSTRACT摘要——差分测试是一种在自动化数据库管理系统（DBMS）测试中建立测试预言的普遍策略。然而，选择具有不同实现和兼容输入语法的等效DBMS需要大量的人工努力。在本文中，我们提出了THANOS，这是一种通过存储引擎轮换的差分测">
+<meta property="og:type" content="article">
+<meta property="og:title" content="THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing">
+<meta property="og:url" content="http://example.com/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential TestingABSTRACT摘要——差分测试是一种在自动化数据库管理系统（DBMS）测试中建立测试预言的普遍策略。然而，选择具有不同实现和兼容输入语法的等效DBMS需要大量的人工努力。在本文中，我们提出了THANOS，这是一种通过存储引擎轮换的差分测">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-10-03T08:41:45.000Z">
+<meta property="article:modified_time" content="2024-10-03T08:42:29.705Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-03 16:42:29'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">98</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-03T08:41:45.000Z" title="发表于 2024-10-03 16:41:45">2024-10-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-03T08:42:29.705Z" title="更新于 2024-10-03 16:42:29">2024-10-03</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing"><a href="#THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing" class="headerlink" title="THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing"></a>THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing</h1><h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><p>摘要——差分测试是一种在自动化数据库管理系统（DBMS）测试中建立测试预言的普遍策略。然而，选择具有不同实现和兼容输入语法的等效DBMS需要大量的人工努力。在本文中，我们提出了THANOS，这是一种通过存储引擎轮换的差分测试来发现DBMS漏洞的框架。我们的关键见解是，不同存储引擎的DBMS必须提供一致的基础存储功能。因此，可以基于存储引擎轮换来构建等效的DBMS，确保相同的SQL测试用例在这些等效DBMS上产生一致的结果。该框架包括四个主要步骤：1）选择适当的存储引擎；2）提取所选存储引擎之间的等效性信息；3）综合确保DBMS等效性的特征导向测试用例；4）将测试用例发送到具有所选存储引擎的DBMS，并比较结果。</p>
+<p>我们在三种广泛使用且广泛测试的DBMS上评估了THANOS，分别是MySQL、MariaDB和Percona，并将其与最先进的模糊测试工具SQLancer、SQLsmith和SQUIRREL进行了对比。THANOS在分支覆盖率方面比它们高出24%-116%，并且还发现了其他模糊测试工具未发现的许多漏洞。更重要的是，厂商已经确认了THANOS发现的32个此前未知的漏洞，其中29个被验证为关键漏洞。</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h2><p><font color="red">Background</font></p>
+<p><strong>DBMS作用</strong>：数据库管理系统（DBMS）为现代计算中的高效和安全数据处理提供了结构化框架，确保数据的存储、检索和管理。</p>
+<p><strong>DBMS测试的重要性</strong>：测试DBMS对于保证其可靠性、性能和安全性至关重要，直接影响关键业务和技术操作中的数据管理的准确性和一致性。</p>
+<p><strong>测试预言问题</strong>：在自动化DBMS测试中，建立能够区分DBMS正确行为的测试预言是一个主要问题。</p>
+<p><strong>差分测试的兴起</strong>：差分测试作为一种常见策略，通过比较等效DBMS实现的输出，以发现兼容输入语法中的不一致性。</p>
+<p><strong>两种差分测试方法</strong>：</p>
+<ul>
+<li><strong>基于版本的比较</strong>：在不同版本的DBMS上执行相同的SQL查询，例如在MySQL中使用APOLLO检测性能回归，但这种方法可能忽略由于小版本差异导致的真实问题。</li>
+<li><strong>基于厂商的比较</strong>：在不同DBMS上执行等效的SQL语句，例如在SQLite、PostgreSQL、MySQL、SQL Server和Oracle之间进行逻辑测试。</li>
+</ul>
+<img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003152740689.png" alt="image-20241003152740689" style="zoom:50%;">
+
+<p><strong>复杂系统中的挑战</strong>：由于DBMS特性、索引策略和数据存储机制的多样性，将这种方案应用于更复杂的系统面临挑战。</p>
+<p><strong>理想的差分测试方案</strong>：应结合不同的DBMS实现，并使用相似的输入语法，以发现隐藏问题并减少SQL生成成本。</p>
+<p><strong>现有方法的局限性</strong>：目前的差分测试方法在同时实现发现问题和降低成本方面存在困难。</p>
+<p><font color="red">Key insight</font></p>
+<p>本文提出了一种新的差分测试方案，用于DBMS漏洞检测，通过轮换存储引擎来平衡实现的多样性与输入语法的一致性。</p>
+<p><strong>存储引擎的重要性</strong>：存储引擎是DBMS中的关键组件，连接查询计划器和底层存储基础设施。</p>
+<p><strong>等效DBMS实例</strong>：通过为DBMS配置各种存储引擎，创建等效的DBMS实例，以建立测试预言来检测漏洞。</p>
+<p><strong>存储引擎的复杂性</strong>：大多数生产DBMS支持多个存储引擎，具有不同的功能和性能特性，这些存储引擎在索引数据、原子性和物理布局方面引入了复杂性。</p>
+<p><strong>执行计划的多样性</strong>：不同的存储引擎导致SQL查询的执行计划优化有所不同，增强了DBMS逻辑的多样性。</p>
+<p><strong>成本降低</strong>：由于存储引擎在SQL解析、语义分析和查询规划后被调用，该方案确保了输入语法的一致性，同时降低了工具开发成本。</p>
+<p><font color="red">challenges</font></p>
+<p><strong>主要挑战</strong>：存储引擎轮换的主要挑战在于确保生成的测试用例在不同存储引擎间具有等效性，同时能够全面测试存储引擎的所有功能。</p>
+<p><strong>1、等效性问题</strong>：确保生成的测试用例在不同的存储引擎之间具有等效性，尤其是当某些存储引擎不支持特定功能时，测试用例可能无法保持等效。</p>
+<p><strong>2、特性支持差异</strong>：不同存储引擎支持的功能不同，例如MySQL中的InnoDB支持全文索引，而Memory引擎不支持，这会导致测试用例在不同引擎间不等效。</p>
+<p><strong>3、随机选择特性的风险</strong>：随机选择存储引擎相关特性可能导致测试用例不具备等效性，而选择无关特性则可能使测试无效。</p>
+<p><strong>4、测试的全面性</strong>：需要生成广泛覆盖存储引擎特性的测试用例，以确保对DBMS进行全面的功能测试，而不仅仅是基础功能的测试。</p>
+<p><strong>5、多样化测试需求</strong>：测试用例必须考察DBMS在多种存储相关操作、数据结构和优化机制方面的能力，以确保其处理不同存储引擎的多样性。</p>
+<p><font color="red">approaches</font></p>
+<p>作者通过以下四个步骤来解决这些挑战：</p>
+<ul>
+<li>选择合适的存储引擎：首先，选择适当的存储引擎作为构建等效DBMS的基础，确保覆盖更多DBMS的存储引擎特性。</li>
+<li>提取等效性信息：其次，提取所选存储引擎之间的等效性信息，以构建等效的DBMS。</li>
+<li>feature-oriented的测试用例：第三，使用等效性信息和元数据指导，综合生成feature-oriented的测试用例，这不仅确保语义正确性，还能够全面探索存储引擎的所有功能。</li>
+<li>比较测试结果：最后，将测试用例发送到具有所选存储引擎的DBMS，比较结果以检测漏洞。</li>
+</ul>
+<p><font color="red">evaluation</font></p>
+<p><strong>框架实现与应用</strong>：作者实现了一个通用的DBMS测试框架THANOS，并应用于MySQL、MariaDB和Percona这三个广泛测试的DBMS。</p>
+<p><strong>发现漏洞</strong>：THANOS共发现了32个新漏洞，已被相应厂商确认。其中，MySQL发现了11个漏洞，MariaDB发现了17个漏洞，Percona发现了4个漏洞，其中29个被验证为关键漏洞。</p>
+<p><strong>与其他方法的对比</strong>：为了评估THANOS的有效性，作者将其与最先进的DBMS测试方法（如SQLancer、SQLsmith和SQUIRREL）进行对比。THANOS在分支覆盖率上分别比这些方法高出115.95%、45.23%和23.72%。</p>
+<p><strong>漏洞发现能力</strong>：在24小时内，THANOS比SQLancer、SQLsmith和SQUIRREL分别多发现了14个、13个和11个漏洞。</p>
+<p><strong>特性导向测试用例的有效性</strong>：同时，作者还展示了feature-oriented测试用例综合方法的有效性。</p>
+<p><font color="red">contributions</font></p>
+<p>论文的主要贡献概括如下：</p>
+<ol>
+<li><strong>提出新的差分测试方法</strong>：提出了一种新的差分测试方法，通过轮换存储引擎构建等效的DBMS，补充了现有DBMS测试预言的方法，为验证执行结果提供了参考。</li>
+<li><strong>实现了THANOS框架</strong>：实现了THANOS，一个DBMS测试框架，通过基于所选存储引擎特性合成测试用例，确保测试DBMS实例的等效性。任何不一致的执行结果都会被视为潜在的异常。</li>
+<li><strong>评估THANOS的有效性</strong>：在三个广泛使用和测试的DBMS上对THANOS进行了评估，结果表明THANOS优于其他先进技术，发现了32个漏洞，并且比其他方法找到了更多的基本块和漏洞。</li>
+</ol>
+<h2 id="BACKGROUND-AND-MOTIVATION"><a href="#BACKGROUND-AND-MOTIVATION" class="headerlink" title="BACKGROUND AND MOTIVATION"></a>BACKGROUND AND MOTIVATION</h2><h3 id="DBMS-Storage-Engines"><a href="#DBMS-Storage-Engines" class="headerlink" title="DBMS Storage Engines."></a><strong>DBMS Storage Engines.</strong></h3><p>这段话主要概括了DBMS存储引擎的作用和关键特性：</p>
+<ol>
+<li><strong>存储引擎的作用</strong>：存储引擎是DBMS的基础组件，负责数据存储、检索和处理，充当DBMS和物理数据存储之间的中介，确保高效的数据处理和访问。</li>
+<li><strong>多样性</strong>：现代DBMS通常支持多种存储引擎，每个引擎都有特定的特性和能力，适用于不同的使用场景。例如，MySQL支持InnoDB、MyISAM和Memory等存储引擎。</li>
+<li><strong>重要性</strong>：存储引擎与DBMS的基础组件（如优化器和解析器）紧密相关，对数据库的整体性能有重要影响。</li>
+<li><strong>可扩展性</strong>：存储引擎组件具有高度的可扩展性，能够无缝集成新的存储引擎作为插件，帮助系统应对新的技术挑战和业务需求。</li>
+</ol>
+<img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003154449730.png" alt="image-20241003154449730" style="zoom:50%;">
+
+<h3 id="Storage-Engine-Features"><a href="#Storage-Engine-Features" class="headerlink" title="Storage Engine Features."></a><strong>Storage Engine Features.</strong></h3><p>这段话的主要内容如下：</p>
+<ol>
+<li><strong>存储引擎特性定义</strong>：存储引擎特性是DBMS中的存储引擎提供的功能和属性，旨在优化数据库操作的各个方面，如数据管理、检索和处理。</li>
+<li><strong>特性集合F</strong>：这些特性被正式定义为集合F，其中包含数据索引、事务支持、数据分区等多个功能。</li>
+<li><strong>关注的特性</strong>：本文主要关注通过SQL语句使用和展示的存储引擎特性。</li>
+<li><strong>分类和文档</strong>：作者将存储引擎特性分类为10个主要类别，并根据官方DBMS文档进行了整理。由于特性列表过长，完整的特性列表可以在THANOS的官方网站上查阅。</li>
+</ol>
+<h3 id="Basic-Idea"><a href="#Basic-Idea" class="headerlink" title="Basic Idea"></a>Basic Idea</h3><p><strong>THANOS的基本理念</strong>：THANOS的关键思想是通过利用DBMS的存储引擎来构建等效的DBMS实例，作为验证执行结果的参考，帮助发现潜在的漏洞，而无需花费大量时间寻找不同的DBMS进行差分比较。</p>
+<p><strong>利用存储引擎构建等效DBMS</strong>：THANOS通过为DBMS配置不同的存储引擎来构建等效实例。当等效的DBMS在执行相同的测试用例时产生不同的结果时，这表明可能存在漏洞。</p>
+<p><strong>MySQL中的实际案例</strong>：THANOS在MySQL中发现了一个处理NULL值的不一致性问题，涉及InnoDB和Memory存储引擎的行为差异。InnoDB返回空结果集，而Memory返回包含四列NULL值的结果，这表明MySQL存储引擎的实现存在问题。</p>
+<img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003155331665.png" alt="image-20241003155331665" style="zoom:67%;">
+
+<p><strong>传统方法的局限性</strong>：传统的DBMS模糊测试方法（如SQUIRREL）无法检测到此类问题，而依赖特定规则的变形测试（如SQLancer）在检测这一特定问题上也表现不佳。</p>
+<p><strong>THANOS的优势</strong>：THANOS能够在短时间内检测到其他DBMS测试方法难以发现的问题，显示了其在漏洞检测中的有效性。</p>
+<h2 id="DESIGN-OF-THANOS"><a href="#DESIGN-OF-THANOS" class="headerlink" title="DESIGN OF THANOS"></a>DESIGN OF THANOS</h2><p><img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003155451380.png" alt="image-20241003155451380"></p>
+<p><strong>选择存储引擎</strong>：THANOS首先选择合适的存储引擎作为构建等效DBMS的基础。</p>
+<p><strong>提取等效信息</strong>：THANOS从所选存储引擎中提取等效性信息，包括这些存储引擎支持的共同和互补特性。</p>
+<p><strong>生成特性导向的测试用例</strong>：THANOS使用提取的等效性信息来综合生成特性导向的测试用例，这些测试用例与所选存储引擎的DBMS语义相关。</p>
+<p><strong>执行测试并检测漏洞</strong>：THANOS在具有所选存储引擎的DBMS上执行测试，分析不同引擎间的结果。如果结果不一致，表明可能存在漏洞，THANOS可以进行检测。</p>
+<h3 id="A-Definitions"><a href="#A-Definitions" class="headerlink" title="A. Definitions"></a><em>A. Definitions</em></h3><p><strong>DBMS等效性</strong>：DBMS等效性指的是不同DBMS实例在实现或配置上存在差异的情况下，仍能表现出相同的功能行为。即等效的DBMS在面对相同的语义查询和操作时，能够产生一致的结果。</p>
+<p><strong>形式化定义</strong>：给定一个SQL语句$s$和DBMS $D$，如果两个DBMS实例在一系列测试用例中的执行结果保持一致，则它们被视为等效。对于两个测试用例和两个DBMS实例，等效性满足公式：</p>
+<p><img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003155803156.png" alt="image-20241003155803156"></p>
+<p><strong>存储引擎相关等效性</strong>：本文侧重于基于存储引擎的DBMS等效性，考虑了支持多种可选存储引擎的DBMS。定义了存储引擎集合，以及其各自的特性和测试用例。若两个DBMS实例在相同的测试用例下表现一致，则认为它们是等效的。</p>
+<p><strong>形式表达</strong>：若两个DBMS实例$D_{e_i}$和$D_{e_j}$在特定测试用例集合中表现一致，它们被认为是等效的，表达为：</p>
+<p><img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003155844381.png" alt="image-20241003155844381"></p>
+<h3 id="B-Feature-Guided-Storage-Engine-Selection"><a href="#B-Feature-Guided-Storage-Engine-Selection" class="headerlink" title="B. Feature-Guided Storage Engine Selection"></a><em>B. Feature-Guided Storage Engine Selection</em></h3><ol>
+<li><strong>THANOS的主要策略</strong>：THANOS通过为测试DBMS配置不同的存储引擎，并基于这些引擎的特性生成等效的测试用例。选择适当的存储引擎作为构建等效DBMS的基础非常重要。</li>
+<li><strong>存储引擎组合</strong>：不同的存储引擎组合具有不同的功能和代码分支。某些存储引擎组合可能存在更多潜在漏洞，因此选择适当的引擎组合进行测试有助于发现潜在的漏洞。例如，InnoDB和Aria支持70多个等效特性，而Archive和Memory只支持40个等效特性。</li>
+<li><strong>选择存储引擎的重要性</strong>：大多数漏洞（70%）是通过与InnoDB相关的存储引擎组合发现的，因此在测试准备阶段，选择合适的存储引擎非常关键。</li>
+<li><strong>特性引导的选择过程</strong>：THANOS根据所覆盖的特性和代码分支设计存储引擎选择算法，生成所有存储引擎组合，并为每个组合分配权重值。根据权重值高低选择存储引擎组合进行测试。如果在测试过程中发现新特性或新漏洞，THANOS会增加该组合的权重。</li>
+</ol>
+<img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003160309198.png" alt="image-20241003160309198" style="zoom:50%;">
+
+<p><font color="green">什么是equivalent features？</font></p>
+<h3 id="C-Extract-Equivalence-Information"><a href="#C-Extract-Equivalence-Information" class="headerlink" title="C. Extract Equivalence Information"></a><em>C. Extract Equivalence Information</em></h3><p><strong>等效信息提取</strong>：THANOS从所选存储引擎中提取等效性信息，以确保不同存储引擎的DBMS在测试中的一致性。这些等效信息用于处理各存储引擎的特性差异，确保在测试时涵盖所有存储引擎的相关功能。</p>
+<p><strong>等效性信息的组成</strong>：等效性信息（$F_{equivalent}$）<font color="green">包括各存储引擎共同支持的功能和那些所有引擎都不支持的特性。这些特性要么是所有存储引擎都支持的</font>，要么是所有存储引擎都不支持的。</p>
+<p><strong>等效信息的计算</strong>：等效性信息通过两个集合的并集计算得出，一个集合是所有引擎共享的特性，另一个是所有引擎都缺少的特性。公式为：</p>
+<p><img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003160917562.png" alt="image-20241003160917562"></p>
+<p>其中，$U$为所有存储引擎的特性全集，$f_i$为第$i$个存储引擎的特性集。</p>
+<p><strong>等效性信息的应用</strong>：THANOS自动提取等效信息并生成等效DBMS的测试用例。这些信息用于构建测试用例，以检测DBMS在不同存储引擎下的行为一致性。</p>
+<p><strong>表格展示</strong>：THANOS提取了如InnoDB、MyISAM、Archive和Mroonga等存储引擎的等效信息，支持的特性包括数据类型、索引类型、分区、事务和加密等，用于生成测试用例。</p>
+<p><img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003160941402.png" alt="image-20241003160941402"></p>
+<h3 id="D-Feature-Oriented-Test-Case-Synthesis"><a href="#D-Feature-Oriented-Test-Case-Synthesis" class="headerlink" title="D. Feature-Oriented Test Case Synthesis"></a><em>D. Feature-Oriented Test Case Synthesis</em></h3><p><strong>测试用例生成</strong>：THANOS利用从存储引擎提取的等效性信息，系统性地生成特性导向的测试用例，这些用例激活并调度存储引擎的不同特性，确保在DBMS实例之间建立等效性。</p>
+<p><strong>标准和非标准SQL特性</strong>：测试用例包括标准SQL特性和非标准SQL特性。标准特性可以通过关键词或SQL语句表示，而非标准特性如<code>CHECK TABLE</code>和<code>REPAIR TABLE</code>等则通过非标准SQL语句表达。</p>
+<p><strong>测试用例结构</strong>：THANOS首先综合DDL（数据定义语言）来构建存储基础，如<code>CREATE TABLE</code>和<code>CREATE INDEX</code>语句。然后，生成DML（数据操作语言）和DQL（数据查询语言），执行存储引擎相关操作，如数据修改和查询。</p>
+<p><strong>元数据管理</strong>：为了确保测试的语义正确性，THANOS开发了元数据池，保留表、列、索引和数据类型等元数据，帮助生成具有语义正确的测试用例。</p>
+<p><strong>特性替换</strong>：THANOS将等效特性插入到SQL语句框架中，比如根据等效性信息将<code>CREATE TABLE</code>的节点替换为具体的数据类型。</p>
+<p><strong>执行测试</strong>：最终，THANOS将测试用例转换为可执行版本，通过指定的存储引擎运行这些用例，并在测试期间记录相关元数据，确保测试结果的一致性。</p>
+<img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003161207294.png" alt="image-20241003161207294" style="zoom:67%;">
+
+<img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003161313844.png" alt="image-20241003161313844" style="zoom:67%;">
+
+<h3 id="E-Discrepancy-Analysis-of-Execution-Results"><a href="#E-Discrepancy-Analysis-of-Execution-Results" class="headerlink" title="E. Discrepancy Analysis of Execution Results"></a><em>E. Discrepancy Analysis of Execution Results</em></h3><p>在<strong>执行结果差异分析</strong>中，THANOS通过分发生成的测试用例并分析结果差异来检测DBMS中的正确性错误，具体分析三类信息差异：</p>
+<ol>
+<li><strong>查询结果差异</strong>：当测试用例包含查询语句（如<code>SELECT</code>）时，THANOS比较各个DBMS返回的查询结果，标记任何差异为潜在的正确性错误。在比较过程中，THANOS忽略了不同DBMS中数据返回顺序的差异。</li>
+<li><strong>错误消息差异</strong>：THANOS也会比较各个DBMS实例中生成的错误消息。如果错误消息存在差异，THANOS会记录并报告这些不一致，尤其是内容不同的错误信息。</li>
+<li><strong>数据库最终状态差异</strong>：THANOS在执行测试用例后会比较各个DBMS实例的数据库最终状态（如表的一致性）。任何不一致之处都会被记录为差异。</li>
+</ol>
+<p>此外，THANOS采用了去重方法，首先将测试用例最小化以减少重复，然后记录每个测试用例的配置和输出。</p>
+<h3 id="F-Implementation"><a href="#F-Implementation" class="headerlink" title="F. Implementation"></a><em>F. Implementation</em></h3><p><strong>特性分类</strong>：THANOS根据官方DBMS文档，将存储引擎的特性分为10个主要类别：数据类型、索引类型、数据完整性、分区、加密、压缩、事务、健康检查、缓存、更新统计。每个类别包含约2到40个具体特性。</p>
+<p><strong>特性统计</strong>：对于每个存储引擎，THANOS统计各类别中的特性数量，并以“特性-存储引擎”作为最小计量单位，如<code>BTree-MyISAM</code>表示MyISAM存储引擎支持BTree索引。</p>
+<p><strong>基础元素</strong>：THANOS的基础元素包括选择适当的存储引擎（通过算法1详细说明）以及基于所选引擎共享的特性生成等效的测试用例（在算法2中描述）。</p>
+<p><strong>语法树模型</strong>：THANOS使用抽象语法树（AST）模型合成特性导向的测试用例，遵循SQL-2003标准，并利用BISON 3.3.2和FLEX生成解析器和词法分析器文件。</p>
+<p><strong>ODBC接口</strong>：为了防止不同存储引擎之间的干扰，THANOS通过ODBC客户端接口进行连接，实现统一的接口和调度，确保与每个等效DBMS的直接连接。</p>
+<h2 id="EVALUATION"><a href="#EVALUATION" class="headerlink" title="EVALUATION"></a>EVALUATION</h2><p><strong>RQ1:</strong> Can THANOS find DBMSs’ bugs?</p>
+<p><strong>RQ2:</strong> How does THANOS perform compared to other DBMS testing techniques?</p>
+<p><strong>RQ3:</strong> How effective is the feature-oriented test case synthesis algorithm?</p>
+<h3 id="A-Evaluation-Setup"><a href="#A-Evaluation-Setup" class="headerlink" title="A. Evaluation Setup"></a><em>A. Evaluation Setup</em></h3><p>实验设置部分的主要内容如下：</p>
+<ol>
+<li><strong>测试的DBMS和比较的技术</strong>：THANOS在三个广泛使用的DBMS上进行测试，分别是MySQL、MariaDB和Percona。为了评估THANOS的有效性，作者将其与当前先进的DBMS测试工具进行了比较，包括SQUIRREL、SQLancer和SQLsmith。这些工具通过生成大量查询来检测崩溃和逻辑漏洞，SQUIRREL利用覆盖率引导SQL生成以检测崩溃错误。</li>
+<li><strong>实验环境</strong>：实验在运行64位Ubuntu 20.04的机器上进行，每个DBMS实例运行在Docker容器中，配置为5个CPU核心（AMD EPYC 7742 2.25GHz）和40GiB内存。三个测试的DBMS使用AFL++编译，用于收集覆盖率和反馈。</li>
+</ol>
+<h3 id="B-DBMS-Bug-Detection"><a href="#B-DBMS-Bug-Detection" class="headerlink" title="B. DBMS Bug Detection"></a><em>B. DBMS Bug Detection</em></h3><img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003162346929.png" alt="image-20241003162346929" style="zoom:80%;">
+
+<p>在<strong>DBMS Bug Detection</strong>部分，THANOS在三周内成功检测到32个此前未知的漏洞，这些漏洞出现在MySQL、MariaDB和Percona这三个DBMS中，开发者确认了所有漏洞，没有误报。其中29个被评为<strong>关键</strong>漏洞。作者展示了THANOS在DBMS的多个组件中发现的漏洞分布情况和严重程度。</p>
+<p>不同的DBMS对漏洞有不同的严重性定义，例如MySQL中的<strong>Critical</strong>，MariaDB中的<strong>Blocker</strong>，以及Percona中的<strong>Urgent</strong>等。THANOS不仅发现了存储引擎相关的漏洞，还检测到了与DBMS核心组件（如优化器和解析器）相关的问题。</p>
+<p>THANOS通过存储引擎的轮换和广泛的测试暴露了DBMS中的漏洞，同时也触发了其他核心组件中的商业逻辑，揭示了更多的隐藏漏洞和脆弱性。</p>
+<img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003162453455.png" alt="image-20241003162453455" style="zoom: 67%;">
+
+<p>这个案例描述了THANOS检测到的MySQL查询结果不一致的问题。该问题通过执行相同的SQL测试用例，利用MySQL的不同存储引擎（InnoDB、MyISAM和Memory）触发。结果显示：</p>
+<ul>
+<li>InnoDB返回空结果集；</li>
+<li>MyISAM和Memory返回包含两行NULL值的结果集。</li>
+</ul>
+<p>这种差异源于各存储引擎对<code>NULL</code>值的不同实现方式。当用户使用<code>ALTER TABLE</code>等命令改变存储引擎时，可能会导致这些不一致性，进而引发潜在的安全风险和业务逻辑问题。</p>
+<p>此类问题对于现有的DBMS模糊测试工具（如SQUIRREL）和基于规则的工具（如SQLancer）较难检测，因为它们通常侧重于崩溃错误或依赖于特定规则，而THANOS通过对不同存储引擎的结果比较，能够有效发现这些差异。</p>
+<img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003162648153.png" alt="image-20241003162648153" style="zoom:80%;">
+
+<p>这个案例描述了THANOS在MySQL中发现的一个错误消息不一致的问题。具体来说，CSV和Archive存储引擎都不支持B-tree索引，但当执行创建B-tree索引的SQL语句时：</p>
+<ul>
+<li>CSV存储引擎返回了用户友好的错误消息，提示过多的键被指定。</li>
+<li>Archive存储引擎则返回了模糊的未知错误消息“Unknown error”。</li>
+</ul>
+<p>这种不一致性对于同样的问题应保持统一的错误提示，以确保用户能够理解并解决问题。开发者已经承认了这个问题，并计划修复。</p>
+<p>此外，THANOS还发现了其他类似的问题，例如类似问题却有不同的错误代码。尽管这些问题对安全性影响较小，但它们对DBMS的可靠性和健壮性至关重要。当前的DBMS测试工具难以发现这些问题，而THANOS能够通过自动化测试检测出这些问题。</p>
+<img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003162725696.png" alt="image-20241003162725696" style="zoom:80%;">
+
+<p>这个案例描述了THANOS在MariaDB的Mroonga存储引擎中发现的一个已隐藏近10年的问题。当使用Mroonga存储引擎执行测试时，服务器发生崩溃，而使用InnoDB等其他存储引擎则可以正常获取查询结果。具体来说，测试用例创建了一个包含触发器的表，并执行了<code>UPDATE</code>语句，最终导致MariaDB在Mroonga引擎上的崩溃。</p>
+<p>通过调用堆栈信息分析，THANOS发现这个问题与Mroonga存储引擎处理<code>AUTO_INCREMENT</code>功能有关，而这部分代码已有10年未更新。THANOS通过存储引擎的轮换测试机制，成功检测到了这个长期未被发现的错误。传统的DBMS测试工具由于仅使用默认存储引擎，难以发现此类问题，而THANOS的存储引擎导向的等效DBMS构建使其能够识别出这个潜在的漏洞。</p>
+<h3 id="C-Comparison-with-Existing-Techniques"><a href="#C-Comparison-with-Existing-Techniques" class="headerlink" title="C. Comparison with Existing Techniques"></a><em>C. Comparison with Existing Techniques</em></h3><img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003163022984.png" alt="image-20241003163022984" style="zoom:50%;">
+
+<p>THANOS与其他DBMS测试工具（SQLancer、SQLsmith和SQUIRREL）进行了比较。具体表现如下：</p>
+<ol>
+<li><strong>漏洞检测</strong>：THANOS在24小时内检测到的漏洞数量显著高于其他工具。THANOS共检测到14个漏洞，而SQLsmith检测到1个，SQUIRREL检测到3个，SQLancer未检测到任何漏洞。THANOS的14个漏洞均被开发者确认，其中大部分是以前未被发现的。</li>
+<li><strong>覆盖的代码分支</strong>：THANOS覆盖的代码分支数量也显著高于其他工具。THANOS覆盖了395,981个分支，比SQUIRREL、SQLsmith和SQLancer分别多23.72%、45.23%和115.95%。</li>
+<li><strong>原因分析</strong>：THANOS的优势主要源于其对存储引擎的深入测试。相比于其他工具主要测试默认存储引擎，THANOS测试了多种存储引擎，覆盖了更广泛的DBMS功能。此外，THANOS在生成测试用例时也包含了许多非标准SQL语法，进一步提高了其覆盖范围和漏洞检测能力。</li>
+</ol>
+<p>THANOS的这种差异化方法使其能够测试更多DBMS的功能，从而在代码覆盖率和漏洞检测方面取得显著的提升。</p>
+<h3 id="D-Effectiveness-of-Feature-Oriented-Test-Case-Synthesis"><a href="#D-Effectiveness-of-Feature-Oriented-Test-Case-Synthesis" class="headerlink" title="D. Effectiveness of Feature-Oriented Test Case Synthesis"></a><em>D. Effectiveness of Feature-Oriented Test Case Synthesis</em></h3><p><img src="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/image-20241003163257325.png" alt="image-20241003163257325"></p>
+<p>作者评估了其feature-oriented的测试用例合成算法的有效性，并与一个随机生成测试用例的工具（Thanos-）进行对比。结果显示，Thanos在MySQL、MariaDB和Percona中激活了更多的特征，并生成了更多与存储引擎相关的测试用例。</p>
+<p>具体而言，Thanos在MySQL、MariaDB和Percona分别激活了187、273和214个更多的特征，比Thanos-高出16.14%、22.48%和17.60%。这一结果与预期一致，说明Thanos的特征导向合成算法可以触发DBMS中的更多存储引擎功能，而随机测试用例生成在这一方面较为低效，无法充分探索和激活多样的存储引擎功能。</p>
+<h2 id="DISCUSSION"><a href="#DISCUSSION" class="headerlink" title="DISCUSSION"></a>DISCUSSION</h2><p>在讨论部分，作者指出了THANOS适用于支持多存储引擎的DBMS。THANOS为8个常用存储引擎提供了特征列表模板，使其能够高效组织测试。作者提到，适应不同的存储引擎是一次性的<strong>手动工作</strong>，之后可以重复使用该模板。例如，收集MySQL特征约需6小时。</p>
+<p>对于仅支持单一存储引擎的DBMS，THANOS可以通过构建等效DBMS进行测试，方法包括使用不同版本的存储引擎进行差异测试，或替换DBMS的其他组件。在未来，THANOS将扩展能力以支持单一存储引擎配置。</p>
+<p>THANOS通过差异测试检测DBMS中的bug，表明约40%的bug（13&#x2F;32）与存储引擎相关，其他则涉及DBMS核心组件，如Optimizer和Parser。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/">http://example.com/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/09/28/SQLaser-Detecting-DBMS-Logic-Bugs-with-Clause-Guided-Fuzzing/" title="SQLaser: Detecting DBMS Logic Bugs with Clause-Guided Fuzzing"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SQLaser: Detecting DBMS Logic Bugs with Clause-Guided Fuzzing</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">98</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing"><span class="toc-number">1.</span> <span class="toc-text">THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ABSTRACT"><span class="toc-number">1.1.</span> <span class="toc-text">ABSTRACT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.2.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BACKGROUND-AND-MOTIVATION"><span class="toc-number">1.3.</span> <span class="toc-text">BACKGROUND AND MOTIVATION</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DBMS-Storage-Engines"><span class="toc-number">1.3.1.</span> <span class="toc-text">DBMS Storage Engines.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Storage-Engine-Features"><span class="toc-number">1.3.2.</span> <span class="toc-text">Storage Engine Features.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Idea"><span class="toc-number">1.3.3.</span> <span class="toc-text">Basic Idea</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DESIGN-OF-THANOS"><span class="toc-number">1.4.</span> <span class="toc-text">DESIGN OF THANOS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Definitions"><span class="toc-number">1.4.1.</span> <span class="toc-text">A. Definitions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Feature-Guided-Storage-Engine-Selection"><span class="toc-number">1.4.2.</span> <span class="toc-text">B. Feature-Guided Storage Engine Selection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Extract-Equivalence-Information"><span class="toc-number">1.4.3.</span> <span class="toc-text">C. Extract Equivalence Information</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-Feature-Oriented-Test-Case-Synthesis"><span class="toc-number">1.4.4.</span> <span class="toc-text">D. Feature-Oriented Test Case Synthesis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#E-Discrepancy-Analysis-of-Execution-Results"><span class="toc-number">1.4.5.</span> <span class="toc-text">E. Discrepancy Analysis of Execution Results</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#F-Implementation"><span class="toc-number">1.4.6.</span> <span class="toc-text">F. Implementation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EVALUATION"><span class="toc-number">1.5.</span> <span class="toc-text">EVALUATION</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Evaluation-Setup"><span class="toc-number">1.5.1.</span> <span class="toc-text">A. Evaluation Setup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-DBMS-Bug-Detection"><span class="toc-number">1.5.2.</span> <span class="toc-text">B. DBMS Bug Detection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Comparison-with-Existing-Techniques"><span class="toc-number">1.5.3.</span> <span class="toc-text">C. Comparison with Existing Techniques</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-Effectiveness-of-Feature-Oriented-Test-Case-Synthesis"><span class="toc-number">1.5.4.</span> <span class="toc-text">D. Effectiveness of Feature-Oriented Test Case Synthesis</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DISCUSSION"><span class="toc-number">1.6.</span> <span class="toc-text">DISCUSSION</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/" title="THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing">THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing</a><time datetime="2024-10-03T08:41:45.000Z" title="发表于 2024-10-03 16:41:45">2024-10-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/28/SQLaser-Detecting-DBMS-Logic-Bugs-with-Clause-Guided-Fuzzing/" title="SQLaser: Detecting DBMS Logic Bugs with Clause-Guided Fuzzing">SQLaser: Detecting DBMS Logic Bugs with Clause-Guided Fuzzing</a><time datetime="2024-09-28T08:37:40.000Z" title="发表于 2024-09-28 16:37:40">2024-09-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/18/MVP-Detecting-Vulnerabilities-using-Patch-Enhanced-Vulnerability-Signatures/" title="MVP: Detecting Vulnerabilities using Patch-Enhanced Vulnerability Signatures">MVP: Detecting Vulnerabilities using Patch-Enhanced Vulnerability Signatures</a><time datetime="2024-08-18T09:26:02.000Z" title="发表于 2024-08-18 17:26:02">2024-08-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/17/Movery-A-Precise-Approach-for-Modified-Vulnerable-Code-Clone-Discovery-from-Modified-Open-Source-Software-Components/" title="Movery A Precise Approach for Modified Vulnerable Code Clone Discovery from Modified Open-Source Software Components">Movery A Precise Approach for Modified Vulnerable Code Clone Discovery from Modified Open-Source Software Components</a><time datetime="2024-08-17T14:09:41.000Z" title="发表于 2024-08-17 22:09:41">2024-08-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/30/Translating-between-SQL-Dialects-for-Cloud-Migration/" title="Translating between SQL Dialects for Cloud Migration">Translating between SQL Dialects for Cloud Migration</a><time datetime="2024-07-30T07:48:40.000Z" title="发表于 2024-07-30 15:48:40">2024-07-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
