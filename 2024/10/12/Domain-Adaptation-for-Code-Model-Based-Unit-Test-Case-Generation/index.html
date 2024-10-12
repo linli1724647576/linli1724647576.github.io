@@ -1,0 +1,380 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Domain Adaptation for Code Model-Based Unit Test Case Generation | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Domain Adaptation for Code Model-Based Unit Test Case GenerationAbstract最近，基于深度学习的测试用例生成方法被提出，用以自动生成单元测试用例。在本研究中，我们利用基于Transformer的代码模型，通过领域适应（Domain Adaptation，DA）在项目级别上生成单元测试。具体而言，我们使用CodeT5，这是一种相对较">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Domain Adaptation for Code Model-Based Unit Test Case Generation">
+<meta property="og:url" content="http://example.com/2024/10/12/Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Domain Adaptation for Code Model-Based Unit Test Case GenerationAbstract最近，基于深度学习的测试用例生成方法被提出，用以自动生成单元测试用例。在本研究中，我们利用基于Transformer的代码模型，通过领域适应（Domain Adaptation，DA）在项目级别上生成单元测试。具体而言，我们使用CodeT5，这是一种相对较">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-10-12T10:59:24.000Z">
+<meta property="article:modified_time" content="2024-10-12T11:00:40.754Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/10/12/Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Domain Adaptation for Code Model-Based Unit Test Case Generation',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-12 19:00:40'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Domain Adaptation for Code Model-Based Unit Test Case Generation</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-12T10:59:24.000Z" title="发表于 2024-10-12 18:59:24">2024-10-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-12T11:00:40.754Z" title="更新于 2024-10-12 19:00:40">2024-10-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Domain Adaptation for Code Model-Based Unit Test Case Generation"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation"><a href="#Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation" class="headerlink" title="Domain Adaptation for Code Model-Based Unit Test Case Generation"></a><strong>Domain Adaptation for Code Model-Based Unit Test Case Generation</strong></h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a><strong>Abstract</strong></h2><p>最近，基于深度学习的测试用例生成方法被提出，用以自动生成单元测试用例。在本研究中，我们利用基于Transformer的代码模型，通过领域适应（Domain Adaptation，DA）在<strong>项目级别上</strong>生成单元测试。具体而言，我们使用CodeT5，这是一种相对较小的在源代码数据上训练的语言模型，并将其<strong>微调</strong>用于测试生成任务。接着，我们对每个目标项目数据应用领域适应，以学习项目特定的知识（项目级别DA）。我们使用Methods2test数据集微调CodeT5以进行测试生成任务，并使用Defects4j数据集进行项目级别的领域适应和评估。我们将我们的方法与以下基线进行比较：(a) 没有DA的CodeT5微调测试生成，(b) A3Test工具，以及(c) GPT-4，在Defects4j数据集的五个项目上进行了实验。结果表明，使用DA生成的测试相较于上述(a)、(b)和(c)基线，可以分别提高18.62%、19.88%和18.02%的行覆盖率，并提高16.45%、16.01%和12.99%的变异得分。总体结果显示，在解析率、编译率、BLEU和CodeBLEU等指标上有一致的提升。此外，我们展示了我们的方法可以作为现有基于搜索的测试生成工具（如EvoSuite）的补充解决方案，平均提高了34.42%的行覆盖率和6.8%的变异得分。</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a><strong>Introduction</strong></h2><p><font color="red">challenges in unit test case generation</font></p>
+<p>自动生成单元测试用例方面的挑战，具体包括以下几个方面：</p>
+<ol>
+<li><strong>模型的鲁棒性挑战</strong>：生成代码时稍微的错误可能会导致程序出错，生成单元测试用例的难度比常规代码生成更高，因为测试用例往往涉及细微的代码差异。例如，插入一行断言或实例化对象的代码可能使程序处于可测试的状态。</li>
+<li><strong>测试用例的评估复杂性</strong>：要正确评估生成的测试用例，需要执行这些测试并计算测试充分性指标，这个过程非常耗时且通常需要手动操作来处理依赖关系等问题。</li>
+<li><strong>领域转移问题</strong>：预训练模型可能无法在新项目上有效传递其代码知识，因为不同项目中的代码分布差异较大。</li>
+</ol>
+<p><font color="green">我觉得不是那么make sense? 没有引用也没有例子。</font></p>
+<p><font color="red">advantages of test case generation based on code modes</font></p>
+<p><strong>可读性和可维护性</strong>：由于这些模型是基于人工编写的代码进行训练的，生成的测试用例更接近人类编写的代码，因此相比其他自动生成的测试用例，更具有可读性和可维护性。</p>
+<p><strong>开发者偏好</strong>：文献表明，开发者更倾向于使用神经网络模型生成的测试用例，因为这些测试用例比其他自动生成的方法更易读、易懂。</p>
+<p><strong>错误检测的差异</strong>：神经网络生成的测试用例能够检测到与开发者编写的测试用例类似的错误，而基于搜索的方法通常更关注代码覆盖率的最大化。</p>
+<p><font color="red">approach</font></p>
+<p>这段文字主要介绍了一种应对预训练代码模型在生成测试用例时存在的<strong>性能不足</strong>、<strong>评估不充分</strong>以及<strong>领域转移问题</strong>的新方法。该方法采用了两种不同层次的微调&#x2F;领域适应技术：任务级和项目级。</p>
+<ol>
+<li><strong>任务级领域适应</strong>：首先对CodeT5模型进行微调，使用特定任务的数据集来定制模型，以生成针对特定测试方法的单元测试用例。</li>
+<li><strong>项目级领域适应</strong>：通过项目特定的数据集进行领域适应，模型可以学习项目的特定知识，从而生成更高质量的测试用例，减少领域转移问题的影响。</li>
+</ol>
+<p>此外，研究还通过充分评估测试充分性和文本相似度指标来解决评估不足的问题。该方法显示，即使模型相对较小（CodeT5仅有220M参数），其性能仍然优于更大的模型（如GPT-4）。通过自动化的后处理步骤，研究还解决了兼容性和可执行性问题，并使用Defects4j数据集对生成的测试用例进行评估。</p>
+<p>相比于不使用领域适应的方法，该方法在所有评估指标上均取得了优异的效果，尤其在行覆盖率和变异分数上表现突出。</p>
+<p><font color="green">limitations: low performance、insufficient evaluation and domain shift前面都没有解释，怎么能用i.e,给出呢</font></p>
+<p><font color="green">“To address the shortcomings of pre-trained code models for test case generation, i.e., low performance, insufficient evaluation, and domain shift, we propose a simple yet novel technique by adopting two different levels of fine-tuning&#x2F;domain adaptation: task and project.</font></p>
+<p><font color="green">只说了怎么做的，why do that？ So what？</font></p>
+<p><font color="red">Contributions</font></p>
+<p>这段文字概括了领域适应（<strong>Domain Adaptation</strong>）在测试用例生成中的应用及其主要贡献：</p>
+<ol>
+<li><strong>使用领域适应的提升</strong>：通过领域适应，行覆盖率平均提高了18.62%到19.88%，变异得分提高了12.99%到16.45%，分别优于没有领域适应的CodeT5、A3Test和GPT-4基线。此外，与EvoSuite工具结合使用时，行覆盖率和变异得分分别平均提高了34.42%和6.8%。</li>
+<li><strong>主要贡献</strong>：<ul>
+<li>提出了一种基于领域适应的行级神经测试用例生成框架，生成的测试用例具有良好的可编译性、类似于人工编写且测试充分。</li>
+<li>进行了基于Defects4j数据集的实证研究，证明了该方法相对于现有的AthenaTest、A3Test和GPT-4具有更好的性能。</li>
+<li>证明了该方法能够覆盖开发人员编写的测试用例和基线搜索工具无法覆盖的代码行，并能够比搜索工具消灭更多的变异体。</li>
+<li>与相关工作不同，该方法执行生成的测试用例并使用测试充分性指标（如代码覆盖率和变异得分）进行评估，展示了相比于BLEU和CodeBLEU更高的评价标准。</li>
+</ul>
+</li>
+</ol>
+<h2 id="Background-and-Related-Work"><a href="#Background-and-Related-Work" class="headerlink" title="Background and Related Work"></a><strong>Background and Related Work</strong></h2><h3 id="2-1-Search-Based-Software-Testing"><a href="#2-1-Search-Based-Software-Testing" class="headerlink" title="2.1 Search-Based Software Testing"></a><strong>2.1 Search-Based Software Testing</strong></h3><p>这段文字主要介绍了基于搜索的软件测试（Search-Based Software Testing，SBST）。在SBST中，测试用例生成问题被转化为一个针对测试充分性标准（如代码覆盖率）的优化问题。以EvoSuite为例，它是一个SBST工具，利用遗传算法生成测试用例，旨在优化语句或分支覆盖率，并通过最少的测试覆盖更多代码。</p>
+<p>虽然SBST工具在有效性方面表现出色，但研究指出它们在理解性、可读性、质量以及在生成的单元测试用例中实际检测缺陷的能力方面存在一些限制。</p>
+<h3 id="2-2-Domain-Adaption"><a href="#2-2-Domain-Adaption" class="headerlink" title="2.2 Domain Adaption"></a><strong>2.2 Domain Adaption</strong></h3><p>这段文字介绍了<strong>领域适应</strong>（Domain Adaptation）的概念。领域适应是一种通过修改已在一个领域训练好的模型，使其在不同但相关的领域上表现良好的技术。其目标是利用源领域的知识来提高目标领域的性能，特别是在目标领域标注数据有限的情况下。领域适应属于迁移学习的一种，旨在将知识从一个任务转移到另一个任务。</p>
+<p>随后，文中提到了几项与领域适应相关的研究：</p>
+<ul>
+<li>**TCA+**：一种新型的跨项目缺陷预测的迁移学习方法，通过减少源项目和目标项目之间的数据分布差异来提高预测性能。</li>
+<li>Patel等人对领域适应在视觉识别中的应用进行了综述，讨论了各种方法的优缺点。</li>
+<li>Farahani等人回顾了领域适应的主要类别和挑战，重点介绍了无监督领域适应的方法。</li>
+<li>Zirak等人提出了一种针对自动程序修复的领域适应框架，采用了全微调、轻量级适配器调优和课程学习三种方法。</li>
+</ul>
+<p>总结来说，领域适应的核心在于通过跨领域迁移知识，提高目标领域的模型表现，尤其是在目标数据有限时，这对各种应用场景具有重要意义。</p>
+<h3 id="2-3-Neural-Models-for-Unit-Test-Generation"><a href="#2-3-Neural-Models-for-Unit-Test-Generation" class="headerlink" title="2.3 Neural Models for Unit Test Generation"></a><strong>2.3 Neural Models for Unit Test Generation</strong></h3><p>这段文字介绍了使用<strong>神经网络模型进行单元测试生成</strong>的研究进展。主要分为两个类别：<strong>测试断言生成</strong>（Test Oracle Generation）和<strong>单元测试用例生成</strong>（Unit Test Case Generation）。</p>
+<ol>
+<li><strong>测试断言生成</strong>：<ul>
+<li>主要是生成有意义的断言语句（例如断言语句、try-catch块等），确保程序达到测试状态。断言生成是单元测试的一部分。</li>
+<li>提到的工具包括<strong>ATLAS</strong>（用于生成断言，BLEU-4得分61.85%）、<strong>TOGA</strong>（使用统一的变换模型生成try-catch块和断言，断言的准确率为86%）、以及其他研究的生成模型，显示出生成测试断言的高准确性。</li>
+</ul>
+</li>
+<li><strong>单元测试用例生成</strong>：<ul>
+<li>相关研究较少，已有的工作着重于自动化生成测试用例。</li>
+<li>例如，Liu等人和Sae的研究分别生成了移动应用界面和Java方法的测试用例，使用JUnit测试框架，生成的测试用例通过率高达86.69%。</li>
+<li>另外，研究提出了<strong>AthenaTest</strong>和<strong>A3Test</strong>两种工具，分别基于自然语言和代码语料生成单元测试，AthenaTest能够正确测试43%的目标方法，A3Test则整合了断言生成机制，覆盖更多方法。</li>
+</ul>
+</li>
+<li><strong>LLM在单元测试生成中的应用</strong>：<ul>
+<li>近年来，利用大型语言模型（LLM）进行测试生成得到了更多关注，<strong>CodaMOSA</strong>和<strong>TestPilot</strong>是利用LLM生成测试的工具。<strong>ChatTester</strong>和<strong>TeCo</strong>则通过执行反馈和代码语义模型生成更准确的测试用例。</li>
+</ul>
+</li>
+</ol>
+<p>本研究提出了一种新的方向，结合<strong>项目级领域适应</strong>来提高现有工具（如AthenaTest和A3Test）的性能。与现有研究不同，本文更关注代码覆盖率和变异得分等与生成测试用例充分性相关的指标，而不是简单的BLEU得分。尽管有很多相关工作，但生成出能揭示实际缺陷的有效测试用例仍然面临挑战。</p>
+<h2 id="Test-Case-Generation-with-Project-Level-Domain-Adaptation"><a href="#Test-Case-Generation-with-Project-Level-Domain-Adaptation" class="headerlink" title="Test Case Generation with Project Level Domain Adaptation"></a><strong>Test Case Generation with Project Level Domain Adaptation</strong></h2><p><img src="/2024/10/12/Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation/image-20241012103531317.png" alt="image-20241012103531317"></p>
+<p>该框架包含两个主要步骤：</p>
+<ol>
+<li><strong>微调CodeT5模型</strong>：在任务级别的数据集上对CodeT5模型进行微调，以便其适应特定的测试生成任务。</li>
+<li><strong>领域适应（DA）</strong>：在项目级别的数据集上应用领域适应，确保模型能够学习项目特定的知识。</li>
+</ol>
+<p>该框架旨在生成高质量的测试用例，确保测试效果充分，基于开发人员编写的测试用例来进行学习。</p>
+<h3 id="3-1-Fine-Tuning-on-Test-Case-Generation-Task"><a href="#3-1-Fine-Tuning-on-Test-Case-Generation-Task" class="headerlink" title="3.1 Fine-Tuning on Test Case Generation Task"></a><strong>3.1 Fine-Tuning on Test Case Generation Task</strong></h3><p><strong>创建覆盖率数据库</strong>：从现有的测试套件中收集行级覆盖率数据，以评估哪些测试用例覆盖了哪些代码行。</p>
+<p><strong>Line2test映射</strong>：将源代码中的每一行映射到相应的单元测试方法，提取所有测试用例的类路径。</p>
+<p><strong>微调CodeT5模型</strong>：使用Methods2Test数据集对CodeT5模型进行微调。该数据集包含与目标方法、上下文信息（例如类名、字段等）和关联测试方法的元组。此步骤使用条件代码生成技术，适应特定任务。</p>
+<p><strong>后处理步骤</strong>：对生成的测试用例进行处理，解决模型生成的代码可能存在的换行符和重复定义等问题。之后，利用解析器修复编译错误，如缺少括号或分号等。最后，通过Defects4j框架逐个测试添加和编译，确保生成的测试用例是可解析和可编译的。</p>
+<blockquote>
+<p>微调过程是通过将预训练模型（如CodeT5）适应特定的任务来优化的。在这个例子中，CodeT5被微调用于生成单元测试用例。下面将详细说明数据生成和微调的过程。</p>
+<h3 id="1-微调数据生成"><a href="#1-微调数据生成" class="headerlink" title="1. 微调数据生成"></a>1. <strong>微调数据生成</strong></h3><p>微调数据的来源是 <strong>Methods2Test</strong> 数据集，它包含以下信息的元组：</p>
+<ul>
+<li><strong>目标方法（Focal Method）</strong>：需要生成测试用例的方法。例如，一个Java方法 <code>int add(int a, int b)</code>。</li>
+<li><strong>上下文信息（Focal Context）</strong>：包括目标方法所在的类名、类字段、方法签名等，帮助模型了解目标方法的环境。例如，<code>public class Calculator &#123;&#125;</code>。</li>
+<li><strong>关联测试方法（Associated Test Method）</strong>：已经编写好的单元测试用例，用于帮助模型学习如何为目标方法生成相应的测试用例。例如，<code>void testAdd() &#123; assertEquals(5, add(2, 3)); &#125;</code>。</li>
+</ul>
+<p>这些数据元组提供了上下文、目标代码和关联测试代码的信息，帮助模型学习如何生成相似的测试用例。</p>
+<h3 id="2-微调方式"><a href="#2-微调方式" class="headerlink" title="2. 微调方式"></a>2. <strong>微调方式</strong></h3><p>微调过程的关键步骤如下：</p>
+<p><strong>输入格式化</strong>：模型的输入包括目标方法及其上下文。为了方便模型理解，目标方法和其上下文信息被转换成一个序列格式。例如，目标方法的上下文可以是类名、字段和方法签名，这些信息被输入到模型中。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Class: Calculator</span><br><span class="line">Method: int add(int a, int b)</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出格式化</strong>：输出是生成的测试用例，也被格式化为序列，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Test Method: void testAdd() &#123; assertEquals(5, add(2, 3)); &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>条件代码生成</strong>：在微调过程中，模型学习如何在特定上下文下生成相应的测试用例。通过对目标方法进行条件性代码生成，模型可以将源方法的上下文映射到生成的测试代码中。这与传统的自然语言处理中的“序列到序列”生成类似，但在这里，输入是源代码，输出是测试用例代码。</p>
+<p><strong>损失函数</strong>：在微调过程中，模型通过计算生成的测试用例与真实测试用例之间的损失（如交叉熵损失）进行优化。模型试图最小化生成测试用例与真实测试用例之间的差异。例如，如果模型生成的测试用例与真实用例的差异很大，损失值就会很高，模型会通过反向传播调整参数。</p>
+<h3 id="3-实际微调示例"><a href="#3-实际微调示例" class="headerlink" title="3. 实际微调示例"></a>3. <strong>实际微调示例</strong></h3><p>假设我们有一个名为 <code>Calculator</code> 的类，其中有一个方法 <code>add(int a, int b)</code>：</p>
+<p><strong>目标方法</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public int add(int a, int b) &#123;</span><br><span class="line">    return a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>上下文信息</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Class: Calculator</span><br><span class="line">Fields: none</span><br></pre></td></tr></table></figure>
+
+<p><strong>已有的测试用例</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">public void testAdd() &#123;</span><br><span class="line">    assertEquals(5, calculator.add(2, 3));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>微调过程</strong>：</p>
+<p><strong>输入到模型</strong>：模型接收到目标方法及其上下文信息，格式化后的输入可能是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Input: Class: Calculator | Method: int add(int a, int b) &#123; return a + b; &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>期望输出</strong>：模型根据输入生成相应的测试用例，输出格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Output: @Test public void testAdd() &#123; assertEquals(5, calculator.add(2, 3)); &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个过程中，模型会学习如何从类似的目标方法生成测试用例。在模型训练时，它会通过多次训练逐步优化生成的测试用例，使其更加准确和合理。</p>
+<h3 id="4-后处理"><a href="#4-后处理" class="headerlink" title="4. 后处理"></a>4. <strong>后处理</strong></h3><p>微调后的模型生成测试用例时，可能存在一些编译或语法问题，比如括号不匹配、换行符处理不当等。为了确保生成的测试用例能够编译和执行，微调过程中的后处理会进行自动修复，例如：</p>
+<ul>
+<li>修复缺少的括号或分号；</li>
+<li>处理测试用例中的重复名称；</li>
+<li>确保测试类包含必要的依赖和辅助方法等。</li>
+</ul>
+<p>这些修复步骤确保生成的测试用例可以在实际项目中使用，并且能够编译通过。</p>
+</blockquote>
+<h3 id="3-2-Domain-Adaptation-on-Project-Specific-Knowledge"><a href="#3-2-Domain-Adaptation-on-Project-Specific-Knowledge" class="headerlink" title="3.2 Domain Adaptation on Project Specific Knowledge"></a><strong>3.2 Domain Adaptation on Project Specific Knowledge</strong></h3><p>这段文字主要介绍了在项目级别应用<strong>领域适应</strong>（Domain Adaptation）的过程，以解决模型在不同项目中的领域转移问题。关键内容如下：</p>
+<ol>
+<li><strong>领域转移问题</strong>：当模型应用于新项目时，由于不同项目之间的上下文差异较大，模型可能会生成不准确的测试用例。为此，使用已有的开发者编写的测试用例来帮助模型适应新项目，生成项目特定的数据集。</li>
+<li><strong>数据集生成</strong>：从项目的源代码中提取信息，生成三个不同的输出：文件结构中的方法名、方法体，以及上下文信息（类名、构造函数、公共字段和方法等）。这些信息被用来创建项目特定的数据集，进一步与<code>Line2test</code>映射结合，确保每一行代码与其相应的测试方法相匹配。</li>
+<li><strong>领域适应过程</strong>：利用生成的项目特定数据集，在微调后的模型上进行轻量级的再训练，以使模型适应新的项目。这一过程使模型能够在新的项目上生成更准确且具有更高编译率的测试用例。</li>
+<li><strong>计算成本</strong>：项目级别的领域适应只需在每个项目上执行一次，计算成本相对较低。虽然这种方法相比搜索基测试方法（SBST）需要更多的训练时间，但在推理阶段节省了大量时间。</li>
+</ol>
+<p>总结来说，项目级别的领域适应通过现有测试用例生成项目特定数据集，轻量级再训练模型，从而提高了生成测试用例的准确性和可编译性。</p>
+<h2 id="Experiment-Settings"><a href="#Experiment-Settings" class="headerlink" title="Experiment Settings"></a><strong>Experiment Settings</strong></h2><h3 id="4-1-Research-Questions"><a href="#4-1-Research-Questions" class="headerlink" title="4.1 Research Questions"></a><strong>4.1 Research Questions</strong></h3><p>这段文字介绍了本文研究的<strong>三个研究问题（Research Questions，RQs）</strong>，目的是评估代码模型在生成单元测试用例中的有效性，尤其是项目级领域适应的效果。主要内容如下：</p>
+<ol>
+<li><strong>RQ1 (Performance)<strong>：评估CodeT5在</strong>没有领域适应</strong>的情况下生成单元测试用例的效果。<ul>
+<li><strong>动机</strong>：代码模型（如CodeBERT和CodeT5）已经被应用于软件工程任务，如评论生成、缺陷预测和程序修复。然而，针对测试用例生成的研究较少，现有研究主要依赖静态指标（如BLEU）评估生成的测试用例，但缺乏执行测试的有效性评估。</li>
+</ul>
+</li>
+<li><strong>RQ2 (Effectiveness)<strong>：研究</strong>项目级领域适应</strong>如何提升CodeT5生成测试用例的质量。<ul>
+<li><strong>动机</strong>：RQ1的结果显示，模型无法学习项目特定的知识。项目级领域适应是为了应对新项目中的领域转移问题。在RQ2中，研究对比了其他基线模型，如GPT-4和A3Test，评估使用项目级领域适应的效果。</li>
+</ul>
+</li>
+<li><strong>RQ3 (Impact)<strong>：探讨提出的测试用例生成方法与基于搜索的测试用例生成方法（如EvoSuite）相比的</strong>影响</strong>。<ul>
+<li><strong>动机</strong>：基于搜索的测试生成方法，如EvoSuite，是生成测试用例的常用技术。本文提出的基于Transformer的测试生成方法可以与基于搜索的工具结合使用，以覆盖不同类型的测试用例，并且在运行时间上具有优势。通过实验，研究对比了使用两种方法生成的测试用例在杀死新变异体上的表现。</li>
+</ul>
+</li>
+</ol>
+<h3 id="4-2-Datasets"><a href="#4-2-Datasets" class="headerlink" title="4.2 Datasets"></a><strong>4.2 Datasets</strong></h3><p>这段文字介绍了研究中使用的两个数据集：<strong>Methods2Test</strong>和<strong>Defects4j</strong>，分别用于微调模型和项目级领域适应。</p>
+<ol>
+<li><strong>Methods2Test</strong>：用于微调模型生成测试用例的任务。该数据集包含从9,410个开源库中提取的780,944个Java方法实例。这些方法与其相应的测试用例进行映射。数据集提供了方法的上下文信息，包括方法签名、类名、构造函数和公共字段等，以帮助模型生成可编译的、有意义的测试用例。</li>
+<li><strong>Defects4j</strong>：这是一个包含真实项目和实际缺陷的Java项目数据集，用于软件工程研究。每个项目都有一套完整的测试套件，用于评估模型在生成测试用例时的表现。研究使用了该数据集的5个项目来进行项目级领域适应和测试生成输出的评估。</li>
+</ol>
+<h3 id="4-3-Pre-Trained-Code-Model"><a href="#4-3-Pre-Trained-Code-Model" class="headerlink" title="4.3 Pre-Trained Code Model"></a><strong>4.3 Pre-Trained Code Model</strong></h3><p>为什么在研究中选择<strong>CodeT5</strong>作为代码模型，原因如下：</p>
+<ol>
+<li><strong>模型选择</strong>：没有选择较新的大型语言模型（如GPT-4、PaLM和LLaMA），因为这些模型虽然强大，但体积过大，微调成本高。而<strong>CodeT5</strong>较小，性能能够达到这些大型模型的水平，同时成本更为合理。</li>
+<li><strong>基于T5架构</strong>：CodeT5基于T5架构，这是一种编码器-解码器模型，适合既需要理解又需要生成的任务。相比之下，BERT是编码器模型，GPT是解码器模型，不适合生成任务。CodeT5能有效处理测试用例生成任务。</li>
+<li><strong>代码感知能力</strong>：CodeT5能处理代码数据中的标记类型信息，而其他模型通常只采用NLP预训练技术，忽略了代码的结构性信息。CodeT5对代码功能有更深层次的理解。</li>
+<li><strong>模型配置</strong>：CodeT5有两种配置：<strong>CodeT5-small</strong>（60M参数）和<strong>CodeT5-base</strong>（220M参数）。研究中选择了CodeT5-base，并通过<strong>CONCODE</strong>任务微调模型，以生成测试用例。CONCODE任务（从文本到代码生成）被认为比代码翻译任务更适合生成测试用例。</li>
+</ol>
+<h3 id="4-4-Baselines"><a href="#4-4-Baselines" class="headerlink" title="4.4 Baselines"></a><strong>4.4 Baselines</strong></h3><p>本文研究使用的两个基线模型，用于与研究结果进行对比：</p>
+<ol>
+<li><strong>GPT-4</strong>：一个高级的大型语言模型，能够模仿人类的语言表达和推理能力，擅长解决复杂问题、生成创意内容，并在各种专业和学术基准测试中表现出人类水平的能力。</li>
+<li><strong>A3Test</strong>：一种测试用例生成方法，利用任务级别的领域适应技术进行断言生成（oracle generation），然后将学到的知识扩展到整个单元测试用例生成。</li>
+</ol>
+<p>通过使用这两个基线，研究旨在评估项目级领域适应与最先进的LLM（GPT-4）以及任务级别领域适应技术（A3Test）在测试用例生成中的对比效果。</p>
+<h3 id="4-5-Evaluation-Metrics"><a href="#4-5-Evaluation-Metrics" class="headerlink" title="4.5 Evaluation Metrics"></a><strong>4.5 Evaluation Metrics</strong></h3><p>第4.5节介绍了评估测试用例生成性能的<strong>七个评价标准</strong>：</p>
+<ol>
+<li><strong>Parse和Compile Rate</strong>：评估生成测试用例的语法正确性和可编译性，使用Tree-sitter解析器来检查生成代码的语法错误，并将可解析的测试用例注入项目以检查它们是否可编译。</li>
+<li><strong>行覆盖率和变异分数</strong>：用于评估测试充分性，计算生成的测试用例对项目代码的行覆盖率。研究还计算了标准变异得分，评估测试用例发现缺陷的能力，使用Clover工具分析生成测试用例覆盖的代码行。</li>
+<li><strong>BLEU和CodeBLEU</strong>：这两个指标衡量生成测试用例与真实用例的相似度，主要计算N-Gram共现。BLEU仅评估文本相似度，而CodeBLEU则考虑了代码的语法匹配和数据流的语义匹配，因此更适合代码生成任务。</li>
+</ol>
+<p>研究中，行覆盖率和变异分数被认为是评估测试用例生成效果的更实际的标准，而BLEU和CodeBLEU则用于比较领域适应前后的效果。</p>
+<h3 id="4-6-Configurations-and-Environment-Setup"><a href="#4-6-Configurations-and-Environment-Setup" class="headerlink" title="4.6 Configurations and Environment Setup"></a><strong>4.6 Configurations and Environment Setup</strong></h3><p><strong>模型配置</strong>：使用<strong>CodeT5-base</strong>模型，通过<strong>CONCODE</strong>下游任务进行微调。模型在Methods2Test数据集上进行微调，并使用Defects4j项目和EvoSuite生成的测试进行评估。所有超参数使用CONCODE的默认配置，批量大小设置为4，这是GPU内存能够支持的最大值。</p>
+<p><strong>微调设置</strong>：在领域适应阶段，模型的所有层都进行了20个epoch的微调。</p>
+<p><strong>硬件环境</strong>：实验运行在ComputeCanada的Beluga节点上，节点配置包括4个32GB V100 GPU、10个CPU核心和80GB内存。虽然实验默认使用此配置，但通过调整批次大小和训练时间，实验也可以在16GB GPU、1个CPU核心和10GB内存的环境下运行。</p>
+<h2 id="Results-and-Analysis"><a href="#Results-and-Analysis" class="headerlink" title="Results and Analysis"></a><strong>Results and Analysis</strong></h2><h3 id="5-1-RQ1-Effectiveness-of-CodeT5-without-DA"><a href="#5-1-RQ1-Effectiveness-of-CodeT5-without-DA" class="headerlink" title="5.1 RQ1: Effectiveness of CodeT5 without DA"></a><strong>5.1 RQ1: Effectiveness of</strong> <strong>CodeT5</strong> without DA</h3><p>RQ1 研究了 <strong>CodeT5</strong> 在没有领域适应（DA）的情况下生成测试用例的有效性。主要内容包括：</p>
+<ol>
+<li><strong>实验设计</strong>：研究使用 <strong>Defects4j</strong> 数据集将项目数据划分为训练集和测试集，采用了 <strong>leave-one-out</strong> 评估方法，随机选取20%的测试用例进行评估，确保训练集和测试集中没有数据泄漏。测试生成的测试用例是否能成功编译，并计算它们的行覆盖率和变异得分。</li>
+<li><strong>结果</strong>：<ul>
+<li>发现大多数模型生成的测试用例无法编译，原因是生成的测试用例缺少依赖或生成了未定义对象，导致无法解析。</li>
+<li>另外，由于 <strong>CodeT5</strong> 每个样本的输出长度限制（512个token），部分生成的测试用例被截断。</li>
+<li>相比于其他基于静态指标（如BLEU）的研究，模型生成的测试用例在测试充分性指标（如行覆盖率和变异得分）上的表现不如预期，远低于其他工具（如AthenaTest）的结果。</li>
+</ul>
+</li>
+</ol>
+<p>总结：CodeT5 在没有领域适应时生成的测试用例编译率较低，测试充分性指标也不理想，表明仅靠微调模型生成测试用例效果有限。</p>
+<p><img src="/2024/10/12/Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation/image-20241012184849506.png" alt="image-20241012184849506"></p>
+<p><font color="green">compress、gson怎么在论文没有解释呢？</font></p>
+<p><img src="/2024/10/12/Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation/image-20241012184959372.png" alt="image-20241012184959372"></p>
+<h3 id="5-2-RQ2-Effectiveness-of-CodeT5-with-DA"><a href="#5-2-RQ2-Effectiveness-of-CodeT5-with-DA" class="headerlink" title="5.2 RQ2: Effectiveness of CodeT5 with DA"></a><strong>5.2 RQ2: Effectiveness of CodeT5 with DA</strong></h3><p>RQ2 研究了 <strong>CodeT5</strong> 在应用了<strong>领域适应（DA）</strong>后的测试用例生成效果。主要内容包括：</p>
+<ol>
+<li><strong>实验设计</strong>：研究使用与RQ1相同的Defects4j数据集进行实验，通过项目级领域适应，使用Defects4j的训练集微调 <strong>CodeT5</strong> 模型，并在相同的评估集上计算行覆盖率和变异得分。实验还与两个基线模型（GPT-4 和 A3Test）进行对比。</li>
+<li><strong>结果</strong>：<ul>
+<li>领域适应显著提高了 <strong>CodeT5</strong> 的表现。行覆盖率范围为21.20%到68%，平均43.46%；变异得分范围为8.07%到46.42%，平均27.97%。相比没有领域适应的情况，行覆盖率中位数提高了16.65%，变异得分中位数提高了16.45%。</li>
+<li>与基线模型相比， <strong>CodeT5</strong> 应用领域适应后在大部分指标上表现优于A3Test和CodeT5无DA，特别是在编译率、BLEU、CodeBLEU、行覆盖率和变异得分等方面。然而，GPT-4在解析率方面的表现最好，但由于没有项目特定的知识，其他指标上不及 <strong>CodeT5</strong> 。</li>
+</ul>
+</li>
+<li><strong>结论</strong>：<ul>
+<li>领域适应能够显著提高 <strong>CodeT5</strong> 在生成项目特定测试用例上的效果，解析率提高了72.12%，编译率提高了37.34%，BLEU提高了20.38%，CodeBLEU提高了16.34%，行覆盖率提高了18.62%，变异得分提高了16.45%。</li>
+<li><strong>CodeT5</strong> 的总体表现优于所有其他基线模型，除了GPT-4的解析率略胜一筹。</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-3-RQ3-Augmentation-with-SBST"><a href="#5-3-RQ3-Augmentation-with-SBST" class="headerlink" title="5.3 RQ3: Augmentation with SBST"></a><strong>5.3 RQ3: Augmentation with SBST</strong></h3><p>RQ3 研究了将 <strong>CodeT5</strong> 与基于搜索的测试生成工具 <strong>EvoSuite</strong> 结合使用的效果。其目标不是替代 <strong>EvoSuite</strong>，而是作为补充，进一步提高测试覆盖率和变异得分。</p>
+<p>实验设计：</p>
+<ul>
+<li>使用与前面研究相同的训练-测试集，将 <strong>EvoSuite</strong> 默认设置（10分钟超时）生成的测试用例与模型生成的测试用例进行比较。通过计算行覆盖率和变异分数，评估 <strong>CodeT5</strong> 的增强效果。</li>
+<li>实验特别关注 <strong>EvoSuite</strong> 未能覆盖的代码行（New CL列），以及模型生成的测试用例是否能够覆盖这些代码行。</li>
+</ul>
+<p>结果：</p>
+<ul>
+<li>表2展示了行覆盖率的比较：<strong>EvoSuite</strong> 的中位数和平均行覆盖率分别为23%和35.45%，而 <strong>CodeT5</strong> 模型的覆盖率更高，分别为58%和57.8%。在5个项目中，有3个项目模型生成的测试用例覆盖了更多代码行。</li>
+<li>表3显示了变异得分的比较：模型生成的测试用例在部分项目中杀死了更多的变异体（如 <strong>jsoup</strong> 和 <strong>jacksonDatabind</strong>）。整体来看，模型的变异得分优于 <strong>EvoSuite</strong>。</li>
+</ul>
+<p>结论：</p>
+<ul>
+<li><strong>CodeT5</strong> 作为 <strong>EvoSuite</strong> 的补充可以提高行覆盖率和变异分数，特别是在 <strong>EvoSuite</strong> 无法覆盖的代码行上有明显的提升。建议将 <strong>CodeT5</strong> 作为现有工具的补充，以增强测试生成的整体效果。</li>
+</ul>
+<p>总结：通过结合使用 <strong>CodeT5</strong> 和 <strong>EvoSuite</strong>，可以进一步提高测试生成任务中的覆盖率和有效性，证明了该方法能够有效增强现有的基于搜索的测试生成工具。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/10/12/Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation/">http://example.com/2024/10/12/Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/10/10/LPR-Large-Language-Models-Aided-Program-Reduction/" title="LPR: Large Language Models-Aided Program Reduction"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">LPR: Large Language Models-Aided Program Reduction</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation"><span class="toc-number">1.</span> <span class="toc-text">Domain Adaptation for Code Model-Based Unit Test Case Generation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.2.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Background-and-Related-Work"><span class="toc-number">1.3.</span> <span class="toc-text">Background and Related Work</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Search-Based-Software-Testing"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 Search-Based Software Testing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Domain-Adaption"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 Domain Adaption</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Neural-Models-for-Unit-Test-Generation"><span class="toc-number">1.3.3.</span> <span class="toc-text">2.3 Neural Models for Unit Test Generation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Test-Case-Generation-with-Project-Level-Domain-Adaptation"><span class="toc-number">1.4.</span> <span class="toc-text">Test Case Generation with Project Level Domain Adaptation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Fine-Tuning-on-Test-Case-Generation-Task"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 Fine-Tuning on Test Case Generation Task</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E7%94%9F%E6%88%90"><span class="toc-number">1.4.2.</span> <span class="toc-text">1. 微调数据生成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BE%AE%E8%B0%83%E6%96%B9%E5%BC%8F"><span class="toc-number">1.4.3.</span> <span class="toc-text">2. 微调方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AE%9E%E9%99%85%E5%BE%AE%E8%B0%83%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.4.4.</span> <span class="toc-text">3. 实际微调示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%90%8E%E5%A4%84%E7%90%86"><span class="toc-number">1.4.5.</span> <span class="toc-text">4. 后处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Domain-Adaptation-on-Project-Specific-Knowledge"><span class="toc-number">1.4.6.</span> <span class="toc-text">3.2 Domain Adaptation on Project Specific Knowledge</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experiment-Settings"><span class="toc-number">1.5.</span> <span class="toc-text">Experiment Settings</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Research-Questions"><span class="toc-number">1.5.1.</span> <span class="toc-text">4.1 Research Questions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Datasets"><span class="toc-number">1.5.2.</span> <span class="toc-text">4.2 Datasets</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-Pre-Trained-Code-Model"><span class="toc-number">1.5.3.</span> <span class="toc-text">4.3 Pre-Trained Code Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-Baselines"><span class="toc-number">1.5.4.</span> <span class="toc-text">4.4 Baselines</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-Evaluation-Metrics"><span class="toc-number">1.5.5.</span> <span class="toc-text">4.5 Evaluation Metrics</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-Configurations-and-Environment-Setup"><span class="toc-number">1.5.6.</span> <span class="toc-text">4.6 Configurations and Environment Setup</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Results-and-Analysis"><span class="toc-number">1.6.</span> <span class="toc-text">Results and Analysis</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-RQ1-Effectiveness-of-CodeT5-without-DA"><span class="toc-number">1.6.1.</span> <span class="toc-text">5.1 RQ1: Effectiveness of CodeT5 without DA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-RQ2-Effectiveness-of-CodeT5-with-DA"><span class="toc-number">1.6.2.</span> <span class="toc-text">5.2 RQ2: Effectiveness of CodeT5 with DA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-RQ3-Augmentation-with-SBST"><span class="toc-number">1.6.3.</span> <span class="toc-text">5.3 RQ3: Augmentation with SBST</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/12/Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation/" title="Domain Adaptation for Code Model-Based Unit Test Case Generation">Domain Adaptation for Code Model-Based Unit Test Case Generation</a><time datetime="2024-10-12T10:59:24.000Z" title="发表于 2024-10-12 18:59:24">2024-10-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/10/LPR-Large-Language-Models-Aided-Program-Reduction/" title="LPR: Large Language Models-Aided Program Reduction">LPR: Large Language Models-Aided Program Reduction</a><time datetime="2024-10-10T12:56:10.000Z" title="发表于 2024-10-10 20:56:10">2024-10-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/04/Understanding-and-Detecting-SQL-Function-Bugs/" title="Understanding and Detecting SQL Function Bugs">Understanding and Detecting SQL Function Bugs</a><time datetime="2024-10-04T04:01:00.000Z" title="发表于 2024-10-04 12:01:00">2024-10-04</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/03/THANOS-DBMS-Bug-Detection-via-Storage-Engine-Rotation-Based-Differential-Testing/" title="THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing">THANOS: DBMS Bug Detection via Storage Engine Rotation Based Differential Testing</a><time datetime="2024-10-03T08:41:45.000Z" title="发表于 2024-10-03 16:41:45">2024-10-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/28/SQLaser-Detecting-DBMS-Logic-Bugs-with-Clause-Guided-Fuzzing/" title="SQLaser: Detecting DBMS Logic Bugs with Clause-Guided Fuzzing">SQLaser: Detecting DBMS Logic Bugs with Clause-Guided Fuzzing</a><time datetime="2024-09-28T08:37:40.000Z" title="发表于 2024-09-28 16:37:40">2024-09-28</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
