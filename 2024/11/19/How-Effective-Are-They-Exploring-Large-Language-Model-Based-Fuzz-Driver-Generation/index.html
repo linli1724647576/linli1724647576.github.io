@@ -1,0 +1,938 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="How Effective Are They? Exploring Large Language Model Based Fuzz Driver GenerationAbstractFuzz驱动程序对于库API的模糊测试至关重要。然而，自动生成Fuzz驱动程序是一项复杂的任务，因为这需要编写高质量、正确且健壮的API使用代码。基于大语言模型（LLM，Large Language Model）的Fu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation">
+<meta property="og:url" content="http://example.com/2024/11/19/How-Effective-Are-They-Exploring-Large-Language-Model-Based-Fuzz-Driver-Generation/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="How Effective Are They? Exploring Large Language Model Based Fuzz Driver GenerationAbstractFuzz驱动程序对于库API的模糊测试至关重要。然而，自动生成Fuzz驱动程序是一项复杂的任务，因为这需要编写高质量、正确且健壮的API使用代码。基于大语言模型（LLM，Large Language Model）的Fu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-11-19T09:24:19.000Z">
+<meta property="article:modified_time" content="2024-11-19T09:25:13.245Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/11/19/How-Effective-Are-They-Exploring-Large-Language-Model-Based-Fuzz-Driver-Generation/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-19 17:25:13'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">105</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-11-19T09:24:19.000Z" title="发表于 2024-11-19 17:24:19">2024-11-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-11-19T09:25:13.245Z" title="更新于 2024-11-19 17:25:13">2024-11-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="How-Effective-Are-They-Exploring-Large-Language-Model-Based-Fuzz-Driver-Generation"><a href="#How-Effective-Are-They-Exploring-Large-Language-Model-Based-Fuzz-Driver-Generation" class="headerlink" title="How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation"></a>How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>Fuzz驱动程序对于库API的模糊测试至关重要。然而，自动生成Fuzz驱动程序是一项复杂的任务，因为这需要编写高质量、正确且健壮的API使用代码。基于大语言模型（LLM，Large Language Model）的Fuzz驱动程序生成方法是一个颇具前景的研究领域。与传统基于程序分析的生成器不同，这种基于文本的方法更加通用，能够利用多样的API使用信息，从而生成更易于人类阅读的代码。然而，目前在这一方向上对其有效性和潜在挑战等基本问题的理解仍然不足。</p>
+<p>为弥补这一空白，我们首次针对使用LLM生成高效Fuzz驱动程序的关键问题进行了深入研究。本研究整理了一个包含86个Fuzz驱动生成问题的数据集，涉及30个广泛使用的C项目。我们设计并测试了六种提示策略，并在五种最先进的LLM上使用五种不同的温度设置进行了评估。总共生成了736,430个Fuzz驱动程序，耗费了8.5亿个token（费用超过8000美元）。此外，我们还将LLM生成的驱动程序与工业中实际使用的驱动程序进行了对比，并进行了广泛的模糊测试实验（相当于3.75年的CPU时间）。我们的研究发现如下：<br>1）尽管基于LLM的Fuzz驱动程序生成是一个有前途的方向，但在实际应用中仍面临诸多障碍；<br>2）LLM在生成具有复杂特定要求的API的有效Fuzz驱动程序时存在困难。三种设计突出的提示策略可以带来帮助：重复查询、通过示例查询和采用迭代查询过程；<br>3）LLM生成的驱动程序可以实现与工业中实际使用驱动程序相当的模糊测试效果，但在改进方面仍有很大的空间，例如扩展包含的API使用范围，或集成语义Oracle以促进逻辑错误检测。我们将研究洞见应用于OSS-Fuzz-Gen项目，从而促进工业界Fuzz驱动程序生成的实用化。</p>
+<p>Before this:  Fuzz Driver相关工作： <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/629837208">https://zhuanlan.zhihu.com/p/629837208</a>  </p>
+<p>Fuzzing是目前应用最广泛的程序漏洞挖掘技术，根据待测程序类型大体上可分为</p>
+<blockquote>
+<p>1）Application fuzzer：测试整个程序（如AFL [1]）<br>2）Library fuzzer：测试程序接口或API（如LibFuzzer [2]）</p>
+</blockquote>
+<p>本文主要关注近些年第二类fuzzer的研究进展。在fuzz之前，这类fuzzer通常需要为待测library提供fuzz driver&#x2F;harness，来调用待测library的程序接口或API序列。由于fuzz  driver的设计大体上决定了对library的主要测试路径，fuzz driver的编写是非常重要的</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p><strong>模糊测试及Fuzz驱动程序的重要性</strong>：</p>
+<ul>
+<li>模糊测试是发现零日漏洞的标准方法。</li>
+<li>Fuzz驱动程序是模糊测试库API的核心组件，需高质量、正确且健壮。</li>
+<li>手工编写驱动程序耗时且劳动密集，例如OSS-Fuzz维护了数千个驱动程序。</li>
+</ul>
+<p><font color="red">Motivation</font></p>
+<p><strong>基于大语言模型（LLM）的Fuzz驱动生成的优势</strong>：</p>
+<ul>
+<li>LLM通过文本生成代码，无需复杂的程序分析。</li>
+<li><font color="green">LLM能够从文档、错误信息和代码片段等多种来源学习API用法。</font></li>
+<li>生成的代码通用性强，适合大规模真实项目，并且更加易读。</li>
+</ul>
+<p><strong>现有方法的局限性</strong>：</p>
+<ul>
+<li>传统方法需要从示例中学习API用法，依赖程序分析，局限性较大。</li>
+<li>现有研究对LLM生成驱动程序的有效性及挑战缺乏深入理解。</li>
+</ul>
+<p><strong>基于LLM方法的潜力</strong>：</p>
+<ul>
+<li>提供轻量化、通用的代码生成平台。</li>
+<li>有助于整合多种学习输入，提升生成效率。</li>
+<li>开辟了新的研究方向，但仍需进一步探索其基本问题。</li>
+</ul>
+<p><font color="red">Empirical study</font></p>
+<p>To address this gap, we conducted an empirical study for understanding the effectiveness of zero-shot fuzz driver generation using LLMs.</p>
+<p><strong>研究目标</strong>：</p>
+<ul>
+<li>探讨基于大语言模型（LLM）的零样本Fuzz驱动生成的有效性。</li>
+<li><font color="green">主要关注如何生成“更多”有效的Fuzz驱动，而非仅提高现有驱动的效果。</font></li>
+</ul>
+<p><strong>研究问题</strong>：</p>
+<ul>
+<li><strong>RQ1</strong>: 当前LLM能在多大程度上生成有效的Fuzz驱动用于软件测试？</li>
+<li><strong>RQ2</strong>: 使用LLM生成高效Fuzz驱动面临的主要挑战是什么？</li>
+<li><strong>RQ3</strong>: 不同提示策略的有效性和特征如何？</li>
+<li><strong>RQ4</strong>: LLM生成的驱动与工业实践中的驱动相比如何？</li>
+</ul>
+<p><strong>研究方法</strong>：</p>
+<ul>
+<li><p>构建了包含<strong>86个Fuzz驱动生成问题</strong>的数据集，来源于30个广泛使用的C项目。</p>
+</li>
+<li><p>设计了六种提示策略，考虑提示内容、交互特性以及查询重复过程。</p>
+</li>
+<li><p>测试了五种最先进的LLM，包括闭源（如GPT-4和GPT-3.5）和开源模型（如CodeLlama和WizardCoder）。</p>
+</li>
+<li><p>评估了<strong>736,430个Fuzz驱动程序</strong>，消耗了0.85亿tokens（费用超过8000美元）。</p>
+</li>
+<li><p>使用自动评估框架验证驱动程序的编译和模糊测试结果，并手动检查API使用的语义正确性。</p>
+</li>
+</ul>
+<p><strong>对比实验</strong>：</p>
+<ul>
+<li>与工业中手动编写的驱动程序进行对比。</li>
+<li>进行24小时模糊测试（总计3.75 CPU年）以获取实际见解。</li>
+</ul>
+<p><strong>研究意义</strong>：</p>
+<ul>
+<li>通过系统性实验探索LLM生成Fuzz驱动的潜力及改进方向。</li>
+</ul>
+<p><font color="red">Results</font></p>
+<ol>
+<li><strong>LLM生成Fuzz驱动的潜力</strong>：<ul>
+<li>在最佳配置下，LLM可以解决91%的问题。</li>
+<li>前20种配置中，每种都至少能解决一半的问题。</li>
+</ul>
+</li>
+<li><strong>生成驱动的三大挑战</strong>：<ul>
+<li><strong>成本控制</strong>：71%的问题需重复5次查询，45%需重复10次，需提高查询精度以降低成本。</li>
+<li><strong>语义正确性</strong>：34%的API需语义验证，否则可能导致虚假结果。</li>
+<li><strong>复杂需求</strong>：6%的问题无法通过LLM配置解决，需依赖额外环境或服务。</li>
+</ul>
+</li>
+<li><strong>有效提示策略</strong>：<ul>
+<li><strong>重复查询</strong>：有助于提升性能，但效果在5次后趋于平缓。</li>
+<li><strong>示例扩展</strong>：结合API文档和示例代码能显著提高生成结果。</li>
+<li><strong>迭代查询</strong>：通过循环优化改进LLM的逐步解决能力。</li>
+</ul>
+</li>
+<li><strong>性能优化</strong>：<ul>
+<li>较低的温度设置（低于1.0）性能更稳定，最佳温度为0.5。</li>
+<li>GPT-4和WizardCoder在开放&#x2F;闭源模型中表现最佳。</li>
+</ul>
+</li>
+</ol>
+<p><font color="red">Contributions</font></p>
+<ol>
+<li>首次深入研究LLM在Fuzz驱动生成中的有效性，揭示其潜力与挑战。</li>
+<li>设计并实现六种生成策略，系统分析其优劣。</li>
+<li>将生成结果与工业实践中的驱动对比，总结改进方向。</li>
+<li>优化OSS-Fuzz-Gen框架，推动开源项目Fuzz测试的自动化。</li>
+</ol>
+<h2 id="Preliminaries"><a href="#Preliminaries" class="headerlink" title="Preliminaries"></a>Preliminaries</h2><p><strong>1. Fuzz 驱动程序的基本组成</strong>：</p>
+<p>一个典型的 Fuzz 驱动程序包含以下三个必要部分：</p>
+<ul>
+<li><strong>预备步骤初始化（Line 3）</strong>：初始化输入、设置必要的环境。</li>
+<li><strong>执行部分（Line 4）</strong>：调用目标 API 并进行模糊测试。</li>
+<li><strong>清理部分（Line 7）</strong>：释放资源，确保不会产生副作用。</li>
+</ul>
+<p>此外，有以下三个可选部分可提升驱动程序的有效性：</p>
+<ul>
+<li><strong>输入调整（Line 2）</strong>：通过拒绝过短或过长的输入，或者解析多种输入格式，确保输入质量。</li>
+<li><strong>扩展调用（Line 5）</strong>：调用更多的 API，以触发更多的程序行为。</li>
+<li><strong>语义 Oracle（Line 6）</strong>：类似于单元测试中的 <code>assert</code>，用于检测逻辑错误。</li>
+</ul>
+<p><strong>2. 有效 Fuzz 驱动程序的最低要求</strong>：</p>
+<ul>
+<li>核心需求集中在正确初始化参数和满足必要的控制流依赖性。</li>
+<li>参数初始化的几种情况（按简单性排序）：<ol>
+<li><strong>C1</strong>：如果参数可以是任意值，则使用简单值（如 <code>0</code> 或 <code>NULL</code>）。</li>
+<li><strong>C2</strong>：如果参数是项目中常见变量或宏，则直接使用这些变量。</li>
+<li><strong>C3</strong>：如果参数需要用其他库 API 创建（如文件读写），则按惯例调用这些库。</li>
+<li><strong>C4</strong>：如果参数的初始化依赖其他 API 的输出，则需先初始化相关 API。</li>
+</ol>
+</li>
+</ul>
+<p><strong>3. Fuzz 驱动程序的正确性要求</strong>：</p>
+<ul>
+<li><strong>高正确性和健壮性</strong>：驱动程序必须确保输入被正确传递给目标 API。</li>
+<li>不正确的初始化或使用可能导致：<ul>
+<li>假阳性（虚假的错误）。</li>
+<li>假阴性（未能发现实际问题）。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>假设我们有一个图形库，提供了一个 <code>Rectangle</code> 类及其方法 <code>calculate_area()</code>，用来计算矩形的面积。我们需要确保它的逻辑正确。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Rectangle:</span><br><span class="line">    def __init__(self, width, height):</span><br><span class="line">        self.width = width</span><br><span class="line">        self.height = height</span><br><span class="line"></span><br><span class="line">    def calculate_area(self):</span><br><span class="line">        return self.width * self.height</span><br><span class="line"></span><br><span class="line"># 测试代码</span><br><span class="line">def test_rectangle_area():</span><br><span class="line">    rect = Rectangle(5, 10)</span><br><span class="line">    assert rect.calculate_area() == 50, &quot;Area calculation failed for 5x10 rectangle&quot;</span><br><span class="line"></span><br><span class="line">    rect = Rectangle(0, 10)</span><br><span class="line">    assert rect.calculate_area() == 0, &quot;Area calculation failed for 0x10 rectangle&quot;</span><br><span class="line"></span><br><span class="line">    rect = Rectangle(-5, 10)</span><br><span class="line">    assert rect.calculate_area() == 0, &quot;Area should be 0 for negative dimensions&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>逻辑错误的检测</strong>：</p>
+<ul>
+<li>如果代码中有 bug，例如 <code>calculate_area()</code> 忘记考虑负数输入或宽度为零的情况，<code>assert</code> 会捕获这些问题。</li>
+<li>在 <code>test_rectangle_area</code> 中，负数或宽度为零的情况是明确的逻辑错误。</li>
+</ul>
+<p><strong><code>assert</code> 的作用</strong>：</p>
+<ul>
+<li>如果条件为 <code>false</code>，例如面积计算为 <code>-50</code> 或其他不期望的值，<code>assert</code> 会抛出一个异常，提示开发者逻辑错误。</li>
+</ul>
+<p>扩展：在 Fuzz 测试中的应用</p>
+<p>在 Fuzz 驱动中，<code>assert</code> 可以用于验证输入对 API 的逻辑影响。例如：</p>
+<ul>
+<li>测试输入是否超出预期范围。</li>
+<li>验证返回值是否满足 API 的使用规范。</li>
+<li>检查状态变化是否符合预期。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">def fuzz_test_rectangle(data):</span><br><span class="line">    try:</span><br><span class="line">        width, height = data[&quot;width&quot;], data[&quot;height&quot;]</span><br><span class="line">        rect = Rectangle(width, height)</span><br><span class="line">        area = rect.calculate_area()</span><br><span class="line"></span><br><span class="line">        # 使用 assert 验证逻辑</span><br><span class="line">        assert area &gt;= 0, &quot;Area should not be negative&quot;</span><br><span class="line">        assert area == width * height, &quot;Area calculation mismatch&quot;</span><br><span class="line"></span><br><span class="line">    except Exception as e:</span><br><span class="line">        print(f&quot;Test failed for input: &#123;data&#125;, Error: &#123;e&#125;&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>自动生成不同输入（例如负数或超大数值）进行测试。</p>
+<p>检测代码是否在异常输入下表现出不正确的逻辑行为。</p>
+</blockquote>
+<h2 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h2><h3 id="3-1-Design-of-Prompt-Strategies"><a href="#3-1-Design-of-Prompt-Strategies" class="headerlink" title="3.1 Design of Prompt Strategies"></a>3.1 Design of Prompt Strategies</h3><p><img src="/2024/11/19/How-Effective-Are-They-Exploring-Large-Language-Model-Based-Fuzz-Driver-Generation/image-20241119163031366.png" alt="image-20241119163031366"></p>
+<p><strong>1. Prompt Strategies 的设计关键点</strong></p>
+<ul>
+<li><strong>三种设计维度</strong>：<ol>
+<li><strong>API 信息查询</strong>：包括基本信息（如 API 声明、参数名称）和扩展信息（如文档、示例代码）。</li>
+<li><strong>重复查询</strong>：评估多次查询的效果（最多重复 40 次）。</li>
+<li><strong>迭代查询</strong>：通过“生成-修复”循环改进驱动程序的有效性。</li>
+</ol>
+</li>
+<li><strong>命名规则</strong>：<ul>
+<li>如果策略名称中有 “K”，表示使用重复查询。</li>
+<li>如果名称中包含 “ITER”，表示使用迭代查询。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. Prompt Strategies 的具体方法</strong> </p>
+<ol>
+<li><strong>NAIVE-K &amp; BACTX-K</strong>：<ul>
+<li><strong>NAIVE-K</strong>：仅使用基础 API 信息，不包含上下文。</li>
+<li><strong>BACTX-K</strong>：扩展到包含函数名、API 声明等基础上下文信息。</li>
+</ul>
+</li>
+<li><strong>DOCTX-K &amp; UGCTX-K</strong>：<ul>
+<li><strong>DOCTX-K</strong>：从文档和项目中提取 API 文档信息，扩展 BACTX-K。</li>
+<li><strong>UGCTX-K</strong>：从公共代码库（如 GitHub）提取实际代码片段，扩展 BACTX-K。</li>
+</ul>
+</li>
+<li><strong>BA-ITER-K &amp; ALL-ITER-K</strong>：<ul>
+<li><strong>BA-ITER-K</strong>：基于基本 API 信息，使用迭代查询策略逐步改进驱动程序。</li>
+<li><strong>ALL-ITER-K</strong>：结合所有可用信息（包括文档和代码片段），通过迭代策略生成更高质量的驱动程序。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>3. 错误分类与修复提示</strong></p>
+<ul>
+<li><strong>错误类型</strong>：<ol>
+<li>编译错误（1&#x2F;7）。</li>
+<li>链接错误（1&#x2F;7）。</li>
+<li>Fuzzing 运行时错误（5&#x2F;7），进一步分为内存泄漏、超时、崩溃、非有效模糊测试等。</li>
+</ol>
+</li>
+<li><strong>修复提示生成</strong>：<ul>
+<li>根据错误信息提取根因 API 并提供相关文档或代码片段。</li>
+<li>修复过程通过迭代改进完成。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>4. 主要结论</strong></p>
+<ul>
+<li><strong>迭代策略的区别</strong>：<ul>
+<li><strong>BA-ITER-K</strong> 仅使用基本 API 信息。</li>
+<li><strong>ALL-ITER-K</strong> 利用所有可用资源，性能最优。</li>
+</ul>
+</li>
+<li><strong>效果评估</strong>：<ul>
+<li>自动检查工具确保生成驱动程序的有效性。</li>
+<li>提供多种策略以适应不同的需求场景。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-Evaluation-Framework"><a href="#3-2-Evaluation-Framework" class="headerlink" title="3.2 Evaluation Framework"></a>3.2 Evaluation Framework</h3><p><strong>1. Evaluation Question Collection</strong></p>
+<ul>
+<li>收集有效评估问题的过程：<ul>
+<li>并非所有 API 都适合作为评估目标，某些 API（如无输入的初始化函数）会生成无意义的驱动程序。</li>
+<li>确保所选 API 具有代表性，优先选择核心 API，而非辅助功能 API。</li>
+<li>示例：<ul>
+<li>调用 <code>free_object(object *obj)</code> 意义不大，除非配合 <code>parse_from_str(char *input)</code> 一起使用。</li>
+<li>重点测试目标是输入解析和资源分配逻辑，而非单独释放资源的功能。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>数据来源：<ul>
+<li>从 OSS-Fuzz 的项目中随机选取 30 个 C 项目，<strong>手动提取</strong>了 86 个核心 API 作为评估问题。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. Effectiveness Validation Criteria</strong></p>
+<ul>
+<li><strong>评估有效性</strong>的 4 个步骤：<ol>
+<li>使用编译器检查驱动程序的语法错误。</li>
+<li>在一无初始输入的情况下观察模糊测试会话是否能找到错误或进行进展。<ul>
+<li>无进展或无错误即视为无效。</li>
+</ul>
+</li>
+<li>对检测到的错误进行过滤，确保是目标 API 导致的错误。</li>
+<li>手动撰写 API 特定语义测试，以检测生成驱动程序中常见的无效模式。</li>
+</ol>
+</li>
+<li><strong>特殊场景处理</strong>：<ul>
+<li>对于需要依赖其他 API 的情况（如客户端 API 测试需要服务端上下文），通过注入 hook 实现模拟环境。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>3. Evaluation Configuration</strong></p>
+<ul>
+<li><strong>配置内容</strong>：<ul>
+<li>包括 LLM 模型、提示策略、温度参数等。</li>
+<li>测试中使用 5 个不同的 LLM 和 5 种温度设置，共评估 6 种提示策略。</li>
+</ul>
+</li>
+<li><strong>系统角色设置</strong>：<ul>
+<li>模拟用户身份为“负责库 API Fuzz 驱动程序的安全审计员”。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<p>该框架通过精心挑选 API、严格的错误验证和配置策略，系统性地评估了生成的 Fuzz 驱动程序的有效性及其潜在问题，确保评估结果的可靠性和代表性。</p>
+<h2 id="Overall-Eectiveness-RQ1"><a href="#Overall-Eectiveness-RQ1" class="headerlink" title="Overall Eectiveness (RQ1)"></a>Overall Eectiveness (RQ1)</h2><p><strong>1. 研究结果概述</strong></p>
+<ul>
+<li><strong>成功率</strong>：<ul>
+<li>在最优配置（如 GPT-4-0613，ALL-ITER-K，温度 0.5）下，生成的 Fuzz 驱动程序成功解决了 91% 的问题（78&#x2F;86）。</li>
+<li>五个评估的 LLM 中，三个模型（包括一个开源选项）和一半的提示策略能解决超过一半的问题。</li>
+</ul>
+</li>
+<li><strong>数据缺失的处理</strong>：<ul>
+<li>由于某些温度设置（如 2.0）下的性能较差或超时，部分数据不完整，但对整体评估影响较小。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. 主要发现</strong></p>
+<ol>
+<li><strong>语言模型生成 Fuzz 驱动程序的可行性</strong>：<ul>
+<li>研究结果提供了有力证据，证明基于大语言模型的 Fuzz 驱动生成在实践中具有巨大潜力。</li>
+</ul>
+</li>
+<li><strong>成功率的显著差异</strong>：<ul>
+<li>成功率在不同配置间存在显著波动，表明温度、模型和提示策略的组合对性能影响重大。</li>
+<li>例如：<ul>
+<li>使用 <code>gpt-3.5-turbo-0613</code> 和 <code>NAIVE-1, 0.0</code> 配置时，无法解决任何问题。</li>
+<li>同一模型在 <code>ALL-ITER-K, 0.0</code> 配置下，成功解决了 76% 的问题（65&#x2F;86）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>最佳配置的表现</strong>：<ul>
+<li>表现最好的配置集中在优化得当的“绿色区域”，即温度、模型和策略的合理组合。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>3. 结论</strong></p>
+<ul>
+<li>成功率依赖于适当的配置调整。</li>
+<li>为实现高成功率，避免使用次优组合至关重要。</li>
+<li>结果表明，在生成 Fuzz 驱动程序方面，LLM 的能力与提示策略和配置密切相关，正确的优化策略能够显著提升性能。</li>
+</ul>
+<p><img src="/2024/11/19/How-Effective-Are-They-Exploring-Large-Language-Model-Based-Fuzz-Driver-Generation/image-20241119164255001.png" alt="image-20241119164255001"></p>
+<h3 id="4-1-Analysis-of-Eectiveness-Factors"><a href="#4-1-Analysis-of-Eectiveness-Factors" class="headerlink" title="4.1 Analysis of Eectiveness Factors"></a>4.1 Analysis of Eectiveness Factors</h3><p><strong>1. Prompt Strategies 的影响</strong></p>
+<ul>
+<li>总体发现：<ul>
+<li>提示策略设计对整体效果有显著影响，从 NAIVE-1 提高到 ALL-ITER-K，问题解决率从 10% 提升到 90%。</li>
+<li>综合利用可用信息的提示策略效果更好：<ul>
+<li>如 UGCTX-K 因包含目标 API 的代码示例，显著优于 BACTX-K。</li>
+<li>BA-ITER-K 在初始信息相同的情况下，通过迭代收集调试信息，比 BACTX-K 表现更优。</li>
+<li>ALL-ITER-K 整合了扩展 API 信息并采用递归问题解决方法，在所有策略中表现最佳。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. 温度对性能的影响</strong></p>
+<ul>
+<li><strong>最佳温度</strong>：<ul>
+<li>温度设置为 <strong>0.5</strong> 的配置普遍实现最高成功率。</li>
+<li>较低温度（&lt;1.0）在一致性和可预测性方面表现更优，而高温度增加的随机性对任务没有明显优势。</li>
+</ul>
+</li>
+<li><strong>特例</strong>：<ul>
+<li>在 0.0 温度下，ALL-ITER-K 和 BA-ITER-K 依然表现良好，成为次优配置。这可能是因为：<ul>
+<li>提示策略已经内置了随机性。</li>
+<li>评估标准主要关注驱动程序的有效性，而非 API 多样性。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>3. 开源 LLM 与闭源 LLM 的比较</strong></p>
+<ul>
+<li><strong>闭源模型的表现</strong>：<ul>
+<li>闭源模型（如 GPT-4-0613）总体优于开源模型，性能最佳。</li>
+<li>GPT-3.5-turbo-0613 提供了性能和成本的良好平衡。</li>
+</ul>
+</li>
+<li><strong>开源模型的进步</strong>：<ul>
+<li>WizardCoder-15b-v1.0 在开源模型中表现突出，超过部分闭源模型（如 Text-Bison-001）。</li>
+<li>尽管与 GPT-3.5-turbo-0613 存在性能差距，但其表现已达到开源领域的可观水平。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li>提示策略是决定生成驱动程序性能的核心因素，ALL-ITER-K 因全面整合信息和递归方法而表现最佳。</li>
+<li>温度的选择对一致性和结果质量至关重要，温度 0.5 为最优。</li>
+<li>闭源 LLM 在生成能力上仍有优势，但开源模型正逐步缩小差距。</li>
+</ul>
+<h3 id="4-2-How-Far-Are-We-to-Total-Practicality"><a href="#4-2-How-Far-Are-We-to-Total-Practicality" class="headerlink" title="4.2 How Far Are We to Total Practicality?"></a>4.2 How Far Are We to Total Practicality?</h3><p><strong>1. 总体评价</strong></p>
+<ul>
+<li>在最优配置（GPT-4-0613，ALL-ITER-K，温度 0.5）下，LLM 能解决 86 个 API 中 78 个问题（91% 的成功率）。</li>
+<li>然而，这并不意味着 LLM 已经完全适用于生产环境。</li>
+</ul>
+<hr>
+<p><strong>2. 三大主要挑战</strong></p>
+<p><strong>C1: Fuzz 驱动生成中的高 Token 成本</strong></p>
+<ul>
+<li>约 50% 的解决问题需要超过 10 次查询，31% 的问题需超过 20 次，甚至 18% 的问题需超过 40 次。</li>
+<li>高查询成本不仅增加了经济负担，还影响了实际应用的效率。</li>
+<li>需要开发成本优化技术以提升驱动生成效率。</li>
+</ul>
+<p><strong>C2: 确保 API 使用的语义正确性</strong></p>
+<ul>
+<li>在 34% 的 API 中（29&#x2F;86），生成的驱动程序存在语义错误，如：<ul>
+<li>传递错误类型的参数（例如文件名参数应为已创建的文件，而不是变异后的字符串）。</li>
+<li>未检查某些条件或缺失状态验证。</li>
+</ul>
+</li>
+<li>当前需要手动验证语义正确性，而自动化验证仍然是一个重大技术挑战。</li>
+</ul>
+<p><strong>C3: 满足复杂 API 使用依赖</strong></p>
+<ul>
+<li>有 5 个 API 无法通过任何配置解决，原因是：<ul>
+<li>驱动程序需要深度理解 API 的上下文关系（如 tmux 的窗口、面板等关系）。</li>
+<li>某些网络相关 API 需要创建特定的服务端或客户端环境才能调用目标 API。</li>
+</ul>
+</li>
+<li>有效驱动程序的生成需要满足这些上下文要求，但目前 LLM 在这些场景中表现有限。</li>
+</ul>
+<hr>
+<p><strong>3. 总结</strong></p>
+<p>虽然基于 LLM 的生成技术展示了很大的潜力，但在以下方面仍存在重大挑战：</p>
+<ul>
+<li>控制生成成本。</li>
+<li>实现语义正确性的自动验证。</li>
+<li>处理复杂的上下文依赖问题。 这些问题需要进一步的技术改进，才能使该技术在生产环境中可靠应用。</li>
+</ul>
+<h2 id="Fundamental-Challenge-RQ2"><a href="#Fundamental-Challenge-RQ2" class="headerlink" title="Fundamental Challenge (RQ2)"></a>Fundamental Challenge (RQ2)</h2><h3 id="5-1-Links-Between-Question-and-Performance"><a href="#5-1-Links-Between-Question-and-Performance" class="headerlink" title="5.1 Links Between Question and Performance"></a>5.1 Links Between Question and Performance</h3><p><strong>1. 研究目标</strong></p>
+<ul>
+<li>通过 BACTX-K 策略分析 Fuzz 驱动生成中核心困难。</li>
+<li>目标是探索问题解决率与 API 使用复杂性之间的关系。</li>
+</ul>
+<hr>
+<p><strong>2. 主要发现</strong></p>
+<ol>
+<li><strong>成功率与问题复杂性呈反比</strong>：<ul>
+<li>问题越复杂，LLM 的成功率越低。</li>
+<li>API 使用复杂性由以下指标综合量化：<ol>
+<li><strong>独特项目 API</strong>。</li>
+<li><strong>独特 API 使用模式</strong>。</li>
+<li><strong>独特标识符</strong>（如项目中的全局变量）。</li>
+<li><strong>分支和循环</strong>。</li>
+<li><strong>API 使用的特定控制流依赖性</strong>。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>LLM 的性能受限于 API 使用复杂性</strong>：<ul>
+<li>对于复杂 API 使用，生成驱动程序需要准确预测：<ul>
+<li>API 参数的正确使用。</li>
+<li>控制流的依赖性。</li>
+</ul>
+</li>
+<li>然而，LLM 无法像人类一样通过文档或实现代码验证其预测。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>3. 性能下降的原因</strong></p>
+<ul>
+<li>LLM 的训练主要基于语言基础和编程惯例，对于复杂场景（如少见的 API 使用模式或具有特殊语义约束的情况）缺乏支持。</li>
+<li>在处理 C 项目中复杂的低级别、特定于项目的 API 时，LLM 容易丢失重要细节，导致错误预测。</li>
+</ul>
+<hr>
+<p><strong>4. 结论</strong></p>
+<ul>
+<li>关键挑战：<ul>
+<li>当目标 API 使用模式更加复杂时，LLM 的性能显著下降。</li>
+</ul>
+</li>
+<li>改进方向：<ul>
+<li>提升对复杂 API 的理解和处理能力是实现生成驱动程序高效性的关键。</li>
+</ul>
+</li>
+</ul>
+<p>总结：API 使用复杂性是限制 LLM 性能的重要因素，需要开发更精准的机制应对复杂 API 的生成需求。</p>
+<h3 id="5-2-Failure-Analysis"><a href="#5-2-Failure-Analysis" class="headerlink" title="5.2 Failure Analysis"></a>5.2 Failure Analysis</h3><p><strong>1. 分析目标</strong></p>
+<ul>
+<li>对 BACTX-K 策略下生成失败的 Fuzz 驱动程序进行分析，以揭示生成过程中的主要阻碍。</li>
+<li>总共分析了 52,824 个无效的驱动程序，其中包含 11,095 个运行时错误。</li>
+</ul>
+<hr>
+<p><strong>2. 失败分类（Failure Taxonomies）</strong></p>
+<p>将失败原因分为 <strong>两类</strong>：</p>
+<ol>
+<li><strong>语法错误</strong>（编译和链接阶段发现）：<ul>
+<li><strong>G1 - Corrupted Code</strong>：由于 token 限制或括号未匹配，生成的代码缺乏完整功能。</li>
+<li><strong>G2 - Language Basics Violation</strong>：违反语言基础规则（如变量重定义、括号不匹配、不完整表达式等）。</li>
+<li><strong>G3 - Non-Existing Identifier</strong>：引用了不存在的标识符（如头文件、宏、全局变量等）。</li>
+<li><strong>G4 - Type Error</strong>：函数参数类型不匹配或类型转换错误（如将 void 转换为变量）。</li>
+</ul>
+</li>
+<li><strong>语义错误</strong>（运行时模糊测试中发现）：<ul>
+<li><strong>S1 - Incorrect Input Arrangement</strong>：输入格式不正确，未满足 API 的要求。</li>
+<li><strong>S2 - Misinitialized Function Args</strong>：初始化参数的值或状态不满足函数要求。</li>
+<li><strong>S3 - Inexact Ctrl-Flow Deps</strong>：函数的控制流依赖未正确实现（如忽略指针非 NULL 检查、遗漏上下文初始化等）。</li>
+<li><strong>S4 - Improper Resource Cleaning</strong>：资源清理 API 使用错误或遗漏（如未关闭文件）。</li>
+<li><strong>S5 - Failure on Common Practices</strong>：未正确实现常见库函数（如缓冲区溢出、使用只读缓冲区等）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>3. 核心发现</strong></p>
+<ul>
+<li><strong>问题来源</strong>：<ul>
+<li>目标 API 的使用方式过于复杂，难以在单个提示中完全覆盖，可能导致 token 限制或模型注意力分散。</li>
+<li>单个驱动程序的生成依赖于多种实现路径，无法完全预测。</li>
+</ul>
+</li>
+<li><strong>模型局限性</strong>：<ul>
+<li>语言模型具有黑箱和概率性，难以全面保证输出的准确性。</li>
+<li>API 的实现方式多样化，增加了生成正确驱动程序的难度。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>4. 结论</strong></p>
+<ul>
+<li>LLM 在处理复杂 API 场景时仍存在显著挑战，主要包括：<ul>
+<li>语法错误导致代码无法编译。</li>
+<li>语义错误导致运行时行为不符合预期。</li>
+</ul>
+</li>
+<li>提升对 API 使用规则的理解、优化提示策略，将是提高成功率的关键。</li>
+</ul>
+<h2 id="Characteristics-of-Key-Design-RQ3"><a href="#Characteristics-of-Key-Design-RQ3" class="headerlink" title="Characteristics of Key Design (RQ3)"></a>Characteristics of Key Design (RQ3)</h2><h3 id="6-1-Repeatedly-Query"><a href="#6-1-Repeatedly-Query" class="headerlink" title="6.1 Repeatedly Query"></a>6.1 Repeatedly Query</h3><p><strong>1. 重复查询的重要性</strong></p>
+<ul>
+<li>重复查询是提示策略的关键部分，可显著提高生成 Fuzz 驱动程序的成功率。</li>
+<li>在最优配置（GPT-4-0613, ALL-ITER-K, 温度 0.5）下，47.44% 的问题通过重复查询解决（37&#x2F;78）。</li>
+<li>对于前 20 种配置，重复查询的平均贡献率高达 **67.50%**。</li>
+</ul>
+<hr>
+<p><strong>2. 效果分析</strong></p>
+<ol>
+<li><strong>配置与重复查询收益的关系</strong>：<ul>
+<li>配置越有效，重复查询带来的收益越大。</li>
+<li>表明重复查询与整体配置效率存在强相关性。</li>
+</ul>
+</li>
+<li><strong>重复查询的边际收益递减</strong>：<ul>
+<li>在初始几轮查询后，重复查询的收益显著下降。</li>
+<li>具体分析显示，超过 <strong>6 次查询</strong> 后收益变小，仅解决初始查询外 20% 的问题。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>3. 推荐</strong></p>
+<ul>
+<li>建议将重复查询的次数限制在 <strong>6 次以内</strong>，以平衡收益与成本。</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li>重复查询是提升 Fuzz 驱动程序生成成功率的重要策略，特别是在复杂问题上效果显著。</li>
+<li>然而，其收益在初期几轮后快速下降，需要控制重复次数以优化效率和资源利用。</li>
+</ul>
+<h3 id="6-2-Query-With-Extended-Information"><a href="#6-2-Query-With-Extended-Information" class="headerlink" title="6.2 Query With Extended Information"></a>6.2 Query With Extended Information</h3><p><strong>1. 使用 API 文档的查询</strong></p>
+<ul>
+<li>效果对比：<ul>
+<li>DOCTX-K 和 BACTX-K 的结果在解决问题的数量上没有显著差异。</li>
+<li>原因在于：<ul>
+<li>评估中的 43% 的 API（37&#x2F;86）没有文档支持，这使得 DOCTX-K 和 BACTX-K 查询相同。</li>
+<li>API 文档通常只有高层次描述，缺乏低级细节（如参数初始化要求），无法有效解决关键问题。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. 使用代码示例的查询</strong></p>
+<ul>
+<li><strong>效果对比</strong>：<ul>
+<li>UGCTX-K 比 BACTX-K 表现显著提升，平均在 22 个配置中解决问题的数量提高了 **104%**。</li>
+<li>示例代码提供了直接的 API 用法细节，大幅增强模型的性能。</li>
+</ul>
+</li>
+<li><strong>代价分析</strong>：<ul>
+<li>包含代码示例的查询显著增加了 token 成本，平均增长 10 倍：<ul>
+<li>Token 成本从 4.20 增加到 39.71，UGCTX-K 单次正确解决问题的平均成本为 32,367 tokens。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>示例来源影响</strong>：<ul>
+<li>内部项目的代码（Internal）和测试相关代码（Test &amp; Example）提供的示例质量显著高于其他来源。</li>
+<li>内部示例能直接展示目标项目 API 的用法，而测试代码包含更具体的功能示例。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>3. 案例分析</strong></p>
+<ul>
+<li>wc_Str_conv_with_detect：<ul>
+<li>该 API 的用法不直观（将一种字符编码转换为另一种），需要复杂的参数初始化（如特定 API 生成的结构）。</li>
+<li>大多数策略因初始化错误而失败，而包含正确示例的 UGCTX-K 能直接提供准确用法，从而解决问题。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>4. 总结</strong></p>
+<ul>
+<li>结论：<ul>
+<li>示例代码对提升模型性能至关重要，能有效弥补文档描述的不足。</li>
+<li>然而，使用代码示例的成本显著增加，需要在效率和精度之间权衡。</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-3-Iterative-Query"><a href="#6-3-Iterative-Query" class="headerlink" title="6.3 Iterative Query"></a>6.3 Iterative Query</h3><p><strong>1. Iterative Query 的重要性</strong></p>
+<ul>
+<li>迭代查询策略是一种能够显著提升性能的关键设计：<ul>
+<li>BA-ITER-K 相较于 BACTX-K，解决的问题多了 **159%**。</li>
+<li>ALL-ITER-K 比 UGCTX-K 多解决了 <strong>23%</strong> 的问题。</li>
+</ul>
+</li>
+<li>代价：<ul>
+<li>迭代查询会显著增加 token 成本：<ul>
+<li>对于 BACTX-K，每次成功驱动生成的 token 成本增加了 **57%**。</li>
+<li>对于 UGCTX-K，增加了 **17%**。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. 成效来源</strong></p>
+<ol>
+<li><strong>信息利用</strong>：<ul>
+<li>迭代查询充分利用了更广泛的信息，如先前生成的驱动程序验证过程中产生的错误数据。</li>
+</ul>
+</li>
+<li><strong>问题逐步分解</strong>：<ul>
+<li>采用逐步处理和分而治之的方法，简化生成任务的复杂性。</li>
+<li>每次迭代基于错误反馈修正生成结果，逐步完善驱动程序。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>3. 案例分析</strong></p>
+<ul>
+<li>pj_stun_msg_decode：<ul>
+<li>该函数的第一个参数需要多层 API 依赖初始化：<ul>
+<li><strong>依赖链</strong>：<code>pj_pool_create</code> → <code>pj_caching_pool_init</code>。</li>
+</ul>
+</li>
+<li>非迭代策略的问题：<ul>
+<li>无法准备所有正确的间接依赖使用细节，导致失败。</li>
+</ul>
+</li>
+<li>迭代策略的解决方法：<ul>
+<li>根据错误反馈逐步解决问题：<ol>
+<li>修复错误的 API 使用。</li>
+<li>修正类型不匹配错误。</li>
+<li>解决运行时崩溃，利用崩溃堆栈中断言代码定位问题。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>4. 总结</strong></p>
+<ul>
+<li>优势：<ul>
+<li>迭代查询通过利用多样化的信息和分步解决复杂依赖问题的能力，显著提高了生成效率和质量。</li>
+</ul>
+</li>
+<li>劣势：<ul>
+<li>增加了 token 成本和生成过程的复杂性。</li>
+</ul>
+</li>
+</ul>
+<h2 id="OSS-Fuzz-Driver-Comparison-RQ4"><a href="#OSS-Fuzz-Driver-Comparison-RQ4" class="headerlink" title="OSS-Fuzz Driver Comparison (RQ4)"></a>OSS-Fuzz Driver Comparison (RQ4)</h2><p><strong>1. 对比概述</strong></p>
+<ul>
+<li>比较了 LLM 生成的驱动程序与 OSS-Fuzz 的驱动程序，以获得实际应用的洞见。</li>
+<li>测试了两个 LLM 配置：GPT-4-0613 和 WizardCoder-15b-v1.0，均采用迭代查询策略，温度设为 0.5。</li>
+<li>数据来源：<ul>
+<li>共评估了 53 个问题，使用合并后的驱动程序进行对比。</li>
+<li>使用 <code>wrapper</code> 代码片段链接输入种子与驱动逻辑，并通过 switch 结构决定每次迭代使用的逻辑。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. 实验设置</strong></p>
+<ul>
+<li>使用了 <code>libfuzzer</code> 和 <code>AFL++</code> 作为模糊测试工具，进行了 5 次重复测试，每次运行 24 小时。</li>
+<li>总实验时间为 <strong>3.75 CPU 年</strong>。</li>
+<li>测量指标包括：<ul>
+<li>覆盖率。</li>
+<li>崩溃次数。</li>
+<li>使用的 API 数量。</li>
+<li>语义 Oracle 的使用情况。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>3. 对比结果</strong></p>
+<p><strong>(1) API 使用情况</strong></p>
+<ul>
+<li><strong>LLM 的 API 使用倾向</strong>：<ul>
+<li>LLM 通常保守地使用 API，如果提示中没有明确指导，往往仅调用必要的 API。</li>
+<li>LLM 生成的驱动中，14%（5&#x2F;35）的 API 使用比 OSS-Fuzz 更少；WizardCoder 中这一比例为 39%。</li>
+<li>示例代码可以帮助扩展 API 使用范围。</li>
+</ul>
+</li>
+<li><strong>OSS-Fuzz 的 API 多样性</strong>：<ul>
+<li>OSS-Fuzz 的驱动程序由不同贡献者创建，API 使用多样化。</li>
+<li>一些驱动程序基于现有测试文件修改生成，类似于通过 LLM 查询示例的过程。</li>
+</ul>
+</li>
+</ul>
+<p><strong>(2) Oracle 的使用情况</strong></p>
+<ul>
+<li>OSS-Fuzz 驱动中：<ul>
+<li>15 个问题至少使用了一个语义 Oracle（如检查返回值或输出是否符合期望）。</li>
+</ul>
+</li>
+<li>LLM 驱动中：<ul>
+<li>没有驱动包含语义 Oracle，这成为 LLM 生成驱动的主要不足。</li>
+</ul>
+</li>
+</ul>
+<p><strong>(3) 覆盖率与崩溃检测</strong></p>
+<ul>
+<li>大多数情况下，LLM 生成的驱动程序在覆盖率和唯一发现崩溃数量上表现与 OSS-Fuzz 相当甚至更好。</li>
+<li>注意事项：<ul>
+<li>LLM 驱动未使用 Oracle，因此避免了误报；但在大型项目中，缺乏 Oracle 可能导致遗漏关键语义错误。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>4. 总结</strong></p>
+<ul>
+<li>优势：<ul>
+<li>LLM 驱动程序在模糊测试性能上与 OSS-Fuzz 相当，具有实用性。</li>
+</ul>
+</li>
+<li>劣势：<ul>
+<li>LLM 生成的驱动程序缺乏语义 Oracle，无法检测逻辑错误。</li>
+<li>在扩展 API 使用和增加语义检测能力方面仍有改进空间。</li>
+</ul>
+</li>
+</ul>
+<p>LLM 的驱动生成技术在性能上已接近工业标准，但在语义分析与大规模应用中仍面临挑战。</p>
+<h2 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a>Discussion</h2><p><strong>1.与 OSS-Fuzz-Gen 的关系</strong></p>
+<ul>
+<li><strong>项目背景</strong>：<ul>
+<li>Google 的 OSS-Fuzz-Gen 项目专注于基于 LLM 的 Fuzz 驱动生成，旨在帮助发现零日漏洞并扩大测试覆盖范围。</li>
+<li>该项目主要集中于工程实现（如 LLM 接口与 OSS-Fuzz 项目的集成），而对提示策略设计、模型参数影响、以及挑战与改进方向的讨论较少。</li>
+</ul>
+</li>
+<li><strong>研究互补性</strong>：<ul>
+<li>本研究深入探讨了提示策略和生成技术的基础问题，设计了多种提示策略，评估了不同模型和温度设置下的效果，并总结了发现。</li>
+</ul>
+</li>
+<li><strong>改进贡献</strong>：<ul>
+<li>为 OSS-Fuzz-Gen 平台引入了新的功能：<ul>
+<li>运行时错误自动验证。</li>
+<li>错误分类与迭代修复流程。</li>
+</ul>
+</li>
+<li>目前改进已并入主分支，并应用于 282 个支持的项目。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. 潜在改进方向</strong></p>
+<ul>
+<li>领域知识建模：<ul>
+<li>将特定领域的知识（如通信协议状态机）进行建模和利用，以指导驱动生成。</li>
+</ul>
+</li>
+<li>混合解决方案：<ul>
+<li>探索结合传统程序分析与提示策略、基于代理的方法。</li>
+</ul>
+</li>
+<li>模型微调：<ul>
+<li>使用细化的训练数据，提升模型生成效率与效果。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>3. 有效性威胁</strong></p>
+<ul>
+<li>OSS-Fuzz 数据依赖性：<ul>
+<li>某些 OSS-Fuzz 驱动可能已包含在 LLM 的训练数据中，可能影响生成验证的独立性。</li>
+</ul>
+</li>
+<li>解决方案：<ul>
+<li>手动验证生成的驱动是否满足语义约束。</li>
+<li>生成驱动具有独特的编码风格，与 OSS-Fuzz 的驱动差异明显，显示其未直接复制。</li>
+</ul>
+</li>
+<li>局限性：<ul>
+<li>本研究专注于 C 项目，可能无法完全泛化到其他语言或领域。</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/11/19/How-Effective-Are-They-Exploring-Large-Language-Model-Based-Fuzz-Driver-Generation/">http://example.com/2024/11/19/How-Effective-Are-They-Exploring-Large-Language-Model-Based-Fuzz-Driver-Generation/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/11/19/METAL-Metamorphic-Testing-Framework-for-Analyzing-Large-Language-Model-Qualities/" title="METAL Metamorphic Testing Framework for Analyzing Large-Language Model Qualities"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">METAL Metamorphic Testing Framework for Analyzing Large-Language Model Qualities</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">105</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#How-Effective-Are-They-Exploring-Large-Language-Model-Based-Fuzz-Driver-Generation"><span class="toc-number">1.</span> <span class="toc-text">How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.2.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Preliminaries"><span class="toc-number">1.3.</span> <span class="toc-text">Preliminaries</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Methodology"><span class="toc-number">1.4.</span> <span class="toc-text">Methodology</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Design-of-Prompt-Strategies"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 Design of Prompt Strategies</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Evaluation-Framework"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 Evaluation Framework</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Overall-Eectiveness-RQ1"><span class="toc-number">1.5.</span> <span class="toc-text">Overall Eectiveness (RQ1)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Analysis-of-Eectiveness-Factors"><span class="toc-number">1.5.1.</span> <span class="toc-text">4.1 Analysis of Eectiveness Factors</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-How-Far-Are-We-to-Total-Practicality"><span class="toc-number">1.5.2.</span> <span class="toc-text">4.2 How Far Are We to Total Practicality?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fundamental-Challenge-RQ2"><span class="toc-number">1.6.</span> <span class="toc-text">Fundamental Challenge (RQ2)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-Links-Between-Question-and-Performance"><span class="toc-number">1.6.1.</span> <span class="toc-text">5.1 Links Between Question and Performance</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-Failure-Analysis"><span class="toc-number">1.6.2.</span> <span class="toc-text">5.2 Failure Analysis</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Characteristics-of-Key-Design-RQ3"><span class="toc-number">1.7.</span> <span class="toc-text">Characteristics of Key Design (RQ3)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-Repeatedly-Query"><span class="toc-number">1.7.1.</span> <span class="toc-text">6.1 Repeatedly Query</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-Query-With-Extended-Information"><span class="toc-number">1.7.2.</span> <span class="toc-text">6.2 Query With Extended Information</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-Iterative-Query"><span class="toc-number">1.7.3.</span> <span class="toc-text">6.3 Iterative Query</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSS-Fuzz-Driver-Comparison-RQ4"><span class="toc-number">1.8.</span> <span class="toc-text">OSS-Fuzz Driver Comparison (RQ4)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Discussion"><span class="toc-number">1.9.</span> <span class="toc-text">Discussion</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/19/How-Effective-Are-They-Exploring-Large-Language-Model-Based-Fuzz-Driver-Generation/" title="How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation">How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation</a><time datetime="2024-11-19T09:24:19.000Z" title="发表于 2024-11-19 17:24:19">2024-11-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/19/METAL-Metamorphic-Testing-Framework-for-Analyzing-Large-Language-Model-Qualities/" title="METAL Metamorphic Testing Framework for Analyzing Large-Language Model Qualities">METAL Metamorphic Testing Framework for Analyzing Large-Language Model Qualities</a><time datetime="2024-11-19T02:47:44.000Z" title="发表于 2024-11-19 10:47:44">2024-11-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/19/SMT-Solver-Validation-Empowered-by-Large-Pre-trained-Language-Models/" title="SMT Solver Validation Empowered by Large Pre-trained Language Models">SMT Solver Validation Empowered by Large Pre-trained Language Models</a><time datetime="2024-10-19T12:57:20.000Z" title="发表于 2024-10-19 20:57:20">2024-10-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/13/MR-Adopt-Automatic-Deduction-of-Input-Transformation-Function-for-Metamorphic-Testing/" title="MR-Adopt: Automatic Deduction of Input Transformation Function for Metamorphic Testing">MR-Adopt: Automatic Deduction of Input Transformation Function for Metamorphic Testing</a><time datetime="2024-10-13T03:09:01.000Z" title="发表于 2024-10-13 11:09:01">2024-10-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/12/Domain-Adaptation-for-Code-Model-Based-Unit-Test-Case-Generation/" title="Domain Adaptation for Code Model-Based Unit Test Case Generation">Domain Adaptation for Code Model-Based Unit Test Case Generation</a><time datetime="2024-10-12T10:59:24.000Z" title="发表于 2024-10-12 18:59:24">2024-10-12</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
