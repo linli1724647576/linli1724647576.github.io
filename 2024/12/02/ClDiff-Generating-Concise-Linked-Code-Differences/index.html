@@ -1,0 +1,801 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>ClDiff: Generating Concise Linked Code Differences | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="ClDiff: Generating Concise Linked Code DifferencesABSTRACT分析和理解源代码变更在多种软件维护任务中非常重要。为此，已经提出了许多代码差异分析和代码变更摘要的方法。然而，对于某些任务（例如代码审查和软件合并），这些差异分析方法生成的代码变更表示过于细粒度，而这些摘要方法生成的代码变更表示又过于粗粒度。此外，它们没有考虑代码变更之间的关系。因此">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ClDiff: Generating Concise Linked Code Differences">
+<meta property="og:url" content="http://example.com/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="ClDiff: Generating Concise Linked Code DifferencesABSTRACT分析和理解源代码变更在多种软件维护任务中非常重要。为此，已经提出了许多代码差异分析和代码变更摘要的方法。然而，对于某些任务（例如代码审查和软件合并），这些差异分析方法生成的代码变更表示过于细粒度，而这些摘要方法生成的代码变更表示又过于粗粒度。此外，它们没有考虑代码变更之间的关系。因此">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-12-02T02:37:55.000Z">
+<meta property="article:modified_time" content="2024-12-02T02:43:38.354Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'ClDiff: Generating Concise Linked Code Differences',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-02 10:43:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">110</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">ClDiff: Generating Concise Linked Code Differences</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-02T02:37:55.000Z" title="发表于 2024-12-02 10:37:55">2024-12-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-02T02:43:38.354Z" title="更新于 2024-12-02 10:43:38">2024-12-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="ClDiff: Generating Concise Linked Code Differences"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="ClDiff-Generating-Concise-Linked-Code-Differences"><a href="#ClDiff-Generating-Concise-Linked-Code-Differences" class="headerlink" title="ClDiff: Generating Concise Linked Code Differences"></a><strong>ClDiff: Generating Concise Linked Code Differences</strong></h1><h2 id="ABSTRACT"><a href="#ABSTRACT" class="headerlink" title="ABSTRACT"></a>ABSTRACT</h2><p>分析和理解源代码变更在多种软件维护任务中非常重要。为此，已经提出了许多代码差异分析和代码变更摘要的方法。然而，对于某些任务（例如代码审查和软件合并），这些差异分析方法生成的代码变更表示过于细粒度，而这些摘要方法生成的代码变更表示又过于粗粒度。此外，它们没有考虑代码变更之间的关系。因此，生成的差异或摘要在某些软件维护任务中难以分析和理解。</p>
+<p>本文提出了一种代码差异分析方法，称为 ClDiff，用于生成简明的关联代码差异，其粒度介于现有代码差异分析方法和代码变更摘要方法之间。ClDiff  的目标是生成更易于理解的代码差异。ClDiff  以变更前后的源代码文件为输入，包括三个步骤。首先，它通过修剪解析的抽象语法树中的未更改声明来预处理源代码文件。其次，它通过对语句级别及以上的细粒度代码差异进行分组，并描述每组中的高级别变更，生成简明的代码差异。最后，它根据五种预定义的链接方式将相关的简明代码差异链接起来。</p>
+<p>通过对 12 个 Java 项目（74,387 次提交）的实验和对 10 名参与者的用户研究表明，ClDiff 在准确性、简洁性、性能和实用性方面表现良好。</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a><strong>INTRODUCTION</strong></h2><p><font color="red">Background</font></p>
+<p>分析和理解源代码变更在多种软件维护任务中具有重要意义，例如：</p>
+<ol>
+<li><strong>代码审查</strong>：开发者需要理解代码变更以提升软件质量。</li>
+<li><strong>软件合并</strong>：解决合并冲突时需要了解代码变更的细节。</li>
+<li><strong>回归测试</strong>：代码变更信息可用于高效选择需要重新运行的测试用例。</li>
+</ol>
+<p>为此，已提出多种代码差异分析和代码变更摘要方法：</p>
+<p><strong>代码差异分析方法</strong></p>
+<ol>
+<li>文本基础方法：<ul>
+<li>忽略源代码的语法结构，仅生成文本差异。</li>
+<li>不便于进一步分析和理解代码变更。</li>
+</ul>
+</li>
+<li>树基础方法：<ul>
+<li>基于抽象语法树（AST）生成细粒度的语法代码差异。</li>
+<li>输出为“编辑脚本”（edit script），描述从变更前 AST 到变更后 AST 的转换。</li>
+<li>局限性：<ul>
+<li>粒度过细、差异过于分散或过长，难以理解（尤其是大型代码变更）。</li>
+<li>缺少代码变更之间的关系，例如方法签名变更与方法调用变更之间的关联。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>代码变更摘要方法</strong></p>
+<ol>
+<li>生成自然语言摘要：<ul>
+<li>描述代码变更的动机（如提交信息、发布说明）。</li>
+<li>适用于代码变更的文档化需求。</li>
+<li>局限性：<ul>
+<li>粒度过于粗略，不适用于深入分析和理解代码变更（如代码审查或软件合并）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>问题总结</strong></p>
+<p>现有代码差异分析和代码变更摘要方法在粒度上存在两极化问题：</p>
+<ul>
+<li><strong>代码差异分析方法</strong>：过于细粒度。</li>
+<li><strong>代码变更摘要方法</strong>：过于粗粒度。 无法满足一些任务（如代码审查和软件合并）的需求。</li>
+</ul>
+<p><font color="red">Approach</font></p>
+<p>为了解决现有代码差异分析方法的问题，<strong>ClDiff</strong> 提出了一个创新的代码差异分析方法，旨在生成简洁、连贯的代码差异表示，主要特点包括：</p>
+<ol>
+<li><strong>粒度适中</strong>：<ul>
+<li>粒度介于现有的代码差异分析方法和代码变更摘要方法之间。</li>
+<li>既提供简洁的信息，又保留变更之间的关联性。</li>
+</ul>
+</li>
+<li><strong>目标</strong>：<ul>
+<li>为代码审查和软件合并等任务提供更易理解的代码差异信息。</li>
+</ul>
+</li>
+<li><strong>实现过程</strong>： <strong>ClDiff</strong> 的实现包括以下三步：<ol>
+<li>预处理：<ul>
+<li>对输入的变更前后源代码文件进行 AST（抽象语法树）解析。</li>
+<li>剔除未发生变化的声明，以避免对未改变的 AST 元素进行不必要的分析。</li>
+</ul>
+</li>
+<li>生成简洁的代码差异：<ul>
+<li>利用 GumTree 工具生成细粒度的代码差异。</li>
+<li>在语句级别或以上对相关的细粒度差异进行分组，并为每组描述高层次的变化。</li>
+<li>将分散但相关的低层次变更聚合成更高层次的表示。</li>
+</ul>
+</li>
+<li>关联差异：<ul>
+<li>根据五种预定义的链接类型，将相关的简洁代码差异关联起来。</li>
+<li>鼓励在某些任务中整体考虑这些关联的代码变化。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><strong>优势</strong>：<ul>
+<li><strong>生成结果更简洁、信息更集中</strong>。</li>
+<li><strong>保留变更之间的逻辑关系</strong>，提升在代码审查和软件合并中的可用性。</li>
+</ul>
+</li>
+</ol>
+<p><font color="red">Evaluation</font></p>
+<ol>
+<li><strong>实验设计</strong>：<ul>
+<li>在 12 个开源 Java 项目（共计 74,387 次提交）上进行实验。</li>
+<li>与 10 名参与者进行了用户研究，评估 ClDiff 在代码变更理解中的实用性。</li>
+</ul>
+</li>
+<li><strong>实验结果</strong>：<ul>
+<li>高准确性：<ul>
+<li>生成的代码差异准确率为 **99%**。</li>
+<li>差异链接准确率为 **98%**。</li>
+</ul>
+</li>
+<li>高效性：<ul>
+<li>与 GumTree 相比，ClDiff 在 48% 的提交中生成的编辑脚本短了 **80%**。</li>
+<li>编辑时间减少了 **72%**。</li>
+</ul>
+</li>
+<li>更易理解：<ul>
+<li>ClDiff 在代码变更理解任务中表现更好。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>主要贡献</p>
+<ol>
+<li>提出了一个名为 <strong>ClDiff</strong> 的代码差异分析方法，可生成简洁且关联的代码差异。</li>
+<li>实现了适用于 Java 的 <strong>ClDiff</strong>，并提供了可视化功能。</li>
+<li>通过实验和用户研究，验证了 <strong>ClDiff</strong> 在准确性、简洁性、性能和实用性上的优势。</li>
+</ol>
+<h2 id="PRELIMINARIES"><a href="#PRELIMINARIES" class="headerlink" title="PRELIMINARIES"></a><strong>PRELIMINARIES</strong></h2><p><strong>AST（Abstract Syntax Tree）</strong></p>
+<ol>
+<li><strong>定义</strong>：<ul>
+<li>源代码文件可以解析为一个抽象语法树（AST），它是一个有根、有序的标签树。</li>
+<li>节点表示代码的结构元素（例如声明、表达式），部分节点还包括代码的实际值（例如变量名）。</li>
+</ul>
+</li>
+<li><strong>节点类型层级</strong>：<ul>
+<li><strong>根节点</strong>：<code>CompilationUnit</code>，子节点可以是<code>BodyDeclaration</code>类型。</li>
+<li>常见子类型：<ul>
+<li><code>TypeDeclaration</code>（类或接口声明）</li>
+<li><code>MethodDeclaration</code>（方法或构造函数声明）</li>
+<li><code>FieldDeclaration</code>（字段声明）</li>
+<li><code>Initializer</code>（初始化块）</li>
+</ul>
+</li>
+<li>声明可嵌套：<ul>
+<li>声明包含语句（如<code>IfStatement</code>）。</li>
+<li>语句包含表达式（如<code>MethodInvocation</code>），粒度从声明到表达式逐步递减。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>AST差异分析</strong></p>
+<ol>
+<li><strong>工具</strong>：使用 GumTree 工具对比变更前后的两棵 AST。<ul>
+<li>GumTree 通过两步生成编辑脚本：<ol>
+<li>节点映射：<ul>
+<li>使用启发式方法生成变更前后 AST 节点的映射集合：⟨节点 b，节点 a⟩。</li>
+</ul>
+</li>
+<li>生成编辑脚本：<ul>
+<li>根据节点映射，生成将 ASTb 转换为 ASTa 的编辑动作序列。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>编辑动作</strong>：<ul>
+<li><strong>update</strong>：更新节点的值。</li>
+<li><strong>add</strong>：新增节点。</li>
+<li><strong>delete</strong>：删除叶节点。</li>
+<li><strong>move</strong>：移动节点及其子节点。</li>
+</ul>
+</li>
+</ol>
+<p><strong>示例</strong></p>
+<ul>
+<li>AST 差异生成：<ul>
+<li>GumTree 对两个 AST 的 8 个节点完成了映射。</li>
+<li>生成了包含 <strong>18 个编辑动作</strong>的编辑脚本。</li>
+<li>例如：<code>move(n5, n13, 2)</code> 表示将方法调用节点 <code>n5</code> 移动为变量声明片段 <code>n13</code> 的第二个子节点。</li>
+</ul>
+</li>
+</ul>
+<p><strong>总结</strong></p>
+<p>GumTree 通过高精度的 AST 节点映射和编辑脚本生成，为代码差异分析提供了详细且可操作的工具，但输出可能过于细粒度且复杂，不易直接用于高层任务（如代码审查或合并）。</p>
+<p><img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241201201106549.png" alt="image-20241201201106549"></p>
+<p><img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241201194039298.png" alt="image-20241201194039298"></p>
+<h2 id="MOTIVATION-AND-OVERVIEW"><a href="#MOTIVATION-AND-OVERVIEW" class="headerlink" title="MOTIVATION AND OVERVIEW"></a><strong>MOTIVATION AND OVERVIEW</strong></h2><h3 id="3-1-Motivation-Example"><a href="#3-1-Motivation-Example" class="headerlink" title="3.1 Motivation Example"></a><strong>3.1 Motivation Example</strong></h3><p><strong>示例背景</strong></p>
+<ol>
+<li><strong>代码变更</strong>：<ul>
+<li>示例取自  spring-framework  项目的一次提交，其中涉及三个类的代码变更：<ul>
+<li>类①：<ul>
+<li>添加了一个 <code>for</code> 循环结构（第2-4行）。</li>
+<li>在循环中调用了一个新声明的方法（第5行）。</li>
+</ul>
+</li>
+<li>类②：<ul>
+<li>重写了类①中新声明的方法（第13-14行）。</li>
+<li>声明了一个字段（第6行）。</li>
+<li>提取了一个变量（第7-8行）。</li>
+<li>在新添加的 <code>if</code> 结构中使用了字段和变量（第9-11行）。</li>
+</ul>
+</li>
+<li>类③：<ul>
+<li>重写了类①的新方法（第29-30行）。</li>
+<li>声明了一个字段（第15行）。</li>
+<li>新声明的方法使用了该字段（第28行）。</li>
+<li>新方法被相似的代码调用两次（第16-21行和第22-27行）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>部分变更细节</strong>：<ul>
+<li>示例特别关注 <strong>类②第7-12行</strong> 的代码变更，展示变更前后的部分抽象语法树（AST）。</li>
+<li>AST变更：<ul>
+<li>添加节点用绿色高亮。</li>
+<li>移动节点用黄色高亮。</li>
+<li>没有删除或更新操作。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>存在的问题</strong></p>
+<ol>
+<li><strong>现有工具的不足</strong>：<ul>
+<li>使用 GumTree 工具生成的编辑脚本包含了 <strong>17个新增节点</strong> 和 <strong>1个移动节点</strong>。</li>
+<li>存在的问题：<ul>
+<li><strong>分散性</strong>：某些与高层次语法元素（如变量声明语句）相关的编辑动作在脚本中分散，不便于理解。</li>
+<li><strong>分析困难</strong>：开发者和自动化工具更倾向于从高层次角度（如变量声明或<font color="green"><strong>语句级别</strong></font>）理解变更，而不是<font color="green"><strong>关注细粒度的树操作</strong></font>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>示例说明问题</strong>：<ul>
+<li>在代码审查中，开发者直观地看到变量声明的插入，而不会关注底层的细粒度编辑动作。</li>
+<li>在软件合并中，**<font color="green">变量声明被视为一个整体，而不是分散的细粒度变更操作</font>**。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>ClDiff改进</strong></p>
+<ol>
+<li><strong>高层次变更表示</strong>：<ul>
+<li>ClDiff生成的编辑脚本示例（见Fig. 2(e)）包括：<ul>
+<li>添加变量声明语句。</li>
+<li>添加 <code>if</code> 语句。</li>
+<li>更新表达式语句（添加简单名称）。</li>
+<li>移动方法调用使其成为新变量声明的一部分。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>代码变更关系</strong>：<ul>
+<li>GumTree 未考虑代码变更之间的关系，而这些关系对代码分析非常重要。</li>
+<li>示例：<ul>
+<li>新声明的方法（第5行）：<ul>
+<li>被调用（第3行）。</li>
+<li>被重写（第13-14行和第29-30行）。</li>
+</ul>
+</li>
+<li>类③中，第16-21行与第22-27行的代码几乎相同。</li>
+</ul>
+</li>
+<li>这些关系能：<ul>
+<li>加速代码审查。</li>
+<li>提高合并冲突解决的准确性。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>总结</strong></p>
+<p>ClDiff 通过高层次的编辑动作和建立代码变更关系的链接，解决了细粒度操作分散和关系缺失的问题，有助于：</p>
+<ul>
+<li>简化代码变更的理解。</li>
+<li>提高代码审查和合并任务的效率。</li>
+</ul>
+<p><img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241201194620450.png" alt="image-20241201194620450"></p>
+<h3 id="3-2-Approach-Overview"><a href="#3-2-Approach-Overview" class="headerlink" title="3.2 Approach Overview"></a><strong>3.2 Approach Overview</strong></h3><p><img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241201195418132.png" alt="image-20241201195418132"></p>
+<p>ClDiff 是一个生成简洁代码差异并建立差异链接的方法，主要分为以下三个步骤：</p>
+<ol>
+<li><strong>预处理阶段</strong>：<ul>
+<li><strong>目标</strong>：剔除未变更的代码，减少不必要的差异分析。</li>
+<li>具体操作：<ul>
+<li>将源代码文件对（变更前和变更后）解析成抽象语法树（AST）。</li>
+<li>使用哈希技术移除未变更的声明级别元素。</li>
+</ul>
+</li>
+<li><strong>粒度</strong>：以声明（declaration）为单位，平衡可行性与可扩展性。</li>
+</ul>
+</li>
+<li><strong>生成简洁代码差异</strong>：<ul>
+<li><strong>目标</strong>：将分散的细粒度编辑动作汇总为更高层次的代码差异，便于理解。</li>
+<li>具体操作：<ul>
+<li>使用 GumTree 获取每对 AST 的映射关系和编辑动作。</li>
+<li>遍历编辑动作和修剪后的 AST，迭代地将与语句级或以上 AST 元素相关的编辑动作分组。</li>
+<li>为每组编辑动作生成一个简洁代码差异，捕获其高层次变更。</li>
+</ul>
+</li>
+<li><strong>粒度</strong>：选择语句级别（statement）作为差异粒度，更贴合开发者对代码变更的直观理解。</li>
+</ul>
+</li>
+<li><strong>建立代码差异链接</strong>：<ul>
+<li><strong>目标</strong>：考虑代码变更之间的因果关系，生成关联的代码差异。</li>
+<li>具体操作：<ul>
+<li>针对生成的简洁代码差异，检查是否存在预定义的五种代码差异链接（如定义-使用链接 Def-Use link）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>输入与输出</strong></p>
+<ul>
+<li><strong>输入</strong>：源代码文件对（变更前和变更后，如提交、补丁或版本更新）。</li>
+<li><strong>输出</strong>：简洁的代码差异及其链接，可通过 Web 工具进行可视化。</li>
+</ul>
+<p>此方法旨在生成简洁、直观、关联性的代码差异表示，便于开发者进行代码审查和合并等任务。</p>
+<h2 id="METHODOLOGY"><a href="#METHODOLOGY" class="headerlink" title="METHODOLOGY"></a><strong>METHODOLOGY</strong></h2><h3 id="4-1-Pre-Processing"><a href="#4-1-Pre-Processing" class="headerlink" title="4.1 Pre-Processing"></a><strong>4.1 Pre-Processing</strong></h3><p><strong>目标</strong>：通过修剪抽象语法树（AST）中的未变更声明节点，减少不必要的差异分析。</p>
+<p><strong>具体流程</strong>：</p>
+<ol>
+<li><strong>解析文件为 AST</strong>：<ul>
+<li>输入：代码变更前后的文件对 ⟨fb, fa⟩。</li>
+<li>解析为 AST 对 ⟨ASTb, ASTa⟩，分别对应变更前和变更后的 AST。</li>
+</ul>
+</li>
+<li><strong>计算哈希值并存储</strong>：<ul>
+<li>遍历 <code>ASTb</code> 中的声明节点（包括字段、枚举、方法、内部类和初始化器声明）。</li>
+<li>为每个声明节点计算两个哈希值：<ul>
+<li>一个基于所属类的规范名称，用于区分内外部类的相同声明。</li>
+<li>另一个基于声明代码（即节点为根的子树）内容。</li>
+</ul>
+</li>
+<li>将声明节点及其哈希值存入映射表，键为这两个哈希值。</li>
+</ul>
+</li>
+<li><strong>修剪 AST</strong>：<ul>
+<li>遍历 <code>ASTa</code> 中的声明节点，计算同样的两个哈希值。</li>
+<li>若某节点的两个哈希值在映射表中找到匹配，则从 <code>ASTb</code> 和 <code>ASTa</code> 中同时修剪该节点及其所有子节点。</li>
+</ul>
+</li>
+<li><strong>输出修剪后的 AST 对</strong>：<ul>
+<li>修剪后生成的 AST 对为 ⟨ASTb′, ASTa′⟩，仅保留变更部分。</li>
+</ul>
+</li>
+</ol>
+<p><strong>注意事项</strong>：</p>
+<ul>
+<li>注释和 Javadocs 不作为代码的一部分，在计算前即从 AST 中移除。</li>
+</ul>
+<p><strong>结果</strong>：生成更精简的 AST，减少分析中对未变更代码的干扰，提高效率。</p>
+<h3 id="4-2-Generating-Concise-Code-Differences"><a href="#4-2-Generating-Concise-Code-Differences" class="headerlink" title="4.2 Generating Concise Code Differences"></a><strong>4.2 Generating Concise Code Differences</strong></h3><p>ClDiff的目标是将细粒度的代码变更操作聚合成更高层次的简洁代码差异，方便分析和理解。生成过程分为三个阶段：</p>
+<hr>
+<p><strong>阶段 1：处理移动操作</strong></p>
+<ul>
+<li><strong>特点</strong>：<code>move</code> 操作会移动整棵以某节点为根的子树，直接反映了高层次的代码变更。</li>
+<li>处理：<ul>
+<li>对于每个 <code>move(n,p,i)</code> 操作，将其生成简洁代码差异 <code>moveX(n,p,i)</code>，其中 <code>X</code> 是节点 <code>n</code> 的标签。</li>
+<li>从原始编辑操作中移除该 <code>move</code> 操作。</li>
+</ul>
+</li>
+<li>示例：<ul>
+<li>在图 2(d) 中的 <code>move(n5,n13, 2)</code>，生成的简洁代码差异为 <code>moveMethodInvocation(n5,n13, 2)</code>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>阶段 2：处理添加和删除操作</strong></p>
+<ul>
+<li>特点：<ul>
+<li>声明和语句分类：<ul>
+<li><strong>C1 类</strong>：包含嵌套声明或语句（如 <code>IfStatement</code>, <code>MethodDeclaration</code>），分为基础元素和组成元素。</li>
+<li><strong>C2 类</strong>：不包含嵌套声明或语句（如 <code>VariableDeclarationStatement</code>），仅有基础元素。</li>
+</ul>
+</li>
+<li>一个添加或删除操作通常影响整个或部分声明或语句。</li>
+</ul>
+</li>
+<li>处理：<ul>
+<li>遍历 <code>add</code> 或 <code>delete</code> 操作的目标节点，识别基础元素和组成元素。</li>
+<li>若基础元素完全新增或删除，生成单个代码差异 <code>addX(n,p,i)</code> 或 <code>deleteX(n)</code>。</li>
+<li>若部分新增或删除，生成代码差异 <code>addXP(n,p,i)</code> 或 <code>deleteXP(n)</code>。</li>
+<li>删除对应的操作记录。</li>
+</ul>
+</li>
+<li>示例：<ul>
+<li>图 2 中 <code>add(n10,n1, 1)</code>（变量声明）属于 C2 类，生成部分新增差异。</li>
+<li><code>add(n19,n1, 2)</code>（if 语句）属于 C1 类，生成完整新增差异。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>阶段 3：处理剩余的非声明和非语句操作</strong></p>
+<ul>
+<li><strong>特点</strong>：剩余操作仅影响非声明和非语句的节点（如表达式节点），通常分布于同一声明或语句的不同部分。</li>
+<li>处理：<ul>
+<li><font color="green">将相关操作归类到其公共祖先节点（声明或语句节点）。</font></li>
+<li>生成简洁代码差异 <code>updateX(m) by Y</code>，其中 <code>X</code> 是祖先节点的标签，<code>Y</code> 描述具体操作。</li>
+</ul>
+</li>
+<li>示例：<ul>
+<li>图 2(d) 中的 <code>add(n33,n3, 2)</code>，归类到 <code>n30</code> 的最近祖先节点，生成 <code>updateExpressionStatement(n2) by addSimpleName(n33,n3, 2)</code>。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241201194039298.png" alt="image-20241201194039298"></p>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li><strong>目标</strong>：通过聚合操作生成基于语句和声明的高层次代码差异，减少分析复杂度。</li>
+<li><strong>效果</strong>：简洁代码差异将细粒度操作整合为更具直观性和可理解性的高层次变更描述。</li>
+</ul>
+<h3 id="4-3-Linking-Code-Differences"><a href="#4-3-Linking-Code-Differences" class="headerlink" title="4.3 Linking Code Differences"></a><strong>4.3 Linking Code Differences</strong></h3><p>ClDiff 的第三步是根据五种预定义链接在生成的简洁代码差异之间建立联系，反映代码变更的因果关系。这些链接设计旨在帮助更好地分析和理解代码变更。</p>
+<hr>
+<p><strong>五种代码差异链接</strong></p>
+<ol>
+<li><strong>Def-Use Link（定义-使用链接）</strong><ul>
+<li><strong>定义</strong>：如果变量、字段或方法的声明被 <code>d1</code> 改变，其使用被 <code>d2</code> 改变，则 <code>d1 → d2</code> 是 Def-Use 链接。</li>
+<li><strong>示例</strong>：变量声明的变化和它在同一范围内的使用之间的链接。</li>
+</ul>
+</li>
+<li><strong>Abstract-Method Link（抽象方法链接）</strong><ul>
+<li><strong>定义</strong>：如果抽象方法的声明被 <code>d1</code> 改变，其在子类中的实现被 <code>d2</code> 改变，则 <code>d1 → d2</code> 是 Abstract-Method 链接。</li>
+<li><strong>示例</strong>：抽象类方法声明和子类实现之间的链接。</li>
+</ul>
+</li>
+<li><strong>Override-Method Link（方法覆盖链接）</strong><ul>
+<li><strong>定义</strong>：如果类中方法的声明被 <code>d1</code> 改变，其在子类中的覆盖实现可能被 <code>d2</code> 改变，则 <code>d1 → d2</code> 是 Override-Method 链接。</li>
+<li><strong>示例</strong>：父类方法变化与子类覆盖之间的链接。</li>
+</ul>
+</li>
+<li><strong>Implement-Method Link（接口方法实现链接）</strong><ul>
+<li><strong>定义</strong>：如果接口中方法的声明被 <code>d1</code> 改变，其在实现该接口的类中的实现必须被 <code>d2</code> 改变，则 <code>d1 → d2</code> 是 Implement-Method 链接。</li>
+<li><strong>示例</strong>：接口方法变化和实现类方法之间的链接。</li>
+</ul>
+</li>
+<li><strong>Systematic-Change Link（系统化变更链接）</strong><ul>
+<li><strong>定义</strong>：如果两个代码差异 <code>d1</code> 和 <code>d2</code> 相似，它们可能由系统化变更（如重构或重复修复）引起，则 <code>d1 ↔ d2</code> 是 Systematic-Change 链接。</li>
+<li><strong>示例</strong>：类似的代码变更（如重复的变量名修改）之间的链接。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>链接建立流程</strong></p>
+<ol>
+<li><strong>Def-Use Link</strong>：<ul>
+<li>检测涉及变量、字段或方法声明的代码差异 <code>d1</code>。</li>
+<li>在相同作用域内查找涉及这些变量、字段或方法使用的代码差异 <code>d2</code>。</li>
+<li>建立 <code>d1 → d2</code> 的 Def-Use 链接。</li>
+</ul>
+</li>
+<li><strong>Abstract-Method、Override-Method 和 Implement-Method Links</strong>：<ul>
+<li>确定抽象方法、类方法或接口方法的声明变更 <code>d1</code>。</li>
+<li>查找与其签名匹配且在相关类或接口中实现的方法变更 <code>d2</code>。</li>
+<li>分别建立 <code>d1 → d2</code> 的 Abstract-Method、Override-Method 或 Implement-Method 链接。</li>
+</ul>
+</li>
+<li><strong>Systematic-Change Link</strong>：<ul>
+<li>对 <code>delete</code>、<code>add</code> 和 <code>move</code> 操作，检查节点标签和编辑操作的相似性（如子树的 bi-gram 相似度超过 0.8）。</li>
+<li>对 <code>update</code> 操作，比较变更前后的代码相似性。</li>
+<li>建立 <code>d1 ↔ d2</code> 的 Systematic-Change 链接。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>设计特点</strong></p>
+<ul>
+<li><strong>轻量级</strong>：链接建立基于简单的启发式方法，避免依赖重量级程序分析技术。</li>
+<li><strong>扩展性</strong>：当前五种链接已经显示出实际用途，可进一步扩展新类型的链接。</li>
+<li><strong>准确性</strong>：对代码变更案例的实验表明，ClDiff 可以正确建立所有相关链接。</li>
+</ul>
+<hr>
+<p><strong>示例</strong></p>
+<ul>
+<li><strong>Def-Use Link</strong>：<code>addVariableDeclarationStatementP</code>（第 8 行）和 <code>addIfStatement</code>（第 9-11 行）之间建立链接。</li>
+<li><strong>Override-Method Link</strong>：<code>addMethodDeclaration</code>（第 5 行）和 <code>addMethodDeclaration</code>（第 14 行）之间建立链接。</li>
+<li><strong>Systematic-Change Link</strong>：变量声明的重复变更（第 16, 19 行与第 22, 25 行）之间建立链接。</li>
+</ul>
+<p><img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241202101408476.png" alt="image-20241202101408476"></p>
+<h2 id="IMPLEMENTATION-AND-EVALUATION"><a href="#IMPLEMENTATION-AND-EVALUATION" class="headerlink" title="IMPLEMENTATION AND EVALUATION"></a><strong>IMPLEMENTATION AND EVALUATION</strong></h2><h3 id="5-1-Evaluation-Setup"><a href="#5-1-Evaluation-Setup" class="headerlink" title="5.1 Evaluation Setup"></a><strong>5.1 Evaluation Setup</strong></h3><p>为评估 <strong>ClDiff</strong> 的效果，研究设计了以下实验和用户研究：</p>
+<hr>
+<p><strong>实验数据</strong></p>
+<ul>
+<li><strong>数据来源</strong>：12 个高星级开源 Java 项目，来自 GitHub。</li>
+<li>统计信息：<ul>
+<li>包括项目名称、创建日期、代码行数、Star 数量和提交次数。</li>
+<li>过滤掉与代码无关（如配置文件变更）或仅涉及测试代码变更的提交，最终使用 <strong>74,387</strong> 个提交。</li>
+<li>这些项目规模大、受欢迎，演化历史长，代码变更种类丰富多样。</li>
+</ul>
+</li>
+<li><strong>对比工具</strong>：使用与 GumTree 原始研究相同的配置对 ClDiff 和 GumTree 进行对比。</li>
+</ul>
+<hr>
+<p><strong>用户研究</strong></p>
+<ul>
+<li>参与者：<ul>
+<li>招募了 10 名研究生，平均 Java 编程经验为 <strong>4 年</strong>，其中 1 人有 <strong>6 年经验</strong>。</li>
+<li>所有参与者均与论文作者无关。</li>
+</ul>
+</li>
+<li>任务：<ul>
+<li>随机选择了 <strong>10 个提交</strong>，每次提交最多涉及 <strong>6 个 Java 源文件</strong>，控制了代码变更理解的复杂性，确保参与者专注。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>研究问题（RQs）</strong></p>
+<ol>
+<li><strong>RQ1</strong>：ClDiff 生成的简洁代码差异和链接的准确性如何？（详见 5.2）</li>
+<li><strong>RQ2</strong>：ClDiff 生成的简洁代码差异与 GumTree 相比的规模如何？（详见 5.3）</li>
+<li><strong>RQ3</strong>：ClDiff 的性能开销与 GumTree 相比如何？（详见 5.4）</li>
+<li><strong>RQ4</strong>：ClDiff 在代码变更理解中的实用性与 GumTree 相比如何？（详见 5.5）</li>
+</ol>
+<img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241202102525333.png" alt="image-20241202102525333" style="zoom:80%;">
+
+<h3 id="5-2-Accuracy-Evaluation-RQ1"><a href="#5-2-Accuracy-Evaluation-RQ1" class="headerlink" title="5.2 Accuracy Evaluation (RQ1)"></a><strong>5.2 Accuracy Evaluation (RQ1)</strong></h3><p>为了评估 <strong>ClDiff</strong> 生成的简明代码差异和关联链接的准确性，研究者从每个项目中随机选择了 10 次提交，<strong>手动</strong>分析了 <strong>ClDiff</strong> 的结果。结果显示，共分析了 1,456 个代码差异，准确率达 **99%**；分析了 512 个链接，准确率为 **98%**。</p>
+<p><strong>主要发现：</strong></p>
+<ol>
+<li><strong>错误原因</strong>：<ul>
+<li>12 个不准确的代码差异均由 GumTree 映射不准确引起：<ul>
+<li>10 个由于缺失映射（两个应被映射的 AST 节点未被映射），导致生成删除和添加操作，而不是移动操作。</li>
+<li>2 个由于错误映射（两个不应被映射的 AST 节点被映射），生成了与实际变化不符的代码差异。</li>
+</ul>
+</li>
+<li>9 个不准确的链接（均为 <strong>Def-Use</strong> 链接）由启发式方法导致，例如局部变量和类中字段同名时生成错误链接。</li>
+</ul>
+</li>
+<li><strong>链接分布</strong>：<ul>
+<li>五种预定义链接中，除 <strong>Implement-Method</strong> 外，其余均有出现。</li>
+<li><strong>Def-Use</strong> 链接占比约 **91%**。</li>
+</ul>
+</li>
+</ol>
+<p>尽管存在少量不准确情况，<strong>ClDiff</strong> 仍表现出较高的准确性，主要由于代码更改通常集中且分析策略简单。</p>
+<p><strong>总结</strong>：基于结果，<strong>ClDiff</strong> 在生成简明代码差异和关联链接上表现出极高的准确性，分别达到 **99% 和 98%**，验证了其高效性和可靠性。</p>
+<img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241202102745876.png" alt="image-20241202102745876" style="zoom:80%;">
+
+<h3 id="5-3-Conciseness-Evaluation-RQ2"><a href="#5-3-Conciseness-Evaluation-RQ2" class="headerlink" title="5.3 Conciseness Evaluation (RQ2)"></a><strong>5.3 Conciseness Evaluation (RQ2)</strong></h3><p>为评估 <strong>ClDiff</strong> 相较于 <strong>GumTree</strong> 生成的代码差异是否更简洁（即更短），研究者测量了每次提交的编辑脚本长度（脚本中操作的数量）。为确保公平，<strong>ClDiff</strong> 的更新操作以细粒度操作的数量进行计数。</p>
+<p><strong>主要发现：</strong></p>
+<ol>
+<li><strong>简洁性结果</strong>：<ul>
+<li>对于 <strong>90%</strong> 的提交，<strong>ClDiff</strong> 生成的编辑脚本比 <strong>GumTree</strong> 更短。</li>
+<li>对于 <strong>10%</strong> 的提交，<strong>ClDiff</strong> 与 <strong>GumTree</strong> 的脚本长度相同，这些情况的细粒度编辑操作无法在语句级或以上进行分组。</li>
+</ul>
+</li>
+<li><strong>统计数据</strong>：<ul>
+<li>表 3 显示，<strong>ClDiff</strong> 显著缩短了编辑脚本的长度，其最大和中位长度都明显小于 <strong>GumTree</strong>。</li>
+<li><img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241202102858368.png" alt="image-20241202102858368" style="zoom:50%;"></li>
+<li>图 6 显示了每次提交中 <strong>ClDiff</strong> 与 <strong>GumTree</strong> 脚本长度的比率，各项目的中位比率约为 <strong>0.2</strong>。</li>
+<li><img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241202102910291.png" alt="image-20241202102910291" style="zoom:67%;"></li>
+<li>具体而言，<strong>48%</strong> 的提交中，<strong>ClDiff</strong> 缩短了超过 <strong>80%</strong> 的编辑脚本长度。这主要得益于高层次的添加和删除操作，能够描述一组细粒度的添加和删除操作。</li>
+</ul>
+</li>
+<li><strong>组操作分析</strong>：<ul>
+<li>表 4 显示了添加和删除操作的最大和中位组大小：<ul>
+<li>最大组大小通常对应于整个方法声明的添加或删除。</li>
+<li>添加和删除操作的中位组大小分别为 <strong>8</strong> 和 <strong>6</strong>。</li>
+<li><img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241202103029022.png" alt="image-20241202103029022" style="zoom:67%;"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong>：根据表 3、表 4 和图 6 的结果，<strong>ClDiff</strong> 对 <strong>48%</strong> 的提交生成的编辑脚本比 <strong>GumTree</strong> 缩短了 <strong>80%</strong> 以上，显著提高了代码差异的简洁性。</p>
+<h3 id="5-4-Performance-Evaluation-RQ3"><a href="#5-4-Performance-Evaluation-RQ3" class="headerlink" title="5.4 Performance Evaluation (RQ3)"></a><strong>5.4 Performance Evaluation (RQ3)</strong></h3><p>为了评估性能，表 5 对比了 <strong>ClDiff</strong> 和 <strong>GumTree</strong> 在处理每次提交的代码变更文件时的平均时间开销（以毫秒为单位），并详细列出了 <strong>ClDiff</strong> 各步骤的性能开销。</p>
+<p><strong>主要发现：</strong></p>
+<ol>
+<li><strong>总体性能</strong>：<ul>
+<li><strong>ClDiff</strong> 比 <strong>GumTree</strong> 用时短 **72%**。</li>
+<li>原因在于 <strong>ClDiff</strong> 在应用 <strong>GumTree</strong> 生成细粒度代码差异之前，会先修剪 AST 中未变更的声明，而 <strong>GumTree</strong> 直接处理原始 AST。</li>
+</ul>
+</li>
+<li><strong>步骤性能</strong>：<ul>
+<li><strong>ClDiff</strong> 第二步是最耗时的步骤，占总时间的 **92%**。</li>
+<li>第三步是耗时最少的步骤，每次提交仅需 <strong>0.42 毫秒</strong>，这得益于基于启发式的方法建立链接，同时也保持了高准确性（见 5.2 节讨论）。</li>
+<li>平均来看，<strong>ClDiff</strong> 每次提交耗时 <strong>188.51 毫秒</strong>。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong>：根据表 5 的结果，<strong>ClDiff</strong> 比 <strong>GumTree</strong> 的运行时间缩短了 **72%**，验证了其高效的性能表现。</p>
+<img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241202103040812.png" alt="image-20241202103040812" style="zoom:67%;">
+
+<h3 id="5-5-Usefulness-Evaluation-RQ4"><a href="#5-5-Usefulness-Evaluation-RQ4" class="headerlink" title="5.5 Usefulness Evaluation (RQ4)"></a><strong>5.5 Usefulness Evaluation (RQ4)</strong></h3><p>为了评估 <strong>ClDiff</strong> 的实用性，研究者进行了一项涉及 10 名参与者的人体实验，帮助参与者理解 10 次提交的代码变化（完成 10 个任务）。实验对 <strong>ClDiff</strong> 和 <strong>GumTree</strong> 的使用进行了对比，以下是关键结果：</p>
+<p><strong>实验设计</strong>：</p>
+<ol>
+<li>参与者被随机分为两组：<ul>
+<li>第一组：前五个任务使用 <strong>ClDiff</strong>，后五个任务使用 <strong>GumTree</strong>。</li>
+<li>第二组：顺序相反。</li>
+</ul>
+</li>
+<li>每个参与者需回答每个任务中的问题，写下其对代码变化的总结，并记录完成任务的时间。</li>
+<li>任务结束后填写包含四个问题的问卷：<ul>
+<li><strong>Q1</strong>: <strong>ClDiff</strong> 的表现如何？(选项：好、中立、不好)</li>
+<li><strong>Q2</strong>: <strong>GumTree</strong> 的表现如何？(选项：好、中立、不好)</li>
+<li><strong>Q3</strong>: <strong>ClDiff</strong> 和 <strong>GumTree</strong> 哪个更有帮助？(选项：ClDiff、GumTree、无差异)</li>
+<li><strong>Q4</strong>: <strong>ClDiff</strong> 的代码差异和链接是否有帮助？(选项：两者都有、仅代码差异、仅链接、两者都没有)</li>
+</ul>
+</li>
+</ol>
+<p><strong>结果分析</strong>：</p>
+<ol>
+<li><strong>评分与时间</strong>：<ul>
+<li>评分：总分满分为 4（回答问题和总结各占 2 分）。<strong>ClDiff</strong> 的总分为 <strong>34.0</strong>，显著高于 <strong>GumTree</strong> 的 <strong>29.6</strong>。</li>
+<li>时间：完成 10 个任务的平均时间，<strong>ClDiff</strong> 为 <strong>1,539 秒</strong>，<strong>GumTree</strong> 为 <strong>1,865 秒</strong>。但时间差异无统计显著性。</li>
+<li>具体表现：<ul>
+<li>4 个任务中 <strong>ClDiff</strong> 用时更多但评分更高。</li>
+<li>2 个任务中 <strong>ClDiff</strong> 用时更少但评分更低。</li>
+<li>4 个任务中 <strong>ClDiff</strong> 用时更少且评分更高。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>问卷结果</strong>（表 6）：<ul>
+<li><strong>Q1</strong>：所有参与者都认为 <strong>ClDiff</strong> 表现良好。</li>
+<li><strong>Q3</strong>：大多数参与者认为 <strong>ClDiff</strong> 比 <strong>GumTree</strong> 更有帮助。</li>
+<li><strong>Q4</strong>：7 名参与者认为 <strong>简明代码差异</strong> 有帮助，8 名认为 <strong>链接</strong> 有帮助。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong>：</p>
+<p>根据实验结果（图 7 和表 6），可以明确回答 <strong>RQ4</strong>：</p>
+<ul>
+<li><strong>ClDiff</strong> 在理解代码变化方面对所有参与者都更有用。</li>
+<li>简明代码差异和关联链接对大多数参与者都很有帮助。</li>
+</ul>
+<p><img src="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/image-20241202103211267.png" alt="image-20241202103211267"></p>
+<h3 id="5-6-Discussion"><a href="#5-6-Discussion" class="headerlink" title="5.6 Discussion"></a><strong>5.6 Discussion</strong></h3><p><strong>1. 威胁因素（Threats）：</strong></p>
+<ul>
+<li><strong>样本规模</strong>：实验的准确性分析仅使用了 120 次提交，规模不够大。由于手动分析需要理解映射、编辑脚本、AST 对及实际代码变更，非常耗时，因此参考文献[24]的研究方法，选取了 12 个不同项目的提交作为代表性代码变化。</li>
+<li><strong>参与者背景</strong>：人体实验的参与者是 10 名拥有至少 3 年编程经验的研究生，而非工业领域的开发者。未来需要进一步在人群中评估 <strong>ClDiff</strong> 的实用性。</li>
+</ul>
+<p><strong>2. 限制（Limitations）：</strong></p>
+<ul>
+<li><strong>链接建立的启发式特性</strong>：特别是在 <strong>Def-Use</strong> 链接中（见 5.2 节），可能会影响链接的准确性。计划通过数据流分析来提升链接准确性。</li>
+<li><strong>有限的链接种类</strong>：目前仅支持 5 种链接，计划分析每种链接的实际效用，扩展现有链接能力，并支持更多种类以实现更紧凑且有用的链接集合。</li>
+</ul>
+<p><strong>3. 应用（Applications）：</strong></p>
+<ul>
+<li><strong>逻辑耦合检测</strong>：通过分析项目的演化历史并将代码差异串联，可以在更细粒度上检测逻辑耦合。</li>
+<li><strong>提交分类</strong>：利用每次提交的代码差异类型统计特征，可通过机器学习技术将提交分类为修复错误、重构或升级。</li>
+<li><strong>语义变化分析</strong>：进一步为生成的代码差异附加语义理解，可用于表征或量化安全补丁或兼容性分析中的语义变化。</li>
+<li><strong>性能回归分析</strong>：结合性能分析技术，<strong>ClDiff</strong> 可用于分析性能回归并定位其根本原因。</li>
+</ul>
+<p><strong>总结</strong>：尽管存在一定的威胁和限制，<strong>ClDiff</strong> 在代码差异分析和理解中展现了广泛的潜在应用价值，特别是在逻辑耦合、提交分类、语义分析和性能回归方面。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/">http://example.com/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/11/30/Drowzee-Metamorphic-Testing-for-Fact-Conflicting-Hallucination-Detection-in-Large-Language-Models/" title="Drowzee Metamorphic Testing for Fact-Conflicting Hallucination Detection in Large Language Models"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Drowzee Metamorphic Testing for Fact-Conflicting Hallucination Detection in Large Language Models</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">110</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ClDiff-Generating-Concise-Linked-Code-Differences"><span class="toc-number">1.</span> <span class="toc-text">ClDiff: Generating Concise Linked Code Differences</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ABSTRACT"><span class="toc-number">1.1.</span> <span class="toc-text">ABSTRACT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.2.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PRELIMINARIES"><span class="toc-number">1.3.</span> <span class="toc-text">PRELIMINARIES</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MOTIVATION-AND-OVERVIEW"><span class="toc-number">1.4.</span> <span class="toc-text">MOTIVATION AND OVERVIEW</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Motivation-Example"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 Motivation Example</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Approach-Overview"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 Approach Overview</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#METHODOLOGY"><span class="toc-number">1.5.</span> <span class="toc-text">METHODOLOGY</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Pre-Processing"><span class="toc-number">1.5.1.</span> <span class="toc-text">4.1 Pre-Processing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Generating-Concise-Code-Differences"><span class="toc-number">1.5.2.</span> <span class="toc-text">4.2 Generating Concise Code Differences</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-Linking-Code-Differences"><span class="toc-number">1.5.3.</span> <span class="toc-text">4.3 Linking Code Differences</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IMPLEMENTATION-AND-EVALUATION"><span class="toc-number">1.6.</span> <span class="toc-text">IMPLEMENTATION AND EVALUATION</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-Evaluation-Setup"><span class="toc-number">1.6.1.</span> <span class="toc-text">5.1 Evaluation Setup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-Accuracy-Evaluation-RQ1"><span class="toc-number">1.6.2.</span> <span class="toc-text">5.2 Accuracy Evaluation (RQ1)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-Conciseness-Evaluation-RQ2"><span class="toc-number">1.6.3.</span> <span class="toc-text">5.3 Conciseness Evaluation (RQ2)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-Performance-Evaluation-RQ3"><span class="toc-number">1.6.4.</span> <span class="toc-text">5.4 Performance Evaluation (RQ3)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-Usefulness-Evaluation-RQ4"><span class="toc-number">1.6.5.</span> <span class="toc-text">5.5 Usefulness Evaluation (RQ4)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-6-Discussion"><span class="toc-number">1.6.6.</span> <span class="toc-text">5.6 Discussion</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/" title="ClDiff: Generating Concise Linked Code Differences">ClDiff: Generating Concise Linked Code Differences</a><time datetime="2024-12-02T02:37:55.000Z" title="发表于 2024-12-02 10:37:55">2024-12-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/30/Drowzee-Metamorphic-Testing-for-Fact-Conflicting-Hallucination-Detection-in-Large-Language-Models/" title="Drowzee Metamorphic Testing for Fact-Conflicting Hallucination Detection in Large Language Models">Drowzee Metamorphic Testing for Fact-Conflicting Hallucination Detection in Large Language Models</a><time datetime="2024-11-30T08:49:19.000Z" title="发表于 2024-11-30 16:49:19">2024-11-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/29/Vision-Identifying-Affected-Library-Versions-for-Open-Source-Software-Vulnerabilities/" title="Vision: Identifying Affected Library Versions for Open Source Software Vulnerabilities">Vision: Identifying Affected Library Versions for Open Source Software Vulnerabilities</a><time datetime="2024-11-29T12:34:04.000Z" title="发表于 2024-11-29 20:34:04">2024-11-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/24/Validating-LLM-Generated-Programs-with-Metamorphic-Prompt-Testing/" title="Validating LLM-Generated Programs with Metamorphic Prompt Testing">Validating LLM-Generated Programs with Metamorphic Prompt Testing</a><time datetime="2024-11-24T12:19:15.000Z" title="发表于 2024-11-24 20:19:15">2024-11-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/22/MASTERKEY-Automated-Jailbreaking-of-Large-Language-Model-Chatbots/" title="MASTERKEY: Automated Jailbreaking of Large Language Model Chatbots">MASTERKEY: Automated Jailbreaking of Large Language Model Chatbots</a><time datetime="2024-11-22T13:32:36.000Z" title="发表于 2024-11-22 21:32:36">2024-11-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
