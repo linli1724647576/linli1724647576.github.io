@@ -1,0 +1,1170 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent InputsAbstract空间数据库管理系统（SDBMSs）旨在存储、操作和检索空间数据。SDBMSs 被广泛应用于现代各类应用中，例如地理信息系统、计算机辅助设计工具和基于位置的服务。然而，SDBMSs 中存在逻辑错误可能导致错误的结果，极大地削弱这些应用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs">
+<meta property="og:url" content="http://example.com/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent InputsAbstract空间数据库管理系统（SDBMSs）旨在存储、操作和检索空间数据。SDBMSs 被广泛应用于现代各类应用中，例如地理信息系统、计算机辅助设计工具和基于位置的服务。然而，SDBMSs 中存在逻辑错误可能导致错误的结果，极大地削弱这些应用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-12-15T08:36:36.000Z">
+<meta property="article:modified_time" content="2024-12-15T08:37:36.371Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-15 16:37:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">111</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-15T08:36:36.000Z" title="发表于 2024-12-15 16:36:36">2024-12-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-15T08:37:36.371Z" title="更新于 2024-12-15 16:37:36">2024-12-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs"><a href="#Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs" class="headerlink" title="Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs"></a>Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>空间数据库管理系统（SDBMSs）旨在存储、操作和检索<strong>空间数据</strong>。SDBMSs 被广泛应用于现代各类应用中，例如地理信息系统、计算机辅助设计工具和基于位置的服务。然而，SDBMSs 中存在逻辑错误可能导致错误的结果，极大地削弱这些应用的可靠性。在 SDBMSs 中检测逻辑错误非常具有挑战性，因为缺乏用于识别错误结果的真实基准。在本文中，我们提出了一种自动<strong>几何感知生成器</strong>，用于为 SDBMSs 生成高质量的 SQL 语句，并引入了一个新的概念<strong>仿射等价输入 (AEI)</strong> 来验证 SDBMSs 的结果。我们将这些概念实现为一个名为 <strong>Spatter (Spatial DBMSs Tester)</strong> 的工具，用于检测四种流行 SDBMSs 中的逻辑错误：PostGIS、DuckDB Spatial、MySQL 和 SQL Server。我们的测试活动检测到了 34 个之前未知且独特的错误，其中已有 30 个得到确认，18 个已被修复。我们的测试工作得到了开发人员的高度赞赏。实验结果表明，<strong>几何感知生成器</strong>在检测独特错误方面远远优于简单的随机形状生成器，<strong>AEI</strong> 能够识别出 14 个被之前方法忽略的 SDBMSs 逻辑错误。</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h2><p><font color="red">Background</font></p>
+<p><strong>SDBMS的定义和功能</strong></p>
+<ul>
+<li>空间数据库管理系统（SDBMSs）旨在存储、操作和检索<strong>空间数据</strong>，这些数据描述了坐标系统下的对象和位置。</li>
+</ul>
+<p><strong>SDBMS的应用场景</strong></p>
+<ul>
+<li>地理信息系统（GIS）</li>
+<li>计算机辅助设计（CAD）</li>
+<li>基于位置的服务（LBS）</li>
+<li>科学模拟</li>
+</ul>
+<p><strong>SDBMS的实现形式</strong></p>
+<ul>
+<li>作为广泛使用的关系型数据库的空间扩展或内置功能：<ul>
+<li><strong>PostGIS</strong>：PostgreSQL 的空间扩展。</li>
+<li><strong>MySQL</strong>：支持内置的空间功能。</li>
+</ul>
+</li>
+</ul>
+<p><strong>SDBMS可靠性问题</strong></p>
+<ul>
+<li>尽管 SDBMSs 很重要，但其<strong>可靠性</strong>没有受到足够重视。</li>
+</ul>
+<p><strong>现有方法的局限性</strong></p>
+<ul>
+<li>一般用途的<strong>fuzzers</strong> 已用于检测导致崩溃的输入（即<strong>崩溃错误</strong>），但未能检测<strong>逻辑错误</strong>。</li>
+<li><strong>崩溃错误</strong>：导致系统进程终止，容易被发现。</li>
+<li><strong>逻辑错误</strong>：导致计算结果错误，但不会中断程序运行，往往被开发人员和用户忽视。</li>
+</ul>
+<p><font color="red">Motivating example</font></p>
+<p><strong>问题描述</strong></p>
+<ul>
+<li>在 <strong>PostGIS</strong> 中，插入了一条线段和一个点，并查询线段是否覆盖该点。</li>
+<li>查询使用的 SQL 语句见 <strong>Listing 1</strong> 和 <strong>Listing 2</strong>，其中 <code>ST_Covers</code> 用于判断覆盖关系。</li>
+</ul>
+<p><strong>实际情况</strong></p>
+<ul>
+<li>在图 1(a) 中，线段和点的关系清晰显示：线段确实覆盖了该点，因此正确的结果应该是 <strong>1</strong>。</li>
+</ul>
+<p><strong>PostGIS 返回错误结果</strong></p>
+<ul>
+<li>PostGIS 返回了 <strong>0</strong>，即表示线段没有覆盖点，这与实际情况不符，揭示了一个<strong>逻辑错误</strong>。</li>
+</ul>
+<p><strong>仿射等价示例</strong></p>
+<ul>
+<li>在 <strong>Listing 2</strong> 中，几何体经过仿射变换（图 1(b)），但保持了与原始几何体等价的覆盖关系。</li>
+<li>这次查询返回了正确的结果 <strong>1</strong>，说明仿射变换下可以检测出逻辑错误。</li>
+</ul>
+<p><strong>示例意义</strong></p>
+<ul>
+<li>通过这一示例揭示了 PostGIS 在特定情况下的<strong>逻辑错误</strong>，强调了仿射等价输入（Affine Equivalent Inputs, AEI）在检测此类错误中的有效性。</li>
+</ul>
+<p><strong>精度问题</strong>导致错误：</p>
+<ul>
+<li>在 Listing 1 中，点的坐标计算过程中出现<strong>顶点归一化（即位移到原点）</strong>时的精度损失。</li>
+<li>Listing 2 中，由于点正好位于原点，避免了位移计算，未触发此错误。</li>
+</ul>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215152148381.png" alt="image-20241215152148381"></p>
+<p><font color="green">没有解释清楚是怎么进行变换的</font></p>
+<p><font color="red">Existing or potential approach</font></p>
+<p><strong>自动检测 SDBMS 逻辑错误的挑战</strong></p>
+<ul>
+<li>过去主要依赖<strong>用户报告</strong>来发现逻辑错误，缺乏自动化测试策略。</li>
+<li>核心挑战：<strong>缺乏结果的真实基准</strong>，难以验证输出是否正确。</li>
+</ul>
+<p><strong>现有方法的局限性</strong></p>
+<ul>
+<li><strong>差分测试</strong>：<ul>
+<li>比较多个系统的查询输出结果，推断正确结果。</li>
+<li>局限性：<ul>
+<li>空间相关功能通常只在单一 SDBMS 中实现，无法应用差分测试。</li>
+<li><strong>共享第三方库</strong>可能导致多个系统产生一致但错误的结果，导致错误被忽略。</li>
+<li><strong>标准化限制</strong>：尽管 OGC 标准存在，但 SDBMS 实现细节不同，导致输出结果存在预期的不一致性。</li>
+</ul>
+</li>
+<li>示例：<code>ST_Covers</code> 函数仅在 <strong>PostGIS</strong> 和 <strong>DuckDB Spatial</strong> 中实现，无法使用差分测试检测。</li>
+</ul>
+</li>
+<li><strong>三值逻辑分区（TLP）</strong>：<ul>
+<li>通过将原始查询分割成三个子查询，并验证其结果之和是否等于原查询的结果。</li>
+<li>局限性：<ul>
+<li>对于空间相关功能，TLP 无法检测到逻辑错误，因为<strong>原始查询和分区查询的结果均为错误</strong>。</li>
+</ul>
+</li>
+<li>示例：Listing 1 中的逻辑错误无法被 TLP 检测。</li>
+</ul>
+</li>
+</ul>
+<p><strong>必要性</strong></p>
+<ul>
+<li>现有自动化测试技术无法有效应用于 SDBMS，特别是空间相关功能。</li>
+<li>需要一种<strong>面向 SDBMS 的新方法</strong>，用于生成测试用例和期望结果，从而自动检测逻辑错误。</li>
+</ul>
+<p><font color="green">这个分类不是很make sense，TLP 只是 metamorphic testing 的一种</font></p>
+<p><font color="red">Key insight</font></p>
+<p><strong>提出方法</strong></p>
+<ul>
+<li>提出一种名为 <strong>Affine Equivalent Inputs (AEI)</strong> 的方法，用于为 SDBMS 提供预期结果。</li>
+</ul>
+<p><strong>核心洞察</strong></p>
+<ul>
+<li>两个几何体如果通过<strong>仿射变换</strong>（例如旋转、缩放、平移）保持一致，则它们的<strong>拓扑关系</strong>（如相交、覆盖、不相交）也应保持不变。</li>
+</ul>
+<p><strong>检测逻辑错误</strong></p>
+<ul>
+<li>若 SDBMS 对两组<strong>仿射等价几何体</strong>返回的拓扑关系不一致，则可以检测出一个<strong>逻辑错误</strong>。</li>
+</ul>
+<p><strong>仿射等价定义</strong></p>
+<ul>
+<li>两个几何体在<strong>仿射变换</strong>下可以相互转换，则称它们为<strong>仿射等价</strong>。</li>
+</ul>
+<p><font color="red">Evaluation and contributions</font></p>
+<p><strong>工具设计</strong></p>
+<ul>
+<li>基于 AEI，开发了名为 <strong>Spatter</strong> 的自动化测试工具，用于检测 SDBMSs 的逻辑错误。</li>
+<li>Spatter 包括：<ul>
+<li><strong>几何感知生成器</strong>：生成高质量 SQL 语句。</li>
+<li>使用 AEI 验证 SDBMSs 的查询结果。</li>
+</ul>
+</li>
+</ul>
+<p><strong>测试目标与效果</strong></p>
+<ul>
+<li>选取了 <strong>4 个广泛使用的 SDBMSs</strong> 进行测试：PostGIS、MySQL、DuckDB Spatial 和 SQL Server。</li>
+<li>主要成果：<ul>
+<li>检测到 <strong>34 个</strong> 之前未知且独特的错误。</li>
+<li>其中 <strong>30 个</strong> 已被确认，18 个已修复，<strong>20 个属于逻辑错误</strong>。</li>
+<li><strong>AEI</strong> 识别了 <strong>14 个</strong> 被现有方法忽略的逻辑错误。</li>
+</ul>
+</li>
+</ul>
+<p><strong>工具评价</strong></p>
+<ul>
+<li>Spatter 显著优于<strong>基线策略</strong>（如随机形状生成器）在检测独特错误方面的性能。</li>
+<li>得到了 SDBMS 开发者的<strong>积极反馈</strong>。</li>
+</ul>
+<p><strong>主要贡献</strong></p>
+<ul>
+<li>提出了 <strong>Affine Equivalent Inputs (AEI)</strong> 方法，用于自动验证 SDBMSs 结果。</li>
+<li>设计并实现了自动化测试工具 <strong>Spatter</strong>。</li>
+<li>在四个流行 SDBMSs 中检测出 <strong>34 个</strong> 之前未知的错误。</li>
+<li>通过评估证明 <strong>Spatter</strong> 优于现有测试方法。</li>
+</ul>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a><strong>Background</strong></h2><p>在本节中，我们将提供关于几何类型、拓扑关系查询和仿射变换的重要背景信息。</p>
+<h3 id="2-1-Geometry-Types"><a href="#2-1-Geometry-Types" class="headerlink" title="2.1 Geometry Types"></a><strong>2.1 Geometry Types</strong></h3><p><strong>几何类型的重要性</strong></p>
+<ul>
+<li>SDBMS 提供的<strong>几何类型</strong>被广泛应用于实际数据集，并支持多种操作功能。</li>
+<li>这些几何类型遵循 <strong>OGC 标准</strong>（Open Geospatial Consortium）。</li>
+</ul>
+<p><strong>基本几何类型</strong>（左侧示例）</p>
+<ul>
+<li><strong>POINT</strong>：维度为 0。</li>
+<li><strong>LINESTRING</strong>：维度为 1。</li>
+<li><strong>POLYGON</strong>：维度为 2。</li>
+</ul>
+<p><strong>扩展几何类型</strong></p>
+<ul>
+<li><strong>MULTI 几何</strong>：由相同基本类型的多个元素组成，例如 MULTIPOINT、MULTILINESTRING 和 MULTIPOLYGON。</li>
+<li><strong>MIXED 几何</strong>：混合多种不同的几何类型，例如 <strong>GEOMETRYCOLLECTION</strong>。</li>
+</ul>
+<p><strong>总结</strong></p>
+<ul>
+<li>基本几何类型和扩展类型（MULTI 和 MIXED）是 SDBMS 支持的重要数据结构，图 2 展示了这些类型的示例。</li>
+</ul>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215153048785.png" alt="image-20241215153048785"></p>
+<h3 id="2-2-Topological-Relationship-Queries"><a href="#2-2-Topological-Relationship-Queries" class="headerlink" title="2.2 Topological Relationship Queries"></a><strong>2.2 Topological Relationship Queries</strong></h3><ol>
+<li><p><strong>拓扑关系的重要性</strong></p>
+<ul>
+<li>拓扑关系描述了空间对象之间的相对位置，是 SDBMS 中空间查询和连接操作的核心功能。</li>
+<li>确保拓扑关系查询的正确性对于 SDBMS 至关重要。</li>
+</ul>
+</li>
+<li><p><strong>拓扑关系的分类</strong></p>
+<ul>
+<li><p><strong>正式拓扑关系</strong>：</p>
+<ul>
+<li><p>基于 <strong>维度扩展的 9 交模型 (DE-9IM)</strong> 定义。</p>
+</li>
+<li><p>将几何体抽象为<strong>单元复合体</strong>（cell complexes），通过单元的边界、内部和外部计算关系。</p>
+</li>
+<li><p>使用 3×3 矩阵来表示两几何体之间的关系，矩阵中的值通过<strong>维度计算器 (D)</strong> 得出。</p>
+</li>
+<li><p><strong>示例</strong>：PostGIS 中的 <code>ST_Relate(g1, g2)</code> 函数基于 DE-9IM 实现，输出长度为 9 的字符串，如 <code>FF21F1102</code>。</p>
+</li>
+<li><blockquote>
+<ol>
+<li><h3 id="正式拓扑关系-Formal-Topological-Relationships"><a href="#正式拓扑关系-Formal-Topological-Relationships" class="headerlink" title="正式拓扑关系 (Formal Topological Relationships)"></a><strong>正式拓扑关系 (Formal Topological Relationships)</strong></h3></li>
+</ol>
+<ul>
+<li>基于 <strong>DE-9IM (Dimensionally Extended 9-Intersection Model)</strong> 定义，通过计算两个几何体之间的 <strong>边界</strong>、<strong>内部</strong> 和 <strong>外部</strong> 的交集，形成一个 <strong>3×3 矩阵</strong>。</li>
+<li>结果以长度为 9 的字符串表示，每个字符表示交集的维度或状态：<ul>
+<li><code>F</code>：空集</li>
+<li><code>0</code>：点</li>
+<li><code>1</code>：线</li>
+<li><code>2</code>：面</li>
+</ul>
+</li>
+</ul>
+<h4 id="示例：ST-Relate"><a href="#示例：ST-Relate" class="headerlink" title="示例：ST_Relate"></a><strong>示例：ST_Relate</strong></h4><p>假设有两个几何体：</p>
+<ul>
+<li>**几何体1 (g1)**：一条线段。</li>
+<li>**几何体2 (g2)**：一个多边形。</li>
+</ul>
+<p>计算这两个几何体的拓扑关系：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT ST_Relate(</span><br><span class="line">    ST_GeomFromText(&#x27;LINESTRING(0 0, 2 2)&#x27;),</span><br><span class="line">    ST_GeomFromText(&#x27;POLYGON((1 1, 3 1, 3 3, 1 3, 1 1))&#x27;)</span><br><span class="line">);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>解释</strong>：<code>ST_Relate</code> 返回结果类似于 **”FF21F1102”**。</p>
+<ul>
+<li>代表：线段与多边形的内部、边界、外部的交集情况。</li>
+<li>例如，<code>2</code> 表示交集是一个面，<code>1</code> 表示交集是一条线，<code>F</code> 表示没有交集。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p><strong>命名拓扑关系</strong>：</p>
+<ul>
+<li><p>从正式拓扑关系派生而来，更易于用户理解。</p>
+</li>
+<li><p>常见的命名拓扑关系包括 <code>ST_Disjoint</code> 和 <code>ST_Intersects</code>。</p>
+</li>
+<li><p>SDBMS 还提供特定功能，如 PostGIS 和 DuckDB Spatial 中的 <code>ST_Covers</code>。</p>
+</li>
+<li><blockquote>
+<h3 id="2-命名拓扑关系-Named-Topological-Relationships"><a href="#2-命名拓扑关系-Named-Topological-Relationships" class="headerlink" title="2. 命名拓扑关系 (Named Topological Relationships)"></a>2. <strong>命名拓扑关系 (Named Topological Relationships)</strong></h3><ul>
+<li>从正式拓扑关系派生而来，具有更直观、易于理解的名称。</li>
+<li>每个命名关系函数通过某种条件来判断两个几何体之间的拓扑关系，返回 <strong>TRUE</strong> 或 <strong>FALSE</strong>。</li>
+</ul>
+<h4 id="示例：ST-Intersects-和-ST-Covers"><a href="#示例：ST-Intersects-和-ST-Covers" class="headerlink" title="示例：ST_Intersects 和 ST_Covers"></a><strong>示例：ST_Intersects 和 ST_Covers</strong></h4><ol>
+<li><strong>ST_Intersects</strong>：判断两个几何体是否相交。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SELECT ST_Intersects(</span><br><span class="line">    ST_GeomFromText(&#x27;LINESTRING(0 0, 2 2)&#x27;),</span><br><span class="line">    ST_GeomFromText(&#x27;POLYGON((1 1, 3 1, 3 3, 1 3, 1 1))&#x27;)</span><br><span class="line">);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：<code>TRUE</code></p>
+<p><strong>解释</strong>：线段与多边形有交集，返回 <code>TRUE</code>。</p>
+<ol>
+<li><strong>ST_Covers</strong>：判断一个几何体是否完全覆盖另一个几何体。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT ST_Covers(</span><br><span class="line">    ST_GeomFromText(&#x27;POLYGON((0 0, 4 0, 4 4, 0 4, 0 0))&#x27;),</span><br><span class="line">    ST_GeomFromText(&#x27;POINT(2 2)&#x27;)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：<code>TRUE</code></p>
+<p><strong>解释</strong>：多边形完全包含点 <code>(2 2)</code>，返回 <code>TRUE</code>。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>DE-9IM 模型核心概念</strong></p>
+<ul>
+<li>单元复合体由不同维度的单元（cells）构成：<ul>
+<li><strong>0-单元</strong>：点。</li>
+<li><strong>1-单元</strong>：线段。</li>
+<li><strong>2-单元</strong>：多边形。</li>
+</ul>
+</li>
+<li>边界、内部 和 外部 定义：<ul>
+<li>单元的边界为其低维元素，内部为闭包减去边界，外部为全局集合减去闭包。</li>
+</ul>
+</li>
+<li><strong>示例</strong>：图 3 展示了两几何体的拓扑关系，通过其边界和内部的交集计算得出矩阵值。</li>
+</ul>
+</li>
+<li><p><strong>问题与挑战</strong></p>
+<ul>
+<li>拓扑关系查询在实际应用中被广泛使用，但当前缺乏通用的测试方法来检测逻辑错误。</li>
+<li>现有方法未能覆盖这些查询的复杂性和正确性验证，导致潜在错误被忽略。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong>：拓扑关系分为<strong>正式拓扑关系</strong>（基于 DE-9IM）和<strong>命名拓扑关系</strong>，两者广泛应用于 SDBMS 中。然而，当前尚无自动化方法来测试和验证这些拓扑关系查询的正确性，亟需解决该问题。</p>
+<ul>
+<li>正式拓扑关系：通过 DE-9IM 矩阵提供详细的几何交集信息，适合复杂分析。<ul>
+<li><strong>示例</strong>：<code>ST_Relate</code>，返回详细的字符串表示。</li>
+</ul>
+</li>
+<li>命名拓扑关系：提供直观易懂的判断结果，适合用户查询和理解。<ul>
+<li><strong>示例</strong>：<code>ST_Intersects</code>、<code>ST_Covers</code>，返回布尔值 (<code>TRUE</code> 或 <code>FALSE</code>)。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215153815124.png" alt="image-20241215153815124"></p>
+<h3 id="2-3-Affine-Transformations"><a href="#2-3-Affine-Transformations" class="headerlink" title="2.3 Affine Transformations"></a><strong>2.3 Affine Transformations</strong></h3><p><strong>仿射变换的概念</strong></p>
+<ul>
+<li>仿射变换是一种数学和计算机图形学中的基本概念，能够保持<strong>欧几里得空间</strong>内的<strong>拓扑关系</strong>。</li>
+<li>仿射变换包括：<strong>旋转</strong>、<strong>平移</strong>、<strong>缩放</strong> 和 <strong>错切</strong>。</li>
+<li>图4 通过透明度不同的棋盘图案直观展示了变换前后的几何体。</li>
+</ul>
+<p><strong>仿射变换的定义</strong></p>
+<ul>
+<li><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215154021329.png" alt="image-20241215154021329"></li>
+</ul>
+<p><strong>增广矩阵表示</strong></p>
+<ul>
+<li><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215154052902.png" alt="image-20241215154052902"></li>
+</ul>
+<p><strong>仿射变换的性质</strong></p>
+<ul>
+<li>仿射变换在保持几何体的拓扑关系方面具有重要作用，尤其在二维和三维欧几里得空间中应用广泛。</li>
+</ul>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215154123859.png" alt="image-20241215154123859"></p>
+<p>图4展示了<strong>仿射变换</strong>的四种类型：旋转（Rotate）、平移（Translate）、缩放（Scale）和错切（Shear）。每种变换通过<strong>增广矩阵</strong> MMM 表示，并通过示例的棋盘图案直观展示了变换效果。</p>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215154245458.png" alt="image-20241215154245458"></p>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215154255886.png" alt="image-20241215154255886"></p>
+<h2 id="Affine-Equivalent-Inputs"><a href="#Affine-Equivalent-Inputs" class="headerlink" title="Affine Equivalent Inputs"></a><strong>Affine Equivalent Inputs</strong></h2><p><strong>直觉的证明</strong></p>
+<ul>
+<li>提出<strong>命题 3.3</strong>：仿射等价几何对的拓扑关系与其原几何对相等。</li>
+<li>基于<strong>正式拓扑关系</strong>的定义（DE-9IM），证明拓扑关系在<strong>仿射变换</strong>下保持不变。</li>
+</ul>
+<p><strong>关键定义</strong></p>
+<ul>
+<li><strong>仿射变换（Affine Transformation）</strong>：<br>对单元（cells）的顶点进行变换，保留拓扑特性。</li>
+<li><strong>仿射等价几何对（Affine Equivalent Geometry Pairs）</strong>：<br>如果两组几何体可以通过相同的仿射变换 A 相互映射，则它们是仿射等价的。</li>
+<li><strong>仿射等价输入（Affine Equivalent Inputs, AEI）</strong>：<br>一个三元组 I&#x3D;(α,β,Q)，其中 α和 β 是两几何体，Q是拓扑关系查询。如果两个输入满足几何对仿射等价且查询相等，则称其为 AEI。</li>
+</ul>
+<p><strong>命题 3.3 证明</strong></p>
+<ul>
+<li>非空交集情况：<ul>
+<li>证明 ∂g1∩∂g2 和 ∂g1′∩∂g2′在仿射变换下是一一对应的，且维度保持不变。</li>
+</ul>
+</li>
+<li>空交集情况：<ul>
+<li>通过<strong>反证法</strong>证明，如果原几何体交集为空，仿射变换后的几何体交集也必为空。</li>
+</ul>
+</li>
+</ul>
+<p><strong>AEI 的应用</strong></p>
+<ul>
+<li>根据命题 3.3，若向同一个 SDBMS 提供**仿射等价输入 (AEI)**，则拓扑关系查询的结果应相等。</li>
+<li>若结果不一致，则表明 SDBMS 存在逻辑错误。</li>
+</ul>
+<h2 id="Spatter"><a href="#Spatter" class="headerlink" title="Spatter"></a><strong>Spatter</strong></h2><p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215154717340.png" alt="image-20241215154717340"></p>
+<p><strong>工具简介</strong></p>
+<ul>
+<li><strong>Spatter</strong> 是一种自动化测试工具，将 <strong>AEI</strong> 和 <strong>几何感知生成器</strong> 相结合，用于检测 SDBMS 的逻辑错误。</li>
+</ul>
+<p><strong>核心组件</strong></p>
+<ul>
+<li>AEI（Affine Equivalent Inputs）：<ul>
+<li>构建两组仿射等价的几何体对，验证它们的拓扑关系是否一致。</li>
+</ul>
+</li>
+<li>几何感知生成器：<ul>
+<li>包括两种策略：<ul>
+<li><strong>随机形状策略</strong>：生成随机几何体。</li>
+<li><strong>导出策略</strong>：通过对已有几何体应用空间函数来生成新的几何体。</li>
+</ul>
+</li>
+<li>优势：在有限数量的几何体中生成多样化的拓扑关系，从而高效地支持 AEI 进行验证。</li>
+</ul>
+</li>
+</ul>
+<p><strong>Spatter 的工作流程</strong></p>
+<ul>
+<li>Step 1：<ul>
+<li>使用几何感知生成器生成包含 N 个几何体的数据库 <strong>SDB1</strong>，包括随机和导出策略。</li>
+</ul>
+</li>
+<li>Step 2：<ul>
+<li>将 SDB1 中的几何体<strong>规范化</strong>，得到等价表示，然后施加<strong>仿射变换</strong>，生成新的数据库 <strong>SDB2</strong>。</li>
+<li>仿射变换保证拓扑关系不变，规范化确保几何体在空间级别等价。</li>
+</ul>
+</li>
+<li>Step 3：<ul>
+<li>在 SDB1 和 SDB2 上运行同一查询，随机填充查询的占位符，比较返回的行数。</li>
+<li>若两者结果不一致，则检测到一个<strong>逻辑错误</strong>。</li>
+</ul>
+</li>
+</ul>
+<p><strong>工具的关键优势</strong></p>
+<ul>
+<li>通过 AEI 和几何感知生成器，Spatter 能高效生成和验证复杂的拓扑关系，自动检测 SDBMS 中的逻辑错误。</li>
+</ul>
+<h3 id="4-1-Geometry-Aware-Generator"><a href="#4-1-Geometry-Aware-Generator" class="headerlink" title="4.1 Geometry-Aware Generator"></a><strong>4.1 Geometry-Aware Generator</strong></h3><p><strong>几何感知生成器 (Geometry-Aware Generator)</strong></p>
+<p>几何感知生成器是 <strong>Spatter</strong> 的核心组件，用于高效生成几何体，以检测 SDBMS 中的逻辑错误。</p>
+<hr>
+<p><strong>问题与挑战</strong></p>
+<ul>
+<li>现有方法（如用户报告和单元测试）缺乏自动化的几何生成器。</li>
+<li><strong>随机形状策略</strong>虽然能生成语法上有效的几何体，但无法涵盖多样的<strong>拓扑关系</strong>，效率较低。</li>
+<li>解决方案：需要生成更多的拓扑关系，同时控制几何体数量，避免过高的时间开销。</li>
+</ul>
+<hr>
+<p><strong>两种几何生成策略</strong></p>
+<ol>
+<li><strong>随机形状策略（Random-Shape Strategy）</strong><ul>
+<li><strong>原理</strong>：随机选择一个几何类型，按其语法定义生成几何体。</li>
+<li>缺陷：<ul>
+<li>生成的几何体仅在<strong>语法层面</strong>有效，可能在<strong>语义层面</strong>无效（如自相交多边形）。</li>
+<li>无效几何会被 SDBMS 报错，Spatter 会忽略这些错误。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>导出策略（Derivative Strategy）</strong><ul>
+<li><strong>原理</strong>：基于现有几何体，使用 SDBMS 提供的<strong>编辑函数</strong>导出新几何体。</li>
+<li>过程：<ul>
+<li>随机选择 k 个现有几何体。</li>
+<li>使用编辑函数生成新的几何体。</li>
+<li>若函数不适用，生成一个<strong>EMPTY</strong> 几何体以处理失败情况。</li>
+</ul>
+</li>
+<li><strong>优势</strong>：能够有效生成多样化的<strong>拓扑关系</strong>。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>生成过程 (Generation Process)</strong></p>
+<ul>
+<li><strong>输入</strong>：指定几何体数量 N 和目标表数 m。</li>
+<li>步骤：<ol>
+<li>初始化 m 个空表（数据库 sdb）。</li>
+<li>使用<strong>随机形状策略</strong>生成初始几何体。</li>
+<li>逐次生成几何体，随机选择<strong>随机形状</strong>或<strong>导出策略</strong>插入到表中。</li>
+<li>返回包含生成几何体的数据库 sdb。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<p><strong>编辑函数分类</strong></p>
+<ul>
+<li>根据输入几何的维度分类：<ul>
+<li><strong>通用函数</strong>：适用于任意维度。</li>
+<li>维度特定函数：<ul>
+<li>线段类（Line-based）。</li>
+<li>多边形类（Polygon-based）。</li>
+<li>多维类（MULTI 和 MIXED 几何体）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215155209419.png" alt="image-20241215155209419"></p>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215155622542.png" alt="image-20241215155622542"></p>
+<h3 id="4-2-Affine-Transformation"><a href="#4-2-Affine-Transformation" class="headerlink" title="4.2 Affine Transformation"></a><strong>4.2 Affine Transformation</strong></h3><p><strong>仿射变换的实现</strong></p>
+<ul>
+<li><strong>目标</strong>：根据命题 3.3，仿射变换保持几何体的<strong>拓扑关系</strong>。</li>
+<li>方法：<ol>
+<li>输入几何体 g 和欧几里得空间维度 n。</li>
+<li>生成<strong>映射矩阵</strong> M，其中包括一个<strong>可逆矩阵</strong> A 和<strong>平移向量</strong> b。</li>
+<li>对几何体 g 的每个点 p，通过以下步骤执行仿射变换：<ul>
+<li>将点 p 转换为齐次向量。</li>
+<li>使用矩阵 M 左乘该向量。</li>
+<li>将结果向量转换回坐标点。</li>
+</ul>
+</li>
+<li>返回经过变换后的几何体 g′，即仿射等价几何体。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<p><strong>避免精度问题</strong></p>
+<ul>
+<li>问题：仿射变换中涉及浮点数运算，容易引入精度误差。<ul>
+<li>示例：理论上 0.1×0.2&#x3D;0.02，但计算机中结果可能是 0.02+4E−180.02 + 4E-180.02+4E−18。</li>
+<li>这种误差会导致逻辑错误（例如 PostGIS 的 Listing 1 中的精度问题）。</li>
+</ul>
+</li>
+<li>解决方案：<ul>
+<li>在仿射变换和空间数据生成中，避免使用浮点数。</li>
+<li>矩阵 A 和向量 b 采用<strong>随机整数</strong>生成，确保结果不受浮点数精度误差影响。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li>仿射变换通过可逆矩阵 A 和平移向量 b 构造仿射等价几何体，同时保持拓扑关系。</li>
+<li>为避免浮点数精度问题，仿射变换使用<strong>整数运算</strong>，确保测试结果的可靠性。</li>
+</ul>
+<h3 id="4-3-Canonicalization"><a href="#4-3-Canonicalization" class="headerlink" title="4.3 Canonicalization"></a><strong>4.3 Canonicalization</strong></h3><p><strong>Canonicalization（规范化）</strong></p>
+<ul>
+<li>概念：将几何体的表示转换为规范化表示。<ul>
+<li>规范化被视为构建仿射等价几何体的<strong>特殊情况</strong>，因为它应用了<strong>特殊矩阵 E</strong>（返回原几何体）。</li>
+<li>作用：<ul>
+<li>构建另一种用于测试的预期结果。</li>
+<li>为仿射变换（Algorithm 2）提供<strong>预处理方法</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>两种规范化级别</strong></p>
+<ol>
+<li><strong>元素级别（Element Level）</strong><ul>
+<li>适用于 <strong>MULTI 和 MIXED 几何体</strong>。</li>
+<li>过程：<ol>
+<li><strong>EMPTY 移除</strong>：删除几何体中的空元素。</li>
+<li><strong>同质化</strong>：将包含单一元素的 MULTI 几何体转换为基本类型，展平嵌套集合。</li>
+<li><strong>去重</strong>：删除重复元素（基于形状判断）。</li>
+<li><strong>重新排序</strong>：按维度对元素进行排序。</li>
+</ol>
+</li>
+<li>示例：<ul>
+<li>对一个 MULTILINESTRING 进行规范化：<ul>
+<li>移除 EMPTY，转换为 <code>LINESTRING</code>（单一元素）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>值级别（Value Level）</strong><ul>
+<li>适用于<strong>基本类型</strong>的几何体：POINT、LINESTRING 和 POLYGON。</li>
+<li>过程：<ol>
+<li><strong>连续去重</strong>：删除重复的连续点。</li>
+<li>重新排序：根据坐标值确定顺序：<ul>
+<li><strong>LINESTRING</strong>：比较端点坐标，按 x、y、z 顺序判断是否需要反转。</li>
+<li><strong>POLYGON</strong>：将所有闭合环转换为<strong>顺时针方向</strong>。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>示例：<ul>
+<li>对一个 LINESTRING进行规范化：<ul>
+<li>去除冗余点，重新排序坐标点，确保表示一致。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li><strong>元素级别规范化</strong>：处理 MULTI 和 MIXED 几何体，移除 EMPTY、同质化、去重并排序元素。</li>
+<li><strong>值级别规范化</strong>：处理基本类型几何体，通过去除冗余点和重新排序坐标，确保表示一致。</li>
+<li><strong>作用</strong>：提供规范化表示，支持高效的仿射变换与测试验证。</li>
+</ul>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215155854238.png" alt="image-20241215155854238"></p>
+<h3 id="4-4-Results-Validation"><a href="#4-4-Results-Validation" class="headerlink" title="4.4 Results Validation"></a><strong>4.4 Results Validation</strong></h3><p><strong>结果验证（Results Validation）</strong></p>
+<p>通过<strong>规范化</strong>和<strong>仿射变换</strong>，构建多组<strong>仿射等价输入（AEI）</strong>，用于验证 SDBMS 的结果一致性。</p>
+<hr>
+<p><strong>过程描述</strong></p>
+<ol>
+<li><strong>构建 AEI 数据库</strong>：<ul>
+<li>对空间数据库 SDB1的每个几何体 g，进行：<ul>
+<li><strong>规范化</strong>：生成几何体的规范化表示。</li>
+<li><strong>仿射变换</strong>：生成仿射等价几何体 g′。</li>
+</ul>
+</li>
+<li>构建新的数据库 SDB2，其中 g′存储于与 SDB1 相同的表名中。</li>
+</ul>
+</li>
+<li><strong>查询模板</strong>：<ul>
+<li>查询包含三个占位符：<ol>
+<li><strong>表名占位符</strong> <code>&lt;table1&gt;</code> 和 <code>&lt;table2&gt;</code>：随机选择 SDB1 中的两个有效表。</li>
+<li><strong>拓扑关系条件占位符</strong> <code>&lt;TopoRlt&gt;</code>：从 SDBMS 用户手册中选择有效的拓扑关系条件（如 <code>ST_Covers</code>）。</li>
+</ol>
+</li>
+<li>生成的查询用于从 SDB1 和 SDB2 检索结果。</li>
+</ul>
+</li>
+<li><strong>结果验证</strong>：<ul>
+<li>比较相同查询在 SDB1 和 SDB2 上返回的行数。</li>
+<li>若结果不一致，则表明测试的 SDBMS 存在<strong>逻辑错误</strong>。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>示例</strong></p>
+<ul>
+<li><strong>查询</strong>：假设 t1 和 t2 是 SDB1 中的两张表，拓扑关系函数为 <code>ST_Covers</code>。</li>
+<li><strong>功能</strong>：查询 <code>ST_Covers(t1.g, t2.g)</code> 检索 t1 中几何体是否覆盖 t2 中几何体的行数。</li>
+<li><strong>验证</strong>：若 SDB1 和 SDB2返回的行数不一致，则检测到一个潜在逻辑错误。</li>
+</ul>
+<p><strong>总结</strong></p>
+<p>通过 AEI 数据库（SDB1和 SDB2）和查询结果对比，验证 SDBMS 是否正确处理拓扑关系。结果不一致表明系统可能存在逻辑错误。</p>
+<h2 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a><strong>Evaluation</strong></h2><ul>
+<li>Q1 ： 对检测到的错误进行分类并总结，包含开发者反馈。</li>
+<li>Q2 ： 分析 AEI 发现的错误示例及诱因模式。</li>
+<li>Q3 ： 评估现有方法是否能发现 AEI 检测的逻辑错误。</li>
+<li>Q4 ：展示 Spatter 的测试效率。</li>
+</ul>
+<hr>
+<p><strong>测试的 SDBMSs</strong></p>
+<ul>
+<li>共测试了 4 个成熟且活跃维护的 SDBMS：<ol>
+<li>PostGIS：<ul>
+<li>受欢迎度高，在 DB-Engines 排名中名列前茅，为主要测试目标。</li>
+</ul>
+</li>
+<li>DuckDB Spatial：<ul>
+<li>DuckDB 的空间扩展版本，DuckDB 是流行的嵌入式 OLAP 系统。</li>
+</ul>
+</li>
+<li>MySQL：<ul>
+<li>流行的开源关系型数据库，测试其内置的空间功能。</li>
+</ul>
+</li>
+<li>SQL Server：<ul>
+<li>一个商业 SDBMS，但由于开发者反馈有限，测试未持续，且未考虑其他商业系统。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215160444021.png" alt="image-20241215160444021"></p>
+<h3 id="5-1-New-Bugs"><a href="#5-1-New-Bugs" class="headerlink" title="5.1 New Bugs"></a><strong>5.1 New Bugs</strong></h3><p><strong>方法概述</strong></p>
+<ul>
+<li><strong>Spatter</strong> 工具在为期四个月的测试活动中用于检测 SDBMS 中的逻辑错误。每次测试运行时间为 10 分钟至 1 小时，快速检测问题。</li>
+<li>问题报告流程：<ol>
+<li>自动和手动减少潜在问题。</li>
+<li>根据 SDBMS 文档验证问题是否违反拓扑关系函数定义。</li>
+<li>如果发现问题来自第三方库（如 GEOS），直接向相关社区报告。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<p><strong>错误分类</strong></p>
+<ul>
+<li><strong>修复的错误</strong>：开发者确认并通过修补程序修复的错误。</li>
+<li><strong>确认的错误</strong>：开发者已确认，但未修复的错误。</li>
+<li><strong>未确认的错误</strong>：识别的错误，等待开发者确认。</li>
+<li><strong>重复的错误</strong>：已确认与先前确认的错误原因相同的错误。</li>
+</ul>
+<hr>
+<p><strong>错误检测结果</strong></p>
+<ul>
+<li><strong>共检测到 34 个独特的未知错误</strong>，其中 30 个已被开发者确认或修复。</li>
+<li>错误类型：<ul>
+<li>20 个是逻辑错误，旨在通过 Spatter 查找。</li>
+<li>9 个 GEOS 的逻辑错误和 7 个 PostGIS 特定的逻辑错误。</li>
+<li>10 个崩溃错误，所有崩溃错误在一天内得到修复。</li>
+</ul>
+</li>
+<li>逻辑错误比崩溃错误更难修复，通常需要更复杂的根因定位和不影响其他场景的修复。</li>
+</ul>
+<hr>
+<p><strong>Spatter 的影响</strong></p>
+<ul>
+<li>开发者反馈：<ul>
+<li>PostGIS 开发者对 Spatter 的工作表示高度认可，强调其在检测逻辑错误方面的贡献。</li>
+<li>DuckDB Spatial 和 MySQL 的开发者也给予了积极反馈，并在短时间内修复了多个错误。</li>
+<li>总体而言，Spatter 对 SDBMS 错误检测的工作产生了积极的影响，并帮助开发者发现了新的问题。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-2-Illustrative-Examples"><a href="#5-2-Illustrative-Examples" class="headerlink" title="5.2 Illustrative Examples"></a><strong>5.2 Illustrative Examples</strong></h3><p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215160953258.png" alt="image-20241215160953258"></p>
+<p><strong>Listing 3: MySQL 缩放后错误的关系计算</strong></p>
+<ul>
+<li>问题描述：<ul>
+<li>几何体 @g1 和 @g2被用于测试函数 <code>ST_Crosses</code>。根据定义，<code>ST_Crosses</code> 的条件是两几何体相交且交集不等于任一输入几何体。</li>
+<li><strong>错误</strong>：在缩放坐标后，MySQL 错误地判断 @g1 和 @g2 相交，违反了上述定义。</li>
+<li><strong>错误原因</strong>：MySQL 逻辑在处理包含 <code>EMPTY</code> 元素的几何体时存在问题。</li>
+<li>检测难点：<ul>
+<li>由于 SDBMS 对 <code>ST_Crosses</code> 的实现差异大，难以通过差分测试发现这个错误。</li>
+</ul>
+</li>
+<li><strong>处理结果</strong>：问题已报告给 MySQL 社区。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>Listing 4: MySQL 交换坐标轴后错误的关系计算</strong></p>
+<ul>
+<li>问题描述：<ul>
+<li>几何体 @g1 和 @g2 被用于测试函数 ST_Overlaps。函数定义如下：<ul>
+<li>若 g1 和 g2 相交，且交集的维度与输入相同但不等于任一输入几何体，则返回 <code>1</code>；否则返回 <code>0</code>。</li>
+</ul>
+</li>
+<li>错误：<ul>
+<li>在此测试中，g1 的交集等于 g1，因此预期结果为 <code>0</code>，但 MySQL 返回了错误结果 <code>1</code>。</li>
+</ul>
+</li>
+<li>特殊性：<ul>
+<li>PostGIS 和 DuckDB Spatial 将 g2g判定为无效几何体（因其元素相交，导致自相交错误）。</li>
+</ul>
+</li>
+<li>检测难点：<ul>
+<li>不同 SDBMS 的数据设计差异会限制差分测试的有效性。</li>
+</ul>
+</li>
+<li><strong>处理结果</strong>：此错误已被确认为 MySQL 的逻辑错误。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>Listing 5: PostGIS 计算距离的 EMPTY 元素相关 Bug</strong></p>
+<ul>
+<li>问题描述：<ul>
+<li>测试函数ST_Distance，其定义为计算两个几何体 g1 和 g2的最小距离：<ul>
+<li>如果输入是 <code>MULTI</code> 几何体，则返回所有点对之间的最小距离。</li>
+</ul>
+</li>
+<li>错误：<ul>
+<li>对于 <code>MULTIPOINT</code> 几何体，预期结果为 <code>2</code>，但 PostGIS 错误地返回了 <code>3</code>。</li>
+</ul>
+</li>
+<li>错误原因：<ul>
+<li>递归逻辑存在问题，导致错误结果。</li>
+</ul>
+</li>
+<li>检测方式：<ul>
+<li>此 Bug 是通过<strong>规范化 (Canonicalization)</strong> 检测到的。</li>
+</ul>
+</li>
+<li><strong>处理结果</strong>：PostGIS 开发者已修复该问题。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li><strong>Listing 3 和 Listing 4 的问题</strong>：逻辑错误由几何函数的不一致实现或定义引起，且差分测试难以发现。</li>
+<li><strong>Listing 5 的问题</strong>：涉及 <code>EMPTY</code> 元素的处理问题，通过规范化成功发现。</li>
+<li><strong>影响</strong>：这些错误展示了在几何关系计算中，SDBMS 的实现细节和边界条件处理可能导致的逻辑问题。</li>
+</ul>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215161208602.png" alt="image-20241215161208602"></p>
+<p><strong>Listing 6: PostGIS 在 MIXED 几何体边界计算中的错误策略</strong></p>
+<ul>
+<li><strong>问题描述</strong>：<ul>
+<li>测试函数 ST_Within(g1, g2)，定义如下：<ul>
+<li>当且仅当 g1 的内部完全包含在 g2 的内部时，返回 <code>TRUE</code>。</li>
+</ul>
+</li>
+<li>在测试中：<ul>
+<li>g1 是 <code>POINT(0 0)</code>。</li>
+<li>g2 是一个 <code>GEOMETRYCOLLECTION</code>，包含 <code>POINT(0 0)</code> 和 <code>LINESTRING(0 0, 1 0)</code>。</li>
+<li>两个几何体的内部共享点 <code>POINT(0 0)</code>，因此 g1 应该在 g2 内，预期结果为 <code>TRUE</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>错误</strong>：PostGIS 错误地返回 <code>FALSE</code>，没有正确判断两几何体的关系。</li>
+<li><strong>错误原因</strong>：<ul>
+<li>PostGIS 使用了 GEOS 的 “last-one-wins” 策略：<ul>
+<li><code>GEOMETRYCOLLECTION</code> 的最后一个几何体（此处为 <code>LINESTRING</code>）的边界优先级较高。</li>
+<li>结果是 <code>POINT(0 0)</code> 被认为是边界的一部分，而不是 g2 的内部。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>检测方法</strong>：<ul>
+<li>此 Bug 可通过差分测试检测：PostGIS 和 MySQL 返回不同结果（PostGIS 错误，而 MySQL 正确）。</li>
+<li>但若与 DuckDB Spatial 对比，此 Bug 难以发现，因为两者都返回错误结果。</li>
+</ul>
+</li>
+<li><strong>开发者反馈</strong>：<ul>
+<li>开发者确认此问题是 GEOS 的上游 Bug，提出改用<strong>边界优先级语义（boundary-priority semantics）</strong>进行修复。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>Listing 7: PostGIS 在预处理几何体 (Prepared Geometry) 中遗漏了一对结果</strong></p>
+<ul>
+<li><strong>问题描述</strong>：<ul>
+<li>测试函数 ST_Contains(g1, g2)，定义如下：<ul>
+<li>当且仅当 g1 包含 g2，且 g2 的所有点都位于 g1 的内部，并且 g1 和 g2 的内部共享至少一个点时，返回 <code>TRUE</code>。</li>
+</ul>
+</li>
+<li>在测试中：<ul>
+<li>第三个几何体 <code>MULTIPOLYGON</code> 应包含第二个几何体 <code>MULTIPOINT</code>，但 PostGIS 错误地遗漏了 <code>(3,2)</code> 这一对 id 结果，只返回 <code>(3,1)</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>错误原因</strong>：<ul>
+<li>问题出在 GEOS 的 “prepared geometry” 组件，该组件用于加速拓扑关系函数的计算。</li>
+<li>“Prepared Geometry” 的逻辑与未优化的逻辑结果不一致，导致部分配对被遗漏。</li>
+</ul>
+</li>
+<li><strong>检测方法</strong>：<ul>
+<li>此 Bug 可通过差分测试检测：PostGIS 返回错误结果，而 MySQL 和 DuckDB Spatial 返回正确结果。</li>
+</ul>
+</li>
+<li><strong>开发者反馈</strong>：<ul>
+<li>PostGIS 开发者将此 Bug 归因于 GEOS 的上游问题，并反馈称这种不一致可能在 PostGIS 中更为普遍。</li>
+<li>Bug 在确认后一天内被修复。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215161432280.png" alt="image-20241215161432280"></p>
+<p><strong>Listing 8: PostGIS 引擎中 GIST 索引导致的逻辑错误</strong></p>
+<ul>
+<li><strong>问题描述</strong>：<ul>
+<li>测试在表 <code>t</code> 中查找与 <code>POINT EMPTY</code> 匹配的记录。</li>
+<li>使用了 <strong>GIST 索引</strong> 并禁用了顺序扫描（<code>enable_seqscan = false</code>）。</li>
+<li>预期结果为 <code>1</code>，因为表中存在 <code>POINT EMPTY</code>，但 PostGIS 错误地返回了 <code>0</code>。</li>
+</ul>
+</li>
+<li><strong>错误原因</strong>：<ul>
+<li>GIST 索引的实现存在问题，未正确处理 <code>EMPTY</code> 几何体的匹配逻辑。</li>
+</ul>
+</li>
+<li><strong>错误的多样性</strong>：<ul>
+<li>此 Bug 是 PostGIS 引擎中检测到的 7 个逻辑错误之一，显示了 PostGIS 在处理索引和几何体时存在潜在的不一致性。</li>
+</ul>
+</li>
+<li><strong>处理结果</strong>：<ul>
+<li>此 Bug 已被修复。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>Listing 9: PostGIS 中 RANGE 功能的定义问题</strong></p>
+<ul>
+<li><strong>问题描述</strong>：<ul>
+<li>测试函数 ST_DFullyWithin，其定义为：<ul>
+<li>如果两个几何体在指定的距离范围内完全包含，则返回 <code>TRUE</code>。</li>
+</ul>
+</li>
+<li>在测试中：<ul>
+<li>几何体 <code>LINESTRING(0 0,1 1,0 0)</code> 应完全包含在距离 100 的 <code>POLYGON</code> 范围内，因此预期结果为 <code>TRUE</code>。</li>
+<li>但 PostGIS 错误地返回了 <code>FALSE</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>错误原因</strong>：<ul>
+<li>开发者指出 ST_DFullyWithin 的定义可能存在问题：<ul>
+<li>当前的实现未能满足用户对函数的正确预期，即检查范围内的完全包含性。</li>
+<li>函数逻辑与其名称所传达的含义不一致，可能需要重新定义或重新实现。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>开发者反馈</strong>：<ul>
+<li>开发者承认定义存在问题，并计划提出新算法来解决此问题。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Bug-Classification"><a href="#Bug-Classification" class="headerlink" title="Bug Classification"></a>Bug Classification</h4><p><strong>Bug 诱因模式分类</strong></p>
+<ul>
+<li>将诱发 Bug 的模式归类为 <strong>EMPTY 几何体</strong> 和 <strong>MIXED 几何体</strong> 两大类，提供了基于触发案例模式的 Bug 分类法。</li>
+</ul>
+<hr>
+<p><strong>逻辑 Bug 的分布</strong></p>
+<ul>
+<li><p><strong>EMPTY 几何体相关</strong>：</p>
+<ul>
+<li>在 20 个逻辑 Bug 中，有 6 个由包含 <strong>EMPTY 元素或几何体</strong> 的测试案例触发。</li>
+<li><strong>修复难度</strong>：这类 Bug 的根因（如空处理器问题）较容易定位，通常能在一天内修复。</li>
+</ul>
+</li>
+<li><p><strong>MIXED 几何体相关</strong>：</p>
+<ul>
+<li><p>有 13 个 Bug 与 </p>
+<p>MIXED 几何体</p>
+<p> 相关，由多种因素引起：</p>
+<ol>
+<li><strong>EMPTY 元素处理错误</strong>：4 个 Bug。</li>
+<li><strong>维度处理器问题</strong>：3 个 Bug 由于维度处理器错误识别 MIXED 几何体的维度。</li>
+<li><strong>“Prepared Geometry” 优化组件问题</strong>：检测到 2 个相关逻辑 Bug，涉及 PostGIS 的优化组件。</li>
+<li><strong>边界处理器问题</strong>：Listing 6 的 Bug 与 MIXED 几何体的边界处理器错误有关。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li><strong>EMPTY 几何体</strong> 相关 Bug 易修复，原因通常更明显。</li>
+<li><strong>MIXED 几何体</strong> 相关 Bug 更复杂，涉及维度处理器、边界处理器以及优化组件等不同环节的问题。</li>
+<li>提出的分类法有助于快速定位不同类别的 Bug 根因并提供针对性修复方法。</li>
+</ul>
+<h3 id="5-3-Comparison-to-the-State-of-the-Art"><a href="#5-3-Comparison-to-the-State-of-the-Art" class="headerlink" title="5.3 Comparison to the State of the Art"></a><strong>5.3 Comparison to the State of the Art</strong></h3><p><strong>对比现有方法</strong></p>
+<ul>
+<li>Spatter 的独特性：<ul>
+<li>Spatter 是首个通用的测试工具和方法，专门用于检测 SDBMS 中的逻辑错误。</li>
+<li>为验证 AEI 检测 Bug 的独特性，进行了与现有方法的比较分析。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>比较方法</strong></p>
+<ol>
+<li><strong>差分测试</strong>：<ul>
+<li>比较不同 SDBMS 的输出：<ul>
+<li><strong>PostGIS vs. DuckDB Spatial</strong>（相似系统）。</li>
+<li><strong>PostGIS vs. MySQL</strong>（不同系统）。</li>
+</ul>
+</li>
+<li>比较同一 SDBMS 中的索引开关状态（<strong>Index 方法</strong>）。</li>
+</ul>
+</li>
+<li><strong>TLP 方法</strong>：<ul>
+<li>将每个诱发 Bug 的查询分解为三个分区查询，检查是否出现意外结果。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>结果分析</strong></p>
+<ul>
+<li>总计 20 个逻辑错误：<ul>
+<li><strong>14 个逻辑错误</strong>：所有现有方法都未能检测到。</li>
+<li><strong>4 个逻辑错误</strong>：可通过 PostGIS 和 MySQL 的差分测试检测，但差分测试容易因函数定义差异导致误报。</li>
+<li><strong>0 个逻辑错误</strong>：PostGIS 与 DuckDB Spatial 的比较中未检测到任何错误，因两系统过于相似。</li>
+<li><strong>2 个索引相关错误</strong>：可通过 Index 方法检测，但依赖测试案例设计，需频繁使用索引才能高效应用。</li>
+<li><strong>1 个索引相关错误</strong>：TLP 方法检测到，但 TLP 缺乏对空间关系的认知，无法检测其他逻辑错误。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li>Spatter 能有效检测大多数逻辑错误，而现有方法（差分测试、TLP 等）在空间关系逻辑 Bug 上表现有限。</li>
+<li>差分测试存在误报，且系统相似性限制了其有效性；TLP 方法缺乏对空间关系的处理能力。</li>
+<li>Spatter 的 AEI 方法显著提升了 SDBMS 中逻辑错误的检测能力。</li>
+</ul>
+<p><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215161815702.png" alt="image-20241215161815702"></p>
+<p><font color="green">这部分的实验是怎么做到呢？存不存在随机性因素</font></p>
+<h3 id="5-4-Efficiency-of-Spatter"><a href="#5-4-Efficiency-of-Spatter" class="headerlink" title="5.4 Efficiency of Spatter"></a><strong>5.4 Efficiency of Spatter</strong></h3><p><strong>运行时间分布</strong></p>
+<ul>
+<li>方法：<ul>
+<li>测试几何体数量 (N) 的影响，分别设置为 1、10、50、100，并运行 100 个随机查询，每种配置重复 10 次。</li>
+</ul>
+</li>
+<li>结果：<ul>
+<li>当 N&gt;10时，SDBMS 的执行时间占总运行时间的 90%以上。</li>
+<li>N 增加时，Spatter 的总运行时间显著增加，尤其是在 DuckDB Spatial 和 MySQL 中，当 N&#x3D;100 时运行时间比 N&#x3D;10长 20 倍。</li>
+<li>执行时间主要由 SDBMS 执行消耗主导，测试效率受到几何体数量的间接影响。</li>
+<li>请注意，Spatter的执行时间还包括在SDBMS中花费的时间 </li>
+<li><img src="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/image-20241215162236983.png" alt="image-20241215162236983"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>代码覆盖率</strong></p>
+<ul>
+<li>方法：<ul>
+<li>在 PostGIS 上运行 Spatter 超过 24 小时，收集 PostGIS 和 GEOS 的行覆盖数据。</li>
+<li>比较单元测试与 “单元测试 + Spatter” 的覆盖率，分析 Spatter 对额外覆盖的贡献。</li>
+</ul>
+</li>
+<li>结果：<ul>
+<li>PostGIS 和 GEOS 的覆盖率分别增加 206 和 178 行代码，表明 Spatter 补充了单元测试的覆盖范围。</li>
+<li>总覆盖率较低（PostGIS &lt; 20%，GEOS ~20%），因 Spatter 专注于拓扑关系查询而非其他功能（如 I&#x2F;O 或空间操作）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>随机形状策略基线测试</strong></p>
+<ul>
+<li>方法：<ul>
+<li>设计基线生成器，仅使用随机形状策略，评估与几何感知生成器（结合导出策略）的效率差异。</li>
+<li>在 PostGIS 上运行 1 小时，记录触发 Bug 的案例数量、检测时间和代码覆盖率。</li>
+</ul>
+</li>
+<li>结果：<ul>
+<li>几何感知生成器检测到的独特 Bug 数量显著高于随机形状策略，因导出策略生成了更复杂的拓扑关系。</li>
+<li>几何感知生成器在 PostGIS 和 GEOS 中达到更高的代码覆盖率，利用了 PostGIS 的空间函数。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<ol>
+<li><strong>运行效率</strong>：SDBMS 的执行时间占据主要成本，几何体数量对总运行时间有显著影响。</li>
+<li><strong>代码覆盖</strong>：Spatter 补充了单元测试的覆盖范围，尤其是在拓扑关系查询模块中。</li>
+<li><strong>测试效率</strong>：结合导出策略的几何感知生成器在检测 Bug 和覆盖范围方面显著优于随机形状策略。</li>
+<li><strong>意义</strong>：导出策略通过基于现有几何体创建新几何体，提高了测试效率和覆盖率，增强了 Spatter 在 SDBMS Bug 检测中的表现。</li>
+</ol>
+<h2 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a><strong>Discussion</strong></h2><p><strong>AEI 检测 Bug 的原因</strong></p>
+<ul>
+<li><strong>机制</strong>：AEI 通过对比原始输入和变换后的数据库，触发程序中的不同执行路径，从而发现 Bug。</li>
+<li>实例：<ul>
+<li><strong>Listing 1</strong> 的 Bug：由于点 ppp 的方向计算中精度丢失导致错误，但 Listing 2 的点位于原点，因此未触发该 Bug。</li>
+<li><strong>Listing 5</strong> 的 Bug：由 MULTI 几何体的递归处理逻辑错误引起，但递归逻辑未被第二个几何体调用。</li>
+</ul>
+</li>
+<li><strong>总结</strong>：AEI 通过变换后的不同路径有效检测出多种 Bug。</li>
+</ul>
+<hr>
+<p><strong>支持的 SDBMS 功能</strong></p>
+<ul>
+<li><strong>JOIN 功能</strong>：测试所有案例中均包含空间数据 JOIN，因其是 SDBMS 的核心功能之一。</li>
+<li><strong>RANGE 功能</strong>：测试函数包括 <code>ST_Within</code>、<code>ST_DWithin</code> 和 <code>ST_DFullyWithin</code>，并发现了显著 Bug（如 Listing 9）。</li>
+<li><strong>总结</strong>：AEI 能有效测试与几何体相关的功能，如拓扑关系查询。</li>
+</ul>
+<hr>
+<p><strong>扩展到其他数据库系统的适用性</strong></p>
+<ul>
+<li><p>KNN 算法：AEI 的核心方法可用于测试支持 KNN（最近邻搜索）的系统（如向量数据库系统）：</p>
+<ol>
+<li>生成数据库 SDB1。</li>
+<li>对几何体进行规范化和仿射变换，构造 SDB2。</li>
+<li>检查 SDB1 和 SDB2 的 KNN 结果是否一致。</li>
+</ol>
+<ul>
+<li><strong>限制</strong>：剪切变换不适用，因为它破坏了相对距离属性。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>AEI 的局限性</strong></p>
+<ol>
+<li><strong>不支持地理类型</strong>：地理类型（如曲面对象）不适用于仿射变换。</li>
+<li><strong>不适用于文件读取与转换</strong>：AEI 不能检测如 GDAL 库中的文件处理 Bug（如 DuckDB Spatial 无法正确解析空 GeoJSON）。</li>
+<li><strong>不适用于非线性变换或非仿射几何操作</strong>：例如，<code>ST_Buffer</code> 在仿射变换后无法保持拓扑关系。</li>
+</ol>
+<hr>
+<p><strong>未来工作</strong></p>
+<ol>
+<li><strong>扩展到几何库</strong>：直接应用 AEI 测试几何库（如 PostGIS 的 Bug 中 12 个源自几何库）。</li>
+<li><strong>引入符号执行</strong>：使用符号执行探索更多执行路径，AEI 提供预期结果替代几何生成器。</li>
+<li><strong>推广到其他 DBMS</strong>：将 AEI 的核心思想（保留基本属性的数据库变换）扩展到其他数据库系统，例如图数据库（GDBMS）。</li>
+</ol>
+<hr>
+<p><strong>总结</strong></p>
+<p>AEI 在 SDBMS 中检测逻辑错误方面具有显著优势，未来工作将探索 AEI 在几何库、符号执行和其他 DBMS 系统中的潜力，同时克服其地理类型和非线性变换的局限性。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/">http://example.com/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/" title="ClDiff: Generating Concise Linked Code Differences"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">ClDiff: Generating Concise Linked Code Differences</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">111</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs"><span class="toc-number">1.</span> <span class="toc-text">Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.2.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-number">1.3.</span> <span class="toc-text">Background</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Geometry-Types"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 Geometry Types</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Topological-Relationship-Queries"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 Topological Relationship Queries</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E5%BC%8F%E6%8B%93%E6%89%91%E5%85%B3%E7%B3%BB-Formal-Topological-Relationships"><span class="toc-number">1.3.3.</span> <span class="toc-text">正式拓扑关系 (Formal Topological Relationships)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9AST-Relate"><span class="toc-number">1.3.3.1.</span> <span class="toc-text">示例：ST_Relate</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%91%BD%E5%90%8D%E6%8B%93%E6%89%91%E5%85%B3%E7%B3%BB-Named-Topological-Relationships"><span class="toc-number">1.3.4.</span> <span class="toc-text">2. 命名拓扑关系 (Named Topological Relationships)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9AST-Intersects-%E5%92%8C-ST-Covers"><span class="toc-number">1.3.4.1.</span> <span class="toc-text">示例：ST_Intersects 和 ST_Covers</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Affine-Transformations"><span class="toc-number">1.3.5.</span> <span class="toc-text">2.3 Affine Transformations</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Affine-Equivalent-Inputs"><span class="toc-number">1.4.</span> <span class="toc-text">Affine Equivalent Inputs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spatter"><span class="toc-number">1.5.</span> <span class="toc-text">Spatter</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Geometry-Aware-Generator"><span class="toc-number">1.5.1.</span> <span class="toc-text">4.1 Geometry-Aware Generator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Affine-Transformation"><span class="toc-number">1.5.2.</span> <span class="toc-text">4.2 Affine Transformation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-Canonicalization"><span class="toc-number">1.5.3.</span> <span class="toc-text">4.3 Canonicalization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-Results-Validation"><span class="toc-number">1.5.4.</span> <span class="toc-text">4.4 Results Validation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Evaluation"><span class="toc-number">1.6.</span> <span class="toc-text">Evaluation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-New-Bugs"><span class="toc-number">1.6.1.</span> <span class="toc-text">5.1 New Bugs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-Illustrative-Examples"><span class="toc-number">1.6.2.</span> <span class="toc-text">5.2 Illustrative Examples</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Bug-Classification"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">Bug Classification</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-Comparison-to-the-State-of-the-Art"><span class="toc-number">1.6.3.</span> <span class="toc-text">5.3 Comparison to the State of the Art</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-Efficiency-of-Spatter"><span class="toc-number">1.6.4.</span> <span class="toc-text">5.4 Efficiency of Spatter</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Discussion"><span class="toc-number">1.7.</span> <span class="toc-text">Discussion</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/" title="Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs">Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs</a><time datetime="2024-12-15T08:36:36.000Z" title="发表于 2024-12-15 16:36:36">2024-12-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/" title="ClDiff: Generating Concise Linked Code Differences">ClDiff: Generating Concise Linked Code Differences</a><time datetime="2024-12-02T02:37:55.000Z" title="发表于 2024-12-02 10:37:55">2024-12-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/30/Drowzee-Metamorphic-Testing-for-Fact-Conflicting-Hallucination-Detection-in-Large-Language-Models/" title="Drowzee Metamorphic Testing for Fact-Conflicting Hallucination Detection in Large Language Models">Drowzee Metamorphic Testing for Fact-Conflicting Hallucination Detection in Large Language Models</a><time datetime="2024-11-30T08:49:19.000Z" title="发表于 2024-11-30 16:49:19">2024-11-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/29/Vision-Identifying-Affected-Library-Versions-for-Open-Source-Software-Vulnerabilities/" title="Vision: Identifying Affected Library Versions for Open Source Software Vulnerabilities">Vision: Identifying Affected Library Versions for Open Source Software Vulnerabilities</a><time datetime="2024-11-29T12:34:04.000Z" title="发表于 2024-11-29 20:34:04">2024-11-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/24/Validating-LLM-Generated-Programs-with-Metamorphic-Prompt-Testing/" title="Validating LLM-Generated Programs with Metamorphic Prompt Testing">Validating LLM-Generated Programs with Metamorphic Prompt Testing</a><time datetime="2024-11-24T12:19:15.000Z" title="发表于 2024-11-24 20:19:15">2024-11-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
