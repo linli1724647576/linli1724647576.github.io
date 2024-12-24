@@ -1,0 +1,820 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based MutationAbstractJavaScript解释器对现代网络浏览器至关重要，需要一种有效的Fuzzing方法来识别安全相关的漏洞。然而，输入的严格语法要求呈现出重大挑战。最近将语言模型整合到上下文感知的突变Fuz">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation">
+<meta property="og:url" content="http://example.com/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based MutationAbstractJavaScript解释器对现代网络浏览器至关重要，需要一种有效的Fuzzing方法来识别安全相关的漏洞。然而，输入的严格语法要求呈现出重大挑战。最近将语言模型整合到上下文感知的突变Fuz">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-12-24T10:16:03.000Z">
+<meta property="article:modified_time" content="2024-12-24T10:17:33.918Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-24 18:17:33'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">112</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-24T10:16:03.000Z" title="发表于 2024-12-24 18:16:03">2024-12-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-24T10:17:33.918Z" title="更新于 2024-12-24 18:17:33">2024-12-24</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation"><a href="#Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation" class="headerlink" title="Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation"></a>Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>JavaScript解释器对现代网络浏览器至关重要，需要一种有效的Fuzzing方法来识别安全相关的漏洞。然而，输入的严格语法要求呈现出重大挑战。最近将语言模型整合到上下文感知的突变Fuzzing中的努力是有前景的，但缺乏必要的覆盖指导以充分发挥效用。本文提出了一种新的技术，名为CovRL（基于覆盖率的强化学习），它将大型语言模型（LLMs）与基于覆盖反馈的强化学习（RL）相结合。我们的Fuzzer，CovRL-Fuzz，通过利用词频-逆文档频率（TF-IDF）方法将覆盖反馈直接整合到LLM中，构建了一个加权覆盖图。该图是计算Fuzzing奖励的关键，然后将此奖励应用于基于LLM的突变器通过强化学习。CovRL-Fuzz通过这种方法，能够生成更有可能发现新覆盖区域的测试用例，从而提高漏洞检测效率，同时最小化语法和语义错误，而无需额外后处理。我们的评估结果表明，CovRL-Fuzz在增强代码覆盖和识别JavaScript解释器中的漏洞方面超越了现有最先进的Fuzzer：CovRL-Fuzz在最新的JavaScript解释器中识别了58个实际安全相关的漏洞，其中包括50个以前未知的漏洞和15个CVEs。</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p><font color="red">Traditional Method for fuzzing</font></p>
+<p>JavaScript解释器对于现代Web和嵌入式应用至关重要，负责解析、编译和执行JavaScript代码。</p>
+<p>JavaScript作为客户端编程语言，在全球范围内被广泛使用，确保其解释器的安全性至关重要。</p>
+<p>解释器中的漏洞可能导致严重的安全威胁，如信息泄露和安全措施的绕过。</p>
+<p><strong>JavaScript解释器模糊测试的两种主要方法</strong>：</p>
+<ul>
+<li><strong>语法层次模糊测试</strong>：生成语法正确的输入，确保符合语法规则。</li>
+<li><strong>词法层次模糊测试</strong>：通过操作令牌序列，采取更灵活的方法，不严格遵循语法规则。</li>
+</ul>
+<p><strong>模糊测试的目标</strong>：</p>
+<ul>
+<li>通过<strong>覆盖率引导模糊测试</strong>（如AFL）来提高模糊测试的有效性，促进代码路径的全面检测。</li>
+</ul>
+<p><strong>面临的挑战</strong>：</p>
+<ul>
+<li><strong>JavaScript语言的不断演变</strong>：JavaScript的语法持续更新，给模糊测试带来显著挑战。</li>
+<li><strong>语法层次模糊测试的局限性</strong>：过于关注语法规则，限制了变异的多样性，可能减少程序路径的探索。</li>
+<li><strong>词法层次模糊测试的难点</strong>：灵活性较高，但在多次变异过程中，容易产生语法错误，影响更深层次错误的发现。</li>
+</ul>
+<p><strong>模糊测试的优缺点</strong>：</p>
+<ul>
+<li><strong>语法层次模糊测试</strong>：能生成符合语法规则的输入，但限制了变异的多样性。</li>
+<li><strong>词法层次模糊测试</strong>：更灵活，能够产生更多变异，但难以保持语法正确性，可能导致语法错误。</li>
+</ul>
+<p><font color="red">LLM for Fuzz</font></p>
+<p><strong>新进展：LLM（大语言模型）在模糊测试中的应用</strong>：</p>
+<ul>
+<li>采用LLM生成语法正确、符合上下文的输入，提升了编译器和JavaScript解释器的模糊测试效果。</li>
+<li>例如，<strong>Fuzz4All</strong>利用预训练的代码LLM进行编译器模糊测试，这些模型基于广泛的编程语言数据集进行训练，能够生成语法正确且具有上下文相关性的输入。</li>
+</ul>
+<p><strong>LLM在模糊测试中的优势</strong>：</p>
+<ul>
+<li>不需要额外微调即可应用LLM进行变异，能够增强模糊测试的有效性。</li>
+<li>LLM能够理解语言的上下文，生成语法准确且语义相关的输入。</li>
+</ul>
+<p><strong>现有LLM模糊测试方法的局限性</strong>：</p>
+<ul>
+<li>当前的LLM模糊测试方法通常是<strong>黑盒模糊测试</strong>，缺乏与程序内部信息（如代码覆盖率）的集成。</li>
+</ul>
+<p><strong>与覆盖率引导模糊测试的对比</strong>：</p>
+<ul>
+<li>覆盖率引导模糊测试利用程序内部数据（如代码覆盖率）来增强模糊测试效果，采用进化策略生成“有趣”的种子，推动程序覆盖的扩展，从而提高发现bug的几率。</li>
+<li>覆盖率引导模糊测试比传统的黑盒模糊测试更高效，但这种方法也面临一定挑战。</li>
+</ul>
+<p><font color="red">Problem</font></p>
+<p><strong>LLM基于的突变器的操作</strong>：</p>
+<ul>
+<li>LLM通常在词语层面生成句子，因此基于LLM的突变操作通常假定在令牌级别进行。</li>
+</ul>
+<p><strong>对传统突变器的替代</strong>：</p>
+<ul>
+<li>用预训练的LLM突变器替代传统的随机突变器在覆盖率引导的Fuzzing中可以减少错误率，但没有显著提高覆盖率。</li>
+</ul>
+<p><strong>实验结果</strong>：</p>
+<ul>
+<li>使用AFL Fuzzing工具的实验结果显示，在V8引擎上进行五小时的测试，使用LLM突变器通常会导致比基线低12-16%的覆盖率。即使在覆盖率有所提升的情况下，增长也很小。</li>
+</ul>
+<p><strong>突变器的局限性</strong>：</p>
+<ul>
+<li>LLM基于的突变器虽然减少了错误，但由于其预测受限，可能会限制输入的多样性和整体效果。</li>
+</ul>
+<p><strong>多样性和有效性的考量</strong>：</p>
+<ul>
+<li>基于LLM的突变器通常聚焦于上下文，<strong>倾向于预测常见的令牌，这无意中减少了突变的多样性。</strong>这与以语法准确性为目标的语法级突变类似，后者也会限制变体的多样性。</li>
+</ul>
+<p><strong>结论</strong>：</p>
+<ul>
+<li>尽管LLM基于的突变器减少了错误，其对多样性的降低使得它们在实际应用中可能不如随机Fuzzing有效。</li>
+</ul>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241011160311407.png" alt="image-20241011160311407"></p>
+<p><font color="red">Approach</font></p>
+<ol>
+<li><strong>提出的新方法：CovRL-Fuzz</strong>：<ul>
+<li>旨在解决LLM（大语言模型）变异方法的局限性，提出一种新的技术，将<strong>覆盖率引导反馈</strong>直接整合到变异过程中。</li>
+<li>该方法利用程序的内部信息，通过强化学习（使用TF-IDF）来增强模糊测试的效果。</li>
+<li><strong>CovRL-Fuzz</strong>通过直接向LLM提供代码覆盖率反馈和奖励机制，突破了仅注重语法正确性的限制，生成多样化的变异，增强了BUG检测能力。</li>
+</ul>
+</li>
+<li><strong>CovRL-Fuzz的优势</strong>：<ul>
+<li>与其他LLM模糊测试方法不同，CovRL-Fuzz是首个将LLM变异与覆盖率引导模糊测试有效结合的方法。</li>
+<li>该方法无需额外的后处理，提升了覆盖率并改善了BUG检测能力。</li>
+</ul>
+</li>
+<li><strong>贡献</strong>：<ul>
+<li>引入了<strong>CovRL</strong>方法，通过强化学习结合代码覆盖率反馈并使用TF-IDF权重。</li>
+<li>实现了<strong>CovRL-Fuzz</strong>，一个新的JavaScript解释器模糊测试工具，在代码覆盖率和BUG检测方面优于现有方法。</li>
+<li><strong>CovRL-Fuzz</strong>发现了58个实际的安全相关BUG，其中包括50个未知BUG（15个CVE）。</li>
+<li>发布了<strong>CovRL-Fuzz</strong>的实现，供未来研究使用：<a target="_blank" rel="noopener" href="https://github.com/seclab-yonsei/CovRL-Fuzz">GitHub链接</a>。</li>
+</ul>
+</li>
+</ol>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><h3 id="2-1-JavaScript-Interpreter-Fuzzing"><a href="#2-1-JavaScript-Interpreter-Fuzzing" class="headerlink" title="2.1 JavaScript Interpreter Fuzzing"></a>2.1 JavaScript Interpreter Fuzzing</h3><p><strong>JavaScript解释器模糊测试的挑战</strong>：</p>
+<ul>
+<li>模糊测试是一种强大的自动化方法，用于发现软件缺陷，但在JavaScript解释器中面临挑战，主要因为输入必须严格符合语法。</li>
+<li>如果输入语法不正确，解释器会返回语法错误；而语义错误（如引用、类型、范围或URI错误）可能导致语义错误，但在这两种情况下，解释器的内部逻辑未被执行。</li>
+</ul>
+<p><strong>模糊测试方法</strong>：</p>
+<ul>
+<li><strong>语法层次模糊测试</strong>：通过将种子转换为中间表示（IR），确保语法正确性，但过于依赖语法规则，限制了变异多样性，难以发现由于语法违反或意外输入模式引起的BUG。  <font color="green"> –&gt; 对标Squirrel</font></li>
+<li><strong>词法层次模糊测试</strong>：通过将输入分解为令牌并选择性替换，提供了更大的灵活性，增强了BUG检测能力。然而，由于随机替换令牌的方法，它通常难以保持语法正确性，因为未考虑令牌之间的关系。  <font color="green"> –&gt; 对标AFL 框架</font></li>
+</ul>
+<p><strong>LLM（大语言模型）在模糊测试中的应用</strong>：</p>
+<ul>
+<li>最近，深度学习中的语言模型（LM）被用于克服传统方法的局限性。最初使用基于RNN的LM进行种子变异，现在使用像GPT和StarCoder等LLM进行种子生成和变异，这些模型经过大量编程语言数据集的训练。</li>
+</ul>
+<p><strong>覆盖率引导模糊测试</strong>：</p>
+<ul>
+<li>覆盖率引导模糊测试利用覆盖率反馈探索多样的代码路径，相比传统黑盒方法，已被证明更有效于发现软件BUG，特别是在安全漏洞检测中。</li>
+<li><strong>AFL</strong>等工具通过突变最大化代码覆盖率，取得了显著成效。</li>
+</ul>
+<p><strong>LLM模糊测试的局限性</strong>：</p>
+<ul>
+<li>现有的LLM模糊测试方法（如COMFORT和Fuzz4All）主要使用黑盒方法，未能将覆盖率引导模糊测试与JavaScript解释器结合，因为这些方法通常不将覆盖率反馈纳入变异过程。</li>
+</ul>
+<h3 id="2-2-Large-Language-Models-for-Code"><a href="#2-2-Large-Language-Models-for-Code" class="headerlink" title="2.2 Large Language Models for Code"></a>2.2 Large Language Models for Code</h3><p><strong>LLM在编程语言中的应用</strong>：</p>
+<ul>
+<li>随着LLM在自然语言处理（NLP）任务中的成功，<strong>大型语言模型（Code-LLMs）**在编程语言领域也取得了显著进展，如**CodeT5+<strong>、</strong>Codex**、</strong>InCoder<strong>和</strong>StarCoder**等。</li>
+<li>这些进展推动了代码补全、程序合成、程序修复等多种下游任务的发展。</li>
+</ul>
+<p><strong>LLM在模糊测试中的变异应用</strong>：</p>
+<ul>
+<li>Code-LLMs在模糊测试中表现出了高效的种子生成和变异能力，变异方法可分为两类：<ul>
+<li><strong>通过提示变异 Mutation by prompt</strong>：将代码和变异请求提示输入预训练的Code-LLM，生成变异后的种子。</li>
+<li><strong>通过掩码变异 Mutation by mask</strong>：在代码中插入或替换掩码，让模型仅填写部分代码，进行更精确的变异。</li>
+</ul>
+</li>
+</ul>
+<p><strong>通过掩码变异的优势</strong>：</p>
+<ul>
+<li>在覆盖率引导模糊测试中采用<strong>掩码变异</strong>，它能够保持代码结构的完整性，同时对特定令牌进行变异，逐步增加覆盖率，探索新的代码路径，并节省资源。</li>
+<li>相较于通过提示进行的变异，掩码变异能够实现更精准的调整。</li>
+</ul>
+<p><strong>LLM的微调方法</strong>：</p>
+<ul>
+<li>LLM的微调方法包括：<strong>监督微调（SFT）</strong>、<strong>指令微调</strong>和<strong>基于强化学习的微调（RL）</strong>。</li>
+<li><strong>RL微调</strong>通过反馈优化模型的输出效果，已被证明在提高事实一致性和减少有害生成方面有效。最近有研究将RL微调应用于Code-LLMs，以生成不仅语法正确而且能够解决复杂编码任务的单元测试。</li>
+</ul>
+<p><strong>RL微调的步骤</strong>：</p>
+<ul>
+<li><strong>奖励建模</strong>：训练基于LLM的奖励模型，评估输出结果的适宜性。奖励可以通过多种方式进行反馈，如使用oracle、深度学习模型或人类反馈。</li>
+<li><strong>强化学习</strong>：常采用基于KL散度的优化方法，优化奖励的最大化与训练分布的偏差最小化之间的平衡。</li>
+</ul>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224160222916.png" alt="image-20241224160222916"></p>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224160456744.png" alt="image-20241224160456744"></p>
+<h2 id="Design"><a href="#Design" class="headerlink" title="Design"></a>Design</h2><p><strong>CovRL-Fuzz的设计</strong>：</p>
+<ul>
+<li>CovRL-Fuzz的核心成就在于将<strong>覆盖率引导反馈</strong>直接集成到LLM（大语言模型）变异过程中，使得变异不仅语法正确，还具有多样性，从而提升模糊测试效果。</li>
+</ul>
+<p><strong>CovRL-Fuzz的工作流程</strong>：</p>
+<ul>
+<li>CovRL-Fuzz的流程分为三个阶段，基于覆盖率引导模糊测试：<ol>
+<li><strong>选择种子</strong>：从种子队列中选择一个种子，进行LLM变异。使用掩码变异方法对特定令牌进行掩码预测，生成新的测试用例。</li>
+<li><strong>执行与覆盖率反馈</strong>：执行变异后的测试用例，如果发现新覆盖的代码路径，则将其视为有趣种子，加入种子队列继续变异。同时记录覆盖率地图和测试用例的有效性（是否出现语法或语义错误）。</li>
+<li><strong>奖励与微调</strong>：基于有效性信息对产生语法或语义错误的输入进行惩罚，并根据覆盖率地图生成奖励信号。通过覆盖率加权的奖励信号，对LLM进行微调，使用<strong>PPO算法</strong>来优化模型，避免语法和语义错误，促进发现新的代码路径。</li>
+</ol>
+</li>
+</ul>
+<p><strong>优化与微调</strong>：</p>
+<ul>
+<li><strong>CovRL-Fuzz</strong>在变异过程中仅使用<strong>CovRL微调</strong>，没有进行额外的启发式后处理。通过奖励信号引导LLM优化，减少错误率，进一步提高代码覆盖率。</li>
+</ul>
+<p><strong>效果</strong>：</p>
+<ul>
+<li>在第5.2节中，实验结果显示，使用<strong>CovRL</strong>进行微调的错误率低，与其他最新的JavaScript解释器模糊测试技术相当。</li>
+</ul>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224160606146.png" alt="image-20241224160606146"></p>
+<h3 id="3-1-Phase-1-Mutation-by-Mask"><a href="#3-1-Phase-1-Mutation-by-Mask" class="headerlink" title="3.1 Phase 1. Mutation by Mask"></a>3.1 Phase 1. Mutation by Mask</h3><p>这段内容可以概括为以下几点：</p>
+<ol>
+<li><strong>掩码变异策略</strong>：<ul>
+<li>CovRL-Fuzz在第一阶段通过掩码变异对种子进行处理，采用三种主要技术：<ul>
+<li><strong>插入（Insert）</strong>：随机选择位置，将<code>[MASK]</code>插入输入中。</li>
+<li><strong>覆盖（Overwrite）</strong>：随机选择位置，用<code>[MASK]</code>替换已有令牌。</li>
+<li><strong>拼接（Splice）</strong>：将种子分段，一部分替换为另一个种子的片段，用<code>[MASK]</code>标记替换的位置。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>掩码变异过程</strong>：<ul>
+<li>输入序列通过掩码策略生成掩码序列 W \MASK。</li>
+<li>使用基于LLM的掩码语言模型（MLM）推断掩码位置的内容，生成变异后的种子。</li>
+</ul>
+</li>
+<li><strong>MLM的设计与损失函数</strong>：<ul>
+<li>CovRL-Fuzz的变异设计基于能够预测可变长度掩码的MLM。</li>
+<li>MLM的损失函数表示为：<ul>
+<li><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224161144750.png" alt="image-20241224161144750"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>目标</strong>：<ul>
+<li>通过优化模型参数，改进变异生成过程，同时保持种子的结构完整性并探索新的代码路径。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-2-Phase-2-Coverage-Weighted-Rewarding"><a href="#3-2-Phase-2-Coverage-Weighted-Rewarding" class="headerlink" title="3.2 Phase 2. Coverage-Weighted Rewarding"></a>3.2 Phase 2. Coverage-Weighted Rewarding</h3><p>这段话主要描述了 <strong>CovRL-Fuzz 第二阶段的覆盖率加权奖励方法 (Coverage-Weighted Rewarding, CWR)</strong> 的设计和实现。以下是详细概括及对每个例子的解释：</p>
+<ol>
+<li><p><strong>覆盖率加权奖励方法的核心思想</strong>：</p>
+<ul>
+<li><p><strong>目标</strong>：引导LLM变异器生成测试用例，探索更多未被覆盖的代码路径。</p>
+</li>
+<li><p>TF-IDF的作用：</p>
+<ul>
+<li>使用TF-IDF方法为覆盖率点赋权。</li>
+<li>罕见的覆盖点被赋予更高权重，而频繁出现的覆盖点权重较低。</li>
+<li>通过这一方法创建加权覆盖率地图，强调对未充分探索区域的检测。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>错误分类与奖励机制</strong>：</p>
+<ul>
+<li><p>奖励机制根据输入测试用例的结果进行奖励或惩罚：</p>
+<ul>
+<li><strong>语法错误</strong>：奖励值为-1.0（惩罚）。</li>
+<li><strong>语义错误</strong>（包括引用、类型、范围或URI错误）：奖励值为-0.5（轻惩罚）。</li>
+<li><strong>通过测试</strong>：奖励值为RcovR_{cov}Rcov，即覆盖率奖励信号。</li>
+</ul>
+</li>
+<li><p><strong>示例1</strong>：在控制流图（CFG）中，程序执行覆盖了一些代码路径（如分支D、E和循环C）。奖励信号根据覆盖率点的稀有性动态调整，以更有效地引导变异器发现未被探索的代码。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224163146107.png" alt="image-20241224163146107"></p>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224163200337.png" alt="image-20241224163200337"></p>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224163214151.png" alt="image-20241224163214151"></p>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224163226514.png" alt="image-20241224163226514"></p>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224163245996.png" alt="image-20241224163245996"></p>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224163301226.png" alt="image-20241224163301226"></p>
+<h3 id="3-3-Phase-3-CovRL-Based-Finetuning"><a href="#3-3-Phase-3-CovRL-Based-Finetuning" class="headerlink" title="3.3 Phase 3. CovRL-Based Finetuning"></a>3.3 Phase 3. CovRL-Based Finetuning</h3><p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224163604147.png" alt="image-20241224163604147"></p>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224163613997.png" alt="image-20241224163613997"></p>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224163625728.png" alt="image-20241224163625728"></p>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224163713922.png" alt="image-20241224163713922"></p>
+<p><strong>总结</strong></p>
+<ul>
+<li><strong>CovRL-Based Finetuning</strong> 通过强化学习优化变异器，结合覆盖率奖励和KL正则项，确保生成的测试用例具有语法正确性和更大的代码覆盖率。</li>
+<li>模糊测试循环逐步迭代，基于奖励信号不断更新奖励器和变异器，提高模糊测试的效率和效果。</li>
+</ul>
+<h2 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h2><p><strong>实现框架</strong></p>
+<ul>
+<li>使用以下工具和库实现了 CovRL-Fuzz 的原型：<ul>
+<li><strong>PyTorch v2.0.0</strong></li>
+<li><strong>Transformers v4.38.2</strong></li>
+<li><strong>AFL 2.52b</strong> 作为基础。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>数据集</strong></p>
+<ul>
+<li>数据来源：<ul>
+<li>来自多个JavaScript解释器的回归测试套件，包括 <strong>V8</strong>、<strong>JavaScriptCore</strong>、<strong>ChakraCore</strong>、<strong>JerryScript</strong>、<strong>Test262</strong> 和 <strong>js-vuln-db</strong>。</li>
+<li>截止到2022年12月，共收集了 <strong>52K 个独特的JavaScript文件</strong>。</li>
+</ul>
+</li>
+<li>数据处理：<ul>
+<li>删除注释、过滤语法错误、简化标识符。</li>
+<li>使用 <strong>UglifyJS</strong> 工具的 <code>-m</code> 和 <code>-b</code> 参数进行预处理。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>训练</strong></p>
+<ol>
+<li>模型选择：<ul>
+<li>使用 <strong>CodeT5+ (220M)</strong> 作为预训练的Code-LLM，既充当变异器（Mutator）又作为奖励器（Rewarder）。</li>
+</ul>
+</li>
+<li>微调（Finetuning）：<ul>
+<li>每次变异循环训练1个epoch。</li>
+<li>批量大小：256。</li>
+<li>学习率：1×10−41 \times 10^{-4}1×10−4，使用AdamW优化器并结合学习率线性预热（Linear Warmup）。</li>
+</ul>
+</li>
+<li>奖励器训练：<ul>
+<li>奖励器通过 <strong>CodeT5+ 的编码器</strong>，采用分类方法预测奖励信号。</li>
+<li>使用对比搜索（Contrastive Search），引入动量因子 (α&#x3D;0.6\alpha &#x3D; 0.6α&#x3D;0.6) 和 top-k 值设定为32。</li>
+</ul>
+</li>
+<li>覆盖率地图设置：<ul>
+<li>覆盖率地图大小与AFL的建议一致，使用缩放因子 M。<ul>
+<li>中等规模软件（约10K行代码）：地图大小为 2162^{16}216。</li>
+<li>大型软件（超过50K行代码）：地图大小为 2172^{17}217，在粒度和性能之间实现平衡。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>关键参数</strong></p>
+<ul>
+<li>微调周期、动量因子 (α\alphaα) 和其他超参数的详细分析请参考附录。</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li>CovRL-Fuzz 的实现依赖预处理过的JavaScript数据集和预训练的CodeT5+模型，结合AFL工具优化覆盖率地图的设置。</li>
+<li>使用先进的训练方法（如对比搜索和AdamW优化器）和精确的覆盖率调整，实现了高效的模糊测试工具。</li>
+</ul>
+<h2 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h2><p>在评估 <strong>CovRL-Fuzz</strong> 时，设置了以下四个研究问题（RQs）：</p>
+<ol>
+<li><strong>RQ1</strong>：CovRL-Fuzz 是否比其他 JavaScript 解释器模糊测试工具更高效？</li>
+<li><strong>RQ2</strong>：CovRL-Fuzz 是否比其他基于 LLM 变异的模糊测试工具更高效？</li>
+<li><strong>RQ3</strong>：CovRL-Fuzz 的各个组件如何分别对其高效性作出贡献？</li>
+<li><strong>RQ4</strong>：CovRL-Fuzz 是否能够发现 JavaScript 解释器中的真实漏洞？</li>
+</ol>
+<h3 id="5-1-Experimental-Design"><a href="#5-1-Experimental-Design" class="headerlink" title="5.1 Experimental Design"></a>5.1 Experimental Design</h3><p><strong>实验设置</strong>：</p>
+<ul>
+<li>系统环境：<ul>
+<li><strong>操作系统</strong>：64位 Ubuntu 20.04 LTS。</li>
+<li><strong>硬件</strong>：Intel Xeon Gold 6134 CPU (64核)，3张 NVIDIA GeForce RTX 3090 GPU。</li>
+</ul>
+</li>
+<li>测试对象：<ul>
+<li>主要测试的4个 JavaScript 解释器（截至2023年1月的最新版本）：<ul>
+<li><strong>JavaScriptCore</strong> (2.38.1)</li>
+<li><strong>ChakraCore</strong> (1.13.0.0-beta)</li>
+<li><strong>V8</strong> (11.4.73)</li>
+<li><strong>JerryScript</strong> (3.0.0)</li>
+</ul>
+</li>
+<li>额外测试的5个 JavaScript 解释器（用于真实漏洞检测实验）：<ul>
+<li><strong>QuickJS</strong> (2021-03-27), <strong>Jsish</strong> (3.5.0), <strong>escargot</strong> (bd95de3c), <strong>Espruino</strong> (2v20), <strong>Hermes</strong> (0.12.0)。</li>
+</ul>
+</li>
+<li><strong>配置</strong>：每个解释器均启用了 Address Sanitizer (ASAN) 和调试模式，用于检测内存访问错误和未定义行为。</li>
+<li><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224165052969.png" alt="image-20241224165052969"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>模糊测试流程</strong>：</p>
+<ul>
+<li><strong>种子集</strong>：所有实验使用相同的100个有效种子。</li>
+<li>CPU核心使用：<ul>
+<li>RQ1、RQ2 和 RQ4：使用3个CPU核心。</li>
+<li>RQ3：使用1个CPU核心。</li>
+</ul>
+</li>
+<li><strong>重复实验</strong>：每个模糊测试工具运行5次，并取覆盖率结果的平均值。</li>
+<li>微调时间：<ul>
+<li>每2.5小时进行一次微调，平均每次耗时10分钟。</li>
+</ul>
+</li>
+<li><strong>默认配置</strong>：所有工具均在解释器的默认配置下运行。</li>
+</ul>
+<hr>
+<p><strong>评价指标</strong>：</p>
+<ol>
+<li>**代码覆盖率 (Code Coverage)**：<ul>
+<li>表示测试用例执行到的代码范围。</li>
+<li>使用来自AFL的边覆盖率(bitmap)，并分为两类：<ul>
+<li><strong>总覆盖率</strong>：所有测试用例的覆盖范围。</li>
+<li><strong>有效覆盖率</strong>：仅统计有效测试用例的覆盖范围。</li>
+</ul>
+</li>
+<li>使用 <strong>Mann-Whitney U-test</strong> 检测统计显著性，确保 p 值均小于 0.05。</li>
+</ul>
+</li>
+<li>**错误率 (Error Rate)**：<ul>
+<li>测量生成测试用例中的语法错误和语义错误。</li>
+<li>提供每种方法探索目标软件核心逻辑的有效性。</li>
+<li>语义错误分类：<ul>
+<li>类型错误、引用错误、URI错误和内部错误（基于ECMA标准）。</li>
+</ul>
+</li>
+<li>测量方法：<ul>
+<li>使用 JavaScript 解释器直接测量语法和语义错误率。</li>
+<li>与 COMFORT 的方法不同（仅使用 jshint 测量语法错误）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>**漏洞检测 (Bug Detection)**：<ul>
+<li>衡量模糊测试工具发现漏洞的能力。</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-2-RQ1-Comparison-with-Existing-Fuzzers"><a href="#5-2-RQ1-Comparison-with-Existing-Fuzzers" class="headerlink" title="5.2 RQ1. Comparison with Existing Fuzzers"></a>5.2 RQ1. Comparison with Existing Fuzzers</h3><p><strong>实验目标</strong></p>
+<p>评估 CovRL-Fuzz 相对于其他 JavaScript 解释器模糊测试工具（覆盖率引导和基于LLM的工具）的性能，包括：</p>
+<ol>
+<li><strong>代码覆盖率</strong></li>
+<li><strong>语法和语义错误率</strong></li>
+<li><strong>漏洞检测能力</strong></li>
+</ol>
+<hr>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224165308394.png" alt="image-20241224165308394"></p>
+<p><strong>实验结果</strong></p>
+<p><strong>1. 代码覆盖率 (Code Coverage)</strong></p>
+<ul>
+<li>CovRL-Fuzz 的表现：<ul>
+<li>在所有目标解释器中实现了最高的覆盖率。</li>
+<li>平均覆盖率增长：<ul>
+<li>边覆盖率分别提高 **102.62%&#x2F;98.40%&#x2F;19.49%&#x2F;57.11%**（针对不同解释器）。</li>
+</ul>
+</li>
+<li>覆盖率增长趋势（如图4所示）：CovRL-Fuzz 在每次实验中都能更快达到更高的覆盖率，与其他模糊测试工具相比显著优于覆盖率引导和LLM基线。</li>
+<li>与 Montage 的对比：<ul>
+<li>Montage 的代码导入策略使得其覆盖率较高，但当移除代码导入功能（Montage w&#x2F;o Import）后，CovRL-Fuzz 的覆盖率明显高于 Montage。</li>
+<li>CovRL-Fuzz 的覆盖率随时间持续增长，而 Montage 的覆盖率趋于收敛。</li>
+<li><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224165431027.png" alt="image-20241224165431027"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. 语法和语义错误率 (Syntax and Semantic Correctness)</strong></p>
+<ul>
+<li>CovRL-Fuzz 无需后处理即可获得较低的错误率：<ul>
+<li><strong>与 Token-Level AFL 比较</strong>：CovRL-Fuzz 的错误率显著更低。</li>
+<li><strong>与其他模糊测试工具比较</strong>：在大多数工具中表现更优，但在 JavaScriptCore 和 ChakraCore 上未达到最低错误率。</li>
+<li>错误类型分析（如图5所示）：<ul>
+<li>CovRL-Fuzz 触发的语法错误少于覆盖率引导工具。</li>
+<li>与 LLM 基线工具相比，CovRL-Fuzz 即使不进行后处理，语法和语义错误也更少。</li>
+<li><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224165444786.png" alt="image-20241224165444786"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. 漏洞检测能力 (Finding Bugs)</strong></p>
+<ul>
+<li>漏洞发现：<ul>
+<li>CovRL-Fuzz 在调试模式下发现了最多的独特漏洞（14个），其中9个是仅由 CovRL-Fuzz 检测到的，包括栈溢出和堆缓冲区溢出。</li>
+<li>趋势分析：<ul>
+<li>LLM工具通常覆盖率较高但发现的漏洞较少。</li>
+<li>启发式工具覆盖率较低但发现的漏洞更多。</li>
+<li><strong>CovRL-Fuzz 同时在覆盖率和漏洞检测方面表现出色</strong>，打破了上述趋势。</li>
+<li><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224165351703.png" alt="image-20241224165351703"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>结论</strong></p>
+<p>CovRL-Fuzz 在代码覆盖率、语法与语义正确性以及漏洞检测能力方面显著优于其他模糊测试工具，展示了其综合性能和实用性：</p>
+<ul>
+<li><strong>覆盖率</strong>：持续增长并达到最高值。</li>
+<li><strong>错误率</strong>：无需后处理即实现较低错误率。</li>
+<li><strong>漏洞发现</strong>：发现最多的独特漏洞，特别是复杂类型漏洞。</li>
+</ul>
+<h3 id="5-3-RQ2-Comparison-of-Fuzzers-Using-LLM-Based-Mutation"><a href="#5-3-RQ2-Comparison-of-Fuzzers-Using-LLM-Based-Mutation" class="headerlink" title="5.3 RQ2. Comparison of Fuzzers Using LLM-Based Mutation"></a>5.3 RQ2. Comparison of Fuzzers Using LLM-Based Mutation</h3><p><strong>实验目标</strong></p>
+<p>比较 CovRL-Fuzz 与现有基于LLM变异的模糊测试工具（如 Fuzz4All）在覆盖率、错误率和漏洞检测方面的表现。由于 TitanFuzz 和 FuzzGPT 的变异方法专为深度学习库设计，难以直接应用于 JavaScript 解释器，因此未纳入对比。</p>
+<hr>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224165625736.png" alt="image-20241224165625736"></p>
+<p><strong>实验结果</strong></p>
+<ol>
+<li><strong>代码覆盖率和错误率</strong>：<ul>
+<li>结果对比（表5）：<ul>
+<li>CovRL-Fuzz 和 Fuzz4All 的覆盖率和错误率没有显著差异。</li>
+<li>Fuzz4All 的覆盖率和错误率虽然与 CovRL-Fuzz 接近，但其覆盖率提升和错误率的降低未显著提升漏洞检测能力。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>漏洞检测能力</strong>：<ul>
+<li>结果对比（表6）：<ul>
+<li>CovRL-Fuzz 发现的漏洞数量远多于 Fuzz4All。</li>
+<li>Fuzz4All 发现的漏洞仅是 CovRL-Fuzz 所发现漏洞的子集。</li>
+<li><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224165908944.png" alt="image-20241224165908944"></li>
+</ul>
+</li>
+<li>结论：<ul>
+<li>CovRL-Fuzz 通过结合覆盖率引导模糊测试和基于LLM的变异（通过 CovRL 方法），在漏洞检测上更为高效和有用。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-4-RQ3-Ablation-Study"><a href="#5-4-RQ3-Ablation-Study" class="headerlink" title="5.4 RQ3. Ablation Study"></a>5.4 RQ3. Ablation Study</h3><p><strong>研究目标</strong></p>
+<p>通过消融研究分析 CovRL-Fuzz 的两个关键组件（CovRL 和 CWR）对代码覆盖率和错误率的影响。</p>
+<hr>
+<p><strong>实验结果</strong></p>
+<p><strong>1. CovRL 的影响</strong></p>
+<ul>
+<li>实验设计：<ul>
+<li>比较三种方法：<ol>
+<li><strong>w&#x2F;o LLM</strong>：使用启发式的令牌级变异（TokenAFL）。</li>
+<li><strong>LLM w&#x2F;o CovRL</strong>：仅将 LLM 变异应用于覆盖率引导模糊测试，不使用 CovRL。</li>
+<li><strong>LLM w&#x2F; CovRL</strong>：完整的 CovRL-Fuzz。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>结果：<ul>
+<li><strong>LLM w&#x2F;o CovRL</strong>：相比 w&#x2F;o LLM，错误率下降，但覆盖率没有显著提升，甚至略有下降。</li>
+<li><strong>LLM w&#x2F; CovRL</strong>：在所有目标解释器中覆盖率均有显著提升。</li>
+</ul>
+</li>
+<li>结论：<ul>
+<li>在覆盖率引导模糊测试中，结合 LLM 变异和 CovRL 是提升覆盖率的有效方法。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. CWR 的影响</strong></p>
+<ul>
+<li>实验设计：<ul>
+<li>比较四种奖励机制：<ol>
+<li><strong>w&#x2F;o RL</strong>：不使用强化学习。</li>
+<li><strong>w&#x2F; CR</strong>：简单的二值奖励（发现新覆盖时奖励1，否则为0）。</li>
+<li><strong>w&#x2F; CRR</strong>：传统RL奖励（当前覆盖率与累计覆盖率的比值）。</li>
+<li><strong>w&#x2F; CWR</strong>：使用 CovRL 中的 CWR。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>结果：<ul>
+<li><strong>w&#x2F; CR 和 w&#x2F; CRR</strong>：覆盖率提升不明显，与 w&#x2F;o RL 相差不大。</li>
+<li><strong>w&#x2F; CWR</strong>：在有效覆盖率和总覆盖率上均达到最高值，同时错误率最低。</li>
+</ul>
+</li>
+<li>结论：<ul>
+<li>使用 CWR 的覆盖率引导模糊测试技术显著提升了 LLM 变异的效果，促进覆盖率的提升和错误率的降低。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li><strong>CovRL</strong> 显著提升覆盖率，表明将 LLM 变异与强化学习相结合的有效性。</li>
+<li><strong>CWR</strong> 是 CovRL 中的核心组件，优于其他奖励机制，进一步增强了 LLM 变异的性能。</li>
+</ul>
+<p><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224170404589.png" alt="image-20241224170404589"></p>
+<h3 id="5-5-RQ4-Real-World-Bugs"><a href="#5-5-RQ4-Real-World-Bugs" class="headerlink" title="5.5 RQ4. Real-World Bugs"></a>5.5 RQ4. Real-World Bugs</h3><p><strong>实验目标</strong></p>
+<p>评估 CovRL-Fuzz 在检测真实漏洞中的表现，特别是：</p>
+<ol>
+<li>能发现多少真实漏洞？</li>
+<li>是否能发现此前未知的漏洞？</li>
+</ol>
+<hr>
+<p><strong>实验结果</strong></p>
+<ol>
+<li><strong>漏洞总数</strong>：<ul>
+<li>CovRL-Fuzz 在所有目标解释器中共发现 <strong>58个漏洞</strong>。</li>
+<li><strong>50个为此前未知的漏洞</strong>，其中 <strong>15个已注册为 CVEs</strong>。</li>
+<li><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224170546411.png" alt="image-20241224170546411"></li>
+</ul>
+</li>
+<li><strong>确认和修复</strong>：<ul>
+<li><strong>45个漏洞</strong> 已被开发者确认，其中 <strong>18个漏洞</strong> 已修复。</li>
+<li>CVEs 平均风险评分为 <strong>7.5</strong>（CVSS v3.1），最高达到 <strong>9.8</strong>。</li>
+</ul>
+</li>
+<li><strong>漏洞类型</strong>：<ul>
+<li>包括未定义行为（如断言失败）和内存错误（如缓冲区溢出、Use-After-Free）。</li>
+<li>详见附录中的漏洞列表。</li>
+</ul>
+</li>
+<li><strong>实验条件</strong>：<ul>
+<li>使用仅 <strong>3个CPU核心</strong>，每个目标解释器运行2周。</li>
+<li>对比其他模糊测试工具的设置（通常使用约30核心，测试一个月），CovRL-Fuzz 在资源有限的条件下仍然表现出色。</li>
+</ul>
+</li>
+<li><strong>结论</strong>：<ul>
+<li>CovRL-Fuzz 在 JavaScript 解释器中表现出卓越的漏洞检测能力，即使在短时间和有限资源的情况下也能发现大量未知漏洞。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>案例分析</strong></p>
+<ol>
+<li><strong>ChakraCore漏洞</strong>：<ul>
+<li>CovRL-Fuzz 生成的最小化测试用例引发了 <strong>越界读取（Out-of-Bounds Read）</strong>，导致解释器异常终止。</li>
+<li>变异内容：<ul>
+<li>修改了种子的变量赋值和 <code>await</code> 语句。</li>
+<li>添加了 <code>if</code> 条件，反复调用 <code>await n();</code>，最终触发漏洞。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>JerryScript漏洞</strong>：<ul>
+<li>CovRL-Fuzz 生成的测试用例导致了 <strong>堆缓冲区溢出（Heap Buffer Overflow）</strong>。</li>
+<li>漏洞原因：<ul>
+<li>在一个类的静态初始化块后紧接着声明函数时，解析器无法正确识别静态块范围，导致内存损坏。</li>
+</ul>
+</li>
+<li>CovRL-Fuzz 的上下文感知变异功能帮助发现了该漏洞。</li>
+<li><img src="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/image-20241224170608355.png" alt="image-20241224170608355"></li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li>CovRL-Fuzz 能有效发现真实世界中的复杂漏洞，包括高危漏洞（如 CVEs）。</li>
+<li>其 <strong>上下文感知变异</strong> 和 <strong>语法自由性</strong> 是发现这些漏洞的关键。</li>
+<li>即使在资源有限的条件下，CovRL-Fuzz 的漏洞检测效果显著优于其他模糊测试工具。</li>
+</ul>
+<h2 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a>Discussion</h2><p><strong>1. 模糊测试与微调时间分配</strong></p>
+<ul>
+<li>微调时间：<ul>
+<li>每2.5小时的模糊测试包含10分钟的微调时间。</li>
+<li>即便将微调时间计入实验，CovRL-Fuzz 仍实现了高覆盖率并降低了错误率。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. 性能瓶颈</strong></p>
+<ul>
+<li>观察到的问题：<ul>
+<li>CovRL-Fuzz 的生成速度比 Token-Level AFL 慢约两倍。</li>
+<li><strong>原因</strong>：73%的测试用例生成时间用于 LLM 变异处理。</li>
+</ul>
+</li>
+<li>优势：<ul>
+<li>尽管变异速度较慢，但 LLM 变异带来的性能提升（如更高覆盖率和更低错误率）弥补了处理时间的不足。</li>
+<li>结果表明 LLM 变异的效率远高于传统方法的性能损失。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>3. 微调中的灾难性遗忘</strong></p>
+<ul>
+<li>应对策略：<ul>
+<li>使用小学习率微调。</li>
+<li>部分原始种子数据参与微调。</li>
+</ul>
+</li>
+<li>结果：<ul>
+<li>实验中避免了灾难性遗忘，但无法完全排除未来发生的可能性。</li>
+<li>此问题是 LLM 微调的通用问题，未来可以借助更先进的预防技术解决。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>4. 对其他目标的支持</strong></p>
+<ul>
+<li>语言无关性：<ul>
+<li>CovRL-Fuzz 的核心思想是通过 LLM 变异器引导覆盖率信息，与具体语言无关。</li>
+<li>可以推广至其他语言解释器或编译器。</li>
+</ul>
+</li>
+<li>当前工作：<ul>
+<li>本研究聚焦于 JavaScript 解释器，以验证技术适用性和影响力。</li>
+<li>对其他语言的扩展留待未来工作探索。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>5. 对其他 LLM 的应用</strong></p>
+<ul>
+<li>模型无关性：<ul>
+<li>CovRL-Fuzz 是通用策略，适用于多种开源 LLM。</li>
+<li>本研究选择 CodeT5+（尽管模型最小，但结果最优）。</li>
+</ul>
+</li>
+<li>限制与展望：<ul>
+<li>由于资源限制，本实验使用最大规模为1B的 LLM。</li>
+<li>未来可探索更大规模的模型，以进一步提升性能。</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/">http://example.com/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/" title="Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">112</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation"><span class="toc-number">1.</span> <span class="toc-text">Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.2.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Background"><span class="toc-number">1.3.</span> <span class="toc-text">Background</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-JavaScript-Interpreter-Fuzzing"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 JavaScript Interpreter Fuzzing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Large-Language-Models-for-Code"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 Large Language Models for Code</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Design"><span class="toc-number">1.4.</span> <span class="toc-text">Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Phase-1-Mutation-by-Mask"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 Phase 1. Mutation by Mask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Phase-2-Coverage-Weighted-Rewarding"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 Phase 2. Coverage-Weighted Rewarding</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-Phase-3-CovRL-Based-Finetuning"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.3 Phase 3. CovRL-Based Finetuning</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Implementation"><span class="toc-number">1.5.</span> <span class="toc-text">Implementation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Evaluation"><span class="toc-number">1.6.</span> <span class="toc-text">Evaluation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-Experimental-Design"><span class="toc-number">1.6.1.</span> <span class="toc-text">5.1 Experimental Design</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-RQ1-Comparison-with-Existing-Fuzzers"><span class="toc-number">1.6.2.</span> <span class="toc-text">5.2 RQ1. Comparison with Existing Fuzzers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-RQ2-Comparison-of-Fuzzers-Using-LLM-Based-Mutation"><span class="toc-number">1.6.3.</span> <span class="toc-text">5.3 RQ2. Comparison of Fuzzers Using LLM-Based Mutation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-RQ3-Ablation-Study"><span class="toc-number">1.6.4.</span> <span class="toc-text">5.4 RQ3. Ablation Study</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-RQ4-Real-World-Bugs"><span class="toc-number">1.6.5.</span> <span class="toc-text">5.5 RQ4. Real-World Bugs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Discussion"><span class="toc-number">1.7.</span> <span class="toc-text">Discussion</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/" title="Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation">Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation</a><time datetime="2024-12-24T10:16:03.000Z" title="发表于 2024-12-24 18:16:03">2024-12-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/" title="Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs">Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs</a><time datetime="2024-12-15T08:36:36.000Z" title="发表于 2024-12-15 16:36:36">2024-12-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/" title="ClDiff: Generating Concise Linked Code Differences">ClDiff: Generating Concise Linked Code Differences</a><time datetime="2024-12-02T02:37:55.000Z" title="发表于 2024-12-02 10:37:55">2024-12-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/30/Drowzee-Metamorphic-Testing-for-Fact-Conflicting-Hallucination-Detection-in-Large-Language-Models/" title="Drowzee Metamorphic Testing for Fact-Conflicting Hallucination Detection in Large Language Models">Drowzee Metamorphic Testing for Fact-Conflicting Hallucination Detection in Large Language Models</a><time datetime="2024-11-30T08:49:19.000Z" title="发表于 2024-11-30 16:49:19">2024-11-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/29/Vision-Identifying-Affected-Library-Versions-for-Open-Source-Software-Vulnerabilities/" title="Vision: Identifying Affected Library Versions for Open Source Software Vulnerabilities">Vision: Identifying Affected Library Versions for Open Source Software Vulnerabilities</a><time datetime="2024-11-29T12:34:04.000Z" title="发表于 2024-11-29 20:34:04">2024-11-29</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
