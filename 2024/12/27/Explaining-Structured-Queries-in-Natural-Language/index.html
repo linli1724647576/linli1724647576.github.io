@@ -1,0 +1,1509 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Explaining Structured Queries in Natural Language | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Explaining Structured Queries in Natural LanguageAbstract摘要——许多应用程序为普通用户提供了一种基于表单的环境，使其无需熟悉数据库模式或结构化查询语言即可访问数据库。用户的交互会被翻译成结构化查询并执行。然而，由于用户不太可能了解表单中各字段之间的底层语义关系，因此为用户提供查询的文本解释通常是有用的。在本文中，我们采用一种基于图的方式来解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Explaining Structured Queries in Natural Language">
+<meta property="og:url" content="http://example.com/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Explaining Structured Queries in Natural LanguageAbstract摘要——许多应用程序为普通用户提供了一种基于表单的环境，使其无需熟悉数据库模式或结构化查询语言即可访问数据库。用户的交互会被翻译成结构化查询并执行。然而，由于用户不太可能了解表单中各字段之间的底层语义关系，因此为用户提供查询的文本解释通常是有用的。在本文中，我们采用一种基于图的方式来解">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2024-12-27T09:15:17.000Z">
+<meta property="article:modified_time" content="2024-12-27T09:16:08.701Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Explaining Structured Queries in Natural Language',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-27 17:16:08'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">113</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Explaining Structured Queries in Natural Language</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-27T09:15:17.000Z" title="发表于 2024-12-27 17:15:17">2024-12-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-27T09:16:08.701Z" title="更新于 2024-12-27 17:16:08">2024-12-27</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Explaining Structured Queries in Natural Language"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Explaining-Structured-Queries-in-Natural-Language"><a href="#Explaining-Structured-Queries-in-Natural-Language" class="headerlink" title="Explaining Structured Queries in Natural Language"></a>Explaining Structured Queries in Natural Language</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p><strong>摘要</strong>——许多应用程序为普通用户提供了一种基于表单的环境，使其无需熟悉数据库模式或结构化查询语言即可访问数据库。用户的交互会被翻译成结构化查询并执行。然而，由于用户不太可能了解表单中各字段之间的底层语义关系，因此为用户提供查询的文本解释通常是有用的。在本文中，我们采用一种基于图的方式来解决查询翻译问题。我们将各种形式的结构化查询表示为有向图，并使用可扩展的模板机制为图的边添加模板标签。我们提出了多种图遍历策略，用于高效地探索这些图并生成查询的文本描述。最后，我们通过实验展示了所提方法在效率和效果上的表现。</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h2><p><font color="red">Background and motivation</font></p>
+<p><strong>问题背景：结构化查询语言（SQL）的局限性</strong></p>
+<ul>
+<li>SQL 对高级用户和开发者是强大的工具，但大多数普通用户不熟悉。</li>
+<li>为此，许多应用提供基于表单的查询环境，简化了数据库搜索和操作。</li>
+</ul>
+<p><strong>应用场景</strong></p>
+<ul>
+<li>基于表单的查询在以下领域常见：<ul>
+<li>博物馆门户网站</li>
+<li>数字图书馆</li>
+<li>电子商务网站</li>
+</ul>
+</li>
+<li>新兴的 DIY 数据库驱动的 Web 应用平台允许非程序员通过可视化界面快速创建和修改应用。</li>
+</ul>
+<p><strong>用户交互与查询翻译</strong></p>
+<ul>
+<li>用户与界面的交互会被翻译成结构化查询。</li>
+<li>在查询的结果与用户预期不同的情况下，解释这些隐式生成的查询变得至关重要。</li>
+</ul>
+<p><strong>文本解释的必要性</strong></p>
+<ul>
+<li>辅助用户正确生成查询<ul>
+<li>即使不熟悉接口或查询语言，通过叙述形式翻译用户选择可以帮助其生成正确查询。</li>
+</ul>
+</li>
+<li>简化复杂表单中的字段语义关系<ul>
+<li>文本解释可以弥补用户对表单字段语义连接的不了解。</li>
+</ul>
+</li>
+<li>检查查询含义是否正确<ul>
+<li>在执行查询前，用更易理解的语言呈现查询帮助确认其是否表达了用户意图。</li>
+</ul>
+</li>
+</ul>
+<p><strong>文本解释的具体应用</strong></p>
+<ul>
+<li>帮助理解错误查询<ul>
+<li>通过叙述而非错误代码，帮助用户理解查询错误原因。</li>
+</ul>
+</li>
+<li>分析空结果<ul>
+<li>当查询返回空结果时，文本解释有助于定位问题部分。</li>
+</ul>
+</li>
+<li>优化结果量过大的查询<ul>
+<li>当结果过多时，解释可以帮助用户重写查询以减少无用结果。</li>
+</ul>
+</li>
+</ul>
+<p><strong>文本解释的广泛适用性</strong></p>
+<ul>
+<li>在需要解释查询的任何情况下，文本解释都非常有用且有效。</li>
+<li><strong>插入、删除和更新操作</strong>，特别是涉及复杂条件或嵌套结构的操作，受益于自然语言翻译。</li>
+<li><strong>视图定义和完整性约束</strong>，由于它们的语法大部分源自查询，因此也需要文本解释。</li>
+</ul>
+<p><strong>不同查询语言的适用性</strong></p>
+<ul>
+<li>虽然本文聚焦于 SQL，但类似的论点也适用于其他查询语言，如：<ul>
+<li>RDF 查询（SPARQL 或 RQL）</li>
+<li>Datalog 程序等。</li>
+</ul>
+</li>
+</ul>
+<p><strong>当前趋势的推动</strong></p>
+<ul>
+<li>自动化计算机与人类语言之间的翻译被认为是未来 25 年内最重要的 IT 挑战之一，且将对人类生活的各个方面产生广泛影响。</li>
+</ul>
+<p><font color="red">Challenges</font></p>
+<p><strong>查询翻译成叙述的忽视</strong></p>
+<ul>
+<li>将查询翻译为自然语言叙述的研究尚未得到充分重视。</li>
+<li>传统上，自然语言处理（NLP）技术在信息系统中的应用是单向的，从自然语言请求到生成查询，而不是反向操作。</li>
+</ul>
+<p><strong>现有方法的局限</strong></p>
+<ul>
+<li>目前，NLP 工具试图将自然语言查询与 SQL 查询模式匹配，这限制了将 SQL 查询翻译为自然语言的功能。</li>
+</ul>
+<p><strong>研究问题</strong></p>
+<ul>
+<li>问题是：给定一个针对数据库 D 的查询 q，我们希望生成一个叙述，捕捉 q 的意图或目标。</li>
+</ul>
+<p><strong>查询翻译为文本的挑战</strong></p>
+<ul>
+<li>结构化查询转为文本的难点：<ul>
+<li>SQL 语义不足。</li>
+<li>查询的复杂性（如嵌套查询、复杂条件、不同查询构造如 <code>group-by</code>、<code>order-by</code> 等）。</li>
+<li>一个查询在正式语言中有多个等效表达（基于结合律、交换律等代数性质）。</li>
+</ul>
+</li>
+</ul>
+<p><strong>翻译的难点</strong></p>
+<ul>
+<li>要捕捉查询元素的正确顺序，使得生成的文本表达自然且有意义，即使用户表达方式不同，也很具有挑战性。</li>
+</ul>
+<p><font color="green">现有方法的局限：没有人研究SQL-to-Question的问题</font></p>
+<p><font color="red">Approach and contributions</font></p>
+<p><strong>图基方法</strong></p>
+<ul>
+<li>使用基于图的方法将各种形式的结构化查询表示为有向图。</li>
+<li>通过扩展的模板机制为图元素添加标签。</li>
+</ul>
+<p><strong>三种翻译策略</strong></p>
+<ul>
+<li><strong>BST算法</strong>：翻译过程由多个子句组成，每个子句专注于查询的特定语义。</li>
+<li><strong>MRP算法</strong>：翻译是整体性的，查询图的各个部分在遍历图时被融合在一起。</li>
+<li><strong>TMT算法</strong>：使用预定义的、更加丰富的模板翻译查询部分，以生成更简洁的翻译。</li>
+</ul>
+<p><strong>研究挑战</strong></p>
+<ul>
+<li>查询语言与口语语言的语义不同，某些查询（特别是复杂或表达能力强的查询）可能无法有效翻译。</li>
+<li>使用预定义模式处理一些难以翻译的查询。</li>
+</ul>
+<p><strong>贡献</strong></p>
+<ul>
+<li>提出了一个新的查询图模型，用于捕捉查询的可能语义。</li>
+<li>通过扩展模板机制，为查询图的边添加标签，为查询的各个部分赋予语义。</li>
+<li>提出了不同的、与领域无关的图遍历策略，用于高效探索查询图并生成自然语言短语的查询描述。</li>
+<li>提出了一个算法，用于选择最佳模板来翻译给定查询，处理可能重叠的查询部分模板。</li>
+<li>通过实验结果比较了翻译算法，并展示了它们的适用性和有效性。</li>
+</ul>
+<h2 id="QUERY-REPRESENTATION"><a href="#QUERY-REPRESENTATION" class="headerlink" title="QUERY REPRESENTATION"></a>QUERY REPRESENTATION</h2><p>我们专注于关系数据库和SQL查询。在本节中，我们将介绍我们捕获查询元素及其语义关联的查询图表示。</p>
+<h3 id="A-Database-Graph"><a href="#A-Database-Graph" class="headerlink" title="A. Database Graph"></a>A. Database Graph</h3><p><strong>数据库图的定义</strong></p>
+<ul>
+<li><p>数据库 D 包含一组关系（relations），每个关系 Ri 有一组属性（attributes）。</p>
+</li>
+<li><p>数据库图 G(V,E) 是数据库模式的有向图表示，扩展了属性在查询中的基本角色。</p>
+</li>
+<li><p>图的节点 V 包括：</p>
+<ul>
+<li><strong>关系节点 R</strong>：每个关系对应一个节点。</li>
+<li><strong>属性节点 A</strong>：每个属性对应一个节点。</li>
+</ul>
+</li>
+<li><p>图的边 E</p>
+<p> 包括三种类型：</p>
+<ul>
+<li>**成员边 (Eμ)**：连接属性节点与其所属关系节点。</li>
+<li>**选择边 (Eσ)**：连接关系节点与其属性，表示基于条件选择的可能性。</li>
+<li>**谓词边 (Eθ)**：连接两个属性节点，表示基于属性的关系连接。</li>
+</ul>
+</li>
+</ul>
+<p><strong>数据库图的特性</strong></p>
+<ul>
+<li>数据库模式图是一个有向图 G(V,E)，其中 V&#x3D;R∪A，E&#x3D;Eμ∪Eσ∪Eθ。</li>
+<li>图捕获了查询语义，包括关系和属性间的各种可能连接。</li>
+</ul>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227093247634.png" alt="image-20241227093247634"></p>
+<blockquote>
+<h3 id="数据库示例"><a href="#数据库示例" class="headerlink" title="数据库示例"></a>数据库示例</h3><p>图 1 显示了一个课程数据库的关系及其属性，例如：</p>
+<ul>
+<li><code>Students</code>：表示学生信息（属性有 <code>SuID</code>、<code>Name</code>、<code>Class</code>、<code>GPA</code>）。</li>
+<li><code>StudentHistory</code>：记录学生的课程历史（属性有 <code>SuID</code>、<code>CourseID</code>、<code>Year</code>、<code>Term</code>、<code>Grade</code>）。</li>
+</ul>
+<p>这些关系之间可以通过键（例如 <code>SuID</code>）进行连接。</p>
+<hr>
+<h3 id="数据库图中的路径"><a href="#数据库图中的路径" class="headerlink" title="数据库图中的路径"></a>数据库图中的路径</h3><p>为了在数据库图中表达 <code>Students</code> 和 <code>StudentHistory</code> 之间的连接，可以通过以下两种路径：</p>
+<ol>
+<li><strong>路径 1（从 <code>Students</code> 到 <code>StudentHistory</code>）：</strong><ul>
+<li>解释：从 <code>Students</code> 表中选择 <code>SuID</code>，然后通过谓词边（<code>θ</code>）连接到 <code>StudentHistory</code> 表中的 <code>SuID</code>，最终选择与 <code>StudentHistory</code> 相关的信息。</li>
+</ul>
+</li>
+<li><strong>路径 2（从 <code>StudentHistory</code> 到 <code>Students</code>）：</strong><ul>
+<li>解释：反向操作，从 <code>StudentHistory</code> 表中选择 <code>SuID</code>，通过谓词边连接到 <code>Students</code> 表，最终选择与 <code>Students</code> 相关的信息。</li>
+<li><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227095622708.png" alt="image-20241227095622708"></li>
+</ul>
+</li>
+</ol>
+<h3 id="操作上的等价性"><a href="#操作上的等价性" class="headerlink" title="操作上的等价性"></a>操作上的等价性</h3><p>在操作层面，这两种路径可能是等价的，例如在等值连接（equi-join）的情况下，这两条路径都会返回同样的查询结果。</p>
+<h3 id="语义上的差异"><a href="#语义上的差异" class="headerlink" title="语义上的差异"></a>语义上的差异</h3><p>虽然结果相同，但两条路径的语义翻译可能不同，取决于查询的意图。例如：</p>
+<ul>
+<li><strong>路径 1：</strong> 可以解释为“学生选择的课程”（侧重于 <code>Students</code>）。</li>
+<li><strong>路径 2：</strong> 可以解释为“学生通过的课程”（侧重于 <code>StudentHistory</code>）。</li>
+</ul>
+<p>路径的选择取决于查询的语义需求和翻译目标。</p>
+<h3 id="关键点总结"><a href="#关键点总结" class="headerlink" title="关键点总结"></a>关键点总结</h3><ul>
+<li>数据库图可以灵活表示关系间的连接，捕捉查询的语义。</li>
+<li>不同路径可能在操作上等价，但语义翻译会不同。</li>
+<li>翻译选择依赖于查询的具体意图和上下文，例如区分“选择的课程”和“通过的课程”。</li>
+</ul>
+</blockquote>
+<h3 id="B-Query-Graphs"><a href="#B-Query-Graphs" class="headerlink" title="B. Query Graphs"></a>B. Query Graphs</h3><blockquote>
+<p>SPJ 查询图的全称是 <strong>Selection-Projection-Join Query Graph</strong>（选择-投影-连接查询图）。</p>
+<p>它是一种用于表示关系数据库中基本查询操作的图模型，涵盖了以下三种核心操作：</p>
+<ol>
+<li><strong>Selection（选择）</strong>：从关系中选择满足某些条件的元组（记录）。</li>
+<li><strong>Projection（投影）</strong>：从关系中选择特定的属性（列）。</li>
+<li><strong>Join（连接）</strong>：将两个或多个关系按照某些条件组合在一起。</li>
+</ol>
+<p>SPJ 查询图扩展了基本的数据库图，通过节点和边捕捉查询的结构和语义：</p>
+<ul>
+<li><strong>节点</strong>：表示关系、属性和具体值。</li>
+<li><strong>边</strong>：描述查询中关系、属性之间的语义关系，例如成员关系、选择条件和谓词（比较或连接条件）。</li>
+</ul>
+</blockquote>
+<p><strong>扩展SPJ查询图</strong></p>
+<ul>
+<li>从基本的 SPJ 查询（选择、投影、连接）开始，逐步扩展到处理包含函数、分组以及子查询的查询图。</li>
+</ul>
+<p><strong>SPJ查询图的节点</strong></p>
+<ul>
+<li><strong>关系节点（relation nodes）</strong>：表示查询中每个关系或元组变量。</li>
+<li><strong>属性节点（attribute nodes）</strong>：表示查询中的每个属性，若属性出现在查询的不同部分，可能会重复。</li>
+<li><strong>值节点（value nodes）</strong>：表示查询中限定条件指定的值或值集。</li>
+</ul>
+<p><strong>SPJ查询图的边（Eq）</strong></p>
+<ul>
+<li>成员边（membership edges）：<ul>
+<li>用于表示从关系 Ri投影的属性 Aji。</li>
+<li>形式：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227094707734.png" alt="image-20241227094707734"></li>
+</ul>
+</li>
+<li>谓词边（predicate edges）：<ul>
+<li>用于表示谓词 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227094954988.png" alt="image-20241227094954988"> ，其中 Ω 可以是值、值集或另一个属性，θ 是比较运算符（如 &#x3D;, &lt;, &gt;, &lt;&gt;, LIKE)。</li>
+<li>两种情况：<ol>
+<li>如果 Ω 是值或值集，则为选择谓词边<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227094838439.png" alt="image-20241227094838439">。</li>
+<li>如果 Ω\OmegaΩ 是另一个属性，则为连接谓词边：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227094904156.png" alt="image-20241227094904156">，同时记录逆向边：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227094915844.png" alt="image-20241227094915844">（逆运算符，如 &gt; 的逆是 ≤)。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>选择边（selection edges）：<ul>
+<li>如果谓词 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227094958823.png" alt="image-20241227094958823"> 中 Ω 是值或值集：<ul>
+<li>边：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227095043743.png" alt="image-20241227095043743"></li>
+</ul>
+</li>
+<li>如果 Ω 是属性：<ul>
+<li>边：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227095059634.png" alt="image-20241227095059634"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>总结</strong></p>
+<ul>
+<li><p>SPJ 查询图通过定义不同类型的节点和边扩展了数据库图的表示能力，能够捕捉查询的复杂语义，如投影、谓词（比较、连接）和选择操作。</p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100030019.png" alt="image-20241227100030019"></p>
+</li>
+</ul>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227095940061.png" alt="image-20241227095940061"></p>
+<blockquote>
+<p>Fig. 3 展示了一个 SPJ 查询的图形表示，反映了查询中涉及的关系、属性、值，以及它们之间的连接和条件。</p>
+<h3 id="主要内容："><a href="#主要内容：" class="headerlink" title="主要内容："></a>主要内容：</h3><ol>
+<li><strong>查询中的连接（Join）表示：</strong><ul>
+<li>每个关系之间的连接在图中表示为两条方向相反的路径（双向路径）。</li>
+<li>例如，Students  和  StudentHistory  通过属性  SuID 相连，这种连接通过两条边展示：<ul>
+<li>一条从 <code>Students</code> 到 <code>StudentHistory</code> 的边。</li>
+<li>另一条从 <code>StudentHistory</code> 到 <code>Students</code> 的反向边。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>条件的表示：</strong><ul>
+<li>图中也捕捉了查询条件中涉及的属性和值。例如：<ul>
+<li>条件  s.class &#x3D; 2011  表示为两条边：<ul>
+<li>选择边（Selection edge）：从 <code>Students</code> 到属性 <code>class</code>。</li>
+<li>谓词边（Predicate edge）：从属性 <code>class</code> 到值 <code>2011</code>，并标注了比较运算符 <code>=</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>查询元素的图表示：</strong><ul>
+<li><strong>关系（Relation）：</strong> 图中的矩形节点（如 <code>Students</code>、<code>Courses</code>）表示查询涉及的关系。</li>
+<li><strong>属性（Attribute）：</strong> 椭圆形节点（如 <code>class</code>、<code>DepID</code>）表示查询中使用的属性。</li>
+<li><strong>值（Value）：</strong> 椭圆形节点中带具体值（如 <code>2011</code>、<code>Spring</code>）表示查询条件中涉及的具体值。</li>
+<li><strong>边（Edge）：</strong> 图中的箭头表示查询中关系与属性、属性与值之间的连接和条件。</li>
+</ul>
+</li>
+<li><strong>查询语义的图表示特点：</strong><ul>
+<li>图中的路径表示查询的语义，清晰捕捉了关系之间的连接、属性的选择条件以及与值的比较关系。</li>
+<li>例如：<ul>
+<li><code>Students −→ σ class −→ = 2011</code> 捕捉了选择条件 <code>class = 2011</code>。</li>
+<li>关系之间的连接，如 <code>Courses</code> 与 <code>Departments</code> 通过 <code>DepID</code> 属性相连。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>实际用途：</strong><ul>
+<li>图中的表示方式帮助理解查询的结构与逻辑，同时也为查询的自然语言翻译提供了基础。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="结论："><a href="#结论：" class="headerlink" title="结论："></a>结论：</h3><p>Fig. 3 通过关系节点、属性节点、值节点，以及多种类型的边（如选择边、谓词边），完整捕捉了一个 SPJ 查询的结构和语义，使得查询的逻辑表达清晰易懂，同时也为后续的翻译和优化奠定了基础。</p>
+</blockquote>
+<p>为了扩展查询图，使其能够捕捉函数、表达式、重命名操作，以及 <code>ORDER BY</code>、<code>GROUP BY</code> 和 <code>HAVING</code> 子句，定义了以下新增的节点和边类型：</p>
+<ol>
+<li><strong>新增节点类型</strong><ul>
+<li>函数节点（function nodes）：<ul>
+<li>表示应用于属性（或属性集）上的函数、表达式或重命名操作。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>新增边类型</strong><ul>
+<li><strong>转换边（transformation edges）</strong>：<ul>
+<li>表示属性和函数节点之间的连接：<ul>
+<li>若属性在 <code>SELECT</code> 子句中：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100410788.png" alt="image-20241227100410788">。</li>
+<li>若属性在 <code>WHERE</code> 子句中：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100424104.png" alt="image-20241227100424104">。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>排序边（order edges）</strong>：<ul>
+<li>表示结果集的排序：<ul>
+<li>从关系节点到排序的第一个属性：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100615511.png" alt="image-20241227100615511">。</li>
+<li>其他排序属性之间的连接：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100625305.png" alt="image-20241227100625305">，显示升序或降序。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>分组边（grouping edges）</strong>：<ul>
+<li>表示分组属性：<ul>
+<li>从关系节点到分组的第一个属性：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100642615.png" alt="image-20241227100642615">。</li>
+<li>其他分组属性之间的连接：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100650765.png" alt="image-20241227100650765">。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>HAVING 边（having edges）</strong>：<ul>
+<li>表示 HAVING 子句中的属性：<ul>
+<li>从关系节点到每个参与属性：<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100716317.png" alt="image-20241227100716317">。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>通过新增函数节点和转换、排序、分组、<code>HAVING</code> 边，扩展了查询图的表示能力，能够捕捉更复杂的查询语义，如函数应用、排序、分组以及聚合条件等高级查询操作。 </p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100923666.png" alt="image-20241227100923666"></p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100912144.png" alt="image-20241227100912144"></p>
+<blockquote>
+<h3 id="a-一个包含-GROUP-BY-的查询"><a href="#a-一个包含-GROUP-BY-的查询" class="headerlink" title="(a) 一个包含 GROUP BY 的查询"></a><strong>(a) 一个包含 <code>GROUP BY</code> 的查询</strong></h3><ol>
+<li><strong>分组属性（Grouping Attributes）</strong>：<ul>
+<li>查询根据 <code>year</code> 和 <code>term</code> 进行分组。</li>
+<li>分组边 (γ)：<ul>
+<li>从 <code>StudentHistory</code> 关系连接到属性 <code>year</code>。</li>
+<li>从 <code>year</code> 再连接到 <code>term</code>，表示分组顺序。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>投影属性（Projecting Attributes）</strong>：<ul>
+<li>查询投影（显示）属性包括：<code>year</code>、<code>term</code> 和 <code>grade</code>。</li>
+<li>其中：<ul>
+<li><code>year</code> 和 <code>term</code> 是普通投影属性。</li>
+<li><code>grade</code> 是一个聚合属性，与聚合函数 <code>max</code> 通过转换边（r）相连。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>HAVING 子句</strong>：<ul>
+<li>查询对 <code>grade</code> 的平均值（<code>avg</code>）进行了条件限制（<code>HAVING avg(grade) &gt; 3</code>）。</li>
+<li>图表示：<ul>
+<li>HAVING 边（h）：连接 <code>grade</code> 和其所属关系 <code>StudentHistory</code>。</li>
+<li>转换边（r）：连接 <code>grade</code> 和函数节点 <code>avg</code>。</li>
+<li>谓词边（θ）：连接 <code>avg</code> 函数节点和值 <code>3</code>，表示比较条件。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>注意点</strong>：<ul>
+<li>同一个属性（grade）根据其不同角色（聚合和 HAVING）被表示为两个节点：<ul>
+<li>一个用于 <code>max</code> 聚合。</li>
+<li>一个用于 <code>avg</code> 聚合。</li>
+</ul>
+</li>
+<li>如果一个函数涉及多个属性，那么这些属性节点都会通过转换边连接到同一个函数节点。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<p>我们现在考虑使用嵌套的查询。</p>
+<p><strong>嵌套查询的特点和表示：</strong></p>
+<p>嵌套查询指在主查询（“父查询”）中包含子查询的情况。子查询可以出现在以下位置：</p>
+<ol>
+<li><strong>FROM 子句</strong>：子查询被视为一个虚拟表，与其他表进行连接。</li>
+<li><strong>SELECT 子句</strong>：子查询作为属性集供主查询投影。</li>
+<li><strong>WHERE 或 HAVING 子句</strong>：子查询被视为一个值列表或单个值，参与谓词条件。</li>
+</ol>
+<p><strong>谓词类型：</strong></p>
+<p>谓词的形式为 AjiθΩ，其中：</p>
+<ul>
+<li>θ 表示比较运算符（如 &#x3D;, &lt;, &gt; 等）或集合比较运算符（如 (NOT) EXISTS, (NOT) IN, θ′ ANY, θ′ ALL）。</li>
+</ul>
+<p><strong>子查询在图中的表示：</strong></p>
+<p>子查询 qm 被表示为一个独立的子图，作为“虚拟关系”连接到父查询的图中。具体连接方式如下：</p>
+<ol>
+<li><strong>子查询返回单个属性 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227102944925.png" alt="image-20241227102944925"> 的情况：</strong><ul>
+<li>谓词形式为<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227102937201.png" alt="image-20241227102937201"> ，子查询返回属性 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227102946824.png" alt="image-20241227102946824">。</li>
+<li>图中路径：<ul>
+<li>父查询中的属性<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103014600.png" alt="image-20241227103014600">通过选择边连接到其关系 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103026944.png" alt="image-20241227103026944">。</li>
+<li><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103049011.png" alt="image-20241227103049011">通过谓词边连接到子查询返回的属性 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103107551.png" alt="image-20241227103107551">。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>子查询作为虚拟表的情况（FROM 子句）：</strong><ul>
+<li>谓词形式为 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103139447.png" alt="image-20241227103139447">，子查询返回的属性 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103205164.png" alt="image-20241227103205164"> 被视为一个虚拟表的属性。</li>
+<li>图表示与通常的连接相同。</li>
+</ul>
+</li>
+<li><strong>关联子查询的情况：</strong><ul>
+<li>子查询 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103222643.png" alt="image-20241227103222643"> 中的谓词涉及父查询中的属性<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103231106.png" alt="image-20241227103231106">。</li>
+<li>图中路径：<ul>
+<li>子查询属性 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103242428.png" alt="image-20241227103242428"> 通过选择边连接到其关系 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103317712.png" alt="image-20241227103317712">。</li>
+<li><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103329186.png" alt="image-20241227103329186"> 通过谓词边连接到父查询中的属性 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103338491.png" alt="image-20241227103338491">。</li>
+<li><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103403046.png" alt="image-20241227103403046">通过选择边连接到父查询中的关系 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103349984.png" alt="image-20241227103349984">。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>应用示例：</strong></p>
+<ol>
+<li>子查询出现在 <strong>WHERE 子句</strong> 中时，通常属于第一种情况；如果是关联查询，则属于第三种情况。</li>
+<li>子查询出现在 <strong>FROM 子句</strong> 中时，属于第二种情况。</li>
+</ol>
+<p>嵌套查询通过独立的子图和“虚拟关系”表示，其与主查询的连接方式取决于子查询的上下文（如 WHERE、FROM 或 SELECT 子句），并通过选择边和谓词边系统地捕捉嵌套关系的语义。</p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103518557.png" alt="image-20241227103518557"></p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227103533424.png" alt="image-20241227103533424"></p>
+<blockquote>
+<h3 id="查询内容"><a href="#查询内容" class="headerlink" title="查询内容"></a><strong>查询内容</strong></h3><p>Fig. 4(b) 展示了一个嵌套查询的图表示，其中：</p>
+<ul>
+<li>主查询操作在 <code>Students</code> 表上。</li>
+<li>子查询出现在主查询的 <code>WHERE</code> 子句中，并使用了 <code>NOT EXISTS</code> 条件。</li>
+<li>子查询的作用是检查 <code>Students S2</code> 表中是否存在符合条件的记录。</li>
+</ul>
+<hr>
+<h3 id="查询结构表示"><a href="#查询结构表示" class="headerlink" title="查询结构表示"></a><strong>查询结构表示</strong></h3><ol>
+<li><strong>主查询部分</strong>：<ul>
+<li>主查询涉及 <code>Students</code> 表，并通过属性 <code>GPA</code> 设置筛选条件。</li>
+<li>图中，<code>Students</code> 关系通过选择边 (σ\sigmaσ) 连接到其属性 <code>GPA</code>。</li>
+</ul>
+</li>
+<li><strong>子查询部分</strong>：<ul>
+<li>子查询引用了主查询的 <code>GPA</code> 属性，构成一个关联查询（Correlated Query）。</li>
+<li>子查询中，<code>Students S2</code> 表作为一个虚拟关系，连接到属性 <code>GPA</code>。</li>
+</ul>
+</li>
+<li><strong><code>NOT EXISTS</code> 条件</strong>：<ul>
+<li>条件 <code>NOT EXISTS</code> 意味着子查询并不返回任何具体属性。</li>
+<li>图中：<ul>
+<li>使用了两个“虚拟属性节点”（Dummy Attribute Nodes）来表示：<ul>
+<li>一个与子查询子图相连。</li>
+<li>一个与主查询图相连。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>图中存在两条路径：<ul>
+<li><strong>第一条路径</strong>：从主查询到子查询，表示子查询作为 <code>NOT EXISTS</code> 条件的一部分。</li>
+<li><strong>第二条路径</strong>：从子查询回到主查询，表示子查询与主查询属性之间的关联。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>查询图中的多关系实例</strong></p>
+<ul>
+<li>子查询中的 <code>Students S2</code> 是对 <code>Students</code> 表的另一个实例化，表示该表被多次引用。</li>
+<li>图中清晰区分了 <code>Students</code> 和 <code>Students S2</code>，展示了关系的多实例映射。</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<p>Fig. 4(b) 中嵌套查询的图表示特点：</p>
+<ol>
+<li>捕捉了嵌套查询在 <code>WHERE</code> 子句中的位置。</li>
+<li>处理了 <code>NOT EXISTS</code> 条件，通过虚拟属性节点表达子查询不返回具体属性的语义。</li>
+<li>展示了主查询与子查询之间的关联路径，以及关系多实例的图表示。</li>
+<li>图表示清晰捕捉了嵌套查询和关联查询的复杂语义结构。</li>
+</ol>
+</blockquote>
+<h2 id="CAPTURING-QUERY-SEMANTICS"><a href="#CAPTURING-QUERY-SEMANTICS" class="headerlink" title="CAPTURING QUERY SEMANTICS"></a>CAPTURING QUERY SEMANTICS</h2><p>在本节中，我们将描述一个模板机制，它允许我们表示查询图元素的语义。</p>
+<h3 id="Labels"><a href="#Labels" class="headerlink" title="Labels."></a>Labels.</h3><p><strong>节点和边的标签（Labels）</strong></p>
+<ol>
+<li><strong>节点的标签定义：</strong><ul>
+<li>每个节点 v 在查询图中的标签 l(v) 代表其概念含义：<ul>
+<li>关系节点：表示实体类型。例如，<code>Students</code> 的概念含义是“学生”。</li>
+<li>属性节点：标签源自属性名称。例如，<code>Name</code> 属性节点的标签可能是“name”。</li>
+<li>函数节点：标签代表函数的输出含义。例如，<code>max</code> 函数的标签是“the greatest”。</li>
+<li>表达式或未知函数：使用默认标签，例如“an expression on”或“a function of”。</li>
+<li>值节点：被视为字面量，标签直接是其值。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>边的标签定义：</strong><ul>
+<li>边的标签描述了源节点和目标节点之间关系的自然语言含义：<ul>
+<li>成员边（Membership edge）：如 <code>Students</code> 与 <code>Name</code> 之间的边标签是“of”。</li>
+<li>谓词边（Predicate edge）：如 <code>Students</code> 和 <code>Courses</code> 的连接表示“have taken”。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>标签的存储：</strong><ul>
+<li>数据库图的每个节点和边都存储了标签，查询图从数据库图继承这些标签。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>标签生成和优化：</strong></p>
+<ol>
+<li><strong>自动生成：</strong><ul>
+<li>节点标签可以通过数据库模式匹配和实体解析技术从数据库结构名称中提取。</li>
+<li>边标签有默认值，例如“of”用于成员边。</li>
+</ul>
+</li>
+<li><strong>人工调整：</strong><ul>
+<li>系统设计者可以校正或补充自动生成的标签，提供更精确的描述。</li>
+</ul>
+</li>
+<li><strong>优化翻译：</strong><ul>
+<li>使用细化的标签可以使查询图的翻译结果更加描述性和准确。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li>标签为节点和边赋予了自然语言含义，使查询图的语义清晰可读。</li>
+<li>自动生成和设计者调整相结合的方法确保标签的准确性和实用性。</li>
+<li>细化的标签提高了查询图翻译的质量，增强了表达的描述性和易理解性。</li>
+</ul>
+<h3 id="Templates"><a href="#Templates" class="headerlink" title="Templates."></a>Templates.</h3><p><strong>模板标签的定义与作用</strong></p>
+<ol>
+<li><p><strong>模板标签（Template Labels）：</strong></p>
+<ul>
+<li>用于解释查询图中节点和边之间的关系，以生成更自然的描述。</li>
+<li>模板标签可以应用于单条边 (v,u)或更广泛的路径连接 v 和 u。</li>
+</ul>
+</li>
+<li><p><strong>标签结构：</strong></p>
+<ul>
+<li><p>通用模板标签的形式：</p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227104619051.png" alt="image-20241227104619051"></p>
+<ul>
+<li>expr1,expr2,expr3：字母数字表达式，用于连接节点标签 l(v) 和 l(u)。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>模板语言和宏</strong></p>
+<ol>
+<li>模板语言：<ul>
+<li>提供支持变量、循环、函数和宏的机制，用于创建和管理模板标签。</li>
+</ul>
+</li>
+<li>示例宏：<ul>
+<li>**<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227104720356.png" alt="image-20241227104720356">**：生成包含节点 v 所有成员边的模板信息。</li>
+<li>**<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227104802025.png" alt="image-20241227104802025">**：生成从 v 到值节点之间所有路径的模板信息。</li>
+<li>**<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227104818247.png" alt="image-20241227104818247">**：组合<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227104828456.png" alt="image-20241227104828456">的结果，为 v 提供完整的翻译。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>模板类型</strong></p>
+<ol>
+<li><strong>通用模板（Generic Templates）：</strong><ul>
+<li>自动生成，独立于具体数据库，具有通用性。</li>
+<li>例如：<br>对选择边 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227104900029.png" alt="image-20241227104900029">，通用模板可能生成 “students whose name”。</li>
+<li>支持操作符标签，如<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227104924437.png" alt="image-20241227104924437">表示谓词操作符的标签。</li>
+<li>使用模板变量（如 <code>CONJ_NOUN</code>）增强可扩展性，便于结合短语。</li>
+</ul>
+</li>
+<li><strong>特定模板（Specific Templates）：</strong><ul>
+<li>人工定义，适用于特定边或路径。</li>
+<li>能够生成高质量、简洁的文本。例如：<ul>
+<li>对 <img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227105640260.png" alt="image-20241227105640260">，特定模板可以定义为“students named”。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>模板优先级与方向</strong></p>
+<ol>
+<li>优先使用特定模板：<ul>
+<li>特定模板因其手动定义的高质量描述，在查询翻译中优先于通用模板。</li>
+</ul>
+</li>
+<li>方向性：<ul>
+<li>模板标签遵循边的方向。如果两节点间存在反向边，则可为两条边分别分配模板标签。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>总结</strong></p>
+<p>模板标签通过通用和特定的机制，为查询图的边和路径提供自然语言描述，提高查询翻译的精确性和可读性。通用模板具有通用性，特定模板则更精炼且适合特定需求。模板语言和宏的支持增强了模板定义和扩展的灵活性。</p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227105754951.png" alt="image-20241227105754951"></p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227105829605.png" alt="image-20241227105829605"></p>
+<h2 id="QUERY-TRANSLATION"><a href="#QUERY-TRANSLATION" class="headerlink" title="QUERY TRANSLATION"></a>QUERY TRANSLATION</h2><p>在本节中，我们将介绍SPJ查询的算法。我们首先讨论查询主题的选择，即查询中感兴趣的主要实体，然后我们提出三种策略来翻译我们希望知道的关于主题和主题资格的信息，即哪些特定实体感兴趣。示例1中描述的查询及其查询图（图3）将作为参考示例。图5描述了一个标注有标签的图的简化版本，其中每个连接路径都被一条“虚拟”边所取代。在第IV-D节中，我们将转换算法扩展到分组和排序语义。</p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227100030019.png" alt="image-20241227100030019"></p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227095940061.png" alt="image-20241227095940061"></p>
+<h3 id="A-Query-Subject"><a href="#A-Query-Subject" class="headerlink" title="A. Query Subject"></a>A. Query Subject</h3><p><strong>查询主题（Query Subject）的概念和重要性</strong></p>
+<p><strong>定义：</strong></p>
+<ul>
+<li>查询主题是查询的中心实体，决定了查询图的遍历方向和生成的子句类型。</li>
+<li>通常是 <code>SELECT</code> 子句中投影属性的关系节点。</li>
+<li>在多关系投影属性的情况下，仅根据 <code>SELECT</code> 子句无法唯一确定查询主题。</li>
+</ul>
+<p><strong>主关系和次关系的定义：</strong></p>
+<ul>
+<li><strong>主关系（Primary Relation, RP）：</strong> 存储同类实体信息的关系（如 <code>Students</code>）。</li>
+<li><strong>次关系（Secondary Relation, RS）：</strong> 存储不同实体之间关系的关系（如 <code>StudentHistory</code>）。</li>
+<li>主关系可通过数据库模式或 E&#x2F;R 图识别，其余关系为次关系。</li>
+</ul>
+<p><strong>查询主题的选择标准：</strong></p>
+<ul>
+<li>查询主题是投影属性中“中心性”最强的主关系。</li>
+<li>“中心性”通过最短路径长度计算：选择使最大最短路径长度最小的主关系作为查询主题。</li>
+<li>如果有多个候选关系，优先选择投影属性最多的关系；若仍有冲突，则提供多种翻译。</li>
+</ul>
+<p><strong>查询主题的正式定义和例子</strong></p>
+<ol>
+<li><p><strong>正式定义：</strong></p>
+<ul>
+<li><p>查询主题是投影属性中的主关系 Rq，满足：</p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227154217104.png" alt="image-20241227154217104"></p>
+<ul>
+<li>其中<img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227154255280.png" alt="image-20241227154255280"> 是查询图中 Ri 和 Rx 之间的最短路径长度。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>例子（Fig. 5）：</strong></p>
+<ul>
+<li>主关系包括：<code>Students</code>、<code>Courses</code>、<code>Comments</code>、<code>Instructors</code>。  <strong>(Select句子投影的结点)</strong></li>
+<li>它们的最长路径长度分别为：12、9、15、15。 （使用 <strong>广度优先搜索（BFS）</strong> 遍历查询图，找到每个关系节点到其他所有关系节点的 <strong>最短路径长度</strong>。）</li>
+<li><font color="green">不知道是怎么算的？上述Definition的定义是为什么？不make sense。查询主题结点对于后面的查询翻译的意义是什么？</font></li>
+<li>因此，<code>Courses</code> 是查询主题，因为它的最长路径最短。</li>
+</ul>
+</li>
+</ol>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227105829605.png" alt="image-20241227105829605"></p>
+<h3 id="B-Query-graph-traversal"><a href="#B-Query-graph-traversal" class="headerlink" title="B. Query graph traversal"></a>B. Query graph traversal</h3><h4 id="BST-算法概述"><a href="#BST-算法概述" class="headerlink" title="BST 算法概述"></a><strong>BST 算法概述</strong></h4><ul>
+<li>BST（Breadth-First Search with Templates）算法用于将查询图翻译为自然语言文本，通过递归遍历查询图的节点和边生成三个部分的文本：<ol>
+<li><strong>pStr</strong>：描述查询中每个关系的成员属性。</li>
+<li><strong>fStr</strong>：描述查询中关系间的连接（<code>FROM</code> 子句的翻译）。</li>
+<li><strong>wStr</strong>：描述值节点（<code>WHERE</code> 子句的翻译）。</li>
+</ol>
+</li>
+</ul>
+<p><strong>翻译步骤</strong></p>
+<ol>
+<li><strong>从查询主题节点开始遍历（Depth-First）</strong>：<ul>
+<li>从查询主题节点 Rq 开始，递归遍历查询图，翻译所有相关节点和边。</li>
+</ul>
+</li>
+<li><strong>翻译路径到值节点（<code>wStr</code>）</strong>：<ul>
+<li>如果路径的终点是值节点，则生成描述该路径的子句并加入 <code>wStr</code>。</li>
+<li>例如：<ul>
+<li>对于 <code>Students → CLASS → 2011</code>，生成子句：<em>“students whose class is 2011”</em>。</li>
+</ul>
+</li>
+<li>如果有多个路径，子句之间使用连接词（如 “and”）组合。</li>
+</ul>
+</li>
+<li><strong>翻译关系连接（<code>fStr</code>）</strong>：<ul>
+<li>如果路径不以值节点结束，而是用于连接两个关系节点（即 <code>FROM</code> 子句的连接），生成描述连接的子句并加入 <code>fStr</code>。</li>
+<li>例如：<ul>
+<li>对于 <code>Courses</code>，生成子句：<em>“courses that are taught by instructors and are offered by departments”</em>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>翻译成员属性（<code>pStr</code>）</strong>：<ul>
+<li>对于每个节点，检查其输入边（成员边），翻译出该节点的成员属性并加入 <code>pStr</code>。</li>
+<li>例如：<ul>
+<li>对于 <code>Students</code>，生成子句：<em>“the gpa and name of students”</em>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>结果优化</strong>：<ul>
+<li>使用简单的查找替换机制（RCE）消除重复信息，使文本更流畅。</li>
+</ul>
+</li>
+<li><strong>组合最终文本</strong>：<ul>
+<li>将 pStr 、 fStr 和  wStr  组合成完整的自然语言翻译，格式为：<ul>
+<li><em>“Find [pStr] for [fStr]. Return results only for [wStr].”</em></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>示例结果（基于 Fig. 5）</strong></p>
+<p>对 Fig. 5 的查询图应用 BST 算法，最终生成的自然语言文本为： <em>“Find the title of courses, the name of instructors, the gpa and name of students, and the description of comments for courses that are taught by instructors, are taken by students that gave comments, and are offered by departments. Return results only for courses whose term is spring, students whose class is 2011, comments whose rating is greater than 3, and departments whose name is CS.”</em></p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227160350056.png" alt="image-20241227160350056"></p>
+<h4 id="MRP-算法概述"><a href="#MRP-算法概述" class="headerlink" title="MRP 算法概述"></a><strong>MRP 算法概述</strong></h4><p>MRP（<strong>Multi Reference Points</strong>）算法是一种改进的翻译策略，与 BST 不同，它将所有信息（投影属性、选择条件、连接条件）融合在一起进行翻译。它通过在查询图中定义多个“参考点”（Reference Points, RPs）对翻译进行语义分割，避免生成过长和不自然的句子。</p>
+<p><strong>关键概念：参考点（Reference Points, RPs）</strong></p>
+<ol>
+<li><strong>定义：</strong>参考点是查询图中的某个关系节点，满足以下任意条件：<ul>
+<li>(a) <strong>主关系节点</strong>，包含成员边 (μ)。</li>
+<li>(b) <strong>分叉节点</strong>，即连接多个其他关系节点的分支点。</li>
+<li>(c) <strong>叶子节点</strong>，即没有指向其他关系的路径。</li>
+<li>(d) 距离最近的参考点超过预设阈值 ψ。</li>
+</ul>
+</li>
+<li><strong>作用：</strong>通过定义参考点，将查询图分成若干子图进行翻译，从而控制翻译的语义长度和复杂性。</li>
+</ol>
+<p><strong>MRP 算法的工作原理</strong></p>
+<ol>
+<li>遍历查询图：<ul>
+<li>从查询主题节点开始，对查询图进行类似深度优先搜索（DFS）的遍历。</li>
+<li>当到达一个参考点时，翻译连接该参考点与上一个参考点的子图。</li>
+</ul>
+</li>
+<li>翻译方向：<ul>
+<li><strong>若参考点没有成员边 (μ)：</strong> 从上一个参考点 pr 翻译到当前参考点 rp。</li>
+<li><strong>若参考点有成员边 (μ)：</strong> 从当前参考点 rp 翻译到上一个参考点 pr。</li>
+<li>这种方向选择是为了确保参考点之间的语义连接自然且符合逻辑。</li>
+</ul>
+</li>
+<li>翻译内容：<ul>
+<li>包括投影属性、值节点的路径，以及连接条件。</li>
+<li>翻译时加入协调连词（如 “and”）、从句连接词（如 “that”）等，使文本更流畅。</li>
+</ul>
+</li>
+</ol>
+<p><strong>示例（基于 Fig. 5）</strong></p>
+<p>对于 Fig. 5 的查询图：</p>
+<ol>
+<li>假设起始点是 <code>Students</code>，参考点是 <code>Students</code>、<code>Courses</code> 和 <code>Instructors</code>。</li>
+<li>翻译结果为： <em>“Find the title of courses for courses that are offered by departments whose name is CS, and also, the gpa and name of students for students whose class is 2011 and that have taken these courses, and also, the description of comments for comments whose rating is greater than 3 and that are given by these students, and also, the name of instructors that teach courses whose term is spring.”</em></li>
+<li>在翻译过程中，额外的连词（如 “and” 和 “that”）被加入以改善句子结构。</li>
+</ol>
+<h3 id="C-Template-Selection"><a href="#C-Template-Selection" class="headerlink" title="C. Template Selection"></a>C. Template Selection</h3><p>模板选择算法旨在根据查询图动态构建最佳的模板组合，以生成清晰的查询翻译。目标是通过尽可能少且适合组合的大模板覆盖整个查询图，这样可以避免生成过于碎片化、不自然的描述。</p>
+<p><strong>模板的分类与特性</strong></p>
+<ol>
+<li><strong>通用模板（Generic Templates）：</strong><ul>
+<li>自动定义在查询图的单条边上。</li>
+<li>描述局部关系，但规模较小。</li>
+</ul>
+</li>
+<li><strong>特定模板（Specific Templates）：</strong><ul>
+<li>由设计者提供，定义在路径或子图上。</li>
+<li>通常规模更大，描述更具体。</li>
+</ul>
+</li>
+<li><strong>模板图（Template Graph）：</strong><ul>
+<li>模板被分配到一个模板图 ggg，它是一个有向无环图（DAG）。</li>
+<li>每个模板图包含一组参考点 R(g)R(g)R(g)，表示模板图的关键连接点，用于连接模板。</li>
+</ul>
+</li>
+</ol>
+<p><strong>模板的可组合性（Composeability）</strong></p>
+<ol>
+<li><strong>定义：</strong><ul>
+<li>两个模板 g 和 g′ 可组合（composeable），当且仅当它们的参考点集 R(g) 和 R(g′) 有非空交集。</li>
+<li>参考点是模板间连接的关键节点。</li>
+</ul>
+</li>
+<li><strong>例子：</strong><ul>
+<li>图中模板 ga 和 gb 的参考点不同（学生和教师 vs. 课程和部门），因此不可组合。</li>
+<li>模板 gc 的参考点与 ga 和 gb 均有交集，因此可以与二者组合。</li>
+</ul>
+</li>
+</ol>
+<p><strong>算法目标与挑战</strong></p>
+<ol>
+<li><strong>目标：</strong><ul>
+<li>给定查询图 Gq 和一组模板，算法需要：<ul>
+<li>找到最小数量的可组合模板集，覆盖整个查询图。</li>
+<li>确定模板组合的顺序，确保模板能够正确拼接。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>挑战：</strong><ul>
+<li>模板不能随意组合，必须根据模板的可组合性和查询图的结构以正确顺序拼接。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>算法的工作机制</strong></p>
+<ol>
+<li>模板组合的核心是将模板看作拼图的“块”，需要通过参考点“拼接”成完整的描述。</li>
+<li>通过选择最少的模板覆盖查询图，并按照可组合性确定拼接顺序，生成最终翻译。</li>
+</ol>
+<h4 id="1-TS-algorithm"><a href="#1-TS-algorithm" class="headerlink" title="1) TS algorithm:"></a>1) TS algorithm:</h4><p>TS 算法旨在从模板集中选择<strong>最小数量的可组合模板图</strong>，以覆盖整个查询图 Gq(Vq,Eq)G_q(V_q, E_q)Gq(Vq,Eq)，确保翻译结果自然、简洁且完整。</p>
+<hr>
+<p><strong>关键概念</strong></p>
+<ol>
+<li><p><strong>模板图（Template Graphs）：</strong></p>
+<ul>
+<li><p>模板图是定义在查询图的子图上的翻译模板，可以是单条边、路径或更复杂的子图。</p>
+</li>
+<li><p>查询图 Gq 是这些模板图的超级图。</p>
+</li>
+<li><p>例如：如果 </p>
+<p>GqG_qGq</p>
+<p> 是一个查询描述了学生、课程和教师的关系，模板图可能包括：</p>
+<ul>
+<li><code>Students → Courses</code>（表示学生修过的课程）。</li>
+<li><code>Courses → Instructors</code>（表示课程由哪些教师教授）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>可组合模板（Composeable Templates）：</strong></p>
+<ul>
+<li>模板图之间需要共享至少一个参考点（如关系节点），才能被视为可组合。</li>
+<li>例如：<ul>
+<li>模板 1：<code>Students → Courses</code></li>
+<li>模板 2：<code>Courses → Instructors</code></li>
+<li>因为两者共享 <code>Courses</code> 这一参考点，所以是可组合的。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>候选解（Candidate Solution）：</strong></p>
+<ul>
+<li>一个候选解由一组可组合模板图组成，表示为：<ul>
+<li>gcom：模板图集合。</li>
+<li>Esat：这些模板覆盖的查询图边集。</li>
+<li>Rg：这些模板的参考点集合。</li>
+</ul>
+</li>
+<li>一个解的大小为模板图的数量（∣gcom∣），目标是找到最小的解。</li>
+</ul>
+</li>
+</ol>
+<p><strong>算法步骤</strong></p>
+<p><strong>第一步：确定候选模板图</strong></p>
+<ol>
+<li><p><strong>索引模板：</strong></p>
+<ul>
+<li>创建一个反向索引 I，记录每条查询图边属于哪些模板图。</li>
+<li>例如：<ul>
+<li>查询图边 <code>Students → Courses</code> 存在于模板图 <code>T1</code> 和 <code>T3</code> 中。</li>
+<li>查询图边 <code>Courses → Instructors</code> 存在于模板图 <code>T2</code> 和 <code>T3</code> 中。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>构建矩阵 M[][]M[][]M[][]：</strong></p>
+<ul>
+<li><p>行表示查询图的边，列表示模板图。</p>
+</li>
+<li><p>如果边 eee 存在于模板图 ggg 中，则 M[e][g]&#x3D;1。</p>
+</li>
+<li><p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">M:</span><br><span class="line">Students → Courses: T1, T3</span><br><span class="line">Courses → Instructors: T2, T3</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<p><strong>筛选模板图：</strong></p>
+<ul>
+<li>仅保留能覆盖查询图全部边的模板图集合。</li>
+<li>例如：<ul>
+<li>如果模板图 T3T3T3 同时覆盖了 <code>Students → Courses</code> 和 <code>Courses → Instructors</code>，则保留 T3T3T3。</li>
+</ul>
+</li>
+</ul>
+<p><strong>第二步：寻找最小可组合模板集</strong></p>
+<ol>
+<li><strong>初始化候选解：</strong><ul>
+<li>从最大模板图（边数最多的模板图）开始，初始化候选解列表 QP。</li>
+</ul>
+</li>
+<li><strong>扩展候选解：</strong><ul>
+<li>按模板图的大小（优先选择边数最多的模板图）扩展候选解。</li>
+<li>如果某个候选解覆盖了查询图的所有边，则停止扩展，输出结果。</li>
+</ul>
+</li>
+<li><strong>剪枝：</strong><ul>
+<li>如果某个候选解无法扩展成完整解（即无法覆盖查询图的所有边），则剪枝。</li>
+</ul>
+</li>
+</ol>
+<p><strong>输出最优解</strong></p>
+<ul>
+<li>输出包含最少模板图的候选解。</li>
+</ul>
+<blockquote>
+<h3 id="查询图"><a href="#查询图" class="headerlink" title="查询图"></a><strong>查询图</strong></h3><p>假设查询图 Gq描述：</p>
+<ul>
+<li><code>Students → Courses</code>：学生修过的课程。</li>
+<li><code>Courses → Instructors</code>：课程由哪些教师教授。</li>
+</ul>
+<h4 id="模板集合"><a href="#模板集合" class="headerlink" title="模板集合"></a><strong>模板集合</strong></h4><ul>
+<li>T1T1T1：覆盖 <code>Students → Courses</code>。</li>
+<li>T2T2T2：覆盖 <code>Courses → Instructors</code>。</li>
+<li>T3T3T3：覆盖 <code>Students → Courses</code> 和 <code>Courses → Instructors</code>。</li>
+</ul>
+<h4 id="算法执行"><a href="#算法执行" class="headerlink" title="算法执行"></a><strong>算法执行</strong></h4><ol>
+<li><strong>筛选模板图：</strong><ul>
+<li>T1 和 T2 仅部分覆盖查询图。</li>
+<li>T3 完全覆盖查询图。</li>
+</ul>
+</li>
+<li><strong>寻找最优解：</strong><ul>
+<li>优先选择 T3，因为它覆盖了所有边，且是单一模板图（最小解）。</li>
+</ul>
+</li>
+</ol>
+<h4 id="输出"><a href="#输出" class="headerlink" title="输出"></a><strong>输出</strong></h4><ul>
+<li>最优解为 T3。</li>
+</ul>
+</blockquote>
+<p>TS 算法通过筛选和组合模板图，确保以最少的模板数覆盖查询图，同时考虑模板间的可组合性，最终生成高效、简洁的翻译方案。</p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227164536170.png" alt="image-20241227164536170"></p>
+<h4 id="2-TMT-algorithm"><a href="#2-TMT-algorithm" class="headerlink" title="2) TMT algorithm:"></a>2) TMT algorithm:</h4><p>TMT 算法的目的是使用 TS 算法生成的可组合模板集 gt来对查询图 Gq进行翻译。它通过动态策略确定模板的组合顺序，并生成自然流畅的查询翻译文本。</p>
+<hr>
+<p><strong>关键概念</strong></p>
+<ol>
+<li><strong>模板图（Template Graphs）</strong>：<ul>
+<li>来自 TS 算法的模板图集 gt，包括特定模板（描述子图）和通用模板（描述单条边）。</li>
+<li>特定模板可以生成更简洁、自然的文本。</li>
+</ul>
+</li>
+<li><strong>根节点（Root Node）</strong>：<ul>
+<li>查询图中一个没有入边（除了可能的成员边）的关系节点，被选为翻译的起点。</li>
+<li>例如，在 Fig. 5 中，<code>Students</code> 是根节点。</li>
+</ul>
+</li>
+<li><strong>超级边（Super Edge）</strong>：<ul>
+<li>模板图（尤其是特定模板）可以被视为连接其参考点的“超级边”，可能对应查询图的子图而不是单条边。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>算法步骤</strong></p>
+<ol>
+<li><strong>选择根节点（Root Node）：</strong><ul>
+<li>找到查询图中没有入边的关系节点 ri，作为翻译的起点。</li>
+<li>例如，对于 Fig. 5 的查询图，<code>Students</code> 是根节点。</li>
+</ul>
+</li>
+<li><strong>构建 DAG（Directed Acyclic Graph）：</strong><ul>
+<li>从根节点 ri出发，逐步扩展 DAG Gri，加入能够与 ri 组合的模板图。</li>
+<li>DAG 中的每条边（超级边）对应一个模板图（特定模板或通用模板）。</li>
+</ul>
+</li>
+<li><strong>拓扑排序（Topological Sort）：</strong><ul>
+<li>对构建的 DAG Gri 进行拓扑排序，确定模板图的处理顺序。</li>
+<li>优先级规则：<ol>
+<li>优先处理成员边（membership edges）。</li>
+<li>然后处理指向值节点的选择边（selection edges）。</li>
+<li>最后处理其他边。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>翻译子图（Partial Translation）：</strong><ul>
+<li>按拓扑排序依次翻译模板图，生成局部翻译短语 cStri。</li>
+<li>如果某个模板图有多个子模板图，则使用连词（如 “and”）连接翻译结果。</li>
+</ul>
+</li>
+<li><strong>组合翻译结果：</strong><ul>
+<li>对于每个根节点 ri 生成的 DAG，重复上述步骤，生成相应的翻译短语 cStri。</li>
+<li>最终将所有局部翻译短语 cStri 合并，形成完整的翻译文本 cStr。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>示例</strong></p>
+<p>对于 Fig. 5 的查询图，假设使用 Fig. 9 中的模板：</p>
+<ol>
+<li><p><strong>根节点选择：</strong> <code>Students</code> 是根节点。</p>
+</li>
+<li><p>DAG 构建：</p>
+<ul>
+<li>模板 ga：描述 <code>Students</code> 和 <code>Instructors</code> 之间的关系。</li>
+<li>模板 gbg_bgb：描述 <code>Courses</code> 和 <code>Departments</code> 的关系。</li>
+<li>模板 gcg_cgc：连接 <code>Students</code> 和 <code>Courses</code>。</li>
+<li>通过模板组合，构建一个 DAG。</li>
+</ul>
+</li>
+<li><p>拓扑排序：</p>
+<ul>
+<li>按规则排序模板，例如：ga → gc → gb。</li>
+</ul>
+</li>
+<li><p>生成翻译文本：</p>
+<ul>
+<li>使用模板翻译生成：<ul>
+<li>ga：<em>“Find the gpa and name of students whose class is 2011 and have been in classes of instructors”</em>。</li>
+<li>gc：<em>“Find the title of these CS courses”</em>。</li>
+<li>gb：<em>“and the description of comments whose rating is greater than 3”</em>。</li>
+</ul>
+</li>
+<li>合并所有翻译结果： <em>“Find the gpa and name of students whose class is 2011 and have been in classes of instructors and find the title of these CS courses and the description of comments whose rating is greater than 3.”</em></li>
+</ul>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227165205785.png" alt="image-20241227165205785"></p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227165135613.png" alt="image-20241227165135613"></p>
+</li>
+</ol>
+<hr>
+<p><strong>总结</strong></p>
+<ol>
+<li><strong>TMT 的核心：</strong><ul>
+<li>动态组合 TS 输出的模板图，通过 DAG 构建和拓扑排序生成翻译。</li>
+<li>特定模板优先，生成更自然的翻译文本。</li>
+</ul>
+</li>
+<li><strong>优点：</strong><ul>
+<li>通过模板组合生成的翻译更加简洁流畅。</li>
+<li>能处理复杂查询图，支持特定模板和通用模板的混合使用。</li>
+</ul>
+</li>
+<li><strong>适用场景：</strong><ul>
+<li>复杂查询图，尤其是包含多关系和多条件的查询。</li>
+</ul>
+</li>
+</ol>
+<h3 id="D-Discussion"><a href="#D-Discussion" class="headerlink" title="D. Discussion"></a>D. Discussion</h3><p><strong>1. 算法适用范围</strong></p>
+<ul>
+<li>目前的算法主要适用于 SPJ 查询（包括路径、嵌套等），但对于分组（GROUP BY）和排序（ORDER BY）的查询部分没有详细讨论。<ul>
+<li>分组和排序通过路径上的 γ（分组边）或 o（排序边）处理，生成相应短语 gStr 和 oStr。</li>
+<li>对于嵌套查询，这些短语可能会与翻译文本的其他部分融合，但由于篇幅限制，未深入讨论。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. 其他查询结构的处理</strong></p>
+<ul>
+<li>函数和计算（如 r 边和函数 f）：<ul>
+<li>没有详细讨论，但可以按照类似的方式进行处理。</li>
+</ul>
+</li>
+<li>析取谓词（Disjunctive Predicates）：<ul>
+<li>与联合谓词类似，只需要调整协调词（如用 “or” 代替 “and”）。</li>
+<li>需要注意操作符的优先级。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>3. “复杂”查询的处理</strong></p>
+<ul>
+<li>复杂查询特点：<ul>
+<li>包含大量连接链（joins）和投影属性。</li>
+<li>生成的翻译文本可能过长且不美观，这对技术熟练的用户可能不够有用。</li>
+</ul>
+</li>
+<li>解决方法：<ul>
+<li>使用模板生成 <strong>“查询摘要”</strong>，作为翻译的起点，帮助用户理解查询。</li>
+<li>可以限制投影属性的数量，通过 <strong>“heading attributes”</strong>（如 <code>Students</code> 的 <code>name</code> 属性）代表关系的特征属性，生成简洁的初始翻译，然后根据用户需求扩展翻译。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>4. 对复杂谓词的支持</strong></p>
+<ul>
+<li>特殊谓词例子：<ul>
+<li><code>having count(distinct year) = 1</code>：隐含“所有”的语义，如“找到所有课程都在同一年上的学生”。</li>
+<li><code>where year &lt; all (&lt;subquery&gt;)</code>：隐含“最早”的语义，如“找到参加最早年份课程的学生”。</li>
+</ul>
+</li>
+<li>解决方法：<ul>
+<li>对于这些复杂谓词，TMT 算法尤其有效，因为它允许通过模板捕获额外的语义知识。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>5. 讨论总结</strong></p>
+<ul>
+<li>TMT 算法不仅适用于常见的 SPJ 查询，还能处理复杂查询（如包含分组、排序、复杂谓词的查询）。</li>
+<li>对于技术用户的复杂查询，翻译可能不够实用，但生成摘要可以用于查询文档化或初步理解。</li>
+<li>TMT 特别擅长处理需要语义推理的复杂谓词（如隐含 “all” 或 “earliest” 的查询），为查询翻译提供了更强的灵活性。</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<p>讨论部分指出了当前算法的适用范围、未深入处理的部分（如分组、排序）、对复杂查询的应对方法（如查询摘要）以及 TMT 在复杂查询场景中的优势。它强调了模板的灵活性和语义推理的重要性，使得翻译更加智能和实用。</p>
+<h2 id="EXPERIMENTS"><a href="#EXPERIMENTS" class="headerlink" title="EXPERIMENTS"></a>EXPERIMENTS</h2><p><strong>系统工具与实现</strong></p>
+<ol>
+<li>SQL 查询解析：<ul>
+<li>使用 <strong>General SQL Parser</strong> 工具，将 SQL 查询解析为 XML 格式的语法树。</li>
+</ul>
+</li>
+<li>查询翻译模块：<ul>
+<li>将 XML 解析结果转换为查询图，使用 C++ 实现。</li>
+<li>利用 <strong>Boost 图形库</strong>（Boost Graph Library）处理查询图。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>实验目标</strong></p>
+<p>实验旨在评估所提方法的性能和有效性，研究以下查询特性对翻译的影响：</p>
+<ol>
+<li><strong>深度（Depth）：</strong> 查询图中最长路径上的关系数量。</li>
+<li><strong>出度（Out-degree）：</strong> 查询图中某关系节点指向其他关系节点的边数量（将查询图转为 DAG 时计算）。</li>
+<li><strong>成员边数量（μ-degree）：</strong> 查询图中总的成员边数。</li>
+<li><strong>值节点数量（σ-degree）：</strong> 查询图中总的值节点数。</li>
+<li>紧凑度（Compactness）：<ul>
+<li>计算公式：紧凑度&#x3D;(关系总数)&#x2F;(最长路径上的关系数量)。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>对具体算法的研究</strong></p>
+<ol>
+<li>BST（Breadth Search Translation）：<ul>
+<li>研究查询主题对翻译的影响。</li>
+</ul>
+</li>
+<li>MRP（Multi Reference Points）：<ul>
+<li>研究参考点数量对翻译的影响。</li>
+</ul>
+</li>
+<li>TMT（Template Matching and Translation）：<ul>
+<li>研究模板数量对翻译的影响。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>实验环境</strong></p>
+<ul>
+<li>使用 CourseRank 数据库的模式进行实验：<ul>
+<li>包含 20 个关系，每个关系平均有 5 个字段。</li>
+</ul>
+</li>
+</ul>
+<p>实验通过研究查询的深度、出度、边数量、紧凑度等特性，分析了翻译算法在不同条件下的性能和有效性。结合 BST、MRP 和 TMT 的具体特性，对查询主题、参考点和模板数量的影响进行了详细探讨。</p>
+<h3 id="A-Effectiveness"><a href="#A-Effectiveness" class="headerlink" title="A. Effectiveness"></a>A. Effectiveness</h3><p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227165759977.png" alt="image-20241227165759977"></p>
+<p><img src="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/image-20241227165932550.png" alt="image-20241227165932550"></p>
+<p><strong>实验目标</strong></p>
+<p>实验旨在评估三种翻译算法（BST、MRP 和 TMT）的有效性，分为两部分：</p>
+<ol>
+<li><strong>SQL → NL（SQL 查询到自然语言）：</strong> 测试翻译算法生成的自然语言解释的质量和可理解性。</li>
+<li><strong>NL → SQL（自然语言到 SQL 查询）：</strong> 测试用户从生成的自然语言描述反推 SQL 查询的难易程度。</li>
+</ol>
+<hr>
+<p><strong>1. SQL → NL 实验</strong></p>
+<p><strong>实验设置：</strong></p>
+<ul>
+<li>使用 SQL 专家作为实验对象，评估查询翻译的可理解性和自然性（评分 1 到 10）。</li>
+<li>比较 BST、MRP 和 TMT 的翻译效果，以及专家手动翻译（USER）结果。</li>
+<li>重点分析查询特性对翻译结果的影响：深度（depth）、投影属性数（μ-degree）、值节点数（σ-degree）和紧凑度（compactness）。</li>
+</ul>
+<p><strong>实验结果：</strong></p>
+<ol>
+<li><strong>查询主题的影响（Fig. 12(a)）：</strong><ul>
+<li>BST 的查询主题（Query Subject, QS）越“中心”（即更靠近查询图的其他节点），生成的子句更平衡、信息更集中。</li>
+<li>手动设置的非中心查询主题（如偏离中心 1、2…步）会降低翻译质量。</li>
+</ul>
+</li>
+<li><strong>深度的影响（Fig. 12(b)）：</strong><ul>
+<li>随着查询图深度增加，所有翻译方法的评分下降。</li>
+<li>BST 受深度影响最大：长路径导致翻译结果不自然。</li>
+<li>MRP 通过插入参考点改善了长路径问题，但效果略逊于 TMT。</li>
+<li>TMT 使用特定模板减少了模板数量，即使查询复杂性增加，翻译仍较为流畅。</li>
+</ul>
+</li>
+<li><strong>投影属性数的影响（Fig. 12(c)）：</strong><ul>
+<li>BST 对属性数的变化更“免疫”，在属性数多时表现最好。</li>
+<li>TMT 由于模板局限性（尤其在处理投影时），翻译质量随投影数增加而下降。</li>
+<li>用户（USER）翻译倾向于 BST 风格，即先描述投影，再处理值选择。</li>
+</ul>
+</li>
+<li><strong>值节点数的影响（Fig. 12(d)）：</strong><ul>
+<li>BST 处理值节点最不受影响，因为值选择被单独放在翻译末尾。</li>
+<li>MRP 将值选择融入翻译中，效果平滑，但在值节点多时稍逊于 BST。</li>
+<li>用户翻译结果介于 BST 和 MRP 之间。</li>
+</ul>
+</li>
+<li><strong>紧凑度的影响（Fig. 15）：</strong><ul>
+<li>查询图越紧凑（更多分支，中心关系更明显），BST 和 MRP 翻译质量越高。</li>
+<li>对非常紧凑的查询图，MRP 不需要参考点，效果与 BST 接近。</li>
+</ul>
+</li>
+<li><strong>TMT 的优势：</strong><ul>
+<li>TMT 翻译常比用户手动翻译评分更高，尤其是小型查询。</li>
+<li>TMT 通过模板生成更具表现力、自然流畅的翻译文本，但依赖模板的设计质量。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>2. NL → SQL 实验</strong></p>
+<p><strong>实验设置：</strong></p>
+<ul>
+<li>用户从生成的自然语言描述中反推 SQL 查询，测量正确率和难易度评分（1 到 10）。</li>
+<li>比较 BST、MRP 和 TMT 翻译文本在 SQL 重构任务中的效果。</li>
+</ul>
+<p><strong>实验结果：</strong></p>
+<ol>
+<li>BST 的优势：<ul>
+<li>BST 翻译将投影、连接、值选择分开生成单独子句，逻辑清晰，用户更易理解和重构 SQL。</li>
+</ul>
+</li>
+<li>MRP 的特点：<ul>
+<li>MRP 翻译通过参考点分段描述查询，适合简单查询，但对于多个投影的查询，用户重构难度增加。</li>
+</ul>
+</li>
+<li>TMT 的不足：<ul>
+<li>TMT 提供更高层次的抽象描述，帮助用户理解查询语义，但增加了映射到 SQL 具体操作的复杂性。</li>
+<li>有时 TMT 翻译可能导致语义等价但形式不同的 SQL（如嵌套查询的情况）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>结论</strong></p>
+<ol>
+<li><strong>针对不同需求选择翻译方法：</strong><ul>
+<li><strong>TMT：</strong> 如果愿意设计高质量的特定模板，TMT 可生成更自然、流畅的翻译文本，适合解释查询语义或文档化。</li>
+<li><strong>BST：</strong> 全自动化方法，适合需要逻辑清晰、易重构为 SQL 的场景。</li>
+<li><strong>MRP：</strong> 平衡方法，结合了 BST 的自动化和 TMT 的结构性，适合需要中等复杂度的翻译。</li>
+</ul>
+</li>
+<li><strong>未来改进方向：</strong><ul>
+<li>探索混合翻译方法（结合 TMT 的模板优势与 BST&#x2F;MRP 的逻辑性）。</li>
+<li>通过用户反馈优化模板设计，进一步提升翻译质量和可用性。</li>
+</ul>
+</li>
+</ol>
+<h3 id="B-Performance"><a href="#B-Performance" class="headerlink" title="B. Performance"></a>B. Performance</h3><p><strong>影响性能的主要因素</strong></p>
+<ol>
+<li><strong>查询图的规模：</strong><ul>
+<li>性能主要受查询图规模的影响，包括：<ul>
+<li>关系节点的数量。</li>
+<li>属性节点的数量。</li>
+<li>值节点的数量。</li>
+</ul>
+</li>
+<li>模板数量对性能的影响较小（在实验中的模板数据库中未观察到明显的性能开销）。</li>
+</ul>
+</li>
+<li><strong>算法间的性能比较：</strong><ul>
+<li>BST（最快）：<ul>
+<li>仅对查询图进行一次遍历，因此效率最高。</li>
+</ul>
+</li>
+<li>MRP（中等速度）：<ul>
+<li>为寻找和连接参考点，需在图中往返遍历部分连接（joins），增加了时间开销。</li>
+</ul>
+</li>
+<li>TMT（最慢）：<ul>
+<li>为找到候选模板和确定模板组合顺序，需要多次读取查询图的边，因此耗时最长。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p><strong>实验结果</strong></p>
+<ul>
+<li>图 16 显示了三个算法的执行时间：<ul>
+<li><strong>BST 时间最短，效率最高。</strong></li>
+<li><strong>MRP 次之，因为它需要多次遍历部分图。</strong></li>
+<li><strong>TMT 时间最长，由于多次模板匹配和组合处理增加了开销。</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<ul>
+<li><strong>BST 适合对性能要求高的场景</strong>，尤其是快速生成翻译结果。</li>
+<li><strong>MRP 在性能和翻译质量之间平衡较好</strong>。</li>
+<li><strong>TMT 的性能开销最高</strong>，但它能生成更自然、更精确的翻译，适合对翻译质量要求高的场景。</li>
+</ul>
+<h2 id="RELATED-WORK"><a href="#RELATED-WORK" class="headerlink" title="RELATED WORK"></a>RELATED WORK</h2><p><strong>1. 自然语言与数据库（NL and DB）</strong></p>
+<ul>
+<li>早期的研究主要集中在与本研究相反的方向，例如：<ul>
+<li>自然语言查询（NL Querying）[4]。</li>
+<li>自然语言与模式设计（NL and Schema Design）[11]。</li>
+<li>自然语言数据库接口（NL and Database Interfaces）[12]。</li>
+<li>问答系统（Question Answering）[13]。</li>
+</ul>
+</li>
+<li>过去的研究中：<ul>
+<li>翻译小型数据库的内容或查询答案[8]。</li>
+<li>探讨了将 SQL 查询翻译为叙述的实用性[5]。</li>
+</ul>
+</li>
+<li>与内容翻译的区别：<ul>
+<li>查询翻译更难，因为查询的规模和复杂性没有上限，而数据库内容受模式结构限制，有上限。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>2. 查询图表示法（Query Graph Representations）</strong></p>
+<ul>
+<li>查询图在查询优化中已有广泛应用[6]、[14]、[7]：<ul>
+<li>例如，查询图模型（QGM）提供了 SQL 查询的概念化表示[7]。</li>
+<li>查询图用于表示与查询优化和处理相关的信息（如操作和数据流）。</li>
+</ul>
+</li>
+<li>本研究的区别：<ul>
+<li>关注查询的语义（“查询描述了什么”）而非操作（“如何生成答案”）。</li>
+<li>查询图模型捕捉了查询的语义元素及其关联。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>3. 图和集合问题（Graph and Set Problems）</strong></p>
+<ul>
+<li><p>模板选择问题</p>
+<p>分为两个子问题：</p>
+<ol>
+<li>图包含问题（Graph Containment）：<ul>
+<li>受到大规模图数据库索引和剪枝方法研究的启发[15]。</li>
+<li>采用精确匹配方法，适用于模板图数据库的规模。</li>
+</ul>
+</li>
+<li>图覆盖问题（Graph Cover）：<ul>
+<li>给定查询图 ggg 和一组子图 {g1,g2,…}{g_1, g_2, …}{g1,g2,…}，找到最小的可组合子图集以覆盖 ggg。</li>
+<li><strong>可组合性</strong>：子图需共享特定节点。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>与其他问题的区别：</p>
+<ul>
+<li>与图分解（Graph Decomposition）不同，后者将图分解为边集不重叠的子图[16]、[17]。</li>
+<li>与集合覆盖问题（Set Cover）类似，但在本研究中，集合不能自由组合，需考虑可组合性约束。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>总结</strong></p>
+<p>本研究在自然语言和数据库的交互、查询图的语义表示以及图&#x2F;集合覆盖问题的基础上进行了扩展：</p>
+<ol>
+<li>将重点从操作层面转向语义层面。</li>
+<li>设计了专门的算法解决具有约束的图覆盖问题，用于支持查询翻译。</li>
+</ol>
+<h2 id="CONCLUSIONS-AND-FUTURE-WORK"><a href="#CONCLUSIONS-AND-FUTURE-WORK" class="headerlink" title="CONCLUSIONS AND FUTURE WORK"></a>CONCLUSIONS AND FUTURE WORK</h2><p><strong>1. 研究工作总结</strong></p>
+<ul>
+<li>本文探索了 <strong>将 SQL 查询翻译为自然语言文本</strong> 的新问题。</li>
+<li>提出了一个将结构化查询表示为有向图的模型，通过为图的边注释模板标签来捕获查询语义。</li>
+<li>将查询翻译问题映射为图问题，并提出了多种图遍历策略，用于高效探索查询图并生成文本描述。</li>
+<li>提出的算法能够捕获数据库实体之间的重要语义关联，为数据库模式提供更高层次的抽象。</li>
+<li>实验结果表明，该方法具有很好的潜力，是将结构化查询翻译为自然语言的首次尝试。</li>
+</ul>
+<hr>
+<p><strong>2. 未来研究方向</strong></p>
+<ol>
+<li><strong>自适应翻译方法：</strong><ul>
+<li>研究一种能够根据查询特性动态调整翻译策略的自适应方法。</li>
+</ul>
+</li>
+<li><strong>模板推荐：</strong><ul>
+<li>研究通过分析查询日志挖掘查询中的有趣或常见关联，为模板分配提供建议。</li>
+</ul>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/">http://example.com/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/" title="Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">113</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Explaining-Structured-Queries-in-Natural-Language"><span class="toc-number">1.</span> <span class="toc-text">Explaining Structured Queries in Natural Language</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.2.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#QUERY-REPRESENTATION"><span class="toc-number">1.3.</span> <span class="toc-text">QUERY REPRESENTATION</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Database-Graph"><span class="toc-number">1.3.1.</span> <span class="toc-text">A. Database Graph</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.3.2.</span> <span class="toc-text">数据库示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9B%BE%E4%B8%AD%E7%9A%84%E8%B7%AF%E5%BE%84"><span class="toc-number">1.3.3.</span> <span class="toc-text">数据库图中的路径</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E4%B8%8A%E7%9A%84%E7%AD%89%E4%BB%B7%E6%80%A7"><span class="toc-number">1.3.4.</span> <span class="toc-text">操作上的等价性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E4%B9%89%E4%B8%8A%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="toc-number">1.3.5.</span> <span class="toc-text">语义上的差异</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E7%82%B9%E6%80%BB%E7%BB%93"><span class="toc-number">1.3.6.</span> <span class="toc-text">关键点总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Query-Graphs"><span class="toc-number">1.3.7.</span> <span class="toc-text">B. Query Graphs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%86%85%E5%AE%B9%EF%BC%9A"><span class="toc-number">1.3.8.</span> <span class="toc-text">主要内容：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA%EF%BC%9A"><span class="toc-number">1.3.9.</span> <span class="toc-text">结论：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#a-%E4%B8%80%E4%B8%AA%E5%8C%85%E5%90%AB-GROUP-BY-%E7%9A%84%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.3.10.</span> <span class="toc-text">(a) 一个包含 GROUP BY 的查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%86%85%E5%AE%B9"><span class="toc-number">1.3.11.</span> <span class="toc-text">查询内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%84%E8%A1%A8%E7%A4%BA"><span class="toc-number">1.3.12.</span> <span class="toc-text">查询结构表示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CAPTURING-QUERY-SEMANTICS"><span class="toc-number">1.4.</span> <span class="toc-text">CAPTURING QUERY SEMANTICS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Labels"><span class="toc-number">1.4.1.</span> <span class="toc-text">Labels.</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Templates"><span class="toc-number">1.4.2.</span> <span class="toc-text">Templates.</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#QUERY-TRANSLATION"><span class="toc-number">1.5.</span> <span class="toc-text">QUERY TRANSLATION</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Query-Subject"><span class="toc-number">1.5.1.</span> <span class="toc-text">A. Query Subject</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Query-graph-traversal"><span class="toc-number">1.5.2.</span> <span class="toc-text">B. Query graph traversal</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BST-%E7%AE%97%E6%B3%95%E6%A6%82%E8%BF%B0"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">BST 算法概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MRP-%E7%AE%97%E6%B3%95%E6%A6%82%E8%BF%B0"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">MRP 算法概述</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Template-Selection"><span class="toc-number">1.5.3.</span> <span class="toc-text">C. Template Selection</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-TS-algorithm"><span class="toc-number">1.5.3.1.</span> <span class="toc-text">1) TS algorithm:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%9B%BE"><span class="toc-number">1.5.4.</span> <span class="toc-text">查询图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E9%9B%86%E5%90%88"><span class="toc-number">1.5.4.1.</span> <span class="toc-text">模板集合</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E6%89%A7%E8%A1%8C"><span class="toc-number">1.5.4.2.</span> <span class="toc-text">算法执行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%93%E5%87%BA"><span class="toc-number">1.5.4.3.</span> <span class="toc-text">输出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-TMT-algorithm"><span class="toc-number">1.5.4.4.</span> <span class="toc-text">2) TMT algorithm:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-Discussion"><span class="toc-number">1.5.5.</span> <span class="toc-text">D. Discussion</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXPERIMENTS"><span class="toc-number">1.6.</span> <span class="toc-text">EXPERIMENTS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Effectiveness"><span class="toc-number">1.6.1.</span> <span class="toc-text">A. Effectiveness</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Performance"><span class="toc-number">1.6.2.</span> <span class="toc-text">B. Performance</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RELATED-WORK"><span class="toc-number">1.7.</span> <span class="toc-text">RELATED WORK</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CONCLUSIONS-AND-FUTURE-WORK"><span class="toc-number">1.8.</span> <span class="toc-text">CONCLUSIONS AND FUTURE WORK</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/" title="Explaining Structured Queries in Natural Language">Explaining Structured Queries in Natural Language</a><time datetime="2024-12-27T09:15:17.000Z" title="发表于 2024-12-27 17:15:17">2024-12-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/" title="Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation">Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation</a><time datetime="2024-12-24T10:16:03.000Z" title="发表于 2024-12-24 18:16:03">2024-12-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/" title="Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs">Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs</a><time datetime="2024-12-15T08:36:36.000Z" title="发表于 2024-12-15 16:36:36">2024-12-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/02/ClDiff-Generating-Concise-Linked-Code-Differences/" title="ClDiff: Generating Concise Linked Code Differences">ClDiff: Generating Concise Linked Code Differences</a><time datetime="2024-12-02T02:37:55.000Z" title="发表于 2024-12-02 10:37:55">2024-12-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/11/30/Drowzee-Metamorphic-Testing-for-Fact-Conflicting-Hallucination-Detection-in-Large-Language-Models/" title="Drowzee Metamorphic Testing for Fact-Conflicting Hallucination Detection in Large Language Models">Drowzee Metamorphic Testing for Fact-Conflicting Hallucination Detection in Large Language Models</a><time datetime="2024-11-30T08:49:19.000Z" title="发表于 2024-11-30 16:49:19">2024-11-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
