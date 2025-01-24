@@ -1,0 +1,842 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Diversity Drives Fairness: Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning SoftwareAbstract交叉公正是机器学习（ML）软件的一个关键要求，要求在多个受保护属性定义的子群体之间保持公正性。本文介绍了FairHOME，一种新颖的集成方法，通过对输入">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software">
+<meta property="og:url" content="http://example.com/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="Diversity Drives Fairness: Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning SoftwareAbstract交叉公正是机器学习（ML）软件的一个关键要求，要求在多个受保护属性定义的子群体之间保持公正性。本文介绍了FairHOME，一种新颖的集成方法，通过对输入">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2025-01-24T12:23:10.000Z">
+<meta property="article:modified_time" content="2025-01-24T12:23:52.213Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-01-24 20:23:52'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">115</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-01-24T12:23:10.000Z" title="发表于 2025-01-24 20:23:10">2025-01-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-01-24T12:23:52.213Z" title="更新于 2025-01-24 20:23:52">2025-01-24</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software"><a href="#Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software" class="headerlink" title="Diversity Drives Fairness: Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software"></a>Diversity Drives Fairness: Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>交叉公正是机器学习（ML）软件的一个关键要求，要求在多个受保护属性定义的子群体之间保持公正性。本文介绍了FairHOME，一种新颖的集成方法，通过对输入进行高阶变异，在推理阶段增强ML软件的交叉公正性。FairHOME的灵感来源于社会科学理论，这些理论强调多样性带来的益处。FairHOME为每个输入实例生成代表不同子群体的变异体，从而拓宽视角范围，促进更公平的决策过程。与传统的集成方法不同，传统方法通过结合不同模型的预测，FairHOME通过结合原始输入及其变异体的预测（所有预测均由同一个ML模型生成）来得出最终决策。值得注意的是，FairHOME甚至可以应用于已部署的ML软件，因为它无需训练新的模型。我们在24个决策任务上，使用广泛采用的评价指标，全面评估了FairHOME与七种最先进的公正性提升方法的表现。结果表明，FairHOME在所有考虑的指标上均优于现有方法，平均提高了47.5%的交叉公正性，超越当前表现最好的方法9.6个百分点。</p>
+<h2 id="INTRODUCTION"><a href="#INTRODUCTION" class="headerlink" title="INTRODUCTION"></a>INTRODUCTION</h2><p><font color="red">Background</font></p>
+<p><strong>机器学习（ML）软件在高风险决策中的重要性</strong></p>
+<ul>
+<li>ML软件在与人相关的高风险决策中起着关键作用，如招聘、刑事判决和贷款申请。</li>
+<li>这些决策中的偏见可能会延续不平等并对历史上被边缘化的群体造成伤害。</li>
+</ul>
+<p><strong>不公正的ML软件带来的后果</strong></p>
+<ul>
+<li>不公正的ML软件可能导致伦理、声誉、财务损害和法律后果，尤其当它违反反歧视法时。</li>
+</ul>
+<p><strong>公平性在ML软件中的重要性</strong></p>
+<ul>
+<li>公平性被认为是ML软件的基础要求，旨在减轻与性别、种族、年龄等受保护属性相关的偏见和歧视。</li>
+<li>从软件工程（SE）角度来看，不公正的ML软件可视为软件“公平性缺陷”，推动了改善ML软件公平性的研究。</li>
+</ul>
+<p><strong>多重身份交集和“交叉公平性”</strong></p>
+<ul>
+<li>软件用户通常属于由多个受保护属性定义的交叉身份群体，这些交集会导致不同子群体之间遭遇不同类型的歧视。</li>
+<li>“交叉公平性”是衡量由多个受保护属性组合形成的子群体之间公平性的重要概念，已在法律规定中体现。</li>
+<li>相比单一受保护属性的公平性，交叉公平性更具挑战性。</li>
+</ul>
+<blockquote>
+<p><strong>交叉公平性</strong>（Intersectional Fairness）是指在考虑多个受保护属性（如性别、种族、年龄等）时，确保在这些交叉身份群体中的公平性。具体来说，交叉公平性关注的是，当不同的受保护属性交织在一起时，这些交集群体是否也能获得公正的待遇。</p>
+<p>假设有一款招聘系统，主要根据求职者的性别和种族来做出录用决定。如果系统只是考虑性别公平（即确保男性和女性的录用概率相同），这就被称为“单一公平性”。但是，这种方式忽视了交叉身份的影响，例如<strong>黑人女性</strong>和<strong>白人女性</strong>可能会面临不同的歧视或偏见。</p>
+<ul>
+<li><strong>单一公平性</strong>：如果系统只保证男性和女性的录用概率平衡，那么黑人女性可能仍然遭遇基于种族和性别的双重歧视，而白人女性则可能只有性别歧视的影响。</li>
+<li><strong>交叉公平性</strong>：在交叉公平性中，不仅会考虑男性和女性之间的公平，还会进一步考虑不同种族之间的公平。例如，确保黑人女性的录用机会与白人女性和黑人男性相当，而不仅仅是让所有女性的机会相同。</li>
+</ul>
+<p>通过交叉公平性的考虑，系统可以在多个属性交集的层面上确保更全面的公平，而不只是单一维度的公平。</p>
+</blockquote>
+<p><font color="red">Existing works</font></p>
+<p><strong>先进的偏见缓解方法</strong></p>
+<ul>
+<li><strong>FairSMOTE</strong>：通过预处理训练数据来缓解不同受保护属性之间的偏见，然后训练更公平的模型。</li>
+<li><strong>MAAT</strong>：为每个受保护属性分别训练模型以优化其公平性，然后将这些模型组合起来。</li>
+<li><strong>FairMask</strong>：基于训练数据训练个别外推模型，修改输入中的受保护属性以获得更公平的结果。</li>
+</ul>
+<p><font color="green">这些相关工作的局限性是什么？ 为什么需要引入FairHOME来解决呢？</font></p>
+<p><font color="red">Approcah</font></p>
+<p><strong>引入FairHOME</strong></p>
+<ul>
+<li>本文提出了一种新颖的集成方法——FairHOME，旨在通过对输入进行高阶变异来提升机器学习（ML）软件在推理阶段的交叉公平性。</li>
+</ul>
+<p><strong>灵感来源</strong></p>
+<ul>
+<li>该方法借鉴了社会科学领域的观点，即增加多样性有助于促进决策过程中的公平性。</li>
+</ul>
+<p><strong>生成多样化输入</strong></p>
+<ul>
+<li>FairHOME通过对多个受保护属性应用高阶变异，生成来自不同子群体的多样化变异输入，从而在决策过程中引入不同视角。这种方法特别适用于处理交叉公平性问题，因为交叉公平性涉及多个子群体，确保了生成输入集的多样性。</li>
+</ul>
+<p><strong>决策方式</strong></p>
+<ul>
+<li>FairHOME结合ML软件对原始输入及其变异体的预测来做出最终决策，而不同于传统集成方法（如现有的公平性研究方法），这些方法通常结合来自不同模型的预测。</li>
+</ul>
+<p><strong>无需创建新模型</strong></p>
+<ul>
+<li>由于FairHOME只使用同一个ML模型生成预测，这一特点使其不需要创建新模型，因此可以直接应用于已部署的ML软件。</li>
+</ul>
+<p><font color="red">Evaluation and contributions</font></p>
+<p><strong>FairHOME的评估</strong></p>
+<ul>
+<li>本文对FairHOME进行了大规模实证研究，比较了其与七种偏见缓解方法在24个决策任务中的表现，使用了六种交叉公平性指标。</li>
+</ul>
+<p><strong>公平性与性能的权衡</strong></p>
+<ul>
+<li>考虑到偏见缓解通常会降低机器学习（ML）性能（如准确率），本文还通过高级基准测试工具对FairHOME的公平性与性能的权衡进行了全面评估，使用了30个公平性-性能指标。</li>
+</ul>
+<p><strong>评估结果</strong></p>
+<ul>
+<li>FairHOME在提高交叉公平性方面表现出色，平均提高了47.5%的交叉公平性，超越当前表现最好的方法9.6个百分点。</li>
+<li>同时，FairHOME在提升公平性的同时，性能仅有微小下降，最大降幅为2.7%。</li>
+</ul>
+<p><strong>贡献总结</strong></p>
+<ul>
+<li><strong>FairHOME的引入</strong>：提出了一种新颖的集成方法，利用输入的高阶变异显著增强ML软件的交叉公平性。</li>
+<li><strong>大规模实证研究</strong>：对FairHOME进行了全面评估，涵盖7种最先进技术、24个决策任务、6个交叉公平性指标和30个公平性-性能测量。</li>
+<li><strong>开放资源</strong>：公开所有数据和代码，鼓励复现并促进后续研究。</li>
+</ul>
+<h2 id="PRELIMINARIES"><a href="#PRELIMINARIES" class="headerlink" title="PRELIMINARIES"></a>PRELIMINARIES</h2><h3 id="A-Fairness-in-ML-Software"><a href="#A-Fairness-in-ML-Software" class="headerlink" title="A. Fairness in ML Software"></a><em>A. Fairness in ML Software</em></h3><p><strong>公平性在ML软件中的重要性</strong></p>
+<ul>
+<li>本文关注的是机器学习分类中的公平性，特别是受保护属性（如性别、种族、年龄等）在决策中的作用。</li>
+<li>受保护属性将人群划分为特权组和非特权组，特权组通常享有更多优势，而非特权组则面临不公平待遇。</li>
+</ul>
+<p><strong>群体公平性与交叉公平性</strong></p>
+<ul>
+<li><strong>群体公平性</strong>：旨在确保ML软件的决策不会不公平地偏袒某一群体。它要求特权组和非特权组之间获得公平的标签分配或模型表现一致。</li>
+<li><strong>交叉公平性</strong>：是在群体公平性的基础上，进一步考虑多个受保护属性交织的子群体之间的公平性。它着重解决这些交织群体可能面临的多重歧视问题。</li>
+</ul>
+<p><strong>交叉公平性标准</strong></p>
+<ul>
+<li><strong>最差情况交叉公平性（WC）</strong>：衡量子群体之间的最大不公平差距（例如，最歧视群体与最少歧视群体的差距）。</li>
+<li><strong>平均情况交叉公平性（AC）</strong>：计算各子群体与整体群体之间的差异，并求平均。</li>
+</ul>
+<p><strong>公平性度量指标</strong></p>
+<ul>
+<li>本文使用三种广泛采用的群体公平性度量指标：<strong>SPD</strong>（统计平衡差异）、<strong>AOD</strong>（平均机会差异）、<strong>EOD</strong>（平等机会差异）。</li>
+<li>基于交叉公平性的标准，本文定义了六个交叉公平性度量指标：<strong>WC-SPD</strong>、<strong>WC-AOD</strong>、<strong>WC-EOD</strong>（最差情况）和<strong>AC-SPD</strong>、<strong>AC-AOD</strong>、<strong>AC-EOD</strong>（平均情况）。</li>
+</ul>
+<p><strong>子群体定义与计算</strong></p>
+<ul>
+<li>受保护属性将群体划分为不同子群体，子群体由受保护属性的交集定义。例如，性别（男、女）和种族（白人、非白人）两个属性会生成四个子群体：白人男性、白人女性、非白人男性、非白人女性。</li>
+<li>通过计算不同子群体的决策标签，定义了最差情况交叉公平性度量方法，如<strong>WC-SPD</strong>、<strong>WC-AOD</strong>和<strong>WC-EOD</strong>。平均情况交叉公平性度量则通过计算子群体与整体群体之间的差异来衡量公平性。</li>
+</ul>
+<h3 id="B-Related-Work"><a href="#B-Related-Work" class="headerlink" title="B. Related Work"></a><em>B. Related Work</em></h3><p><strong>公平性改进（偏见缓解）概述</strong></p>
+<ul>
+<li>公平性改进，也称为偏见缓解，已成为软件工程（SE）领域的重要话题，旨在解决软件中的“公平性漏洞”（fairness bugs），确保软件满足公平性要求。</li>
+<li>偏见缓解方法通常分为三种类型：<ul>
+<li><strong>预处理方法</strong>：在训练数据中消除偏见，防止偏见在训练过程中加剧。</li>
+<li><strong>处理中方法</strong>：在模型训练过程中优化，减少偏见。</li>
+<li><strong>后处理方法</strong>：调整模型输出结果，使其更加公平。</li>
+</ul>
+</li>
+</ul>
+<p><strong>多保护属性的偏见缓解</strong></p>
+<ul>
+<li>处理多个保护属性的偏见缓解方法变得尤为重要，因为实践中存在交叉公平性问题（intersectional fairness）。<ul>
+<li><strong>案例</strong>：Buolamwini和Gebru的研究发现，肤色较深的女性在性别分类系统中最容易被误分类。</li>
+</ul>
+</li>
+<li>现有的偏见缓解方法主要集中于单一保护属性，导致在交叉公平性方面存在局限。</li>
+</ul>
+<p><strong>现有的交叉公平性改进方法</strong></p>
+<ul>
+<li><strong>FairSMOTE</strong>、<strong>MAAT</strong>、<strong>FairMask</strong>：这些方法能处理多个保护属性，分别通过生成数据、抽样训练数据、修改输入数据来改善交叉公平性。</li>
+<li><strong>GRY</strong>：一种来自机器学习（ML）社区的方法，通过将交叉公平性建模为一个零和博弈，来实现公平性改进。</li>
+</ul>
+<p><strong>FairHOME的独特优势</strong></p>
+<ul>
+<li><strong>FairHOME</strong>区别于这些方法的主要特点是：<strong>不需要创建新的模型</strong>，因此特别适用于已经部署的ML软件，避免了修改已有模型的需求。</li>
+<li>相比之下，其他方法（如FairSMOTE、MAAT、FairMask）都需要生成新模型或修改输入。</li>
+</ul>
+<p><strong>公平性和ML性能的权衡</strong></p>
+<ul>
+<li>对偏见缓解方法的评估已经成为研究重点。通过<strong>Fairea</strong>工具，研究者可以统一衡量公平性和ML性能之间的权衡。</li>
+<li>通过Fairea，研究发现<strong>REW</strong>、<strong>MAAT</strong>和<strong>FairMask</strong>在交叉公平性和ML性能的平衡中表现最佳，这些方法作为本文的基准方法进行比较。</li>
+</ul>
+<h2 id="OUR-APPROACH"><a href="#OUR-APPROACH" class="headerlink" title="OUR APPROACH"></a>OUR APPROACH</h2><h3 id="A-FairHOME-In-a-Nutshell"><a href="#A-FairHOME-In-a-Nutshell" class="headerlink" title="A. FairHOME: In a Nutshell"></a><em>A. FairHOME: In a Nutshell</em></h3><p><strong>FairHOME的基本概念</strong></p>
+<ul>
+<li><strong>FairHOME</strong>遵循<strong>输入调试范式</strong>，即通过调整输入数据而不是修改软件本身来解决公平性问题。</li>
+<li>它的目标是通过多样化输入数据，提升决策过程中的<strong>交叉公平性</strong>，特别是在推理阶段。</li>
+</ul>
+<p><strong>工作原理</strong></p>
+<ul>
+<li><strong>FairHOME</strong>基于多个保护属性生成不同的<strong>变异输入（mutants）</strong>，这些变异输入代表了不同的子群体。</li>
+<li>然后，它汇总原始输入及所有变异输入的决策结果，通过这些结果的集成来做出最终决策。</li>
+</ul>
+<p><strong>与传统集成学习的区别</strong></p>
+<ul>
+<li>与传统的集成学习方法不同，<strong>FairHOME</strong>并不是通过集成多个不同的模型来提升预测结果，而是通过集成同一个模型对原始输入和变异输入的预测结果，从而增强预测公平性。</li>
+</ul>
+<p><img src="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/image-20250124194125606.png" alt="image-20250124194125606"></p>
+<h3 id="B-Input-Generation"><a href="#B-Input-Generation" class="headerlink" title="B. Input Generation"></a><em>B. Input Generation</em></h3><p><strong>输入生成过程</strong></p>
+<ul>
+<li><strong>FairHOME</strong>通过<strong>高阶变异（higher order mutation）</strong>生成输入变体（mutants），以增强决策过程中的子群体代表性，从而解决交叉公平性问题。</li>
+<li>输入由<strong>n</strong>个属性组成，其中<strong>d</strong>个为保护属性（P），其余为非保护属性（N）。</li>
+</ul>
+<p><strong>变异操作符（Mutation Operator）</strong></p>
+<ul>
+<li>变异操作符（µ）用于改变输入实例中保护属性的值，同时保持非保护属性不变。这一操作基于<strong>因果公平性原则</strong>，通过修改保护属性来评估其对预测结果的影响。</li>
+</ul>
+<p><strong>高阶变异</strong></p>
+<ul>
+<li>高阶变异允许多次应用变异操作符到同一输入实例，针对多个保护属性进行修改。目标是生成多个变体（mutants），确保每个变体在至少一个保护属性上有所不同，而在非保护属性上保持一致。</li>
+</ul>
+<p><strong>变体生成</strong></p>
+<ul>
+<li>变异的目标是全面探索输入域，生成所有满足条件的变体，确保变体代表不同的子群体。生成的变体数量取决于保护属性的所有可能值的组合。</li>
+</ul>
+<p><strong>相关性分析</strong></p>
+<ul>
+<li>尽管有研究表明保护属性与非保护属性之间可能存在相关性，<strong>FairHOME</strong>默认不修改非保护属性，避免了学习特征关联的复杂性，但该方法与修改非保护属性的策略效果差异在文中进行了分析。</li>
+</ul>
+<h3 id="C-Output-Ensemble"><a href="#C-Output-Ensemble" class="headerlink" title="C. Output Ensemble"></a><em>C. Output Ensemble</em></h3><p><strong>输出集成（Output Ensemble）</strong></p>
+<ul>
+<li><strong>FairHOME</strong>通过集成原始输入及其变体的预测结果来做出最终决策，不分析输出差异。每个输入的决策由ML模型生成一个概率向量，表示属于各类别的概率。</li>
+</ul>
+<p><strong>集成策略</strong></p>
+<ul>
+<li>采用三种常见的集成策略来整合输出：<strong>多数投票（Majority vote）</strong>、**平均（Averaging）**和**加权平均（Weighted averaging）**。</li>
+</ul>
+<p><strong>多数投票</strong></p>
+<ul>
+<li>多数投票策略选择获得最多“赞成”票的决策作为最终决策。如果超过50%的决策为“不利”，则最终决策为“不利”；否则为“有利”。</li>
+</ul>
+<p><strong>平均</strong></p>
+<ul>
+<li>平均策略通过计算原始输入及其变体的概率向量的均值来确定最终决策。如果最终概率低于50%，则决策为“不利”；否则为“有利”。</li>
+</ul>
+<p><strong>加权平均</strong></p>
+<ul>
+<li>加权平均策略通过计算概率的加权平均来确定最终决策。权重根据预测概率与50%之间的差值来分配，减少接近50%概率的实例的影响，以减少偏差的风险。如果加权平均值低于50%，则决策为“不利”；否则为“有利”。</li>
+</ul>
+<p><strong>默认策略</strong></p>
+<ul>
+<li>由于<strong>多数投票</strong>策略简单且仅依赖于决策信息，<strong>FairHOME</strong>默认使用该策略，但文中也对所有策略进行了评估。</li>
+</ul>
+<blockquote>
+<h3 id="假设场景：性别和种族的保护属性"><a href="#假设场景：性别和种族的保护属性" class="headerlink" title="假设场景：性别和种族的保护属性"></a>假设场景：性别和种族的保护属性</h3><p>我们假设一个机器学习（ML）模型用于预测一个人的信用评分是否为“有利”（1）还是“不利”（0）。我们关心的保护属性是<strong>性别</strong>和<strong>种族</strong>。模型会根据这些属性对输入数据进行分类。</p>
+<h4 id="输入数据："><a href="#输入数据：" class="headerlink" title="输入数据："></a>输入数据：</h4><ul>
+<li>输入实例：一个名叫<strong>Alice</strong>的女性（性别：女性，种族：白人）</li>
+<li>保护属性：性别（女性、男性）、种族（白人、非白人）</li>
+<li>非保护属性：年龄、收入、居住地等（这里不影响我们的讨论）</li>
+</ul>
+<h4 id="FairHOME流程："><a href="#FairHOME流程：" class="headerlink" title="FairHOME流程："></a>FairHOME流程：</h4><ol>
+<li><p><strong>原始输入</strong>：我们首先有Alice的原始输入（性别&#x3D;女性，种族&#x3D;白人）。</p>
+</li>
+<li><p><strong>生成变体（Mutants）</strong>：</p>
+<ul>
+<li><strong>Mutation Operator</strong>：使用变异操作符对保护属性（性别和种族）进行变异，保持非保护属性不变。</li>
+<li>可能的变体（mutants）包括：<ul>
+<li>Alice（性别&#x3D;女性，种族&#x3D;白人）——原始输入</li>
+<li>Alice（性别&#x3D;女性，种族&#x3D;非白人）</li>
+<li>Alice（性别&#x3D;男性，种族&#x3D;白人）</li>
+<li>Alice（性别&#x3D;男性，种族&#x3D;非白人）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>生成多个变体</strong>：</p>
+<ul>
+<li><strong>生成的变体</strong>是通过修改保护属性的值来生成的，但非保护属性保持不变。这些变体帮助我们模拟不同子群体的情况，以确保模型在不同子群体中的表现公平。</li>
+</ul>
+</li>
+<li><p><strong>通过ML模型进行预测</strong>：</p>
+<ul>
+<li>对每个输入（原始输入和所有变体），我们通过ML模型进行预测，得到每个实例的分类概率。例如，模型预测Alice（性别&#x3D;女性，种族&#x3D;白人）得到的分类概率是：<code>P(favorable) = 0.80</code>。</li>
+<li>对其他变体进行预测：<ul>
+<li>Alice（性别&#x3D;女性，种族&#x3D;非白人）可能得到：<code>P(favorable) = 0.75</code></li>
+<li>Alice（性别&#x3D;男性，种族&#x3D;白人）可能得到：<code>P(favorable) = 0.60</code></li>
+<li>Alice（性别&#x3D;男性，种族&#x3D;非白人）可能得到：<code>P(favorable) = 0.50</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>集成输出（Ensemble Output）</strong>：</p>
+<ul>
+<li><p>使用<strong>多数投票</strong>策略：根据原始输入和其变体的分类结果进行最终决策。</p>
+<ul>
+<li>如果多数预测结果为“有利”（例如，3个变体预测为“有利”），则最终决策为“有利”。</li>
+<li>如果多数预测结果为“不利”（例如，3个变体预测为“不利”），则最终决策为“不利”。</li>
+</ul>
+</li>
+<li><p>例如，在这个例子中，如果我们得到的预测结果是：</p>
+<ul>
+<li>原始输入（女性，白人）：<code>P(favorable) = 0.80</code>（“有利”）</li>
+<li>变体1（女性，非白人）：<code>P(favorable) = 0.75</code>（“有利”）</li>
+<li>变体2（男性，白人）：<code>P(favorable) = 0.60</code>（“有利”）</li>
+<li>变体3（男性，非白人）：<code>P(favorable) = 0.50</code>（“不利”）</li>
+</ul>
+<p>根据多数投票规则，最终决策为<strong>“有利”</strong>，因为有三个“有利”预测。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>输出决策</strong>：最终的输出决策是“有利”，但这个决策是通过对多个变体的输出进行集成后得出的，目的是保证不同子群体的公平性，而不仅仅是单一输入的预测。</p>
+</li>
+</ol>
+<h3 id="为什么这有助于公平性？"><a href="#为什么这有助于公平性？" class="headerlink" title="为什么这有助于公平性？"></a>为什么这有助于公平性？</h3><ul>
+<li><strong>多样性引入</strong>：通过生成多个变体，FairHOME确保了模型对不同子群体（如性别和种族组合）的公平处理。这样，即使模型对某些保护属性的组可能有偏见，集成策略（如多数投票）也会综合考虑各个子群体的表现，从而减少了不公平的决策。</li>
+<li><strong>避免单一模型的偏见</strong>：单一的模型可能对某些群体（例如某些种族或性别）存在偏见，而通过多变体和集成，FairHOME减少了这种偏见的影响，增加了对交叉属性群体的公平性。</li>
+</ul>
+<p>这个过程可以帮助确保在进行决策时，所有保护属性的组合都能得到公平对待，从而实现交叉公平性（intersectional fairness）。</p>
+</blockquote>
+<h2 id="EVALUATION-SETUP"><a href="#EVALUATION-SETUP" class="headerlink" title="EVALUATION SETUP"></a>EVALUATION SETUP</h2><h3 id="A-Research-Questions-RQs"><a href="#A-Research-Questions-RQs" class="headerlink" title="A. Research Questions (RQs)"></a><em>A. Research Questions (RQs)</em></h3><p>FairHOME的研究问题（RQ），旨在探索FairHOME在提高交叉公平性（intersectional fairness）和机器学习（ML）性能之间的平衡，并与现有的偏见缓解方法进行比较。具体研究问题包括：</p>
+<ol>
+<li><strong>RQ1</strong>：FairHOME是否能在不大幅牺牲ML性能的情况下提高交叉公平性？探索FairHOME在提高交叉公平性和ML性能之间的权衡。</li>
+<li><strong>RQ2</strong>：FairHOME在提高交叉公平性方面与现有方法相比效果如何？将FairHOME与现有的偏见缓解方法进行比较。</li>
+<li><strong>RQ3</strong>：FairHOME在交叉公平性和ML性能的平衡上与现有方法如何比较？通过公平性与性能之间的权衡，比较FairHOME与其他方法。</li>
+<li><strong>RQ4</strong>：当FairHOME还变异与保护属性相关的特征时，效果如何？与默认的FairHOME相比，分析其变异非保护特征的效果。</li>
+<li><strong>RQ5</strong>：不同的集成策略如何影响FairHOME？比较不同集成策略对FairHOME的影响及其效果。</li>
+<li><strong>RQ6</strong>：不同变体的贡献是什么？比较只使用单个保护属性的变体和使用多个保护属性的变体对FairHOME效果的影响。</li>
+<li><strong>RQ7</strong>：FairHOME如何影响单一保护属性的群体公平性？考察FairHOME是否对单一保护属性的群体公平性产生负面影响。</li>
+</ol>
+<p>这些问题集中在评估FairHOME在不同情境下如何改善公平性，同时保持或提高机器学习性能。</p>
+<h3 id="B-Experimental-Methodology"><a href="#B-Experimental-Methodology" class="headerlink" title="B. Experimental Methodology"></a><em>B. Experimental Methodology</em></h3><p>这部分描述了FairHOME的实验方法，包括实验步骤、所使用的数据集、模型、基准方法、评估指标等，具体内容如下：</p>
+<ol>
+<li><strong>设计偏见缓解任务</strong>：<ul>
+<li><strong>数据集</strong>：使用了6个广泛采用的真实世界数据集（Adult, Compas, Default, German, Mep15, Mep16），涵盖了性别、种族和年龄等常见保护属性。</li>
+<li><strong>模型</strong>：选用了4种常见的机器学习模型（Logistic Regression, Random Forest, Support Vector Machine, Deep Neural Network），用于训练和偏见缓解任务。</li>
+</ul>
+</li>
+<li><strong>选择基准方法</strong>：<ul>
+<li>选取了7种偏见缓解方法进行比较，包含传统和前沿技术，涵盖了预处理、处理中和后处理方法，如REW（重加权）、ADV（对抗去偏）、EOP（均衡赔率后处理）、FairSMOTE、MAAT、FairMask和GRY。</li>
+</ul>
+</li>
+<li><strong>分析FairHOME的效果</strong>：<ul>
+<li>评估交叉公平性（通过6个公平性指标）和机器学习性能（通过5个常见指标，如准确率、精确率、召回率等）的权衡。</li>
+</ul>
+</li>
+<li><strong>交叉公平性比较</strong>：<ul>
+<li>比较FairHOME与现有方法在提升交叉公平性方面的效果，使用Mann-Whitney U检验来评估统计显著性。</li>
+</ul>
+</li>
+<li><strong>公平性与性能的权衡</strong>：<ul>
+<li>通过Fairea方法构建公平性-性能权衡基准，评估FairHOME和现有方法在不同任务上的权衡效果。</li>
+</ul>
+</li>
+<li><strong>评估变异策略</strong>：<ul>
+<li>比较仅变异保护属性与扩展变异至相关非保护特征（FairHOME1）对公平性的提升效果。</li>
+</ul>
+</li>
+<li><strong>评估集成策略</strong>：<ul>
+<li>比较三种集成策略（多数投票、平均、加权平均）对FairHOME的影响。</li>
+</ul>
+</li>
+<li><strong>评估变体贡献</strong>：<ul>
+<li>比较只使用单一保护属性变体与多个保护属性变体对公平性和性能的贡献。</li>
+</ul>
+</li>
+<li><strong>评估群体公平性</strong>：<ul>
+<li>分析FairHOME对单一保护属性的群体公平性影响，使用SPD、AOD、EOD等指标进行评估。</li>
+</ul>
+</li>
+</ol>
+<p>所有实验重复进行20次，以确保结果的可靠性。</p>
+<p><img src="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/image-20250124195540175.png" alt="image-20250124195540175"></p>
+<h2 id="RESULTS"><a href="#RESULTS" class="headerlink" title="RESULTS"></a>RESULTS</h2><h3 id="A-RQ1-Effect-of-FairHOME"><a href="#A-RQ1-Effect-of-FairHOME" class="headerlink" title="A. RQ1: Effect of FairHOME"></a><em>A. RQ1: Effect of FairHOME</em></h3><p>RQ1探讨了FairHOME对交叉公平性和机器学习性能的双重影响。实验结果表明：</p>
+<ul>
+<li><strong>交叉公平性</strong>：FairHOME显著提升了交叉公平性，在144个任务-公平性指标组合中，FairHOME在139个场景下（占96.5%）比原始模型表现更优，体现为较低的公平性指标值。</li>
+<li><strong>机器学习性能</strong>：由于著名的公平性-性能权衡，FairHOME导致了性能略有下降。然而，这一性能下降相较于交叉公平性的显著提升要小得多。具体而言，FairHOME使交叉公平性提升了40.7%到55.3%，而机器学习性能仅下降了0.1%到2.7%。</li>
+</ul>
+<p><strong>发现</strong>：FairHOME在提高交叉公平性的同时，机器学习性能损失较小，整体实现了较好的公平性-性能权衡。</p>
+<p><img src="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/image-20250124195804471.png" alt="image-20250124195804471"></p>
+<blockquote>
+<p><strong>列解释</strong>：</p>
+<ul>
+<li>每行代表一个数据集（如Adult、Compas、Default等），在每个数据集上进行了对比实验。</li>
+<li>每列对应一个不同的机器学习模型（如LR, RF, SVM, DNN），并展示了不同的公平性和性能指标。</li>
+</ul>
+<p><strong>公平性和性能指标</strong>：</p>
+<ul>
+<li><strong>WS</strong>、<strong>WA</strong>、<strong>WE</strong>、<strong>AS</strong>、<strong>AA</strong>、<strong>AE</strong>：表示不同的公平性度量指标，具体含义是：WC-SPD、WC-AOD、WC-EOD、AC-SPD、AC-AOD、AC-EOD（这些指标用于衡量交叉公平性）。</li>
+<li><strong>Acc</strong>、<strong>P</strong>、<strong>R</strong>、<strong>F1</strong>、<strong>MCC</strong>：表示机器学习性能指标，分别是准确率（Accuracy）、精确率（Precision）、召回率（Recall）、F1分数（F1-Score）和Matthews相关系数（MCC）。</li>
+</ul>
+<p><strong>颜色编码</strong>：</p>
+<ul>
+<li>在表格中，灰色部分表示FairHOME在交叉公平性方面有所提升，相较于原始模型，FairHOME在多数情况下能显著改善交叉公平性。</li>
+</ul>
+<p><strong>表格的主要分析</strong>：</p>
+<ul>
+<li><strong>交叉公平性</strong>：FairHOME在大多数任务中（例如在139个任务-公平性指标组合中的96.5%）能显著改善交叉公平性，表现为较低的公平性度量值。</li>
+<li><strong>性能损失</strong>：虽然FairHOME改善了公平性，但在机器学习性能上略有下降。不同模型在准确率、精确率、召回率等指标上，FairHOME的性能损失较小（0.1%到2.7%）。</li>
+</ul>
+<p><strong>如何解读每一行</strong>：</p>
+<ul>
+<li>例如，<strong>Adult</strong>数据集上，使用<strong>LR（Logistic Regression）**模型时，原始模型的交叉公平性指标**WS**为0.196，而应用FairHOME后，</strong>WS**降至0.101，表示交叉公平性显著提高。</li>
+<li>对于机器学习性能，原始模型的<strong>Acc</strong>为0.821，而FairHOME为0.812，表明在公平性提升的同时，准确率略有下降。</li>
+</ul>
+</blockquote>
+<p><img src="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/image-20250124195954193.png" alt="image-20250124195954193"></p>
+<blockquote>
+<h3 id="表格解读："><a href="#表格解读：" class="headerlink" title="表格解读："></a>表格解读：</h3><ol>
+<li><strong>交叉公平性（Intersectional Fairness）</strong>：<ul>
+<li>该表列出了原始模型与FairHOME模型在不同公平性度量指标（如WC-SPD, WC-AOD, WC-EOD等）上的均值对比。</li>
+<li>FairHOME通过降低各项公平性指标值来改善交叉公平性。例如：<ul>
+<li><strong>WC-SPD</strong>的原始值为0.195，FairHOME为0.116，变化值为-0.079，表示交叉公平性改善了40.7%（相对变化）。</li>
+<li><strong>AC-EOD</strong>的原始值为0.077，FairHOME为0.034，变化值为-0.043，变化幅度为55.3%。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>机器学习性能（ML Performance）</strong>：<ul>
+<li>同时，表格展示了FairHOME对机器学习性能的影响，表现为各项性能指标（如准确率、精确率、召回率等）的变化。</li>
+<li>例如：<ul>
+<li><strong>Accuracy</strong>从原始的0.794下降至0.791，下降幅度为0.3%。</li>
+<li><strong>Recall</strong>从0.657下降到0.654，下降了0.3%。</li>
+</ul>
+</li>
+<li>ML性能的下降相对较小，表现为0.1%到2.7%之间的变化，具体变化依赖于所分析的指标。</li>
+</ul>
+</li>
+<li><strong>解读</strong>：<ul>
+<li><strong>绝对变化（Absolute change）</strong>：表示FairHOME与原始模型在各项指标上的差异。负值表示FairHOME改善了该指标。</li>
+<li><strong>相对变化（Relative change）</strong>：表示FairHOME改善公平性时，相对于原始模型的百分比变化。负值表示相应指标的值降低，表明公平性得到了提升。</li>
+</ul>
+</li>
+</ol>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><ul>
+<li><strong>FairHOME的效果</strong>：FairHOME显著提高了交叉公平性（所有公平性度量指标都有显著下降），具体改善幅度在40.7%到55.3%之间。</li>
+<li><strong>性能损失</strong>：在性能上，FairHOME的表现略有下降，性能指标的相对变化范围在-0.1%到-2.7%之间，损失较小。</li>
+</ul>
+</blockquote>
+<h3 id="B-RQ2-Comparison-of-Intersectional-Fairness"><a href="#B-RQ2-Comparison-of-Intersectional-Fairness" class="headerlink" title="B. RQ2: Comparison of Intersectional Fairness"></a><em>B. RQ2: Comparison of Intersectional Fairness</em></h3><p>RQ2评估了FairHOME在提高交叉公平性方面与<strong>现有偏见缓解方法的比较</strong>。实验结果表明：</p>
+<ul>
+<li><strong>FairHOME的优势</strong>：FairHOME在交叉公平性方面表现最为突出，在所有评估的公平性指标中，其公平性度量值的下降幅度最大。例如，FairHOME在各个指标上的提升分别为：<ul>
+<li>WC-SPD：提高40.7%</li>
+<li>WC-AOD：提高47.2%</li>
+<li>WC-EOD：提高47.8%</li>
+<li>AC-SPD：提高42.2%</li>
+<li>AC-AOD：提高51.8%</li>
+<li>AC-EOD：提高55.3%</li>
+<li><strong>平均提升</strong>：FairHOME在所有指标上的平均提升为47.5%。</li>
+</ul>
+</li>
+<li><strong>与现有方法的对比</strong>：相比于其他现有方法，<strong>FairMask</strong>是第二好的方法，平均提升为37.9%，比FairHOME低9.6个百分点。</li>
+<li><strong>Win-Tie-Loss分析</strong>：通过详细的win-tie-loss分析，FairHOME在大多数场景中超越了所有现有方法。例如，FairHOME在与FairMask的比较中，在65个场景中获胜，而FairMask没有超越FairHOME。</li>
+</ul>
+<p><strong>发现：</strong></p>
+<p><strong>FairHOME</strong>在提高交叉公平性方面持续优于所有现有偏见缓解方法。平均而言，FairHOME的提升比现有表现最好的方法高出9.6个百分点，证明其在交叉公平性提升上的显著优势。</p>
+<p><img src="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/image-20250124200220175.png" alt="image-20250124200220175"></p>
+<blockquote>
+<p>这个表格展示了FairHOME与其他偏见缓解方法在交叉公平性上的改善效果，具体包括绝对变化（Abs）和相对变化（Rel）两种度量。表格中对比了24个任务中各个方法在6个公平性指标（如WC-SPD、WC-AOD等）上的表现。以下是对表格的解读：</p>
+<h3 id="1-表头说明："><a href="#1-表头说明：" class="headerlink" title="1. 表头说明："></a>1. <strong>表头说明</strong>：</h3><ul>
+<li><strong>Method</strong>：列出了所有比较的偏见缓解方法（如REW, ADV, EOP, FairSMOTE, MaAT, FairMask, GRY, 和 FairHOME）。</li>
+<li><strong>各个公平性指标（如WC-SPD, WC-AOD, WC-EOD等）</strong>：这些是用来衡量交叉公平性的指标，表示不同的公平性度量（如“最差情况的统计平衡差异”和“平均情况的机会平衡差异”等）。</li>
+<li><strong>Abs</strong>：表示每个方法在特定公平性指标下的绝对变化值，计算的是该方法与原始模型的公平性度量的差异。</li>
+<li><strong>Rel</strong>：表示相对变化值，计算的是该方法与原始模型相比的百分比变化。</li>
+</ul>
+<h3 id="2-解读表格中的数据："><a href="#2-解读表格中的数据：" class="headerlink" title="2. 解读表格中的数据："></a>2. <strong>解读表格中的数据</strong>：</h3><ul>
+<li><strong>FairHOME</strong>的表现：在所有公平性指标中，FairHOME在大多数情况下都表现出了最大的改善。例如：<ul>
+<li>在<strong>WC-SPD</strong>指标上，FairHOME的绝对变化为-0.079，相对变化为-40.7%，表示FairHOME比原始模型在该指标上改善了40.7%。</li>
+<li>在<strong>AC-EOD</strong>指标上，FairHOME的绝对变化为-0.043，相对变化为-55.3%，表示该方法显著提升了公平性，减少了该指标的值。</li>
+</ul>
+</li>
+<li><strong>其他方法的表现</strong>：与FairHOME相比，其他方法（如FairMask、FairSMOTE等）的改进幅度通常较小。例如：<ul>
+<li><strong>FairMask</strong>在<strong>WC-SPD</strong>上的相对变化为-28.3%，而FairHOME为-40.7%，显示FairHOME在提升交叉公平性方面具有更大的优势。</li>
+<li><strong>GRY</strong>在所有指标上的表现略好于FairMask，但仍不及FairHOME。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-总结："><a href="#3-总结：" class="headerlink" title="3. 总结："></a>3. <strong>总结</strong>：</h3><ul>
+<li><strong>FairHOME</strong>在所有6个公平性指标上都表现出较为显著的公平性改善，且相较于其他方法，其改善幅度较大，平均改进为**47.5%**，明显超过了其他方法。</li>
+<li><strong>FairMask</strong>和<strong>GRY</strong>虽然也能改善交叉公平性，但相对改善幅度要低于FairHOME，分别为**28.3%**和**35.4%**。</li>
+</ul>
+</blockquote>
+<p><img src="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/image-20250124200602567.png" alt="image-20250124200602567"></p>
+<blockquote>
+<p>这个表格展示了FairHOME与其他现有偏见缓解方法在交叉公平性上的比较分析，具体通过每种方法在不同公平性度量（如WC-SPD, WC-AOD, AC-SPD等）上的<strong>win-tie-loss</strong>结果进行比较。以下是如何解读这个表格：</p>
+<h3 id="1-表头解释："><a href="#1-表头解释：" class="headerlink" title="1. 表头解释："></a>1. <strong>表头解释</strong>：</h3><ul>
+<li><p><strong>Metric</strong>：列出不同的公平性度量指标（如WC-SPD、WC-AOD、AC-SPD等）。这些指标衡量交叉公平性，表示模型在不同保护属性下的公平性。</p>
+</li>
+<li><p><strong>方法</strong>：包括7种偏见缓解方法：REW、ADV、EOP、FairSMOTE、MAAT、FairMask、GRY。</p>
+</li>
+<li><p>Win&#x2F;Tie&#x2F;Loss：每个方法在该公平性度量下的胜负平</p>
+<p>结果：</p>
+<ul>
+<li><strong>Win</strong>：表示FairHOME在该度量下的表现优于其他方法。</li>
+<li><strong>Tie</strong>：表示FairHOME与其他方法在该度量下的表现相同。</li>
+<li><strong>Loss</strong>：表示FairHOME在该度量下的表现不如其他方法。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-数字解释："><a href="#2-数字解释：" class="headerlink" title="2. 数字解释："></a>2. <strong>数字解释</strong>：</h3><ul>
+<li>每个单元格中的数字如<strong>20&#x2F;2&#x2F;2</strong>表示：在该方法和公平性度量下，FairHOME获胜20次，平局2次，失败2次。</li>
+<li>例如，在WC-SPD这一指标下：<ul>
+<li><strong>REW</strong>：FairHOME在与REW的对比中，胜20次，平2次，负2次。</li>
+<li><strong>ADV</strong>：FairHOME胜15次，平8次，负1次。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-总体表现："><a href="#3-总体表现：" class="headerlink" title="3. 总体表现："></a>3. <strong>总体表现</strong>：</h3><ul>
+<li><p>Overall</p>
+<p>行总结了FairHOME与所有方法的对比结果。每个方法的win&#x2F;tie&#x2F;loss情况汇总：</p>
+<ul>
+<li><strong>REW</strong>：FairHOME胜95次，平39次，负10次。</li>
+<li><strong>ADV</strong>：FairHOME胜127次，平13次，负4次。</li>
+<li>以此类推，FairHOME在<strong>所有方法</strong>的对比中始终表现优于其他方法。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-解读："><a href="#4-解读：" class="headerlink" title="4. 解读："></a>4. <strong>解读</strong>：</h3><ul>
+<li><strong>FairHOME优势明显</strong>：在所有6个公平性度量指标下，FairHOME的<strong>win</strong>次数都明显高于其他方法，显示出FairHOME在提升交叉公平性方面的优势。</li>
+<li><strong>平局较少</strong>：FairHOME几乎没有与其他方法平局，表明它在大多数情况下优于其他方法。</li>
+<li><strong>相对弱点</strong>：虽然FairHOME有时会在少数几场比赛中失败（如在<strong>GRY</strong>方法下，在WC-SPD上的表现），但总的来说，它在所有对比中都具有显著的优势。</li>
+</ul>
+<h3 id="5-总结："><a href="#5-总结：" class="headerlink" title="5. 总结："></a>5. <strong>总结</strong>：</h3><ul>
+<li><strong>FairHOME</strong>在与其他偏见缓解方法的对比中始终表现优越，尤其在提升交叉公平性方面，几乎每个公平性度量下都能胜过其他方法。</li>
+</ul>
+</blockquote>
+<h3 id="C-RQ3-Comparison-of-Fairness-Performance-Trade-off"><a href="#C-RQ3-Comparison-of-Fairness-Performance-Trade-off" class="headerlink" title="C. RQ3: Comparison of Fairness-Performance Trade-off"></a><em>C. RQ3: Comparison of Fairness-Performance Trade-off</em></h3><p>RQ3使用<strong>Fairea</strong>工具评估FairHOME与现有偏见缓解方法在公平性与性能之间的权衡效果。实验结果表明：</p>
+<ul>
+<li><strong>FairHOME的优势</strong>：FairHOME在所有方法中表现出最好的公平性-性能权衡。在所有实验中，FairHOME在87.7%的情况下超过了Fairea构建的基准（即实现了”win-win”或”good”权衡）。相比之下，现有方法的表现仅在34.4%到81.0%之间。</li>
+<li><strong>最少的”损失”案例</strong>：FairHOME在”lose-lose”权衡的情况中出现的频率最低，仅占3.8%。而现有方法在6.4%到29.2%的情况下出现”lose-lose”权衡。</li>
+</ul>
+<p><strong>发现：</strong></p>
+<p><strong>FairHOME</strong>在公平性-性能权衡上优于所有现有偏见缓解方法，能够在大多数情况下实现更好的权衡。</p>
+<p><img src="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/image-20250124200843339.png" alt="image-20250124200843339"></p>
+<blockquote>
+<p>这个图表展示了FairHOME与其他现有偏见缓解方法在公平性与性能之间的权衡效果，具体分析了不同方法在“win-win”、“good”、“poor”、“inverted”和“lose-lose”五个有效性等级中的分布。以下是对图表的解读：</p>
+<h3 id="1-图表的各个部分："><a href="#1-图表的各个部分：" class="headerlink" title="1. 图表的各个部分："></a>1. <strong>图表的各个部分</strong>：</h3><ul>
+<li><strong>纵轴（Proportions of cases in different effectiveness levels）</strong>：表示不同有效性等级的比例，纵轴上列出了五个等级：<strong>win-win</strong>（最佳权衡）、<strong>good</strong>（较好）、<strong>poor</strong>（较差）、<strong>inverted</strong>（反向权衡）、<strong>lose-lose</strong>（最差权衡）。</li>
+<li><strong>横轴（Methods）</strong>：列出了七种偏见缓解方法：REW、ADV、EOP、FairSMOTE、MAAT、FairMask、GRY、FairHOME。</li>
+<li><strong>颜色区分</strong>：图表中不同的灰度色块表示不同的有效性等级，<strong>win-win</strong>表示最佳权衡，<strong>lose-lose</strong>表示最差的权衡。</li>
+</ul>
+<h3 id="2-图表的核心信息："><a href="#2-图表的核心信息：" class="headerlink" title="2. 图表的核心信息："></a>2. <strong>图表的核心信息</strong>：</h3><ul>
+<li>FairHOME的表现：FairHOME的表现最为突出，**87.7%**的缓解案例落在了“win-win”或“good”权衡区间，意味着FairHOME在大多数情况下能实现公平性与性能的良好平衡。<ul>
+<li>其中，<strong>win-win</strong>占比为56.8%，表示在大部分情况下，FairHOME既提高了公平性又保持了较好的性能。</li>
+</ul>
+</li>
+<li>与其他方法的对比：<ul>
+<li><strong>FairMask</strong>：虽然FairMask在<strong>win-win</strong>和<strong>good</strong>区间也有较高比例，但其“lose-lose”区间的比例（21.7%）高于FairHOME，说明它在某些情况下会牺牲性能。</li>
+<li><strong>REW</strong>、<strong>ADV</strong>、<strong>EOP</strong>等方法的表现相对较差，大部分缓解案例集中在<strong>poor</strong>和<strong>inverted</strong>区间，表明它们在公平性与性能的平衡上较为薄弱。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-总结：-1"><a href="#3-总结：-1" class="headerlink" title="3. 总结："></a>3. <strong>总结</strong>：</h3><ul>
+<li><strong>FairHOME</strong>在公平性-性能权衡中表现最佳，具有最高的“win-win”和“good”比例（87.7%）。相比之下，其他方法（如FairMask、GRY）虽然在部分情况下也能表现较好，但<strong>FairHOME</strong>在大多数情况下都能取得最优的权衡，极少出现最差的“lose-lose”情况。</li>
+<li><strong>FairHOME</strong>能够同时提高公平性和保持较好的性能，是最为有效的偏见缓解方法。</li>
+</ul>
+</blockquote>
+<h3 id="D-RQ4-Evaluation-of-Mutation-Strategies"><a href="#D-RQ4-Evaluation-of-Mutation-Strategies" class="headerlink" title="D. RQ4: Evaluation of Mutation Strategies"></a><em>D. RQ4: Evaluation of Mutation Strategies</em></h3><p>RQ4评估了将保护属性及其相关特征一同变异（即FairHOME1）对交叉公平性和机器学习性能的影响。实验结果表明：</p>
+<ol>
+<li><strong>交叉公平性</strong>：<ul>
+<li><strong>FairHOME1</strong>在某些公平性指标（如WC&#x2F;AC-SPD）上比FairHOME表现更好，说明在这些指标上交叉公平性有所提升。</li>
+<li>然而，<strong>FairHOME1</strong>在<strong>WC&#x2F;AC-AOD</strong>和<strong>WC&#x2F;AC-EOD</strong>上表现较差，表明它可能加剧了子群体之间错误率的差异。这可能是由于在变异与保护属性相关的特征时，产生了过度调整或噪声。</li>
+</ul>
+</li>
+<li><strong>公平性-性能权衡</strong>：<ul>
+<li>在公平性-性能权衡方面，<strong>FairHOME</strong>超越了由Fairea构建的基准（即实现了win-win或good权衡）87.7%的案例，而<strong>FairHOME1</strong>仅为80.4%。</li>
+<li><strong>FairHOME1</strong>引入了额外的噪声，导致其机器学习性能受到负面影响。</li>
+</ul>
+</li>
+<li><strong>结论</strong>：<ul>
+<li>将变异扩展到保护属性及其相关特征，导致了较差的公平性-性能权衡，并在<strong>WC&#x2F;AC-AOD</strong>和<strong>WC&#x2F;AC-EOD</strong>指标上降低了交叉公平性。</li>
+<li>由于FairHOME1的缺点和需要学习特征关联的复杂性，<strong>FairHOME</strong>选择不将其作为默认策略。</li>
+</ul>
+</li>
+</ol>
+<p><strong>发现：</strong></p>
+<p>扩展变异至保护属性及其相关特征导致了较差的公平性-性能权衡和在某些指标上的交叉公平性下降。</p>
+<p><font color="green">如何选取受保护的特征？这个评估的意义是什么？</font></p>
+<p><img src="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/image-20250124201147751.png" alt="image-20250124201147751"></p>
+<blockquote>
+<p>这个表格展示了<strong>FairHOME</strong>与<strong>FairHOME1</strong>在交叉公平性方面的绝对和相对改进，具体衡量的是不同公平性指标（如WC-SPD, WC-AOD等）上的变化。以下是对表格的解读：</p>
+<h3 id="1-表头说明：-1"><a href="#1-表头说明：-1" class="headerlink" title="1. 表头说明："></a>1. <strong>表头说明</strong>：</h3><ul>
+<li><strong>Method</strong>：列出了两种方法：<strong>FairHOME</strong> 和 <strong>FairHOME1</strong>。</li>
+<li><strong>公平性指标（如WC-SPD、WC-AOD等）</strong>：这些是用于衡量交叉公平性的指标，表中列出了五个指标。</li>
+<li><strong>Abs</strong>：表示绝对改进值，即FairHOME或FairHOME1与原始模型相比，在各指标上的数值变化。</li>
+<li><strong>Rel</strong>：表示相对改进值，即FairHOME或FairHOME1相对于原始模型的百分比变化。</li>
+</ul>
+<h3 id="2-数据解读："><a href="#2-数据解读：" class="headerlink" title="2. 数据解读："></a>2. <strong>数据解读</strong>：</h3><ul>
+<li><strong>FairHOME</strong>：<ul>
+<li>在<strong>WC-SPD</strong>指标上，绝对改进为-0.079，相对改进为**-40.7%**，表明FairHOME显著改善了交叉公平性。</li>
+<li>在<strong>AC-EOD</strong>指标上，绝对改进为**-0.043<strong>，相对改进为</strong>-55.3%**，说明FairHOME在减少该指标的值方面表现非常突出。</li>
+</ul>
+</li>
+<li><strong>FairHOME1</strong>：<ul>
+<li>在<strong>WC-SPD</strong>和<strong>WC-AOD</strong>等指标上，<strong>FairHOME1</strong>的表现比FairHOME更为显著。例如，<strong>WC-SPD</strong>的相对改进为**-61.3%*<em>，*WC-AOD*<em>为</em></em>-45.8%**。</li>
+<li>然而，在<strong>AC-SPD</strong>、<strong>AC-AOD</strong>和<strong>AC-EOD</strong>等指标上，<strong>FairHOME1</strong>表现不如FairHOME，尤其在<strong>AC-SPD</strong>上，<strong>FairHOME1</strong>的相对改进为**-66.1%<strong>，比</strong>FairHOME<strong>的</strong>-42.2%**更差。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-主要结论："><a href="#3-主要结论：" class="headerlink" title="3. 主要结论："></a>3. <strong>主要结论</strong>：</h3><ul>
+<li><strong>FairHOME1</strong>通过变异与保护属性相关的特征，显著改善了某些公平性指标（如WC-SPD和WC-AOD），但同时也导致了其他指标（如AC-SPD和AC-EOD）的表现恶化。</li>
+<li><strong>FairHOME</strong>在整体上实现了更平衡的交叉公平性提升，尤其在AC类指标上表现更好。</li>
+</ul>
+<h3 id="总结：-1"><a href="#总结：-1" class="headerlink" title="总结："></a>总结：</h3><ul>
+<li><strong>FairHOME1</strong>在某些指标上虽然有所改进，但由于引入了与保护属性相关特征的变异，导致了其他公平性指标的表现下降，从而影响了整体的公平性-性能权衡。因此，<strong>FairHOME</strong>作为默认策略，在维持良好的公平性提升的同时，避免了不必要的性能下降。</li>
+</ul>
+</blockquote>
+<h3 id="E-RQ5-Evaluation-of-Ensemble-Strategies"><a href="#E-RQ5-Evaluation-of-Ensemble-Strategies" class="headerlink" title="E. RQ5: Evaluation of Ensemble Strategies"></a><em>E. RQ5: Evaluation of Ensemble Strategies</em></h3><p>RQ5评估了三种常见的集成策略在FairHOME框架中的效果：<strong>多数投票（默认策略）</strong>、<strong>平均</strong>（FairHOME2）和<strong>加权平均</strong>（FairHOME3）。实验结果表明：</p>
+<ol>
+<li><strong>交叉公平性</strong>：<ul>
+<li>三种集成策略在交叉公平性上的提升相似，且相比于现有最先进的方法（如Table IV所列），它们都取得了优越的效果。</li>
+</ul>
+</li>
+<li><strong>公平性-性能权衡</strong>：<ul>
+<li>使用Fairea基准衡量公平性-性能权衡时，<strong>FairHOME</strong>、<strong>FairHOME2</strong>和<strong>FairHOME3</strong>分别在87.7%、86.8%和86.6%的情况下超越了基准，差异非常小（仅为1.1%）。</li>
+<li>相比之下，现有的最先进方法在公平性-性能权衡方面的超越比例为34.4%到81.0%（如图2所示），三种集成策略均超过了这些现有方法。</li>
+</ul>
+</li>
+<li><strong>总结</strong>：<ul>
+<li>三种集成策略（多数投票、平均、加权平均）在交叉公平性和公平性-性能权衡方面的表现相似。由于<strong>多数投票</strong>策略只需要决策信息且更为简洁，<strong>FairHOME</strong>选择将其作为默认集成策略。</li>
+</ul>
+</li>
+</ol>
+<p><strong>发现：</strong></p>
+<p>无论使用哪种集成策略，FairHOME都在交叉公平性和公平性-性能权衡方面持续优于现有方法，表明我们的集成策略在提高公平性和保持良好性能之间达到了良好的平衡。</p>
+<p><img src="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/image-20250124201316994.png" alt="image-20250124201316994"></p>
+<blockquote>
+<p>这个表格展示了<strong>FairHOME</strong>、<strong>FairHOME2</strong>和<strong>FairHOME3</strong>在交叉公平性上的绝对和相对改进，具体展示了它们在五个公平性指标（如WC-SPD, WC-AOD等）上的表现。以下是如何解读这个表格：</p>
+<h3 id="1-表头说明：-2"><a href="#1-表头说明：-2" class="headerlink" title="1. 表头说明："></a>1. <strong>表头说明</strong>：</h3><ul>
+<li><strong>Method</strong>：列出三种方法：<strong>FairHOME</strong>（默认集成策略）、<strong>FairHOME2</strong>（平均策略）和<strong>FairHOME3</strong>（加权平均策略）。</li>
+<li><strong>公平性指标</strong>：列出了五个衡量交叉公平性的指标：<strong>WC-SPD</strong>、<strong>WC-AOD</strong>、<strong>WC-EOD</strong>、<strong>AC-SPD</strong>和<strong>AC-EOD</strong>。</li>
+<li><strong>Abs</strong>：表示绝对改进值，即FairHOME、FairHOME2和FairHOME3相对于原始模型在各指标上的数值变化。</li>
+<li><strong>Rel</strong>：表示相对改进值，即各方法相对于原始模型的百分比变化。</li>
+</ul>
+<h3 id="2-数据解读：-1"><a href="#2-数据解读：-1" class="headerlink" title="2. 数据解读："></a>2. <strong>数据解读</strong>：</h3><ul>
+<li><strong>FairHOME</strong>：<ul>
+<li>在<strong>WC-SPD</strong>上，<strong>FairHOME</strong>的绝对改进为**-0.079<strong>，相对改进为</strong>-40.7%**，表示在这个指标上，FairHOME显著提高了交叉公平性。</li>
+<li>在<strong>AC-EOD</strong>上，<strong>FairHOME</strong>的相对改进为**-55.3%**，同样表示它在减少这一指标的值方面表现非常突出。</li>
+</ul>
+</li>
+<li><strong>FairHOME2</strong>：<ul>
+<li><strong>FairHOME2</strong>（平均策略）在<strong>WC-SPD</strong>上的相对改进为**-40.1%<strong>，比</strong>FairHOME**略低，但差距非常小。</li>
+<li>在<strong>AC-EOD</strong>上，<strong>FairHOME2</strong>的相对改进为**-53.7%<strong>，也与</strong>FairHOME**非常接近。</li>
+</ul>
+</li>
+<li><strong>FairHOME3</strong>：<ul>
+<li><strong>FairHOME3</strong>（加权平均策略）在<strong>WC-SPD</strong>上的相对改进为**-41.3%<strong>，也与</strong>FairHOME**差距不大。</li>
+<li>在<strong>AC-EOD</strong>上，<strong>FairHOME3</strong>的相对改进为**-54.2%<strong>，同样接近</strong>FairHOME**。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-主要结论：-1"><a href="#3-主要结论：-1" class="headerlink" title="3. 主要结论："></a>3. <strong>主要结论</strong>：</h3><ul>
+<li><strong>FairHOME</strong>、<strong>FairHOME2</strong>和<strong>FairHOME3</strong>在各个公平性指标上表现相似，改进幅度相当。</li>
+<li>三种集成策略在交叉公平性上的提升幅度非常接近，均在40%到55%之间，且相对差距较小。</li>
+</ul>
+<h3 id="总结：-2"><a href="#总结：-2" class="headerlink" title="总结："></a>总结：</h3><ul>
+<li>三种策略都能显著提高交叉公平性，且表现相似。由于<strong>FairHOME</strong>（多数投票策略）是最简单且只依赖决策信息，通常会作为默认策略使用。</li>
+</ul>
+</blockquote>
+<h3 id="F-RQ6-Contribution-of-Different-Mutants"><a href="#F-RQ6-Contribution-of-Different-Mutants" class="headerlink" title="F. RQ6: Contribution of Different Mutants"></a><em>F. RQ6: Contribution of Different Mutants</em></h3><p>RQ6比较了三种方法的效果：</p>
+<ol>
+<li><strong>只变异单一保护属性的变体</strong>（FairHOME4）</li>
+<li><strong>只变异多个保护属性的变体</strong>（FairHOME5）</li>
+<li><strong>结合两者的变体</strong>（FairHOME）</li>
+</ol>
+<p>结果解读：</p>
+<ol>
+<li><p><strong>交叉公平性</strong>：</p>
+<ul>
+<li><strong>FairHOME5</strong>（只变异多个保护属性的变体）相比于<strong>FairHOME4</strong>（只变异单一保护属性的变体），在交叉公平性方面表现更好。</li>
+<li>与<strong>FairHOME</strong>相比，<strong>FairHOME5</strong>在6个指标上平均相对提升了45.7%，而<strong>FairHOME</strong>的提升为47.3%。因此，<strong>FairHOME</strong>整体表现最佳。</li>
+</ul>
+</li>
+<li><p><strong>公平性-性能权衡</strong>：</p>
+<ul>
+<li><p>在</p>
+<p>公平性-性能权衡</p>
+<p>方面，三种方法都超越了由Fairea构建的基准（即实现了win-win或good权衡）。具体来说：</p>
+<ul>
+<li><strong>FairHOME</strong>：99.9% 的案例超越基准</li>
+<li><strong>FairHOME4</strong>：96.5% 的案例超越基准</li>
+<li><strong>FairHOME5</strong>：98.3% 的案例超越基准</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>结论</strong>：</p>
+<ul>
+<li>使用多个保护属性的变体（<strong>FairHOME5</strong>）比只使用单一保护属性的变体（<strong>FairHOME4</strong>）能更有效地提高交叉公平性。</li>
+<li>最佳的结果是结合使用这两种类型的变体（即<strong>FairHOME</strong>），这种方法在公平性和性能之间达到了最佳平衡。</li>
+</ul>
+</li>
+</ol>
+<p><strong>发现：</strong></p>
+<p>结合使用多个保护属性的变体，比单独变异单一属性更能提升交叉公平性，并且通过结合两种类型的变体（即<strong>FairHOME</strong>）获得最佳结果。</p>
+<p><font color="green">我觉得这个评估也没有很大的必要，想想就知道了</font></p>
+<p><img src="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/image-20250124201559692.png" alt="image-20250124201559692"></p>
+<h3 id="G-RQ7-Effect-on-Group-Fairness"><a href="#G-RQ7-Effect-on-Group-Fairness" class="headerlink" title="G. RQ7: Effect on Group Fairness"></a><em>G. RQ7: Effect on Group Fairness</em></h3><p>RQ7评估了FairHOME在提高交叉公平性的同时，对单一保护属性的群体公平性的影响。实验涉及156个场景，结合了13个单一属性任务、4个模型和3个群体公平性指标（SPD、AOD、EOD）。以下是实验结果的解读：</p>
+<ol>
+<li><strong>群体公平性提升</strong>：<ul>
+<li><strong>FairHOME</strong>在120个场景中显著改善了单一属性的群体公平性，仅在3个场景中有所下降。</li>
+<li>相比之下，<strong>FairMask</strong>在107个场景中显著改善了群体公平性，在4个场景中有所下降。</li>
+</ul>
+</li>
+<li><strong>交叉公平性和群体公平性的双重提升</strong>：<ul>
+<li><strong>FairHOME</strong>通过其全面的偏见缓解方法，生成代表所有子群体的变体，有效地解决了单一属性和交叉属性的偏见问题。因此，FairHOME能够同时提升群体公平性和交叉公平性。</li>
+</ul>
+</li>
+</ol>
+<p><strong>发现：</strong></p>
+<p><strong>FairHOME</strong>不仅改善了交叉公平性，还在156个场景中的120个场景中显著提高了单一保护属性的群体公平性。</p>
+<h2 id="DISCUSSION"><a href="#DISCUSSION" class="headerlink" title="DISCUSSION"></a>DISCUSSION</h2><h3 id="A-Advantages-of-FairHOME"><a href="#A-Advantages-of-FairHOME" class="headerlink" title="A. Advantages of FairHOME"></a><em>A. Advantages of FairHOME</em></h3><p><strong>FairHOME的优势</strong></p>
+<ol>
+<li><strong>有效性</strong>：FairHOME的主要目标是提升交叉公平性，实验结果表明，它优于现有最先进的方法，显著提高了交叉公平性。</li>
+<li><strong>平衡性</strong>：FairHOME在公平性与机器学习性能之间达到了良好的平衡，实验结果表明其在交叉公平性和性能的权衡上优于现有方法。</li>
+<li><strong>非破坏性</strong>：FairHOME仅在推理阶段对输入数据进行操作，不需要修改已有的训练数据处理流程或模型，因此可以无缝集成到现有系统中，且对已部署的ML软件影响最小。</li>
+<li><strong>轻量级访问训练数据</strong>：与需要访问整个训练数据集的现有方法（如FairSMOTE、MAAT、FairMask）不同，FairHOME只需访问保护属性的值，减少了泄露私人信息的风险。</li>
+<li><strong>无需训练新模型</strong>：FairHOME无需重新训练新模型，这不仅降低了开发和部署的复杂性，也符合可持续和绿色软件工程的趋势。</li>
+</ol>
+<h3 id="B-Threats-to-Validity"><a href="#B-Threats-to-Validity" class="headerlink" title="B. Threats to Validity"></a><em>B. Threats to Validity</em></h3><p><strong>FairHOME的有效性威胁</strong></p>
+<ol>
+<li><strong>构建效度（Construct Validity）</strong>：<ul>
+<li>测量公平性和机器学习性能可能对构建效度构成威胁。为此，我们使用了六个广泛采用的交叉公平性指标和五个标准的机器学习性能指标，并进行公平性与性能权衡分析，使用了文献中最广泛的30个衡量指标。</li>
+</ul>
+</li>
+<li><strong>内部效度（Internal Validity）</strong>：<ul>
+<li>为确保结果的准确性，我们仔细复制了现有的偏见缓解方法进行比较分析，并进行了20次实验重复，以减少随机性的影响。由于篇幅限制，我们通常呈现平均水平的统计结果，可能会忽略变异和异常值，详细结果可在我们的仓库中查看。</li>
+</ul>
+</li>
+<li><strong>外部效度（External Validity）</strong>：<ul>
+<li>为解决外部效度的潜在问题，我们使用了24个偏见缓解任务进行评估，这些任务涵盖了六个广泛研究的决策问题和四种类型的机器学习模型。同时，我们在选择现有方法时，考虑了既有广泛使用的方法，也考虑了最近的方法，包括预处理、处理中和后处理方法。</li>
+</ul>
+</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/">http://example.com/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2025/01/12/Teaching-Code-LLMs-to-Use-Autocompletion-Tools-in-Repository-Level-Code-Generation/" title="Teaching Code LLMs to Use Autocompletion Tools in Repository-Level Code Generation"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Teaching Code LLMs to Use Autocompletion Tools in Repository-Level Code Generation</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">115</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software"><span class="toc-number">1.</span> <span class="toc-text">Diversity Drives Fairness: Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#INTRODUCTION"><span class="toc-number">1.2.</span> <span class="toc-text">INTRODUCTION</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PRELIMINARIES"><span class="toc-number">1.3.</span> <span class="toc-text">PRELIMINARIES</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Fairness-in-ML-Software"><span class="toc-number">1.3.1.</span> <span class="toc-text">A. Fairness in ML Software</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Related-Work"><span class="toc-number">1.3.2.</span> <span class="toc-text">B. Related Work</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OUR-APPROACH"><span class="toc-number">1.4.</span> <span class="toc-text">OUR APPROACH</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-FairHOME-In-a-Nutshell"><span class="toc-number">1.4.1.</span> <span class="toc-text">A. FairHOME: In a Nutshell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Input-Generation"><span class="toc-number">1.4.2.</span> <span class="toc-text">B. Input Generation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Output-Ensemble"><span class="toc-number">1.4.3.</span> <span class="toc-text">C. Output Ensemble</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E5%9C%BA%E6%99%AF%EF%BC%9A%E6%80%A7%E5%88%AB%E5%92%8C%E7%A7%8D%E6%97%8F%E7%9A%84%E4%BF%9D%E6%8A%A4%E5%B1%9E%E6%80%A7"><span class="toc-number">1.4.4.</span> <span class="toc-text">假设场景：性别和种族的保护属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E6%95%B0%E6%8D%AE%EF%BC%9A"><span class="toc-number">1.4.4.1.</span> <span class="toc-text">输入数据：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#FairHOME%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="toc-number">1.4.4.2.</span> <span class="toc-text">FairHOME流程：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E6%9C%89%E5%8A%A9%E4%BA%8E%E5%85%AC%E5%B9%B3%E6%80%A7%EF%BC%9F"><span class="toc-number">1.4.5.</span> <span class="toc-text">为什么这有助于公平性？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EVALUATION-SETUP"><span class="toc-number">1.5.</span> <span class="toc-text">EVALUATION SETUP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Research-Questions-RQs"><span class="toc-number">1.5.1.</span> <span class="toc-text">A. Research Questions (RQs)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Experimental-Methodology"><span class="toc-number">1.5.2.</span> <span class="toc-text">B. Experimental Methodology</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RESULTS"><span class="toc-number">1.6.</span> <span class="toc-text">RESULTS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-RQ1-Effect-of-FairHOME"><span class="toc-number">1.6.1.</span> <span class="toc-text">A. RQ1: Effect of FairHOME</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8%E6%A0%BC%E8%A7%A3%E8%AF%BB%EF%BC%9A"><span class="toc-number">1.6.2.</span> <span class="toc-text">表格解读：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">1.6.3.</span> <span class="toc-text">总结：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-RQ2-Comparison-of-Intersectional-Fairness"><span class="toc-number">1.6.4.</span> <span class="toc-text">B. RQ2: Comparison of Intersectional Fairness</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%A1%A8%E5%A4%B4%E8%AF%B4%E6%98%8E%EF%BC%9A"><span class="toc-number">1.6.5.</span> <span class="toc-text">1. 表头说明：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%A7%A3%E8%AF%BB%E8%A1%A8%E6%A0%BC%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%EF%BC%9A"><span class="toc-number">1.6.6.</span> <span class="toc-text">2. 解读表格中的数据：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">1.6.7.</span> <span class="toc-text">3. 总结：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%A1%A8%E5%A4%B4%E8%A7%A3%E9%87%8A%EF%BC%9A"><span class="toc-number">1.6.8.</span> <span class="toc-text">1. 表头解释：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E5%AD%97%E8%A7%A3%E9%87%8A%EF%BC%9A"><span class="toc-number">1.6.9.</span> <span class="toc-text">2. 数字解释：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%80%BB%E4%BD%93%E8%A1%A8%E7%8E%B0%EF%BC%9A"><span class="toc-number">1.6.10.</span> <span class="toc-text">3. 总体表现：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%A7%A3%E8%AF%BB%EF%BC%9A"><span class="toc-number">1.6.11.</span> <span class="toc-text">4. 解读：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">1.6.12.</span> <span class="toc-text">5. 总结：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-RQ3-Comparison-of-Fairness-Performance-Trade-off"><span class="toc-number">1.6.13.</span> <span class="toc-text">C. RQ3: Comparison of Fairness-Performance Trade-off</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9B%BE%E8%A1%A8%E7%9A%84%E5%90%84%E4%B8%AA%E9%83%A8%E5%88%86%EF%BC%9A"><span class="toc-number">1.6.14.</span> <span class="toc-text">1. 图表的各个部分：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9B%BE%E8%A1%A8%E7%9A%84%E6%A0%B8%E5%BF%83%E4%BF%A1%E6%81%AF%EF%BC%9A"><span class="toc-number">1.6.15.</span> <span class="toc-text">2. 图表的核心信息：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%80%BB%E7%BB%93%EF%BC%9A-1"><span class="toc-number">1.6.16.</span> <span class="toc-text">3. 总结：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-RQ4-Evaluation-of-Mutation-Strategies"><span class="toc-number">1.6.17.</span> <span class="toc-text">D. RQ4: Evaluation of Mutation Strategies</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%A1%A8%E5%A4%B4%E8%AF%B4%E6%98%8E%EF%BC%9A-1"><span class="toc-number">1.6.18.</span> <span class="toc-text">1. 表头说明：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E8%A7%A3%E8%AF%BB%EF%BC%9A"><span class="toc-number">1.6.19.</span> <span class="toc-text">2. 数据解读：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%BB%E8%A6%81%E7%BB%93%E8%AE%BA%EF%BC%9A"><span class="toc-number">1.6.20.</span> <span class="toc-text">3. 主要结论：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A-1"><span class="toc-number">1.6.21.</span> <span class="toc-text">总结：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#E-RQ5-Evaluation-of-Ensemble-Strategies"><span class="toc-number">1.6.22.</span> <span class="toc-text">E. RQ5: Evaluation of Ensemble Strategies</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%A1%A8%E5%A4%B4%E8%AF%B4%E6%98%8E%EF%BC%9A-2"><span class="toc-number">1.6.23.</span> <span class="toc-text">1. 表头说明：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E8%A7%A3%E8%AF%BB%EF%BC%9A-1"><span class="toc-number">1.6.24.</span> <span class="toc-text">2. 数据解读：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%BB%E8%A6%81%E7%BB%93%E8%AE%BA%EF%BC%9A-1"><span class="toc-number">1.6.25.</span> <span class="toc-text">3. 主要结论：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A-2"><span class="toc-number">1.6.26.</span> <span class="toc-text">总结：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#F-RQ6-Contribution-of-Different-Mutants"><span class="toc-number">1.6.27.</span> <span class="toc-text">F. RQ6: Contribution of Different Mutants</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#G-RQ7-Effect-on-Group-Fairness"><span class="toc-number">1.6.28.</span> <span class="toc-text">G. RQ7: Effect on Group Fairness</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DISCUSSION"><span class="toc-number">1.7.</span> <span class="toc-text">DISCUSSION</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Advantages-of-FairHOME"><span class="toc-number">1.7.1.</span> <span class="toc-text">A. Advantages of FairHOME</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Threats-to-Validity"><span class="toc-number">1.7.2.</span> <span class="toc-text">B. Threats to Validity</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/" title="Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software">Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software</a><time datetime="2025-01-24T12:23:10.000Z" title="发表于 2025-01-24 20:23:10">2025-01-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/12/Teaching-Code-LLMs-to-Use-Autocompletion-Tools-in-Repository-Level-Code-Generation/" title="Teaching Code LLMs to Use Autocompletion Tools in Repository-Level Code Generation">Teaching Code LLMs to Use Autocompletion Tools in Repository-Level Code Generation</a><time datetime="2025-01-12T10:28:21.000Z" title="发表于 2025-01-12 18:28:21">2025-01-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/27/Explaining-Structured-Queries-in-Natural-Language/" title="Explaining Structured Queries in Natural Language">Explaining Structured Queries in Natural Language</a><time datetime="2024-12-27T09:15:17.000Z" title="发表于 2024-12-27 17:15:17">2024-12-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/24/Fuzzing-JavaScript-Interpreters-with-Coverage-Guided-Reinforcement-Learning-for-LLM-Based-Mutation/" title="Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation">Fuzzing JavaScript Interpreters with Coverage-Guided Reinforcement Learning for LLM-Based Mutation</a><time datetime="2024-12-24T10:16:03.000Z" title="发表于 2024-12-24 18:16:03">2024-12-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/12/15/Finding-Logic-Bugs-in-Spatial-Database-Engines-via-Affine-Equivalent-Inputs/" title="Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs">Finding Logic Bugs in Spatial Database Engines via  Affine Equivalent Inputs</a><time datetime="2024-12-15T08:36:36.000Z" title="发表于 2024-12-15 16:36:36">2024-12-15</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
