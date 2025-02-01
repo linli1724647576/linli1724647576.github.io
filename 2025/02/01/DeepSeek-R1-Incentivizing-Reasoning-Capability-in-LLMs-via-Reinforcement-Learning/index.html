@@ -1,0 +1,519 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement LearningAbstract我们介绍了第一代推理模型，DeepSeek-R1-Zero 和 DeepSeek-R1。DeepSeek-R1-Zero 是通过大规模 强化学习（RL） 训练的模型，未经过 监督微调（SFT） 作为预处理步骤，展示了卓越">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning">
+<meta property="og:url" content="http://example.com/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement LearningAbstract我们介绍了第一代推理模型，DeepSeek-R1-Zero 和 DeepSeek-R1。DeepSeek-R1-Zero 是通过大规模 强化学习（RL） 训练的模型，未经过 监督微调（SFT） 作为预处理步骤，展示了卓越">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2025-02-01T11:11:48.000Z">
+<meta property="article:modified_time" content="2025-02-01T11:14:16.101Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-02-01 19:14:16'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">119</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-01T11:11:48.000Z" title="发表于 2025-02-01 19:11:48">2025-02-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-01T11:14:16.101Z" title="更新于 2025-02-01 19:14:16">2025-02-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning"><a href="#DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning" class="headerlink" title="DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning"></a><strong>DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</strong></h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a><strong>Abstract</strong></h2><p>我们介绍了第一代推理模型，DeepSeek-R1-Zero 和 DeepSeek-R1。<br>DeepSeek-R1-Zero 是通过大规模 <strong>强化学习（RL）</strong> 训练的模型，未经过 <strong>监督微调（SFT）</strong> 作为预处理步骤，展示了卓越的推理能力。通过强化学习，DeepSeek-R1-Zero 自然地具备了多种强大且引人注目的推理行为。然而，它也面临一些挑战，如 <strong>可读性差</strong> 和 <strong>语言混杂</strong> 等问题。为了应对这些问题并进一步提升推理性能，我们引入了 DeepSeek-R1，它在强化学习之前加入了 <strong>多阶段训练</strong> 和 <strong>冷启动数据</strong>。DeepSeek-R1 在推理任务中的表现与 <strong>OpenAI-o1-1217</strong> 相当。为了支持研究社区，我们将 <strong>DeepSeek-R1-Zero</strong>、<strong>DeepSeek-R1</strong> 和基于 <strong>Qwen 和 Llama</strong> 蒸馏的六个密集模型（1.5B、7B、8B、14B、32B、70B）开源。</p>
+<p><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201105136045.png" alt="image-20250201105136045"></p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a><strong>Introduction</strong></h2><ol>
+<li><strong>背景与挑战</strong><ul>
+<li>近年来，大型语言模型（LLMs）迅速发展，逐渐缩小了与人工通用智能（AGI）之间的差距。</li>
+<li><strong>后训练（Post-training）</strong> 被证明能有效提升推理任务的准确性、与社会价值对齐，并适应用户偏好，同时所需计算资源较预训练少。</li>
+<li><strong>推理任务</strong> 的一个重要创新是 <strong>推理时扩展（inference-time scaling）</strong>，例如 OpenAI 的 o1 系列通过增加 <strong>Chain-of-Thought</strong>（思维链）长度，显著提升了数学、编程和科学推理任务的表现。</li>
+</ul>
+</li>
+<li><strong>DeepSeek-R1-Zero</strong><ul>
+<li>采用纯 <strong>强化学习（RL）</strong> 训练，探索不依赖监督数据的推理能力提升。</li>
+<li>DeepSeek-V3-Base作为基础模型，结合 GRPO（Shao et al., 2024）框架，在推理基准测试中表现卓越：<ul>
+<li><strong>AIME 2024 的 pass@1 分数</strong> 从 **15.6% 提升至 71.0%**，通过多数投票进一步提升至 **86.7%**，与 OpenAI-o1-0912 表现相当。</li>
+</ul>
+</li>
+<li><strong>问题</strong>：存在 <strong>可读性差</strong> 和 <strong>语言混杂</strong> 等问题。</li>
+</ul>
+</li>
+<li><strong>DeepSeek-R1</strong><ul>
+<li>通过引入 <strong>冷启动数据</strong> 和 <strong>多阶段训练流程</strong> 解决了 DeepSeek-R1-Zero 的问题。</li>
+<li><strong>冷启动数据</strong> 用于微调模型，随后进行推理导向的 RL 训练。</li>
+<li>完成 <strong>RL 收敛后</strong>，通过 <strong>拒绝采样（Rejection Sampling）</strong> 创建新的 SFT 数据，并结合 DeepSeek-V3 的监督数据进行再训练。</li>
+<li>训练后的 <strong>DeepSeek-R1</strong> 模型在推理任务中表现与 <strong>OpenAI-o1-1217 相当</strong>。</li>
+</ul>
+</li>
+<li><strong>蒸馏与小模型优化</strong><ul>
+<li>从 <strong>DeepSeek-R1</strong> 蒸馏出更小的模型，使用 <strong>Qwen2.5-32B</strong> 作为基础模型，蒸馏结果优于直接应用 RL。</li>
+<li>蒸馏出的 <strong>14B</strong> 模型超越了当前开源模型 <strong>QwQ-32B-Preview</strong>，而 <strong>32B</strong> 和 <strong>70B</strong> 模型在推理基准测试中设立了新的记录。</li>
+</ul>
+</li>
+<li><strong>开源计划</strong><ul>
+<li>开源了蒸馏后的 <strong>Qwen</strong> 和 <strong>Llama</strong> 系列模型，推动推理任务的进一步研究和应用。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong></p>
+<p>✅ <strong>DeepSeek-R1</strong> 通过多阶段训练与冷启动数据解决了推理中的可读性和语言混杂问题，展现了与 OpenAI-o1-1217 相当的推理能力。<br>✅ <strong>蒸馏技术</strong> 成功将大模型的推理模式应用于小模型，并超越了现有的开源模型。<br>✅ <strong>开源蒸馏模型</strong> 为推理任务研究提供了更强大的工具和更高的效能。</p>
+<h3 id="1-1-Contributions"><a href="#1-1-Contributions" class="headerlink" title="1.1. Contributions"></a><strong>1.1. Contributions</strong></h3><p><strong>Post-Training: Large-Scale Reinforcement Learning on the Base Model</strong></p>
+<ul>
+<li><strong>直接应用 RL</strong>：无需依赖监督微调（SFT），通过 RL 训练基础模型，探索 <strong>Chain-of-Thought（CoT）</strong> 推理方法，成功开发 <strong>DeepSeek-R1-Zero</strong>。</li>
+<li><strong>DeepSeek-R1-Zero</strong> 展示了 <strong>自我验证、反思和生成长 CoT</strong> 等能力，标志着 LLM 推理能力的新突破。</li>
+<li><strong>首次验证</strong>：证明 LLM 推理能力可以通过纯 RL 激励实现，无需 SFT，为未来的研究提供了新方向。</li>
+<li><strong>DeepSeek-R1 开发流程</strong>：包括两阶段 RL 训练用于发现推理模式并与人类偏好对齐，以及两阶段 SFT 训练作为推理和非推理能力的基础。</li>
+</ul>
+<p><strong>Distillation: Smaller Models Can Be Powerful Too</strong></p>
+<ul>
+<li><p><strong>蒸馏大模型推理模式</strong>：展示了大模型的推理模式能够蒸馏到小模型中，并取得比小模型 RL 推理模式更好的表现。</p>
+</li>
+<li><p><strong>开源模型和 API</strong>：开源 <strong>DeepSeek-R1</strong> 和蒸馏后的模型，将有助于未来蒸馏出更强的小模型。</p>
+</li>
+<li><p><strong>蒸馏效果</strong>：通过 DeepSeek-R1 生成的推理数据，对多个小型模型进行了微调，结果表明蒸馏后的 小模型 在推理基准测试中表现出色。</p>
+<ul>
+<li><strong>DeepSeek-R1-Distill-Qwen-7B</strong> 在 <strong>AIME 2024</strong> 中得分 **55.5%**，超越 <strong>QwQ-32B-Preview</strong>。</li>
+<li><strong>DeepSeek-R1-Distill-Qwen-32B</strong> 在 <strong>AIME 2024</strong> 获得 **72.6%**，在 <strong>MATH-500</strong> 获得 **94.3%**，在 <strong>LiveCodeBench</strong> 获得 **57.2%**，显著优于之前的开源模型，并与 <strong>o1-mini</strong> 相当。</li>
+</ul>
+</li>
+<li><p>开源 <strong>DeepSeek-R1</strong> 及其蒸馏后的 1.5B、7B、8B、14B、32B 和 70B 模型，基于 <strong>Qwen2.5</strong> 和 <strong>Llama3</strong> 系列，支持社区进一步研究。</p>
+</li>
+</ul>
+<p><strong>总结</strong></p>
+<p>✅ <strong>DeepSeek-R1-Zero</strong> 展现了通过 RL 实现推理能力的突破，创新了模型训练方法。<br>✅ <strong>蒸馏技术</strong> 成功将大模型的推理模式移植到小模型，显著提升小模型的性能。<br>✅ <strong>开源贡献</strong> 提供了多种蒸馏模型，为研究社区和工业界提供强大的推理模型工具。</p>
+<h3 id="1-2-Summary-of-Evaluation-Results"><a href="#1-2-Summary-of-Evaluation-Results" class="headerlink" title="1.2. Summary of Evaluation Results"></a><strong>1.2. Summary of Evaluation Results</strong></h3><p><strong>推理任务</strong></p>
+<ol>
+<li><strong>AIME 2024</strong>：DeepSeek-R1 取得 <strong>79.8% Pass@1</strong>，略超越 <strong>OpenAI-o1-1217</strong>。</li>
+<li><strong>MATH-500</strong>：得分 **97.3%**，与 <strong>OpenAI-o1-1217</strong> 表现持平，显著超过其他模型。</li>
+<li>编程任务：<ul>
+<li>在 <strong>Codeforces 编程竞赛</strong> 中，DeepSeek-R1 达到 <strong>2,029 Elo</strong>，超越 <strong>96.3% 的人类参赛者</strong>，展示了其在编程任务中的专家级能力。</li>
+<li>在 <strong>工程任务</strong> 上，DeepSeek-R1 表现略优于 <strong>DeepSeek-V3</strong>，为开发者提供了实际应用价值。</li>
+</ul>
+</li>
+</ol>
+<p><strong>知识任务</strong></p>
+<ol>
+<li><strong>MMLU</strong>：DeepSeek-R1 取得 **90.8%**，超越 <strong>DeepSeek-V3</strong>，略低于 <strong>OpenAI-o1-1217</strong>。</li>
+<li><strong>MMLU-Pro</strong>：得分 **84.0%**，表现优于其他闭源模型。</li>
+<li><strong>GPQA Diamond</strong>：得分 **71.5%**，再次超过 <strong>DeepSeek-V3</strong>，表现出其在教育任务中的竞争力。</li>
+<li><strong>SimpleQA</strong>：在事实性问题上，DeepSeek-R1 超越 <strong>DeepSeek-V3</strong>，展示了其处理事实查询的能力。</li>
+</ol>
+<p><strong>其他任务</strong></p>
+<ul>
+<li>在 <strong>创造性写作</strong>、<strong>一般问答</strong>、<strong>编辑</strong>、<strong>摘要</strong> 等任务上，DeepSeek-R1 表现出色。</li>
+<li>在 <strong>AlpacaEval 2.0</strong> 上，DeepSeek-R1 取得 <strong>87.6% 的长度控制胜率</strong>，在 <strong>ArenaHard</strong> 上取得 <strong>92.3% 的胜率</strong>，展现了其处理非考试类查询的强大能力。</li>
+<li>在 <strong>长上下文理解</strong> 任务中，DeepSeek-R1 大幅超越 <strong>DeepSeek-V3</strong>，在长上下文基准测试中表现突出。</li>
+</ul>
+<p><strong>总结</strong></p>
+<p>✅ <strong>DeepSeek-R1 在推理、编程和知识任务上表现出色，超越了多个现有模型。</strong><br>✅ <strong>在创造性写作、问答和长上下文理解等任务上，展示了强大的能力。</strong><br>✅ <strong>该模型在处理长上下文和复杂问题时，表现远超之前的版本，具有广泛的应用潜力。</strong></p>
+<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a><strong>Approach</strong></h2><h3 id="2-1-Overview"><a href="#2-1-Overview" class="headerlink" title="2.1. Overview"></a><strong>2.1. Overview</strong></h3><p>本研究展示了 <strong>大规模强化学习（RL）</strong> 在提升模型推理能力方面的重要作用，且无需依赖 <strong>监督微调（SFT）</strong> 作为冷启动。通过引入少量冷启动数据，性能还可以进一步提升。研究中提出了以下三个关键部分：</p>
+<ol>
+<li><strong>DeepSeek-R1-Zero</strong>：直接应用 RL 到基础模型，无需任何 SFT 数据。</li>
+<li><strong>DeepSeek-R1</strong>：基于经过 <strong>长 Chain-of-Thought（CoT）示例微调的检查点</strong>，应用 RL 进行进一步训练。</li>
+<li><strong>蒸馏</strong>：从 DeepSeek-R1 中蒸馏推理能力到 <strong>小型密集模型</strong>。</li>
+</ol>
+<h3 id="2-2-DeepSeek-R1-Zero-Reinforcement-Learning-on-the-Base-Model"><a href="#2-2-DeepSeek-R1-Zero-Reinforcement-Learning-on-the-Base-Model" class="headerlink" title="2.2. DeepSeek-R1-Zero: Reinforcement Learning on the Base Model"></a><strong>2.2. DeepSeek-R1-Zero: Reinforcement Learning on the Base Model</strong></h3><p>强化学习在推理任务中已展现出显著的效果，这一点在我们之前的研究中得到了验证（Shao et al., 2024；Wang et al., 2023）。然而，这些研究在很大程度上依赖于监督数据，而收集这些数据是非常耗时的。在本节中，我们探讨了 <strong>大型语言模型（LLMs）</strong> 在 <strong>没有任何监督数据</strong> 的情况下发展推理能力的潜力，重点关注它们通过纯 <strong>强化学习过程</strong> 进行自我进化的能力。我们首先简要概述了我们的 RL 算法，然后展示了一些令人兴奋的结果，希望能为社区提供有价值的见解。</p>
+<h4 id="2-2-1-Reinforcement-Learning-Algorithm"><a href="#2-2-1-Reinforcement-Learning-Algorithm" class="headerlink" title="2.2.1. Reinforcement Learning Algorithm"></a><strong>2.2.1. Reinforcement Learning Algorithm</strong></h4><p>为了降低强化学习（RL）的训练成本，采用 <strong>Group Relative Policy Optimization (GRPO)</strong> 算法（Shao et al., 2024）。GRPO 避免了传统的 <strong>评估模型（critic model）</strong>，而是通过 <strong>组得分</strong> 来估算基准。具体来说，GRPO 为每个问题 <strong>q</strong> 从旧的策略模型 <strong>πθold</strong> 中采样一组输出 **{o₁, o₂, …, oG}**，然后通过最大化以下目标函数来优化当前的策略模型 <strong>πθ</strong>：</p>
+<p><strong>目标函数（JGRPO）</strong>：</p>
+<p><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201120410044.png" alt="image-20250201120410044"></p>
+<ul>
+<li>公式中的 <strong>E[·]</strong> 表示期望值。</li>
+<li>通过 <strong>优势（Aᵢ）</strong> 和 <strong>KL 散度（D_KL）</strong> 来优化策略。</li>
+<li><strong>clip</strong> 操作限制了新旧策略的比例变化，以保证稳定性。</li>
+<li><strong>β</strong> 是控制 <strong>KL 散度</strong> 的超参数，<strong>ε</strong> 控制策略的变化范围。</li>
+</ul>
+<p><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201164532832.png" alt="image-20250201164532832"></p>
+<p><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201165141076.png" alt="image-20250201165141076"></p>
+<blockquote>
+<p><strong>PPO（Proximal Policy Optimization）</strong>：</p>
+<ul>
+<li>PPO 是一种基于 <strong>剪辑（Clipping）</strong> 的强化学习算法，旨在 <strong>限制新旧策略之间的变化</strong>，使得策略更新更加稳定。PPO 通过最大化 <strong>目标函数</strong> 来平衡 <strong>探索</strong> 和 <strong>稳定性</strong>，从而避免了策略更新过大导致的不稳定。</li>
+<li><strong>核心</strong>：PPO 通过剪辑操作来限制策略比率（新策略与旧策略的比值），从而避免策略更新过快。</li>
+<li>目标函数是： LCLIP(θ)&#x3D;Et[min⁡(rt(θ)A^t,clip(rt(θ),1−ϵ,1+ϵ)A^t)]L^{CLIP}(\theta) &#x3D; \mathbb{E}_t \left[ \min \left( r_t(\theta) \hat{A}_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) \hat{A}_t \right) \right]LCLIP(θ)&#x3D;Et[min(rt(θ)A^t,clip(rt(θ),1−ϵ,1+ϵ)A^t)] 其中，**$r_t(\theta)$** 是当前策略与旧策略的比值，**$\hat{A}_t$** 是优势函数，**$\epsilon$** 是剪辑范围。</li>
+</ul>
+</blockquote>
+<p><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201165501736.png" alt="image-20250201165501736"></p>
+<blockquote>
+<p>我们来用一个简单的例子来说明 <strong>Group Relative Policy Optimization (GRPO)</strong> 的思路。</p>
+<h3 id="背景："><a href="#背景：" class="headerlink" title="背景："></a><strong>背景：</strong></h3><p>假设我们在训练一个 <strong>智能机器人</strong>，这个机器人在一个虚拟环境中，执行 <strong>导航任务</strong>。它的目标是根据环境中的信息（例如位置、障碍物等）做出决策，选择最佳路径，从而到达目标点。</p>
+<p>我们的目标是通过 <strong>强化学习</strong>（RL）让机器人学会如何选择路径，并优化它的行为。</p>
+<h3 id="GRPO的应用："><a href="#GRPO的应用：" class="headerlink" title="GRPO的应用："></a><strong>GRPO的应用：</strong></h3><p>在 <strong>GRPO</strong> 中，模型会根据 <strong>多个输出</strong> 和 <strong>新旧策略的比较</strong> 来优化策略。我们来详细解释这个过程。</p>
+<h3 id="假设情况："><a href="#假设情况：" class="headerlink" title="假设情况："></a><strong>假设情况：</strong></h3><ol>
+<li><strong>环境（状态）</strong>：机器人处于一个房间里，房间中有障碍物，目标是找到最快的路径到达房间的另一端。</li>
+<li><strong>问题（q）</strong>：机器人的当前状态，即当前位置、目标位置、障碍物的位置等信息。</li>
+<li><strong>策略（πθold 和 πθ）</strong>：<ul>
+<li><strong>旧策略（πθold）</strong>：这是训练前的模型策略，机器人根据它来做决策。假设这个策略表现较差，机器人有时会绕远路或者碰到障碍物。</li>
+<li><strong>新策略（πθ）</strong>：这是我们正在训练的模型策略，它会根据旧策略的输出进行改进，并在新的决策中逐步优化。</li>
+</ul>
+</li>
+</ol>
+<h3 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a><strong>步骤：</strong></h3><h4 id="1-采样旧策略的多个输出："><a href="#1-采样旧策略的多个输出：" class="headerlink" title="1. 采样旧策略的多个输出："></a>1. <strong>采样旧策略的多个输出</strong>：</h4><p>首先，我们使用旧策略 <strong>πθold</strong> 来生成 <strong>G 个</strong> 不同的输出（即不同的行动或路径选择），这些输出表示机器人在同一个问题下的多次尝试。</p>
+<p>例如，假设在同样的环境下，机器人可能会有如下几种行动（输出）：</p>
+<ul>
+<li><strong>输出 o₁</strong>：机器人选择左侧路径，绕远路。</li>
+<li><strong>输出 o₂</strong>：机器人选择右侧路径，碰到障碍物。</li>
+<li><strong>输出 o₃</strong>：机器人选择直走，撞墙。</li>
+<li>依此类推，<strong>G</strong> 个输出代表机器人不同的决策。</li>
+</ul>
+<h4 id="2-计算策略比率和优势："><a href="#2-计算策略比率和优势：" class="headerlink" title="2. 计算策略比率和优势："></a>2. <strong>计算策略比率和优势</strong>：</h4><p>接下来，GRPO 通过计算 <strong>新旧策略之间的比率</strong>，来评估当前策略是否优于旧策略。</p>
+<ul>
+<li><strong>策略比率</strong>：计算 <strong>新策略</strong> （<strong>πθ</strong>）和 <strong>旧策略</strong> （<strong>πθold</strong>）在给定输出下的概率比值。</li>
+</ul>
+<p>例如，<strong>πθ(o₁|q)</strong> 和 <strong>πθold(o₁|q)</strong> 分别是新旧策略选择输出 <strong>o₁</strong> 的概率。如果新策略的概率较高，说明新策略比旧策略更优。</p>
+<ul>
+<li><strong>优势（Aᵢ）</strong>：计算每个输出 <strong>oᵢ</strong> 的优势，即新策略在该输出下的表现相较于旧策略的改进程度。例如，如果 <strong>o₁</strong> 是机器人绕远路的选择，假设新策略使得绕远路的决策不再发生，那么优势值就较高。</li>
+</ul>
+<h4 id="3-剪辑操作："><a href="#3-剪辑操作：" class="headerlink" title="3. 剪辑操作："></a>3. <strong>剪辑操作</strong>：</h4><p>为了保证策略更新的稳定性，GRPO 使用 <strong>剪辑操作</strong> 限制策略比率的变化。如果比率变化过大（例如 <strong>πθ(o₁|q)</strong> 和 <strong>πθold(o₁|q)</strong> 之间的差异过大），我们会将比率限制在一个 <strong>1±ε</strong> 的范围内。</p>
+<p>这个剪辑操作是为了避免新策略更新过度，使得训练过程更加稳定，防止模型过拟合或出现不稳定的行为。</p>
+<h4 id="4-优化目标："><a href="#4-优化目标：" class="headerlink" title="4. 优化目标："></a>4. <strong>优化目标</strong>：</h4><p>GRPO 的目标是 <strong>最大化</strong> 目标函数，即优化策略，使得新策略 <strong>πθ</strong> 在大多数情况下能够比旧策略 <strong>πθold</strong> 更好地做出决策。</p>
+<p>最终，我们通过 <strong>相对优化</strong> 和 <strong>优势反馈</strong>，不断改进机器人在环境中的行为，让它能够学会选择最短路径，避开障碍物，最终实现高效的导航。</p>
+<h3 id="总结-GRPO-思路："><a href="#总结-GRPO-思路：" class="headerlink" title="总结 GRPO 思路："></a><strong>总结 GRPO 思路：</strong></h3><ul>
+<li><strong>GRPO</strong> 的核心思路是 <strong>通过旧策略采样多个输出（行动）</strong>，然后通过计算 <strong>新旧策略的比率和优势</strong> 来优化当前策略，使得新策略能够更好地适应环境。</li>
+<li>通过 <strong>剪辑操作</strong> 和 <strong>KL 散度</strong> 控制策略更新的稳定性，确保在训练过程中模型不会发生剧烈的变化，而是逐步优化。</li>
+<li>最终，GRPO 通过 <strong>相对优化</strong> 提升模型的推理能力，使得它在复杂环境中能够做出更好的决策。</li>
+</ul>
+</blockquote>
+<h4 id="2-2-2-Reward-Modeling"><a href="#2-2-2-Reward-Modeling" class="headerlink" title="2.2.2. Reward Modeling"></a><strong>2.2.2. Reward Modeling</strong></h4><p>在强化学习中，奖励是训练信号的来源，决定了优化的方向。为了训练 <strong>DeepSeek-R1-Zero</strong>，我们采用了 <strong>基于规则的奖励系统</strong>，主要包括两种类型的奖励：</p>
+<ol>
+<li><strong>准确性奖励（Accuracy rewards）</strong>：<ul>
+<li>用于评估模型的响应是否正确。比如在数学题中，如果结果是确定的，模型需要提供一个指定格式的答案（例如，放在框中），以便可靠地验证其正确性。对于像 LeetCode 这样的问题，可以使用编译器生成反馈，根据预定义的测试用例来检查答案的正确性。</li>
+</ul>
+</li>
+<li><strong>格式奖励（Format rewards）</strong>：<ul>
+<li>除了准确性奖励外，我们还使用了格式奖励模型，要求模型将思考过程放在 <code>&lt;think&gt;</code> 和 <code>&lt;/think&gt;</code> 标签之间，以强制模型遵循某种格式。</li>
+</ul>
+</li>
+</ol>
+<p>我们没有在 <strong>DeepSeek-R1-Zero</strong> 中应用基于结果或过程的神经奖励模型，因为我们发现神经奖励模型在大规模强化学习过程中可能会遭遇 <strong>奖励作弊</strong> 问题，并且重新训练奖励模型需要额外的训练资源，这会使整个训练过程更加复杂。</p>
+<h4 id="2-2-3-Training-Template"><a href="#2-2-3-Training-Template" class="headerlink" title="2.2.3. Training Template"></a><strong>2.2.3. Training Template</strong></h4><p>为了训练 <strong>DeepSeek-R1-Zero</strong>，我们设计了一个简单的模板，指导基础模型遵循指定的指令。该模板要求模型首先生成推理过程，然后给出最终答案。我们特意将约束限制为这种结构格式，避免了内容上的偏见（例如，强制要求反思性推理或特定的解决策略），以确保能够准确观察模型在强化学习过程中的自然进展。</p>
+<p><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201165926790.png" alt="image-20250201165926790"></p>
+<h4 id="2-2-4-Performance-Self-evolution-Process-and-Aha-Moment-of-DeepSeek-R1-Zero"><a href="#2-2-4-Performance-Self-evolution-Process-and-Aha-Moment-of-DeepSeek-R1-Zero" class="headerlink" title="2.2.4. Performance, Self-evolution Process and Aha Moment of DeepSeek-R1-Zero"></a><strong>2.2.4. Performance, Self-evolution Process and Aha Moment of DeepSeek-R1-Zero</strong></h4><p><strong>性能表现</strong></p>
+<ul>
+<li><strong>DeepSeek-R1-Zero</strong> 在 <strong>AIME 2024 基准测试</strong> 上的表现随着强化学习（RL）训练不断提升，从初始的 <strong>15.6% pass@1</strong> 提升到 **71.0%**，达到了与 <strong>OpenAI-o1-0912</strong> 相当的水平。</li>
+<li>通过 <strong>多数投票</strong>，DeepSeek-R1-Zero 的表现进一步提升，达到 **86.7%**，超越了 OpenAI-o1-0912，显示出其强大的基础能力和进一步发展的潜力。</li>
+<li><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201171140361.png" alt="image-20250201171140361"></li>
+<li><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201171222325.png" alt="image-20250201171222325"></li>
+</ul>
+<p><strong>自我进化过程</strong></p>
+<ul>
+<li>DeepSeek-R1-Zero 的自我进化展示了通过 RL 模型如何自主提高推理能力。模型从基础模型开始，逐步演化，处理复杂推理任务的能力不断增强。</li>
+<li>训练过程中，模型的思考时间持续改善，反映出其在 <strong>推理任务</strong> 中的不断进步。随着 <strong>测试时计算量</strong> 增加，模型能够更深入地探索和精炼思维过程。</li>
+<li>模型展现出 <strong>反思</strong> 和 <strong>探索替代方法</strong> 等复杂行为，这些行为并非被明确编程，而是通过与 RL 环境的互动自发产生，从而增强了推理能力。</li>
+</ul>
+<p><strong>“恍然大悟”时刻</strong></p>
+<ul>
+<li>在训练过程中，出现了一个有趣的 <strong>“恍然大悟”时刻</strong>，DeepSeek-R1-Zero 在中期版本中学会了 <strong>重新评估初步方法</strong>，并为问题分配更多的思考时间。这一行为不仅证明了模型推理能力的提升，也是 RL 强大潜力的体现。</li>
+<li>这一时刻标志着模型自主发展出高级问题解决策略，证明了 RL 能够激发人工系统的新层次智能。</li>
+<li><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201171427466.png" alt="image-20250201171427466"></li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>尽管 DeepSeek-R1-Zero 在推理方面表现强劲，但也存在一些问题，例如 <strong>可读性差</strong> 和 <strong>语言混合</strong> 等问题。为了解决这些问题，<strong>DeepSeek-R1</strong> 使用了带有人类友好冷启动数据的 RL 方法，旨在提高模型的可读性并使其推理过程更易于共享。</li>
+</ul>
+<h3 id="2-3-DeepSeek-R1-Reinforcement-Learning-with-Cold-Start"><a href="#2-3-DeepSeek-R1-Reinforcement-Learning-with-Cold-Start" class="headerlink" title="2.3. DeepSeek-R1: Reinforcement Learning with Cold Start"></a><strong>2.3. DeepSeek-R1: Reinforcement Learning with Cold Start</strong></h3><p>受 <strong>DeepSeek-R1-Zero</strong> 取得的良好结果启发，提出了两个自然的问题：</p>
+<ol>
+<li><strong>是否通过引入少量高质量数据作为冷启动，可以进一步提升推理性能或加速收敛？</strong></li>
+<li><strong>如何训练一个用户友好的模型，使其不仅能够生成清晰连贯的推理链（CoT），还具有强大的通用能力？</strong></li>
+</ol>
+<p>为了回答这两个问题，设计了一个用于训练 <strong>DeepSeek-R1</strong> 的四阶段流程，具体细节如下。</p>
+<h4 id="2-3-1-Cold-Start"><a href="#2-3-1-Cold-Start" class="headerlink" title="2.3.1. Cold Start"></a><strong>2.3.1. Cold Start</strong></h4><p>与 <strong>DeepSeek-R1-Zero</strong> 不同，<strong>DeepSeek-R1</strong> 为了避免 RL 训练初期的不稳定冷启动阶段，采用了 <strong>少量高质量的长推理链（CoT）数据</strong> 来对模型进行微调，以作为初始的 RL 代理。为了收集这些数据，采用了几种方法，包括使用少量示例进行提示、直接提示模型生成带有反思和验证的详细答案、收集 <strong>DeepSeek-R1-Zero</strong> 输出并通过人工后处理进行优化等。</p>
+<p>相比 <strong>DeepSeek-R1-Zero</strong>，冷启动数据的优势包括：</p>
+<ul>
+<li><strong>可读性</strong>：DeepSeek-R1-Zero 的内容往往难以阅读，可能存在多语言混杂或缺少格式化的情况，而 DeepSeek-R1 的冷启动数据设计了更加可读的模式，确保每个回答都有总结，并过滤掉不适合阅读的回答。</li>
+<li><strong>潜力</strong>：通过精心设计冷启动数据的模式，结合人类先验知识，DeepSeek-R1 在性能上超过了 DeepSeek-R1-Zero，说明 <strong>迭代训练</strong> 是推理模型更好的训练方式。</li>
+</ul>
+<h4 id="2-3-2-Reasoning-oriented-Reinforcement-Learning"><a href="#2-3-2-Reasoning-oriented-Reinforcement-Learning" class="headerlink" title="2.3.2. Reasoning-oriented Reinforcement Learning"></a><strong>2.3.2. Reasoning-oriented Reinforcement Learning</strong></h4><p>在对 <strong>DeepSeek-V3-Base</strong> 进行冷启动数据微调后，我们采用与 <strong>DeepSeek-R1-Zero</strong> 相同的大规模强化学习训练过程。此阶段的<strong>重点是提升模型的推理能力</strong>，特别是在编码、数学、科学和逻辑推理等推理密集型任务中，解决明确且有清晰解答的问题。</p>
+<p>在训练过程中，我们观察到 <strong>推理链（CoT）</strong> 经常出现语言混杂的问题，尤其是在涉及多语言的强化学习提示时。为了解决这一问题，我们引入了 <strong>语言一致性奖励</strong>，计算方法为 CoT 中目标语言词汇的比例。尽管消融实验表明该奖励会导致模型性能略微下降，但它与人类偏好一致，使得输出更具可读性。</p>
+<p>最后，我们将推理任务的准确性和语言一致性奖励结合，通过直接求和形成最终奖励，并对微调后的模型进行强化学习训练，直到模型在推理任务上达到收敛。</p>
+<h4 id="2-3-3-Rejection-Sampling-and-Supervised-Fine-Tuning"><a href="#2-3-3-Rejection-Sampling-and-Supervised-Fine-Tuning" class="headerlink" title="2.3.3. Rejection Sampling and Supervised Fine-Tuning"></a><strong>2.3.3. Rejection Sampling and Supervised Fine-Tuning</strong></h4><p>在推理导向的强化学习（RL）收敛后，我们使用生成的检查点来收集 <strong>监督微调（SFT）</strong> 数据，以用于下一轮训练。与初始的冷启动数据主要关注推理不同，这一阶段还融入了其他领域的数据，以提升模型在写作、角色扮演等通用任务中的能力。</p>
+<ol>
+<li><strong>推理数据</strong>：<ul>
+<li>通过 <strong>拒绝采样</strong> 从 RL 训练的检查点生成推理轨迹。与之前仅包含可用规则奖励评估的数据不同，这一阶段增加了更多数据，并使用生成奖励模型对比 ground-truth 和模型预测进行判断。</li>
+<li>对于每个提示，采样多个回应，仅保留正确的回答，共收集了约 <strong>60万</strong> 个推理相关的训练样本。</li>
+</ul>
+</li>
+<li><strong>非推理数据</strong>：<ul>
+<li>对于非推理数据（如写作、事实问答、自我认知和翻译），我们沿用 <strong>DeepSeek-V3</strong> 的管道，并重用部分 <strong>DeepSeek-V3</strong> 的 SFT 数据集。对于某些非推理任务，调用 DeepSeek-V3 来生成潜在的推理链后再回答问题。</li>
+<li>对于简单查询（如“hello”），则不提供推理链。最终，我们收集了约 <strong>20万</strong> 个与推理无关的训练样本。</li>
+</ul>
+</li>
+<li><strong>微调</strong>：<ul>
+<li>使用以上整理的约 <strong>80万</strong> 个样本，对 <strong>DeepSeek-V3-Base</strong> 进行了两轮微调。</li>
+</ul>
+</li>
+</ol>
+<p>这一过程使得模型不仅在推理任务中表现出色，还能提升其在更广泛任务中的能力。</p>
+<h4 id="2-3-4-Reinforcement-Learning-for-all-Scenarios"><a href="#2-3-4-Reinforcement-Learning-for-all-Scenarios" class="headerlink" title="2.3.4. Reinforcement Learning for all Scenarios"></a><strong>2.3.4. Reinforcement Learning for all Scenarios</strong></h4><p>为了进一步使模型与人类偏好对齐，我们实施了一个 <strong>二次强化学习阶段</strong>，旨在提升模型的 <strong>有用性</strong> 和 <strong>无害性</strong>，同时精细化其推理能力。具体方法是使用 <strong>奖励信号</strong> 和 <strong>多样的提示分布</strong> 来训练模型：</p>
+<ol>
+<li><strong>推理数据</strong>：继续采用 <strong>DeepSeek-R1-Zero</strong> 中的方法，使用 <strong>基于规则的奖励</strong> 来指导数学、代码和逻辑推理领域的学习过程。</li>
+<li><strong>通用数据</strong>：使用 <strong>奖励模型</strong> 来捕捉复杂和细致场景中的人类偏好，基于 <strong>DeepSeek-V3</strong> 的管道训练，采用类似的偏好对和训练提示分布。<ul>
+<li><strong>有用性</strong>：主要评估回答的最终总结，确保回答对用户的实用性和相关性，同时尽量减少对推理过程的干扰。</li>
+<li><strong>无害性</strong>：评估模型的整个响应，包括推理过程和总结，识别并减轻潜在的风险、偏见或有害内容。</li>
+</ul>
+</li>
+</ol>
+<p>通过奖励信号和多样数据分布的结合，我们能够训练出在推理任务中表现出色，并优先考虑有用性和无害性的模型。</p>
+<h3 id="2-4-Distillation-Empower-Small-Models-with-Reasoning-Capability"><a href="#2-4-Distillation-Empower-Small-Models-with-Reasoning-Capability" class="headerlink" title="2.4. Distillation: Empower Small Models with Reasoning Capability"></a><strong>2.4. Distillation: Empower Small Models with Reasoning Capability</strong></h3><p>为了让更高效的小型模型具备像 <strong>DeepSeek-R1</strong> 那样的推理能力，我们直接使用 <strong>DeepSeek-R1</strong> 精心整理的 80 万样本对开源模型（如 <strong>Qwen</strong> 和 <strong>Llama</strong>）进行了微调。我们的研究结果表明，这种简单的蒸馏方法显著提升了小型模型的推理能力。</p>
+<p>我们使用的基础模型包括 <strong>Qwen2.5-Math-1.5B</strong>, <strong>Qwen2.5-Math-7B</strong>, <strong>Qwen2.5-14B</strong>, <strong>Qwen2.5-32B</strong>, <strong>Llama-3.1-8B</strong>, 和 <strong>Llama-3.3-70B-Instruct</strong>，其中 <strong>Llama-3.3</strong> 的推理能力略强于 <strong>Llama-3.1</strong>。</p>
+<p>对于蒸馏后的模型，我们仅应用了 <strong>监督微调（SFT）</strong>，没有加入强化学习（RL）阶段，尽管加入 RL 可能会大幅提升模型性能。我们主要目的是展示蒸馏技术的有效性，RL 阶段的探索则留给更广泛的研究社区。</p>
+<h2 id="Experiment"><a href="#Experiment" class="headerlink" title="Experiment"></a><strong>Experiment</strong></h2><p><strong>Benchmarks</strong></p>
+<p>我们在多个标准基准上评估了模型的表现，包括：</p>
+<ul>
+<li><strong>MMLU</strong>、<strong>MMLU-Redux</strong>、<strong>MMLU-Pro</strong>、<strong>C-Eval</strong>、<strong>CMMLU</strong>、<strong>IFEval</strong>、<strong>FRAMES</strong>、<strong>GPQA Diamond</strong>、<strong>SimpleQA</strong>、<strong>C-SimpleQA</strong>、<strong>SWE-Bench Verified</strong>、<strong>Aider</strong>、<strong>LiveCodeBench</strong>、<strong>Codeforces</strong>、<strong>CNMO 2024</strong> 和 <strong>AIME 2024</strong> 等。</li>
+<li>还评估了开放式生成任务，使用 <strong>LLMs</strong> 作为评判员，基于 <strong>AlpacaEval 2.0</strong> 和 <strong>Arena-Hard</strong> 配置进行对比。</li>
+</ul>
+<p><strong>Evaluation Prompts</strong></p>
+<ul>
+<li>对于标准基准，使用 <strong>simple-evals</strong> 框架中的提示进行评估。</li>
+<li>对于 <strong>MMLU-Redux</strong>，使用 <strong>Zero-Eval</strong> 提示格式进行零-shot 设置。</li>
+<li>其他数据集遵循其原始评估协议，并采用默认提示。</li>
+<li><strong>代码与数学基准</strong>：如 <strong>HumanEval-Mul</strong> 数据集，涵盖 8 种主流编程语言，模型在 <strong>LiveCodeBench</strong> 上的表现使用 CoT 格式评估。</li>
+<li><strong>Codeforces 数据集</strong>：评估基于 <strong>Div.2</strong> 比赛的题目，使用专家设计的测试用例进行评估。</li>
+<li><strong>AIME 2024</strong>：报告 <strong>cons@64</strong> 结果（使用 64 个样本的多数投票结果）。</li>
+</ul>
+<p><strong>Baselines</strong></p>
+<p>我们与多个强基准模型进行了全面比较，包括 <strong>DeepSeek-V3</strong>、<strong>Claude-Sonnet-3.5-1022</strong>、<strong>GPT-4o-0513</strong>、<strong>OpenAI-o1-mini</strong> 和 <strong>OpenAI-o1-1217</strong>，以及开源模型 <strong>QwQ-32B-Preview</strong>。</p>
+<p><strong>Evaluation Setup</strong></p>
+<ul>
+<li><strong>最大生成长度</strong>：设置为 32,768 个 token。</li>
+<li>使用 <strong>采样温度（0.6）</strong> 和 <strong>top-p（0.95）</strong> 来生成多个回答，并使用 <strong>pass@k</strong> 评估每个问题的回答正确性，其中 <strong>pass@1</strong> 表示正确回答的比例。</li>
+</ul>
+<h3 id="3-1-DeepSeek-R1-Evaluation"><a href="#3-1-DeepSeek-R1-Evaluation" class="headerlink" title="3.1. DeepSeek-R1 Evaluation"></a><strong>3.1. DeepSeek-R1 Evaluation</strong></h3><p><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201180747567.png" alt="image-20250201180747567"></p>
+<ol>
+<li><strong>教育类知识基准</strong>：<ul>
+<li><strong>MMLU、MMLU-Pro 和 GPQA Diamond</strong> 上，<strong>DeepSeek-R1</strong> 相较于 <strong>DeepSeek-V3</strong> 取得了显著提升，特别是在 <strong>STEM</strong>（科学、技术、工程、数学）相关问题上，通过大规模强化学习（RL）提升了准确性。</li>
+</ul>
+</li>
+<li><strong>长上下文问题</strong>：<ul>
+<li><strong>FRAMES</strong>（依赖长上下文的问答任务）中，DeepSeek-R1 展示了强大的文档分析能力，突出显示了推理模型在 <strong>AI驱动的搜索和数据分析任务</strong> 中的潜力。</li>
+</ul>
+</li>
+<li><strong>事实性问答</strong>：<ul>
+<li>在 <strong>SimpleQA</strong> 基准上，DeepSeek-R1 超越了 DeepSeek-V3，展示了处理事实性查询的能力，但在 <strong>Chinese SimpleQA</strong> 上表现较差，主要是由于安全强化学习（RL）导致模型拒绝某些查询。</li>
+</ul>
+</li>
+<li><strong>格式化指令跟随</strong>：<ul>
+<li>在 <strong>IF-Eval</strong> 基准上，DeepSeek-R1 的表现令人印象深刻，得益于在微调和强化学习阶段加入了指令跟随数据。</li>
+</ul>
+</li>
+<li><strong>开放领域任务</strong>：<ul>
+<li><strong>AlpacaEval 2.0</strong> 和 <strong>ArenaHard</strong> 上，DeepSeek-R1 在写作任务和开放领域问答中表现出色，远超 <strong>DeepSeek-V3</strong>，证明大规模强化学习在推理能力和跨领域表现中的优势。</li>
+</ul>
+</li>
+<li><strong>数学与编码任务</strong>：<ul>
+<li>在 <strong>数学任务</strong> 和 <strong>编码算法任务</strong>（如 <strong>LiveCodeBench</strong> 和 <strong>Codeforces</strong>）上，DeepSeek-R1 的表现与 <strong>OpenAI-o1-1217</strong> 相当，超越其他模型。</li>
+</ul>
+</li>
+<li><strong>工程类任务</strong>：<ul>
+<li>在 <strong>工程导向的编码任务</strong> 上，<strong>OpenAI-o1-1217</strong> 在 <strong>Aider</strong> 上表现更好，但在 <strong>SWE Verified</strong> 上与 DeepSeek-R1 相当。随着相关强化学习数据量的增加，预计 DeepSeek-R1 在未来版本中将提升工程性能。</li>
+</ul>
+</li>
+</ol>
+<p>DeepSeek-R1 在多个领域表现出色，尤其在推理任务、开放领域问答、数学与编码任务上展现了强大的推理能力和跨领域的表现，突显了大规模强化学习在推理模型中的重要作用。</p>
+<h3 id="3-2-Distilled-Model-Evaluation"><a href="#3-2-Distilled-Model-Evaluation" class="headerlink" title="3.2. Distilled Model Evaluation"></a><strong>3.2. Distilled Model Evaluation</strong></h3><p><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201180858986.png" alt="image-20250201180858986"></p>
+<p>如 <strong>表 5</strong> 所示，通过简单地蒸馏 <strong>DeepSeek-R1</strong> 的输出，可以使 <strong>DeepSeek-R1-7B</strong>（即 <strong>DeepSeek-R1-Distill-Qwen-7B</strong>）在各项评估指标上超越非推理模型如 <strong>GPT-4o-0513</strong>。<strong>DeepSeek-R1-14B</strong> 在所有评估指标上超过了 <strong>QwQ-32B-Preview</strong>，而 <strong>DeepSeek-R1-32B</strong> 和 <strong>DeepSeek-R1-70B</strong> 在大多数基准上显著超越了 <strong>o1-mini</strong>，显示出蒸馏方法的强大潜力。此外，我们发现将 <strong>RL</strong> 应用于这些蒸馏后的模型可进一步带来显著提升，尽管本研究仅展示了简单 <strong>SFT蒸馏模型</strong> 的结果，表明这一方向值得进一步探索。</p>
+<h2 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a><strong>Discussion</strong></h2><h3 id="4-1-Distillation-v-s-Reinforcement-Learning"><a href="#4-1-Distillation-v-s-Reinforcement-Learning" class="headerlink" title="4.1. Distillation v.s. Reinforcement Learning"></a><strong>4.1. Distillation v.s. Reinforcement Learning</strong></h3><p><strong>实验背景</strong>：</p>
+<ul>
+<li>通过 <strong>蒸馏 DeepSeek-R1</strong>，小型模型表现出色。</li>
+<li>问题：是否可以通过 <strong>大规模强化学习（RL）</strong> 训练，达到类似的性能？</li>
+</ul>
+<p><strong>实验过程</strong>：</p>
+<ul>
+<li>对 <strong>Qwen-32B-Base</strong> 进行大规模 <strong>RL 训练</strong>，使用数学、代码和 STEM 数据训练超过 10K 步，得到 <strong>DeepSeek-R1-Zero-Qwen-32B</strong>。</li>
+<li>实验结果表明，经过 <strong>大规模 RL 训练</strong> 后，<strong>32B 基础模型</strong> 的性能与 <strong>QwQ-32B-Preview</strong> 相当。</li>
+</ul>
+<p><strong>结果对比</strong>：</p>
+<ul>
+<li><strong>DeepSeek-R1-Distill-Qwen-32B</strong>（蒸馏后的模型）在所有基准上显著优于 <strong>DeepSeek-R1-Zero-Qwen-32B</strong>（大规模 RL 训练后的模型）。</li>
+</ul>
+<p><strong>结论</strong>：</p>
+<ul>
+<li><strong>蒸馏更强大的模型到小型模型</strong> 能显著提升性能。</li>
+<li><strong>依赖大规模 RL 的小型模型</strong> 需要大量计算资源，可能无法达到蒸馏模型的性能。</li>
+<li><strong>蒸馏策略</strong> 是经济有效的，但要突破智能的边界，仍需更强大的基础模型和更大规模的强化学习。</li>
+</ul>
+<p><img src="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/image-20250201181001964.png" alt="image-20250201181001964"></p>
+<h3 id="4-2-Unsuccessful-Attempts"><a href="#4-2-Unsuccessful-Attempts" class="headerlink" title="4.2. Unsuccessful Attempts"></a><strong>4.2. Unsuccessful Attempts</strong></h3><p>在 <strong>DeepSeek-R1</strong> 的早期开发阶段，我们遇到了一些失败和挫折，分享这些经历旨在提供一些启示，但这并不意味着这些方法无法开发有效的推理模型。</p>
+<ol>
+<li><strong>过程奖励模型（PRM）</strong>：<ul>
+<li><strong>优点</strong>：PRM 是一种合理的方法，用于引导模型更好地解决推理任务。</li>
+<li>挑战：<ul>
+<li>难以明确地定义一般推理中的细粒度步骤。</li>
+<li>判断当前中间步骤是否正确非常具有挑战性，自动化标注可能不理想，人工标注又不适合规模化。</li>
+<li>引入基于模型的 PRM 后，容易导致 <strong>奖励滥用</strong>，而且需要额外的训练资源，增加了训练管道的复杂性。</li>
+</ul>
+</li>
+<li><strong>结论</strong>：虽然 PRM 对于重新排序生成的响应或辅助引导搜索有一定优势，但在大规模强化学习过程中引入的计算开销使其相对于实际应用的优势受到限制。</li>
+</ul>
+</li>
+<li><strong>蒙特卡罗树搜索（MCTS）</strong>：<ul>
+<li><strong>灵感</strong>：受 <strong>AlphaGo</strong> 和 <strong>AlphaZero</strong> 启发，探索使用 MCTS 来增强推理过程中计算扩展性。</li>
+<li>挑战：<ul>
+<li>与棋类游戏不同，标记生成面临着一个指数级增长的搜索空间，设置最大扩展限制可能导致模型卡在局部最优解。</li>
+<li>价值模型直接影响生成质量，训练精细化的价值模型本身具有难度，导致模型难以迭代改进。</li>
+</ul>
+</li>
+<li><strong>结论</strong>：尽管 MCTS 在推理时结合预训练的价值模型可以提升性能，但通过自我搜索迭代提升模型性能仍然是一个重大的挑战。</li>
+</ul>
+</li>
+</ol>
+<h2 id="Conclusion-Limitations-and-Future-Work"><a href="#Conclusion-Limitations-and-Future-Work" class="headerlink" title="Conclusion, Limitations, and Future Work"></a><strong>Conclusion, Limitations, and Future Work</strong></h2><p><strong>推理能力提升</strong>：</p>
+<ul>
+<li><strong>DeepSeek-R1-Zero</strong>：采用纯强化学习（RL）方法，无需冷启动数据，在多项任务中表现出色。</li>
+<li><strong>DeepSeek-R1</strong>：结合冷启动数据和迭代强化学习微调，表现优于 <strong>OpenAI-o1-1217</strong>，在多个任务上取得了可比拟的成绩。</li>
+</ul>
+<p><strong>模型蒸馏</strong>：</p>
+<ul>
+<li>使用 <strong>DeepSeek-R1</strong> 作为教师模型生成 <strong>80万</strong> 个训练样本，对小型密集模型进行微调。</li>
+<li><strong>DeepSeek-R1-Distill-Qwen-1.5B</strong> 在数学基准上超越 <strong>GPT-4o</strong> 和 <strong>Claude-3.5-Sonnet</strong>，在 <strong>AIME</strong>（28.9%）和 <strong>MATH</strong>（83.9%）上表现优异。</li>
+<li>其他小型模型也取得了显著成果，明显超越了基于相同底层检查点的其他指令调优模型。</li>
+</ul>
+<p><strong>未来研究方向</strong>：</p>
+<ul>
+<li><strong>通用能力</strong>：目前 <strong>DeepSeek-R1</strong> 在函数调用、多轮对话、复杂角色扮演和JSON输出等任务上落后于 <strong>DeepSeek-V3</strong>，未来将探索如何利用长推理链（CoT）来提升这些任务的表现。</li>
+<li><strong>语言混合问题</strong>：当前 <strong>DeepSeek-R1</strong> 在中文和英文上优化较好，但在处理其他语言的查询时，可能出现语言混杂的问题，未来将解决这一限制。</li>
+<li><strong>提示工程</strong>：在评估过程中发现 <strong>DeepSeek-R1</strong> 对提示非常敏感，少量示例提示会显著降低其表现，推荐使用零-shot 设置来获得最佳结果。</li>
+<li><strong>软件工程任务</strong>：由于评估时间较长影响了 RL 过程的效率，大规模 RL 尚未广泛应用于软件工程任务，未来版本将通过在 RL 过程中实施拒绝采样或引入异步评估来提高效率。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/">http://example.com/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/" title="DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">119</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning"><span class="toc-number">1.</span> <span class="toc-text">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.2.</span> <span class="toc-text">Introduction</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Contributions"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.1. Contributions</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-Summary-of-Evaluation-Results"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2. Summary of Evaluation Results</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Approach"><span class="toc-number">1.3.</span> <span class="toc-text">Approach</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Overview"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1. Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-DeepSeek-R1-Zero-Reinforcement-Learning-on-the-Base-Model"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2. DeepSeek-R1-Zero: Reinforcement Learning on the Base Model</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-Reinforcement-Learning-Algorithm"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">2.2.1. Reinforcement Learning Algorithm</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%EF%BC%9A"><span class="toc-number">1.3.3.</span> <span class="toc-text">背景：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GRPO%E7%9A%84%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="toc-number">1.3.4.</span> <span class="toc-text">GRPO的应用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%87%E8%AE%BE%E6%83%85%E5%86%B5%EF%BC%9A"><span class="toc-number">1.3.5.</span> <span class="toc-text">假设情况：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%EF%BC%9A"><span class="toc-number">1.3.6.</span> <span class="toc-text">步骤：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%87%87%E6%A0%B7%E6%97%A7%E7%AD%96%E7%95%A5%E7%9A%84%E5%A4%9A%E4%B8%AA%E8%BE%93%E5%87%BA%EF%BC%9A"><span class="toc-number">1.3.6.1.</span> <span class="toc-text">1. 采样旧策略的多个输出：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%AE%A1%E7%AE%97%E7%AD%96%E7%95%A5%E6%AF%94%E7%8E%87%E5%92%8C%E4%BC%98%E5%8A%BF%EF%BC%9A"><span class="toc-number">1.3.6.2.</span> <span class="toc-text">2. 计算策略比率和优势：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%89%AA%E8%BE%91%E6%93%8D%E4%BD%9C%EF%BC%9A"><span class="toc-number">1.3.6.3.</span> <span class="toc-text">3. 剪辑操作：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E4%BC%98%E5%8C%96%E7%9B%AE%E6%A0%87%EF%BC%9A"><span class="toc-number">1.3.6.4.</span> <span class="toc-text">4. 优化目标：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-GRPO-%E6%80%9D%E8%B7%AF%EF%BC%9A"><span class="toc-number">1.3.7.</span> <span class="toc-text">总结 GRPO 思路：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-Reward-Modeling"><span class="toc-number">1.3.7.1.</span> <span class="toc-text">2.2.2. Reward Modeling</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3-Training-Template"><span class="toc-number">1.3.7.2.</span> <span class="toc-text">2.2.3. Training Template</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-4-Performance-Self-evolution-Process-and-Aha-Moment-of-DeepSeek-R1-Zero"><span class="toc-number">1.3.7.3.</span> <span class="toc-text">2.2.4. Performance, Self-evolution Process and Aha Moment of DeepSeek-R1-Zero</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-DeepSeek-R1-Reinforcement-Learning-with-Cold-Start"><span class="toc-number">1.3.8.</span> <span class="toc-text">2.3. DeepSeek-R1: Reinforcement Learning with Cold Start</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-1-Cold-Start"><span class="toc-number">1.3.8.1.</span> <span class="toc-text">2.3.1. Cold Start</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-2-Reasoning-oriented-Reinforcement-Learning"><span class="toc-number">1.3.8.2.</span> <span class="toc-text">2.3.2. Reasoning-oriented Reinforcement Learning</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-3-Rejection-Sampling-and-Supervised-Fine-Tuning"><span class="toc-number">1.3.8.3.</span> <span class="toc-text">2.3.3. Rejection Sampling and Supervised Fine-Tuning</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-4-Reinforcement-Learning-for-all-Scenarios"><span class="toc-number">1.3.8.4.</span> <span class="toc-text">2.3.4. Reinforcement Learning for all Scenarios</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-Distillation-Empower-Small-Models-with-Reasoning-Capability"><span class="toc-number">1.3.9.</span> <span class="toc-text">2.4. Distillation: Empower Small Models with Reasoning Capability</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experiment"><span class="toc-number">1.4.</span> <span class="toc-text">Experiment</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-DeepSeek-R1-Evaluation"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1. DeepSeek-R1 Evaluation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Distilled-Model-Evaluation"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2. Distilled Model Evaluation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Discussion"><span class="toc-number">1.5.</span> <span class="toc-text">Discussion</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Distillation-v-s-Reinforcement-Learning"><span class="toc-number">1.5.1.</span> <span class="toc-text">4.1. Distillation v.s. Reinforcement Learning</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Unsuccessful-Attempts"><span class="toc-number">1.5.2.</span> <span class="toc-text">4.2. Unsuccessful Attempts</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion-Limitations-and-Future-Work"><span class="toc-number">1.6.</span> <span class="toc-text">Conclusion, Limitations, and Future Work</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/02/01/DeepSeek-R1-Incentivizing-Reasoning-Capability-in-LLMs-via-Reinforcement-Learning/" title="DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning">DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning</a><time datetime="2025-02-01T11:11:48.000Z" title="发表于 2025-02-01 19:11:48">2025-02-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/" title="DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence">DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence</a><time datetime="2025-02-01T02:43:19.000Z" title="发表于 2025-02-01 10:43:19">2025-02-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/30/LLM-Hallucinations-in-Practical-Code-Generation-Phenomena-Mechanism-and-Mitigation/" title="LLM Hallucinations in Practical Code Generation: Phenomena, Mechanism, and Mitigation">LLM Hallucinations in Practical Code Generation: Phenomena, Mechanism, and Mitigation</a><time datetime="2025-01-30T12:14:09.000Z" title="发表于 2025-01-30 20:14:09">2025-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/24/Benchmarking-Bias-in-Large-Language-Models-during-Role-Playing/" title="Benchmarking Bias in Large Language Models during Role-Playing">Benchmarking Bias in Large Language Models during Role-Playing</a><time datetime="2025-01-24T14:55:55.000Z" title="发表于 2025-01-24 22:55:55">2025-01-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/" title="Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software">Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software</a><time datetime="2025-01-24T12:23:10.000Z" title="发表于 2025-01-24 20:23:10">2025-01-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
