@@ -1,0 +1,865 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence | LinLi's Blog</title><meta name="author" content="Lin Li"><meta name="copyright" content="Lin Li"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code IntelligenceAbstract大型语言模型的快速发展革新了代码智能在软件开发中的应用。然而，闭源模型的主导地位限制了广泛的研究与开发。为此，我们推出DeepSeek-Coder系列模型——一组包含1.3B到33B参数规模的开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence">
+<meta property="og:url" content="http://example.com/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/index.html">
+<meta property="og:site_name" content="LinLi&#39;s Blog">
+<meta property="og:description" content="DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code IntelligenceAbstract大型语言模型的快速发展革新了代码智能在软件开发中的应用。然而，闭源模型的主导地位限制了广泛的研究与开发。为此，我们推出DeepSeek-Coder系列模型——一组包含1.3B到33B参数规模的开">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png">
+<meta property="article:published_time" content="2025-02-01T02:43:19.000Z">
+<meta property="article:modified_time" content="2025-02-01T02:44:51.144Z">
+<meta property="article:author" content="Lin Li">
+<meta property="article:tag" content="论文阅读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-02-01 10:44:51'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">118</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="LinLi's Blog"><span class="site-name">LinLi's Blog</span></a></span><div id="menus"><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-01T02:43:19.000Z" title="发表于 2025-02-01 10:43:19">2025-02-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-01T02:44:51.144Z" title="更新于 2025-02-01 10:44:51">2025-02-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence"><a href="#DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence" class="headerlink" title="DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence"></a>DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a><strong>Abstract</strong></h2><p>大型语言模型的快速发展革新了代码智能在软件开发中的应用。然而，闭源模型的主导地位限制了广泛的研究与开发。为此，我们推出DeepSeek-Coder系列模型——一组包含1.3B到33B参数规模的开源代码大模型，通过从头训练于2万亿token的高质量项目级代码语料库，并采用16K上下文窗口的填充空白预训练任务，显著提升了代码生成与补全能力。大量实验表明，DeepSeek-Coder不仅在多个基准测试中取得了开源代码模型的最优性能，更超越了如Codex和GPT-3.5等闭源模型。此外，DeepSeek-Coder系列采用宽松许可证，允许研究及无限制的商业使用。</p>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250131195207219.png" alt="image-20250131195207219"></p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a><strong>Introduction</strong></h2><p><strong>背景与挑战</strong></p>
+<ul>
+<li>大型语言模型（LLMs）正深刻改变软件开发，提升代码智能化水平。</li>
+<li>这些模型可用于自动化编码任务，如错误检测和代码生成，提高生产力并减少人为错误。</li>
+<li>现存挑战：<strong>开源模型 vs. 闭源模型的性能差距</strong>（闭源模型通常更强，但受限于专有性，不易获取）。</li>
+</ul>
+<p><strong>DeepSeek-Coder 系列概述</strong></p>
+<ul>
+<li>提供一系列 <strong>开源代码模型</strong>，参数规模从 <strong>1.3B 到 33B</strong>，包括基础版（Base）和指令微调版（Instruct）。</li>
+<li>训练数据：<strong>2 万亿 tokens</strong>，涵盖 <strong>87 种编程语言</strong>，确保广泛的语言理解能力。</li>
+<li>采用 <strong>存储库级数据组织</strong>，增强模型跨文件代码理解能力。</li>
+<li><strong>引入 Fill-In-Middle（FIM）训练</strong>，提升代码补全能力。</li>
+<li><strong>上下文长度扩展至 16K tokens</strong>，支持处理更长的代码输入，提高模型适应性。</li>
+</ul>
+<p><strong>实验与评估</strong></p>
+<ul>
+<li>采用多种 <strong>公开代码基准测试</strong> 进行评估。</li>
+<li><strong>DeepSeek-Coder-Base 33B</strong>：在所有开源代码模型中表现最优。</li>
+<li><strong>DeepSeek-Coder-Instruct 33B</strong>：超越 <strong>OpenAI GPT-3.5 Turbo</strong>，显著缩小开源模型与 GPT-4 之间的性能差距。</li>
+<li><strong>DeepSeek-Coder-Base 7B</strong>：虽参数量较少，但性能可与 <strong>CodeLlama-33B（大 5 倍）</strong> 竞争。</li>
+</ul>
+<p><strong>主要贡献</strong></p>
+<ul>
+<li><strong>推出 DeepSeek-Coder-Base 和 DeepSeek-Coder-Instruct</strong>，具备 87 种编程语言理解能力，并提供多种规模适配不同需求。</li>
+<li><strong>首创存储库级数据构造</strong>，增强跨文件代码生成能力。</li>
+<li><strong>深入分析 FIM 训练策略</strong>，揭示其对代码模型预训练的影响，为优化代码 LLMs 提供有价值的见解。</li>
+<li><strong>全面基准测试</strong>，结果显示 DeepSeek-Coder-Base 在开源模型中表现最佳，DeepSeek-Coder-Instruct 超越 OpenAI GPT-3.5 Turbo。</li>
+</ul>
+<h2 id="Data-Collection"><a href="#Data-Collection" class="headerlink" title="Data Collection"></a><strong>Data Collection</strong></h2><ol>
+<li><strong>数据组成</strong><ul>
+<li><strong>87% 源代码</strong></li>
+<li>10% 英文代码相关自然语言语料（GitHub Markdown、StackExchange）<ul>
+<li>增强代码概念理解，提高库使用和错误修复能力。</li>
+</ul>
+</li>
+<li>3% 与代码无关的中文自然语言语料（高质量文章）<ul>
+<li>提升模型的中文理解能力。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>数据构建流程</strong><ul>
+<li><strong>数据爬取</strong>（Data Crawling）</li>
+<li><strong>规则过滤</strong>（Rule-based Filtering）</li>
+<li><strong>依赖解析</strong>（Dependency Parsing）</li>
+<li><strong>存储库级去重</strong>（Repository-level Deduplication）</li>
+<li><strong>质量筛选</strong>（Quality Screening）</li>
+</ul>
+</li>
+</ol>
+<p>这一流程确保训练数据的质量和多样性，使模型具备 <strong>代码理解、错误修复和跨语言处理能力</strong>。</p>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250131222143953.png" alt="image-20250131222143953"></p>
+<h3 id="2-1-GitHub-Data-Crawling-and-Filtering"><a href="#2-1-GitHub-Data-Crawling-and-Filtering" class="headerlink" title="2.1. GitHub Data Crawling and Filtering"></a><strong>2.1. GitHub Data Crawling and Filtering</strong></h3><ol>
+<li><strong>数据收集</strong><ul>
+<li>采集 GitHub <strong>2023年2月前</strong> 创建的 <strong>87 种编程语言</strong> 的 <strong>公共存储库</strong>。</li>
+</ul>
+</li>
+<li><strong>数据过滤规则</strong>（借鉴 <strong>StarCoder</strong> 项目）<ul>
+<li><strong>减少低质量代码</strong>，最终数据量缩减至原始规模的 **32.8%**。</li>
+<li>行长限制：<ul>
+<li>平均行长 &gt; 100 字符 或 最大行长 &gt; 1000 字符 → <strong>过滤</strong>。</li>
+</ul>
+</li>
+<li>字符比例：<ul>
+<li><strong>非字母字符占比 &gt; 75%</strong> → <strong>过滤</strong>。</li>
+</ul>
+</li>
+<li>XML 相关规则：<ul>
+<li>除 <strong>XSLT 语言外</strong>，若文件前 100 个字符中包含 <code>&lt;?xml version=</code> → <strong>过滤</strong>。</li>
+</ul>
+</li>
+<li>HTML 文件：<ul>
+<li><strong>可见文本占比 ≥ 20% 且不低于 100 字符</strong> → <strong>保留</strong>。</li>
+</ul>
+</li>
+<li>JSON &#x2F; YAML 文件：<ul>
+<li><strong>字符数 50 ~ 5000</strong> → <strong>保留</strong>（去除大部分数据型文件）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>该过滤策略有效 <strong>提升数据质量</strong>，减少 <strong>冗余和低效代码</strong>，为模型训练提供更高质量的数据集。</p>
+<h3 id="2-2-Dependency-Parsing"><a href="#2-2-Dependency-Parsing" class="headerlink" title="2.2. Dependency Parsing"></a><strong>2.2. Dependency Parsing</strong></h3><ol>
+<li><strong>问题与挑战</strong><ul>
+<li>现有代码 LLM 主要在 <strong>文件级</strong> 进行预训练，<strong>忽略</strong> 了项目中 <strong>文件间的依赖关系</strong>。</li>
+<li>这种方法在 <strong>处理整个项目级代码时</strong> 效果欠佳，难以捕捉实际的代码组织结构。</li>
+</ul>
+</li>
+<li><strong>方法</strong><ul>
+<li><strong>解析项目内部文件依赖关系</strong>，确保<strong>代码上下文</strong>按照 <strong>依赖顺序</strong> 组织输入。</li>
+<li><strong>提高数据集的现实性和实用性</strong>，增强模型对 <strong>项目级代码的处理能力</strong>。</li>
+</ul>
+</li>
+<li><strong>依赖解析步骤</strong><ul>
+<li>识别文件间调用关系（基于正则匹配）：<ul>
+<li>Python：<code>import</code></li>
+<li>C#：<code>using</code></li>
+<li>C：<code>#include</code></li>
+</ul>
+</li>
+<li>构建依赖图（Graph）：<ul>
+<li>使用 <strong>邻接表（graphs）</strong> 记录依赖关系。</li>
+<li>维护 <strong>入度字典（inDegree）</strong> 统计每个文件的依赖数量。</li>
+</ul>
+</li>
+<li>拓扑排序（Topological Sort）：<ul>
+<li>处理 <strong>子图</strong>，按最小入度顺序排列文件，确保顺序合理。</li>
+<li>解决 <strong>循环依赖</strong> 问题（不同于标准拓扑排序）。</li>
+</ul>
+</li>
+<li>数据组织：<ul>
+<li><strong>按照依赖顺序</strong> 连接文件形成训练样本。</li>
+<li><strong>在每个文件开头</strong> 添加 <strong>文件路径注释</strong>，保留路径信息。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>优势</strong></p>
+<p>✅ <strong>增强模型对跨文件代码的理解能力</strong><br>✅ <strong>优化代码组织顺序，使训练数据更符合实际开发习惯</strong><br>✅ <strong>提升项目级代码生成与补全能力</strong></p>
+<img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250131222419545.png" alt="image-20250131222419545" style="zoom:67%;">
+
+
+
+<h3 id="2-3-Repo-Level-Deduplication"><a href="#2-3-Repo-Level-Deduplication" class="headerlink" title="2.3. Repo-Level Deduplication"></a><strong>2.3. Repo-Level Deduplication</strong></h3><p><strong>背景与必要性</strong></p>
+<ul>
+<li>研究表明，<strong>去重</strong> 可 <strong>显著提升 LLM 训练效果</strong>。</li>
+<li>传统方法主要在 <strong>文件级</strong> 去重，但可能破坏存储库的整体结构。</li>
+</ul>
+<p><strong>方法</strong></p>
+<ul>
+<li><strong>采用近似去重（Near-Deduplication）</strong>，删除<strong>长重复子串</strong>，优化训练数据质量。</li>
+<li><strong>与以往不同之处</strong>：去重在 <strong>存储库级</strong> 进行，而<strong>非文件级</strong>。</li>
+<li>具体操作：<ul>
+<li>将 <strong>整个存储库代码拼接为单一样本</strong>。</li>
+<li>应用去重算法，确保 <strong>存储库结构完整</strong>，避免误删关键文件。</li>
+</ul>
+</li>
+</ul>
+<p><strong>优势</strong><br>✅ <strong>减少冗余，提高模型训练效率</strong><br>✅ <strong>避免文件级去重带来的结构破坏</strong><br>✅ <strong>优化代码 LLM 在基准测试中的表现</strong></p>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250131222841872.png" alt="image-20250131222841872"></p>
+<h3 id="2-4-Quality-Screening-and-Decontamination"><a href="#2-4-Quality-Screening-and-Decontamination" class="headerlink" title="2.4. Quality Screening and Decontamination"></a><strong>2.4. Quality Screening and Decontamination</strong></h3><ol>
+<li><strong>质量筛选（Quality Screening）</strong><ul>
+<li>在 2.1 过滤规则 基础上，额外 采用以下方法提高数据质量：<ul>
+<li><strong>编译器检测</strong>：剔除 <strong>语法错误</strong> 代码。</li>
+<li><strong>质量模型评估</strong>：过滤 <strong>可读性差、模块化低</strong> 的代码。</li>
+<li><strong>启发式规则（Heuristic Rules）</strong>：进一步剔除低质量数据。</li>
+</ul>
+</li>
+<li>数据统计（Table 1）：<ul>
+<li><strong>87 种编程语言</strong>，总数据量 <strong>798GB</strong>，文件数 <strong>6.03 亿</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>去污染（Decontamination）</strong><ul>
+<li><strong>防止测试集泄露</strong>（避免训练数据中包含评测集的代码）。</li>
+<li>采用 n-gram 过滤，剔除可能泄露的代码段：<ul>
+<li><strong>匹配 10-gram 及以上</strong> → 直接删除。</li>
+<li><strong>匹配 3-gram ~ 10-gram</strong> → 使用精确匹配剔除。</li>
+</ul>
+</li>
+<li>过滤的数据来源（测试集）：<ul>
+<li><strong>HumanEval</strong>（Chen et al., 2021）</li>
+<li><strong>MBPP</strong>（Austin et al., 2021）</li>
+<li><strong>GSM8K</strong>（Cobbe et al., 2021）</li>
+<li><strong>MATH</strong>（Hendrycks et al., 2021）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>优势</strong></p>
+<p>✅ <strong>剔除低质量代码，提高模型训练数据质量</strong><br>✅ <strong>防止测试集污染，确保评测结果可靠性</strong><br>✅ <strong>提升代码 LLM 的泛化能力</strong></p>
+<h2 id="Training-Policy"><a href="#Training-Policy" class="headerlink" title="Training Policy"></a><strong>Training Policy</strong></h2><h3 id="3-1-Training-Strategy"><a href="#3-1-Training-Strategy" class="headerlink" title="3.1. Training Strategy"></a><strong>3.1. Training Strategy</strong></h3><p><strong>3.1.1 下一个 Token 预测（Next Token Prediction）</strong></p>
+<ul>
+<li><strong>目标</strong>：训练模型预测下一个 token，增强代码理解和生成能力。</li>
+<li><strong>方法</strong>：将多个文件拼接成固定长度输入，模型学习基于上下文的 token 预测能力。</li>
+</ul>
+<p><strong>3.1.2 填空式训练（Fill-in-the-Middle, FIM）</strong></p>
+<ul>
+<li><strong>必要性</strong>：仅依赖下一个 token 预测难以处理 <strong>代码插入任务</strong>，因此引入 FIM 方法。</li>
+<li><strong>方法</strong>：将文本<strong>随机拆分为三部分</strong>，打乱顺序，并用特殊 token 连接，以模拟代码补全场景。</li>
+<li>FIM 模式：<ul>
+<li><strong>PSM（Prefix-Suffix-Middle）</strong>：前缀 + 后缀 + 中间部分</li>
+<li><strong>SPM（Suffix-Prefix-Middle）</strong>：后缀 + 前缀 + 中间部分</li>
+</ul>
+</li>
+<li>实验：<ul>
+<li>使用 <strong>DeepSeek-Coder-Base 1.3B</strong> 进行测试，采用 <strong>HumanEval-FIM 基准测试</strong>（FIM 单行预测任务）。</li>
+<li>评估 <strong>不同 FIM 率（0%、50%、100%）</strong> 以及 <strong>Masked Span Prediction（MSP）</strong> 方法的影响。</li>
+</ul>
+</li>
+</ul>
+<p><strong>实验结果与优化策略</strong></p>
+<ul>
+<li><strong>100% FIM 率</strong> → <strong>最强 FIM 性能，但代码补全能力最弱</strong>，表明两者存在<strong>权衡关系</strong>。</li>
+<li><strong>50% PSM 率 &gt; MSP</strong>，最终选定 <strong>50% PSM 率</strong> 作为最佳训练策略。</li>
+<li>实现细节：<ul>
+<li>引入 <strong>三种特殊标记</strong>（sentinel tokens）。</li>
+<li>在数据打包前，先执行 <strong>文档级 FIM 处理</strong>，确保 FIM 任务的有效性。</li>
+</ul>
+</li>
+</ul>
+<p><strong>优势</strong></p>
+<p>✅ <strong>增强模型代码补全能力，适应不同结构的代码填充任务</strong><br>✅ <strong>优化 FIM 训练策略，兼顾插入预测和代码生成能力</strong><br>✅ <strong>使用特殊 token 提高模型对 FIM 任务的适应性</strong></p>
+<blockquote>
+<h3 id="DeepSeek-Coder-训练过程示例"><a href="#DeepSeek-Coder-训练过程示例" class="headerlink" title="DeepSeek-Coder 训练过程示例"></a><strong>DeepSeek-Coder 训练过程示例</strong></h3><p>DeepSeek-Coder 的训练主要基于 <strong>无监督学习（Unsupervised Learning）</strong>，因为它使用 <strong>大规模未标注的代码数据</strong> 进行训练，而不依赖人工标注的数据。主要训练方法包括：</p>
+<ol>
+<li><strong>自回归训练（Autoregressive Training）</strong> → <strong>Next Token Prediction（NTP）</strong></li>
+<li><strong>填空式训练（Fill-in-the-Middle，FIM）</strong> → <strong>代码插入任务</strong></li>
+</ol>
+<hr>
+<h3 id="训练示例：Next-Token-Prediction（NTP）"><a href="#训练示例：Next-Token-Prediction（NTP）" class="headerlink" title="训练示例：Next Token Prediction（NTP）"></a><strong>训练示例：Next Token Prediction（NTP）</strong></h3><h4 id="目标："><a href="#目标：" class="headerlink" title="目标："></a><strong>目标</strong>：</h4><p>训练模型在给定上下文的情况下预测下一个 token，类似 GPT 语言模型的训练方式。</p>
+<h4 id="示例数据（Python-代码片段）："><a href="#示例数据（Python-代码片段）：" class="headerlink" title="示例数据（Python 代码片段）："></a><strong>示例数据（Python 代码片段）</strong>：</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def add(a, b):</span><br><span class="line">    return a + </span><br></pre></td></tr></table></figure>
+
+<h4 id="模型训练步骤："><a href="#模型训练步骤：" class="headerlink" title="模型训练步骤："></a><strong>模型训练步骤</strong>：</h4><ol>
+<li>输入：<ul>
+<li>模型接收 <code>&quot;def add(a, b): return a + &quot;</code> 作为输入。</li>
+</ul>
+</li>
+<li>目标（Ground Truth）：<ul>
+<li>期望模型预测 <strong>下一个 token</strong>：<code>b</code></li>
+</ul>
+</li>
+<li>训练方式：<ul>
+<li>计算模型输出 <code>P(b | &quot;def add(a, b): return a +&quot;)</code> 的概率，并与实际 token <code>b</code> 对比，计算损失（如交叉熵）。</li>
+<li>通过 <strong>梯度下降</strong> 进行权重更新，使模型在类似场景下预测更准确。</li>
+</ul>
+</li>
+</ol>
+<h3 id="训练示例：Fill-in-the-Middle（FIM）"><a href="#训练示例：Fill-in-the-Middle（FIM）" class="headerlink" title="训练示例：Fill-in-the-Middle（FIM）"></a><strong>训练示例：Fill-in-the-Middle（FIM）</strong></h3><h4 id="目标：-1"><a href="#目标：-1" class="headerlink" title="目标："></a><strong>目标</strong>：</h4><p>让模型能够补全缺失的代码片段，而不仅仅是从左到右地预测下一个 token。</p>
+<h4 id="示例数据（Python-代码片段）：-1"><a href="#示例数据（Python-代码片段）：-1" class="headerlink" title="示例数据（Python 代码片段）："></a><strong>示例数据（Python 代码片段）</strong>：</h4><p><strong>原始代码</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def add(a, b):</span><br><span class="line">    return a + b</span><br></pre></td></tr></table></figure>
+
+<p><strong>FIM 处理后（PSM 模式）</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;|fim_start|&gt;def add(a, b):&lt;|fim_hole|&gt;return a + b&lt;|fim_end|&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="模型训练步骤：-1"><a href="#模型训练步骤：-1" class="headerlink" title="模型训练步骤："></a><strong>模型训练步骤</strong>：</h4><ol>
+<li>输入：<ul>
+<li>模型接收 <code>&quot;def add(a, b):&quot;</code>（前缀 <code>Prefix</code>）和 <code>&quot;return a + b&quot;</code>（后缀 <code>Suffix</code>）。</li>
+</ul>
+</li>
+<li>目标（Ground Truth）：<ul>
+<li>期望模型预测缺失的部分，即 <code>return a + b</code>（中间部分 <code>Middle</code>）。</li>
+</ul>
+</li>
+<li>训练方式：<ul>
+<li>计算 <code>P(&quot;return a + b&quot; | &quot;def add(a, b):&quot;)</code> 并优化模型参数，提高 FIM 任务的准确性。</li>
+</ul>
+</li>
+</ol>
+<h3 id="训练方式总结"><a href="#训练方式总结" class="headerlink" title="训练方式总结"></a><strong>训练方式总结</strong></h3><table>
+<thead>
+<tr>
+<th>训练方法</th>
+<th>目标</th>
+<th>训练方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Next Token Prediction (NTP)</strong></td>
+<td>预测下一个 token</td>
+<td>传统自回归训练，适用于代码生成</td>
+</tr>
+<tr>
+<td><strong>Fill-in-the-Middle (FIM)</strong></td>
+<td>预测中间缺失代码</td>
+<td>代码重组，适用于代码补全任务</td>
+</tr>
+</tbody></table>
+<p>DeepSeek-Coder 结合 <strong>NTP + FIM</strong> 训练，使模型既能 <strong>生成完整代码</strong>，又能 <strong>插入代码补全</strong>，从而更适用于实际编程场景。</p>
+</blockquote>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250131223642713.png" alt="image-20250131223642713"></p>
+<p><strong>颜色与线型</strong></p>
+<ol>
+<li>**绿色 (fim_0)**：仅使用 Next Token Prediction（无 FIM 目标）。</li>
+<li>**红色 (fim_0.5)**：50% 的训练任务为 FIM，其余为 Next Token Prediction。</li>
+<li>**蓝色 (fim_1.0)**：100% 的训练任务为 FIM。</li>
+<li>**青色 (msp_0.5)**：50% 的训练任务使用 MSP（Masked Span Prediction）。</li>
+</ol>
+<p><strong>MSP</strong> 更侧重于在原始文本中随机掩蔽出多个片段，并让模型通过上下文来恢复这些片段。</p>
+<blockquote>
+<h3 id="MSP（Masked-Span-Prediction）与-FIM（Fill-in-the-Middle）的主要区别"><a href="#MSP（Masked-Span-Prediction）与-FIM（Fill-in-the-Middle）的主要区别" class="headerlink" title="MSP（Masked Span Prediction）与 FIM（Fill-in-the-Middle）的主要区别"></a><strong>MSP（Masked Span Prediction）与 FIM（Fill-in-the-Middle）的主要区别</strong></h3><table>
+<thead>
+<tr>
+<th>特点</th>
+<th>MSP（Masked Span Prediction）</th>
+<th>FIM（Fill-in-the-Middle）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>任务目标</strong></td>
+<td>在文本或代码中随机<strong>掩蔽多个片段</strong>，预测这些片段的内容。</td>
+<td>将文本拆分为<strong>前缀、后缀和中间部分</strong>，预测中间部分。</td>
+</tr>
+<tr>
+<td><strong>掩蔽方式</strong></td>
+<td><strong>随机掩蔽多个位置</strong>，可能是单词、代码片段或连续段落。</td>
+<td><strong>有结构性</strong>：固定预测中间部分，前缀和后缀作为上下文。</td>
+</tr>
+<tr>
+<td><strong>灵活性</strong></td>
+<td>较灵活，适合广泛场景，但结构性较弱。</td>
+<td>更适合代码场景，能更好模拟真实的代码插入任务。</td>
+</tr>
+<tr>
+<td><strong>上下文结构</strong></td>
+<td>上下文可以是分散的、随机的。</td>
+<td>上下文由固定的前缀和后缀组成，更强调语义和语法连续性。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="示例比较"><a href="#示例比较" class="headerlink" title="示例比较"></a><strong>示例比较</strong></h3><h4 id="1-MSP-示例"><a href="#1-MSP-示例" class="headerlink" title="1. MSP 示例"></a><strong>1. MSP 示例</strong></h4><p><strong>原始代码：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def add(a, b):</span><br><span class="line">    result = a + b</span><br><span class="line">    return result</span><br></pre></td></tr></table></figure>
+
+<p>MSP 处理后：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def add(a, b):</span><br><span class="line">    [MASK]</span><br><span class="line">    return result</span><br></pre></td></tr></table></figure>
+
+<p><strong>模型任务</strong>：预测 <code>[MASK]</code> 的内容，即 <code>result = a + b</code>。</p>
+<p><strong>特点</strong>：掩蔽的是代码中的某一部分，可能是变量声明、函数调用或其他内容。</p>
+<h4 id="2-FIM-示例"><a href="#2-FIM-示例" class="headerlink" title="2. FIM 示例"></a><strong>2. FIM 示例</strong></h4><p><strong>原始代码：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def add(a, b):</span><br><span class="line">    result = a + b</span><br><span class="line">    return result</span><br></pre></td></tr></table></figure>
+
+<p>FIM（PSM 模式）处理后：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;|fim_start|&gt;def add(a, b):&lt;|fim_hole|&gt;return result&lt;|fim_end|&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>模型任务</strong>：预测 <code>&lt;|fim_hole|&gt;</code> 的内容，即 <code>result = a + b</code>。</p>
+<p><strong>特点</strong>：上下文明确分为 <strong>前缀（Prefix）</strong> 和 <strong>后缀（Suffix）</strong>，模型需要根据两者预测中间部分。</p>
+<p><strong>模型任务</strong>：预测 <code>&lt;|fim_hole|&gt;</code> 的内容，即 <code>result = a + b</code>。</p>
+<p><strong>特点</strong>：上下文明确分为 <strong>前缀（Prefix）</strong> 和 <strong>后缀（Suffix）</strong>，模型需要根据两者预测中间部分。</p>
+<p><strong>总结</strong></p>
+<ul>
+<li><strong>MSP</strong> 更通用，适合广泛场景，但在代码生成中可能不够高效。</li>
+<li><strong>FIM</strong> 设计更针对代码插入和补全任务，能更好地捕捉代码的上下文依赖关系。</li>
+<li>两者可以结合使用，根据任务需求调整比例，达到最优效果。</li>
+</ul>
+</blockquote>
+<h3 id="3-2-Tokenizer"><a href="#3-2-Tokenizer" class="headerlink" title="3.2. Tokenizer"></a><strong>3.2. Tokenizer</strong></h3><ol>
+<li><strong>工具</strong>：<ul>
+<li>使用 <strong>HuggingFace Tokenizer 库</strong> 进行分词训练。</li>
+</ul>
+</li>
+<li><strong>方法</strong>：<ul>
+<li>采用 <strong>Byte Pair Encoding (BPE)</strong> 分词算法（参考 Sennrich et al., 2015）。</li>
+<li>基于训练语料的子集进行分词模型的训练。</li>
+</ul>
+</li>
+<li><strong>结果</strong>：<ul>
+<li>最终配置的 <strong>词汇表大小（Vocabulary Size）为 32,000</strong>。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong></p>
+<p>BPE 分词方法结合了高效性与灵活性，适合处理代码和自然语言的混合语料，同时能够支持高效的模型训练和推理。</p>
+<h3 id="3-3-Model-Architecture"><a href="#3-3-Model-Architecture" class="headerlink" title="3.3. Model Architecture"></a><strong>3.3. Model Architecture</strong></h3><ol>
+<li><strong>模型范围</strong>：<ul>
+<li>提供多种模型，参数分别为 <strong>1.3B、6.7B 和 33B</strong>，满足不同应用需求。</li>
+</ul>
+</li>
+<li><strong>架构框架</strong>：<ul>
+<li>所有模型均基于 <strong>DeepSeek Large Language Model (LLM)</strong> 框架，采用 <strong>Decoder-only Transformer</strong> 架构。</li>
+</ul>
+</li>
+<li><strong>技术细节</strong>：<ul>
+<li>**Rotary Position Embedding (RoPE)**：增强模型的位置信息表示（参考 Su et al., 2023）。</li>
+<li>**Grouped-Query-Attention (GQA)**：在 <strong>DeepSeek 33B</strong> 模型中使用，组大小为 8，提升训练与推理效率。</li>
+<li><strong>FlashAttention v2</strong>：加速注意力机制的计算（参考 Dao, 2023）。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong></p>
+<p>DeepSeek-Coder 模型采用先进的架构设计与优化技术，旨在提升训练和推理效率，适应不同规模的应用需求。</p>
+<h3 id="3-4-Optimization"><a href="#3-4-Optimization" class="headerlink" title="3.4. Optimization"></a><strong>3.4. Optimization</strong></h3><ol>
+<li><strong>优化器</strong>：<ul>
+<li>使用 <strong>AdamW</strong> 优化器（Loshchilov 和 Hutter, 2019），设置 <strong>𝛽1 &#x3D; 0.9</strong> 和 <strong>𝛽2 &#x3D; 0.95</strong>。</li>
+</ul>
+</li>
+<li><strong>批大小与学习率调整</strong>：<ul>
+<li>根据 <strong>DeepSeek LLM</strong> 的 <strong>缩放法则</strong> 调整批大小和学习率。</li>
+</ul>
+</li>
+<li><strong>学习率调度</strong>：<ul>
+<li>实现 三阶段学习率调度策略：<ul>
+<li>包括 <strong>2000 步的预热阶段</strong>。</li>
+<li>最终学习率设置为初始学习率的 **10%**。</li>
+<li>每个阶段的学习率按 <strong>√1&#x2F;10</strong> 缩小，遵循 <strong>DeepSeek LLM</strong> 指导原则。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong></p>
+<p>采用 AdamW 优化器和三阶段学习率调整策略，以优化训练过程并提高模型性能。</p>
+<h3 id="3-5-Environments"><a href="#3-5-Environments" class="headerlink" title="3.5. Environments"></a><strong>3.5. Environments</strong></h3><ol>
+<li><strong>实验框架</strong>：<ul>
+<li>使用 <strong>HAI-LLM</strong> 框架（High-Flyer, 2023），该框架以高效和轻量化的方式训练大型语言模型。</li>
+</ul>
+</li>
+<li><strong>并行化策略</strong>：<ul>
+<li>采用多种 并行化策略来优化计算效率：<ul>
+<li><strong>Tensor Parallelism</strong>（Korthikanti et al., 2023）。</li>
+<li><strong>ZeRO 数据并行性</strong>（Rajbhandari et al., 2020）。</li>
+<li><strong>PipeDream 流水线并行性</strong>（Narayanan et al., 2019）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>硬件配置</strong>：<ul>
+<li>实验使用 <strong>NVIDIA A100 和 H800 GPUs</strong> 集群。</li>
+<li><strong>A100 集群</strong>：每个节点配置 <strong>8 个 GPU</strong>，通过 <strong>NVLink</strong> 桥接连接。</li>
+<li><strong>H800 集群</strong>：类似配置，每个节点也有 <strong>8 个 GPU</strong>，通过 <strong>NVLink 和 NVSwitch</strong> 技术互联，确保节点内数据传输高效。</li>
+<li>为确保 <strong>节点间高效通信</strong>，采用 <strong>InfiniBand</strong> 互连技术，提供高吞吐量和低延迟。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong></p>
+<p>使用高效的 <strong>HAI-LLM 框架</strong> 和先进的并行化策略，结合强大的 <strong>NVIDIA GPU 集群</strong> 和 <strong>InfiniBand 网络</strong>，为大规模语言模型的训练提供了可靠的计算基础设施。</p>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250131233552505.png" alt="image-20250131233552505"></p>
+<h3 id="3-6-Long-Context"><a href="#3-6-Long-Context" class="headerlink" title="3.6. Long Context"></a><strong>3.6. Long Context</strong></h3><ol>
+<li><strong>目标</strong>：<ul>
+<li>提升 DeepSeek-Coder 处理长上下文的能力，特别是用于存储库级代码处理场景。</li>
+</ul>
+</li>
+<li><strong>方法</strong>：<ul>
+<li>调整 RoPE 参数（Su et al., 2023）：<ul>
+<li><strong>缩放因子（Scaling Factor）</strong>：从 1 增加到 4。</li>
+<li><strong>基频（Base Frequency）</strong>：从 10,000 调整为 100,000。</li>
+</ul>
+</li>
+<li>训练设置：<ul>
+<li>额外进行 <strong>1000 步训练</strong>，批大小为 512，序列长度扩展至 <strong>16K tokens</strong>。</li>
+<li>学习率与预训练最终阶段一致。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>理论与实验结果</strong>：<ul>
+<li>理论上支持处理 <strong>64K tokens</strong> 的上下文。</li>
+<li>实验表明，模型在 <strong>16K tokens 范围内</strong> 输出最可靠。</li>
+</ul>
+</li>
+<li><strong>未来工作</strong>：<ul>
+<li>进一步优化和评估长上下文适配方法，以提升模型在扩展上下文中的效率和实用性。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong></p>
+<p>通过调整 RoPE 参数和扩展训练，DeepSeek-Coder 具备处理长上下文的能力，尤其在 16K tokens 范围内表现最佳，为复杂代码场景提供了更强的支持。</p>
+<h3 id="3-7-Instruction-Tuning"><a href="#3-7-Instruction-Tuning" class="headerlink" title="3.7. Instruction Tuning"></a><strong>3.7. Instruction Tuning</strong></h3><p><strong>目标</strong>：</p>
+<ul>
+<li>基于 <strong>DeepSeek-Coder-Base</strong> 进行指令微调，开发 <strong>DeepSeek-Coder-Instruct</strong>，提升模型对指令的理解和响应能力。</li>
+</ul>
+<p><strong>数据与格式</strong>：</p>
+<ul>
+<li>使用高质量数据进行微调，数据由 <strong>Alpaca Instruction 格式</strong>（Taori et al., 2023）组织。</li>
+<li>每轮对话以特殊分隔符 <code>&lt;|EOT|&gt;</code> 标记结束，确保多轮对话结构清晰。</li>
+</ul>
+<p><strong>训练设置</strong>：</p>
+<ul>
+<li><strong>学习率</strong>：初始值为 1e-5，采用 <strong>余弦调度策略</strong>，包含 <strong>100 步预热阶段</strong>。</li>
+<li><strong>批大小</strong>：4M tokens，每轮训练使用 <strong>2B tokens</strong>。</li>
+</ul>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250201083942459.png" alt="image-20250201083942459"></p>
+<h2 id="Experimental-Results"><a href="#Experimental-Results" class="headerlink" title="Experimental Results"></a><strong>Experimental Results</strong></h2><p><strong>评估任务</strong></p>
+<p>DeepSeek-Coder 在以下四个任务上进行评估：</p>
+<ol>
+<li><strong>代码生成</strong> (§4.1)</li>
+<li><strong>FIM（填空式代码补全）</strong> (§4.2)</li>
+<li><strong>跨文件代码补全</strong> (§4.3)</li>
+<li><strong>基于程序的数学推理</strong> (§4.4)</li>
+</ol>
+<p><strong>对比模型</strong></p>
+<ol>
+<li><strong>CodeGeeX2</strong><ul>
+<li>多语言代码生成模型的第二代版本，基于 <strong>ChatGLM2</strong> 架构开发。</li>
+<li>使用大量代码示例数据增强性能。</li>
+</ul>
+</li>
+<li><strong>StarCoder</strong><ul>
+<li>参数量 <strong>150 亿</strong> 的开源模型，训练于 <strong>Stack 数据集</strong> 的精心挑选子集。</li>
+<li>覆盖 <strong>86 种编程语言</strong>，擅长多种代码任务。</li>
+</ul>
+</li>
+<li><strong>CodeLlama</strong><ul>
+<li>基于 <strong>LLaMA2</strong> 的代码模型系列，参数规模分别为 <strong>7B、13B 和 34B</strong>。</li>
+<li>训练数据包含 <strong>5000 亿 tokens</strong> 的代码语料，针对代码任务优化。</li>
+</ul>
+</li>
+<li><strong>code-cushman-001</strong><ul>
+<li>OpenAI 开发的 <strong>120 亿参数模型</strong>，为 Github Copilot 的初始版本。</li>
+</ul>
+</li>
+<li><strong>GPT-3.5 和 GPT-4</strong><ul>
+<li>虽非专门为代码生成设计，但凭借其大规模参数展现出显著的代码生成能力。</li>
+</ul>
+</li>
+</ol>
+<h3 id="4-1-Code-Generation"><a href="#4-1-Code-Generation" class="headerlink" title="4.1. Code Generation"></a><strong>4.1. Code Generation</strong></h3><p><strong>评测基准（Benchmarks）</strong></p>
+<ol>
+<li><strong>HumanEval &amp; MBPP</strong><ul>
+<li><strong>HumanEval</strong>：164 道手写 Python 题目，零样本（zero-shot）评估。</li>
+<li><strong>MBPP</strong>：500 道编程题，少样本（few-shot）评估。</li>
+<li><strong>多语言扩展</strong>：将 HumanEval 任务扩展到 <strong>C++、Java、PHP、TypeScript、C#、Bash、JavaScript</strong> 等 7 种语言。</li>
+<li>结果（Table 3）：<ul>
+<li>**DeepSeek-Coder-Base 在 HumanEval 上达 50.3%，MBPP 上达 66.0%**，均为 <strong>SOTA（最优）性能</strong>。</li>
+<li>相较 <strong>CodeLlama-Base 34B</strong>，分别提升 **9% 和 11%**。</li>
+<li><strong>DeepSeek-Coder-Base 6.7B 甚至超过 CodeLlama-Base 34B</strong>。</li>
+<li><strong>指令微调后，DeepSeek-Coder-Instruct 超越 GPT-3.5-Turbo</strong>，显著缩小了开源模型与 GPT-4 之间的性能差距。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>DS-1000（数据科学代码生成）</strong><ul>
+<li><strong>问题</strong>：HumanEval &amp; MBPP 过于基础，缺乏对真实数据科学任务的代表性。</li>
+<li><strong>DS-1000</strong>：包含 <strong>Matplotlib、NumPy、Pandas、SciPy、Scikit-Learn、PyTorch、TensorFlow</strong> 七大库的 1000 个任务。</li>
+<li>结果（Table 4）：<ul>
+<li>DeepSeek-Coder <strong>在所有库上均取得较高准确率</strong>，证明其在 <strong>真实数据科学任务</strong> 中的代码生成能力。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>LeetCode Contest（编程竞赛题目）</strong><ul>
+<li>数据来源：<ul>
+<li>收集 <strong>2023 年 7 月至 2024 年 1 月</strong> LeetCode 竞赛中的 <strong>180 道最新题目</strong>，避免数据污染。</li>
+<li>每题包含 <strong>100 个测试用例</strong> 以确保覆盖度。</li>
+</ul>
+</li>
+<li>结果（Table 5）：<ul>
+<li><strong>DeepSeek-Coder-Instruct 6.7B &#x2F; 33B</strong> 的 **Pass@1 分别为 19.4% 和 27.8%**，超越所有现有开源模型（如 CodeLlama-33B）。</li>
+<li><strong>DeepSeek-Coder-Instruct 33B 是唯一超过 OpenAI GPT-3.5-Turbo 的开源模型</strong>，但与 <strong>GPT-4-Turbo</strong> 仍有较大差距。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>优化策略：Chain-of-Thought（CoT）</strong></p>
+<ul>
+<li>通过 <strong>CoT（思维链）提示</strong>（要求模型先写逻辑步骤，再写代码），可<strong>显著提升模型在复杂任务中的表现</strong>。</li>
+<li>推荐使用 CoT 促进更系统的方法，提高代码生成的 <strong>逻辑性和准确性</strong>。</li>
+</ul>
+<p><strong>数据污染问题</strong></p>
+<ul>
+<li>可能存在数据污染风险，因 <strong>GPT-4-Turbo 和 DeepSeek-Coder 在 2023 年 7-8 月 LeetCode 竞赛中的表现异常优秀</strong>。</li>
+<li>研究社区应关注此问题，在未来评估中谨慎处理。</li>
+</ul>
+<p><strong>总结</strong></p>
+<p>✅ <strong>DeepSeek-Coder-Base 领先所有开源模型</strong>，并在 HumanEval &amp; MBPP 上实现 <strong>SOTA</strong> 结果。<br>✅ <strong>DeepSeek-Coder-Instruct 33B 超越 GPT-3.5-Turbo，在 LeetCode Contest 上表现最佳</strong>。<br>✅ <strong>使用 CoT 提示可进一步提升复杂编程任务的代码生成质量</strong>。<br>✅ <strong>尽管尽力避免数据污染，仍建议未来评估时审慎对待数据来源</strong>。</p>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250201084508266.png" alt="image-20250201084508266"></p>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250201084521367.png" alt="image-20250201084521367"></p>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250201084537719.png" alt="image-20250201084537719"></p>
+<h3 id="4-2-Fill-in-the-Middle-Code-Completion"><a href="#4-2-Fill-in-the-Middle-Code-Completion" class="headerlink" title="4.2. Fill-in-the-Middle Code Completion"></a><strong>4.2. Fill-in-the-Middle Code Completion</strong></h3><p><strong>FIM 训练策略</strong></p>
+<ul>
+<li><strong>DeepSeek-Coder 采用 0.5 FIM 率进行预训练</strong>，增强模型根据 <strong>前缀（prefix）和后缀（suffix）</strong> 预测中间代码的能力。</li>
+<li>这一策略对 <strong>代码补全工具</strong> 尤为重要，使模型能更精准地完成代码片段。</li>
+</ul>
+<p><strong>对比模型</strong></p>
+<ul>
+<li><strong>SantaCoder</strong>（Allal et al., 2023）</li>
+<li><strong>StarCoder</strong>（Li et al., 2023）</li>
+<li><strong>CodeLlama</strong>（Roziere et al., 2023）</li>
+<li>以上模型均为 <strong>主流开源代码补全模型</strong>，在 FIM 任务上具有较强能力。</li>
+</ul>
+<p><strong>评估基准</strong></p>
+<ul>
+<li>采用 <strong>Single-Line Infilling 基准测试</strong>（Allal et al., 2023）。</li>
+<li>测试 <strong>多种编程语言</strong>，使用 <strong>行级精确匹配准确率（Exact Match Accuracy）</strong> 作为评测指标。</li>
+</ul>
+<p><strong>评估结果（Table 6）</strong></p>
+<ul>
+<li><strong>DeepSeek-Coder-1.3B</strong> <strong>超越更大规模的 StarCoder 和 CodeLlama</strong>，表现最佳。</li>
+<li><strong>主要优势来源于高质量的预训练数据</strong>。</li>
+<li><strong>模型规模与补全性能呈正相关</strong>，即 <strong>模型越大，性能越好</strong>。</li>
+<li><strong>推荐使用 DeepSeek-Coder-Base 6.7B</strong>，因其 <strong>在效率与准确性之间达到最佳平衡</strong>，适合集成到代码补全工具中。</li>
+</ul>
+<p><strong>总结</strong></p>
+<p>✅ <strong>DeepSeek-Coder 在 FIM 任务中超越更大规模的开源模型，表现卓越。</strong><br>✅ <strong>FIM 训练策略有效提升代码补全能力，适用于代码编辑器等工具。</strong><br>✅ <strong>建议使用 DeepSeek-Coder-Base 6.7B 以兼顾性能与效率。</strong></p>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250201084816161.png" alt="image-20250201084816161"></p>
+<h3 id="4-3-Cross-File-Code-Completion"><a href="#4-3-Cross-File-Code-Completion" class="headerlink" title="4.3. Cross-File Code Completion"></a><strong>4.3. Cross-File Code Completion</strong></h3><p><strong>任务特点</strong></p>
+<ul>
+<li><strong>不同于代码生成任务</strong>，跨文件代码补全要求模型理解<strong>跨多个文件的依赖关系</strong>。</li>
+<li><strong>评估基准</strong>：采用 <strong>CrossCodeEval（Ding et al., 2023）</strong> 数据集，该数据集涵盖 <strong>Python、Java、TypeScript、C#</strong> 四种语言，并严格要求<strong>跨文件上下文</strong>以进行准确补全。</li>
+</ul>
+<p><strong>数据集特点</strong></p>
+<ul>
+<li><strong>数据来源</strong>：真实世界的开源代码库，许可开放。</li>
+<li><strong>时间筛选</strong>：数据集来自 <strong>2023 年 3 月 - 6 月</strong> 创建的代码，而 DeepSeek-Coder 的训练数据截至 <strong>2023 年 2 月</strong>，避免了数据泄露的可能性。</li>
+</ul>
+<p><strong>评估设置</strong></p>
+<ul>
+<li><strong>最大序列长度</strong>：2048 tokens</li>
+<li><strong>最大输出长度</strong>：50 tokens</li>
+<li><strong>跨文件上下文长度</strong>：512 tokens（基于 <strong>BM25 搜索结果</strong> 选取相关文件）</li>
+<li>评测指标：<ul>
+<li><strong>Exact Match（精确匹配率）</strong></li>
+<li><strong>Edit Similarity（编辑相似度）</strong></li>
+</ul>
+</li>
+</ul>
+<p><strong>评估结果（Table 7）</strong></p>
+<ul>
+<li><strong>DeepSeek-Coder 在所有语言上均优于其他开源模型</strong>，表现最优。</li>
+<li><strong>取消存储库级预训练（w&#x2F;o Repo Pre-training）后，Java、TypeScript、C# 语言的性能下降</strong>，说明<strong>存储库级预训练的有效性</strong>。</li>
+</ul>
+<p><strong>总结</strong></p>
+<p>✅ <strong>DeepSeek-Coder 在跨文件代码补全任务中表现最佳，优于其他开源模型。</strong><br>✅ <strong>存储库级预训练显著提升了跨文件代码理解和补全能力。</strong><br>✅ <strong>该能力适用于真实软件开发场景，提高代码编辑器和 IDE 的智能补全质量。</strong></p>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250201085024934.png" alt="image-20250201085024934"></p>
+<h3 id="4-4-Program-based-Math-Reasoning"><a href="#4-4-Program-based-Math-Reasoning" class="headerlink" title="4.4. Program-based Math Reasoning"></a><strong>4.4. Program-based Math Reasoning</strong></h3><p><strong>任务特点</strong></p>
+<ul>
+<li>评估模型 <strong>通过编程解决数学问题的能力</strong>，对 <strong>数据分析、科学计算</strong> 领域至关重要。</li>
+<li>采用 <strong>Program-Aided Math Reasoning (PAL)</strong> 方法（Gao et al., 2023），要求模型 <strong>交替使用自然语言描述解题步骤，并用代码执行计算</strong>。</li>
+</ul>
+<p><strong>评测基准（Benchmarks）</strong></p>
+<p>涵盖 7 大数学推理数据集：</p>
+<ol>
+<li><strong>GSM8K</strong>（Cobbe et al., 2021）</li>
+<li><strong>MATH</strong>（Hendrycks et al., 2021）</li>
+<li><strong>GSM-Hard</strong>（Gao et al., 2023）</li>
+<li><strong>SVAMP</strong>（Patel et al., 2021）</li>
+<li><strong>TabMWP</strong>（Lu et al., 2022）</li>
+<li><strong>ASDiv</strong>（Miao et al., 2020）</li>
+<li><strong>MAWPS</strong>（Gou et al., 2023）</li>
+</ol>
+<p><strong>评估结果（Table 8）</strong></p>
+<ul>
+<li><strong>DeepSeek-Coder 全系列模型在所有基准测试中均表现优异</strong>。</li>
+<li><strong>DeepSeek-Coder-33B 版本表现尤为突出</strong>，展示了其在 <strong>复杂数学计算和问题求解</strong> 任务中的潜力。</li>
+</ul>
+<p><strong>总结</strong></p>
+<p>✅ <strong>DeepSeek-Coder 在数学推理任务中表现优越，尤其在复杂数学计算场景中展现出巨大潜力。</strong><br>✅ <strong>PAL 方法结合自然语言和代码执行，提高了数学问题求解能力。</strong><br>✅ <strong>DeepSeek-Coder-33B 适用于数据分析、科学计算等高精度计算任务。</strong></p>
+<p><img src="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/image-20250201090318881.png" alt="image-20250201090318881"></p>
+<h2 id="Continue-Pre-Training-From-General-LLM"><a href="#Continue-Pre-Training-From-General-LLM" class="headerlink" title="Continue Pre-Training From General LLM"></a><strong>Continue Pre-Training From General LLM</strong></h2><p><strong>改进点</strong></p>
+<ul>
+<li><strong>基于 DeepSeek-LLM-7B Base 进行额外预训练</strong>，处理 <strong>2 万亿 tokens</strong> 以增强 <strong>自然语言理解</strong> 和 <strong>数学推理能力</strong>。</li>
+<li><strong>不同于 DeepSeek-Coder</strong>，新版本 <strong>仅使用 Next Token Prediction 目标</strong>，并将 <strong>上下文长度设为 4K tokens</strong>。</li>
+</ul>
+<p><strong>评估对比</strong></p>
+<ul>
+<li>采用 <strong>DeepSeek-Coder-v1.5 7B vs. DeepSeek-Coder 6.7B</strong> 进行公平对比，重新运行所有基准测试。</li>
+<li>评估任务分为 三大类：<ol>
+<li>编程（Programming）：<ul>
+<li><strong>HumanEval</strong>（多语言代码生成）</li>
+<li><strong>MBPP</strong>（Python 代码任务）</li>
+</ul>
+</li>
+<li>数学推理（Math Reasoning）：<ul>
+<li><strong>GSM8K</strong>（基础数学推理）</li>
+<li><strong>MATH</strong>（复杂数学推理）</li>
+</ul>
+</li>
+<li>自然语言理解（Natural Language）：<ul>
+<li><strong>MMLU</strong>（通识知识）</li>
+<li><strong>BBH</strong>（大规模推理任务）</li>
+<li><strong>HellaSwag</strong>（常识推理）</li>
+<li><strong>Winogrande</strong>（指代消解）</li>
+<li><strong>ARC-Challenge</strong>（科学推理）</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<p><strong>评估结果（Table 10）</strong></p>
+<ul>
+<li><strong>DeepSeek-Coder-Base-v1.5 代码性能略有下降</strong>，但在 <strong>数学推理和自然语言任务</strong> 上显著优于原始 DeepSeek-Coder-Base。</li>
+<li><strong>改进重点</strong>：增强了 <strong>数学推理（Math Reasoning）和 NLP 能力</strong>，适用于更广泛的任务。</li>
+</ul>
+<p><strong>总结</strong></p>
+<p>✅ <strong>DeepSeek-Coder-v1.5 7B 在数学推理和自然语言理解任务上大幅超越前代模型</strong>。<br>✅ <strong>尽管代码性能略有下降，但整体智能水平提升，适用于更复杂的推理任务</strong>。<br>✅ <strong>扩展上下文窗口至 4K tokens，提高模型对长文本和复杂任务的处理能力</strong>。</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a><strong>Conclusion</strong></h2><ol>
+<li><strong>DeepSeek-Coder 系列概述</strong><ul>
+<li>包含 <strong>1.3B、6.7B、33B</strong> 三种规模的 <strong>代码专用 LLM</strong>。</li>
+<li>采用 <strong>项目级代码语料</strong> 进行训练，并使用 <strong>填空式（Fill-in-the-Middle, FIM）</strong> 预训练目标，增强代码补全能力。</li>
+<li><strong>上下文窗口扩展至 16,384 tokens</strong>，提升长代码处理能力。</li>
+</ul>
+</li>
+<li><strong>模型性能</strong><ul>
+<li><strong>DeepSeek-Coder-Base 33B</strong> 超越所有现有开源代码模型，在多项标准测试中表现最佳。</li>
+<li><strong>DeepSeek-Coder-Base 6.7B</strong> 规模虽小，但性能接近 <strong>CodeLlama-34B</strong>，证明预训练数据质量的重要性。</li>
+</ul>
+</li>
+<li><strong>指令微调（Instruction Tuning）</strong><ul>
+<li>通过高质量指令数据进行微调，推出 <strong>DeepSeek-Coder-Instruct 33B</strong>。</li>
+<li><strong>超越 OpenAI GPT-3.5 Turbo</strong>，在多个代码相关任务中展现卓越能力。</li>
+</ul>
+</li>
+<li><strong>DeepSeek-Coder-v1.5 版本</strong><ul>
+<li>在 <strong>DeepSeek-LLM 7B</strong> 基础上 <strong>额外预训练</strong>，处理 <strong>200 亿 tokens</strong>（包含自然语言、代码、数学数据）。</li>
+<li><strong>增强自然语言理解能力，同时保持高水平代码性能</strong>，验证了<strong>强大的代码 LLM 需要构建在通用 LLM 之上</strong>。</li>
+</ul>
+</li>
+<li><strong>未来展望</strong><ul>
+<li>计划基于 <strong>更大规模的通用 LLM</strong> 开发更强大的 <strong>开源代码专用模型</strong>。</li>
+<li>目标是<strong>持续推动代码 LLM 的发展，并开放更多先进模型</strong>。</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong></p>
+<p>✅ <strong>DeepSeek-Coder 具备强大的代码补全、生成和理解能力，超越多款现有开源模型</strong>。<br>✅ <strong>DeepSeek-Coder-Instruct 33B 在指令任务上优于 GPT-3.5 Turbo，提升代码智能交互能力</strong>。<br>✅ <strong>DeepSeek-Coder-v1.5 兼顾代码性能与自然语言理解，验证了通用 LLM 作为代码 LLM 基础的有效性</strong>。<br>✅ <strong>未来将开发更大规模、更强大的开源代码 LLM，推动代码智能化发展</strong>。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Lin Li</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/">http://example.com/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">LinLi's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">论文阅读</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2025/01/30/LLM-Hallucinations-in-Practical-Code-Generation-Phenomena-Mechanism-and-Mitigation/" title="LLM Hallucinations in Practical Code Generation: Phenomena, Mechanism, and Mitigation"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">LLM Hallucinations in Practical Code Generation: Phenomena, Mechanism, and Mitigation</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/04/PLUMBER/" title="PLUMBER"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-04</div><div class="title">PLUMBER</div></div></a></div><div><a href="/2023/03/08/%E9%80%9A%E8%BF%87NPM%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BE%9D%E8%B5%96%E6%A0%91%E6%8F%AD%E5%BC%80%E8%84%86%E5%BC%B1%E6%80%A7%E4%BC%A0%E6%92%AD%E5%8F%8A%E5%85%B6%E6%BC%94%E5%8C%96%E7%9A%84%E7%A5%9E%E7%A7%98%E9%9D%A2%E7%BA%B1/" title="通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-08</div><div class="title">通过NPM生态系统的依赖树揭开脆弱性传播及其演化的神秘面纱</div></div></a></div><div><a href="/2023/04/03/Flexible-and-Optimal-Dependency-Management-via-Max-SMT/" title="Flexible and Optimal Dependency Management via Max-SMT"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-03</div><div class="title">Flexible and Optimal Dependency Management via Max-SMT</div></div></a></div><div><a href="/2023/04/11/What-the-Fork-Finding-Hidden-Code-Clones-in-npm/" title="What the Fork Finding Hidden Code Clones in npm"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-11</div><div class="title">What the Fork Finding Hidden Code Clones in npm</div></div></a></div><div><a href="/2023/04/12/Static-Type-Inference-for-Foreign-Functions-of-Python/" title="Static Type Inference for Foreign Functions of Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-12</div><div class="title">Static Type Inference for Foreign Functions of Python</div></div></a></div><div><a href="/2023/04/13/Where-to-Start-Studying-Type-Annotation-Practices-in-Python/" title="Where to Start Studying Type Annotation Practices in Python"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-13</div><div class="title">Where to Start Studying Type Annotation Practices in Python</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Lin Li</div><div class="author-info__description">今日事，今日毕</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">118</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence"><span class="toc-number">1.</span> <span class="toc-text">DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-number">1.2.</span> <span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Collection"><span class="toc-number">1.3.</span> <span class="toc-text">Data Collection</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-GitHub-Data-Crawling-and-Filtering"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1. GitHub Data Crawling and Filtering</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Dependency-Parsing"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2. Dependency Parsing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Repo-Level-Deduplication"><span class="toc-number">1.3.3.</span> <span class="toc-text">2.3. Repo-Level Deduplication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-Quality-Screening-and-Decontamination"><span class="toc-number">1.3.4.</span> <span class="toc-text">2.4. Quality Screening and Decontamination</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Training-Policy"><span class="toc-number">1.4.</span> <span class="toc-text">Training Policy</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Training-Strategy"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1. Training Strategy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DeepSeek-Coder-%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.4.2.</span> <span class="toc-text">DeepSeek-Coder 训练过程示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83%E7%A4%BA%E4%BE%8B%EF%BC%9ANext-Token-Prediction%EF%BC%88NTP%EF%BC%89"><span class="toc-number">1.4.3.</span> <span class="toc-text">训练示例：Next Token Prediction（NTP）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%EF%BC%9A"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">目标：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE%EF%BC%88Python-%E4%BB%A3%E7%A0%81%E7%89%87%E6%AE%B5%EF%BC%89%EF%BC%9A"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">示例数据（Python 代码片段）：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%AD%A5%E9%AA%A4%EF%BC%9A"><span class="toc-number">1.4.3.3.</span> <span class="toc-text">模型训练步骤：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83%E7%A4%BA%E4%BE%8B%EF%BC%9AFill-in-the-Middle%EF%BC%88FIM%EF%BC%89"><span class="toc-number">1.4.4.</span> <span class="toc-text">训练示例：Fill-in-the-Middle（FIM）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%EF%BC%9A-1"><span class="toc-number">1.4.4.1.</span> <span class="toc-text">目标：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE%EF%BC%88Python-%E4%BB%A3%E7%A0%81%E7%89%87%E6%AE%B5%EF%BC%89%EF%BC%9A-1"><span class="toc-number">1.4.4.2.</span> <span class="toc-text">示例数据（Python 代码片段）：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%AD%A5%E9%AA%A4%EF%BC%9A-1"><span class="toc-number">1.4.4.3.</span> <span class="toc-text">模型训练步骤：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.5.</span> <span class="toc-text">训练方式总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MSP%EF%BC%88Masked-Span-Prediction%EF%BC%89%E4%B8%8E-FIM%EF%BC%88Fill-in-the-Middle%EF%BC%89%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB"><span class="toc-number">1.4.6.</span> <span class="toc-text">MSP（Masked Span Prediction）与 FIM（Fill-in-the-Middle）的主要区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E6%AF%94%E8%BE%83"><span class="toc-number">1.4.7.</span> <span class="toc-text">示例比较</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-MSP-%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.4.7.1.</span> <span class="toc-text">1. MSP 示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-FIM-%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.4.7.2.</span> <span class="toc-text">2. FIM 示例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Tokenizer"><span class="toc-number">1.4.8.</span> <span class="toc-text">3.2. Tokenizer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-Model-Architecture"><span class="toc-number">1.4.9.</span> <span class="toc-text">3.3. Model Architecture</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-Optimization"><span class="toc-number">1.4.10.</span> <span class="toc-text">3.4. Optimization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-Environments"><span class="toc-number">1.4.11.</span> <span class="toc-text">3.5. Environments</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-Long-Context"><span class="toc-number">1.4.12.</span> <span class="toc-text">3.6. Long Context</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-Instruction-Tuning"><span class="toc-number">1.4.13.</span> <span class="toc-text">3.7. Instruction Tuning</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Experimental-Results"><span class="toc-number">1.5.</span> <span class="toc-text">Experimental Results</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Code-Generation"><span class="toc-number">1.5.1.</span> <span class="toc-text">4.1. Code Generation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Fill-in-the-Middle-Code-Completion"><span class="toc-number">1.5.2.</span> <span class="toc-text">4.2. Fill-in-the-Middle Code Completion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-Cross-File-Code-Completion"><span class="toc-number">1.5.3.</span> <span class="toc-text">4.3. Cross-File Code Completion</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-Program-based-Math-Reasoning"><span class="toc-number">1.5.4.</span> <span class="toc-text">4.4. Program-based Math Reasoning</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Continue-Pre-Training-From-General-LLM"><span class="toc-number">1.6.</span> <span class="toc-text">Continue Pre-Training From General LLM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">1.7.</span> <span class="toc-text">Conclusion</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/02/01/DeepSeek-Coder-When-the-Large-Language-Model-Meets-Programming-The-Rise-of-Code-Intelligence/" title="DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence">DeepSeek-Coder: When the Large Language Model Meets Programming - The Rise of Code Intelligence</a><time datetime="2025-02-01T02:43:19.000Z" title="发表于 2025-02-01 10:43:19">2025-02-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/30/LLM-Hallucinations-in-Practical-Code-Generation-Phenomena-Mechanism-and-Mitigation/" title="LLM Hallucinations in Practical Code Generation: Phenomena, Mechanism, and Mitigation">LLM Hallucinations in Practical Code Generation: Phenomena, Mechanism, and Mitigation</a><time datetime="2025-01-30T12:14:09.000Z" title="发表于 2025-01-30 20:14:09">2025-01-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/24/Benchmarking-Bias-in-Large-Language-Models-during-Role-Playing/" title="Benchmarking Bias in Large Language Models during Role-Playing">Benchmarking Bias in Large Language Models during Role-Playing</a><time datetime="2025-01-24T14:55:55.000Z" title="发表于 2025-01-24 22:55:55">2025-01-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/24/Diversity-Drives-Fairness-Ensemble-of-Higher-Order-Mutants-for-Intersectional-Fairness-of-Machine-Learning-Software/" title="Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software">Diversity Drives Fairness Ensemble of Higher Order Mutants for Intersectional Fairness of Machine Learning Software</a><time datetime="2025-01-24T12:23:10.000Z" title="发表于 2025-01-24 20:23:10">2025-01-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/01/12/Teaching-Code-LLMs-to-Use-Autocompletion-Tools-in-Repository-Level-Code-Generation/" title="Teaching Code LLMs to Use Autocompletion Tools in Repository-Level Code Generation">Teaching Code LLMs to Use Autocompletion Tools in Repository-Level Code Generation</a><time datetime="2025-01-12T10:28:21.000Z" title="发表于 2025-01-12 18:28:21">2025-01-12</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By Lin Li</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
